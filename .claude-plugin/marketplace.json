@@ -1,0 +1,24 @@
+{
+  "name": "invest-skill",
+  "owner": {
+    "name": "Jerry Liu",
+    "email": "jerry@investskill.com"
+  },
+  "metadata": {
+    "description": "Professional investment analysis and stock evaluation skills for US markets",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "us-stock-analysis",
+      "source": "./plugins/us-stock-analysis",
+      "description": "Comprehensive US stock evaluation with fundamental, technical, and economic analysis",
+      "version": "1.0.0",
+      "author": {
+        "name": "Jerry Liu"
+      },
+      "category": "finance",
+      "keywords": ["stock", "investment", "analysis", "us-markets", "finance"]
+    }
+  ]
+}
