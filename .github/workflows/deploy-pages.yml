@@ -1,0 +1,495 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: |
+        npm install -g markdown-it markdown-it-anchor markdown-it-table-of-contents
+
+    - name: Create website directory
+      run: mkdir -p _site
+
+    - name: Convert README to HTML
+      run: |
+        cat > build-site.js << 'BUILDSCRIPT'
+        const fs = require('fs');
+        const MarkdownIt = require('markdown-it');
+        const markdownItAnchor = require('markdown-it-anchor');
+
+        const md = new MarkdownIt({
+          html: true,
+          linkify: true,
+          typographer: true
+        }).use(markdownItAnchor, {
+          permalink: true,
+          permalinkBefore: true,
+          permalinkSymbol: '#'
+        });
+
+        // Read README
+        const readme = fs.readFileSync('README.md', 'utf8');
+        const content = md.render(readme);
+
+        // Read CONTRIBUTING if exists
+        let contributingContent = '';
+        if (fs.existsSync('CONTRIBUTING.md')) {
+          const contributing = fs.readFileSync('CONTRIBUTING.md', 'utf8');
+          contributingContent = md.render(contributing);
+        }
+
+        // Read CHANGELOG if exists
+        let changelogContent = '';
+        if (fs.existsSync('CHANGELOG.md')) {
+          const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
+          changelogContent = md.render(changelog);
+        }
+
+        // Create HTML template
+        const htmlTemplate = (title, bodyContent, currentPage = 'home') => `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>${title} - InvestSkill</title>
+          <meta name="description" content="Professional investment analysis and stock evaluation skills for Claude Code">
+          <link rel="stylesheet" href="style.css">
+          <link rel="preconnect" href="https://fonts.googleapis.com">
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        </head>
+        <body>
+          <nav class="navbar">
+            <div class="container">
+              <div class="nav-brand">
+                <span class="nav-icon">📊</span>
+                <span class="nav-title">InvestSkill</span>
+              </div>
+              <div class="nav-links">
+                <a href="index.html" class="${currentPage === 'home' ? 'active' : ''}">Home</a>
+                <a href="contributing.html" class="${currentPage === 'contributing' ? 'active' : ''}">Contributing</a>
+                <a href="changelog.html" class="${currentPage === 'changelog' ? 'active' : ''}">Changelog</a>
+                <a href="https://github.com/yennanliu/InvestSkill" target="_blank" class="github-link">
+                  <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                  </svg>
+                  GitHub
+                </a>
+              </div>
+            </div>
+          </nav>
+
+          <main class="container">
+            <div class="content">
+              ${bodyContent}
+            </div>
+          </main>
+
+          <footer>
+            <div class="container">
+              <p>InvestSkill - Professional investment analysis for Claude Code</p>
+              <p>
+                <a href="https://github.com/yennanliu/InvestSkill">GitHub</a> •
+                <a href="https://github.com/yennanliu/InvestSkill/blob/main/LICENSE">MIT License</a> •
+                <a href="https://github.com/yennanliu/InvestSkill/issues">Report Issues</a>
+              </p>
+            </div>
+          </footer>
+        </body>
+        </html>
+        `;
+
+        // Write index.html
+        fs.writeFileSync('_site/index.html', htmlTemplate('Home', content, 'home'));
+        console.log('✓ Created index.html');
+
+        // Write contributing.html
+        if (contributingContent) {
+          fs.writeFileSync('_site/contributing.html', htmlTemplate('Contributing', contributingContent, 'contributing'));
+          console.log('✓ Created contributing.html');
+        }
+
+        // Write changelog.html
+        if (changelogContent) {
+          fs.writeFileSync('_site/changelog.html', htmlTemplate('Changelog', changelogContent, 'changelog'));
+          console.log('✓ Created changelog.html');
+        }
+
+        console.log('✓ Website built successfully!');
+        BUILDSCRIPT
+
+        node build-site.js
+
+    - name: Create CSS
+      run: |
+        cat > _site/style.css << 'EOFCSS'
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        :root {
+          --primary-color: #2563eb;
+          --secondary-color: #1e40af;
+          --text-color: #1f2937;
+          --text-light: #6b7280;
+          --bg-color: #ffffff;
+          --bg-secondary: #f9fafb;
+          --border-color: #e5e7eb;
+          --code-bg: #f3f4f6;
+          --success-color: #10b981;
+        }
+
+        body {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          color: var(--text-color);
+          background-color: var(--bg-color);
+          line-height: 1.6;
+        }
+
+        /* Navbar */
+        .navbar {
+          background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+          color: white;
+          padding: 1rem 0;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          position: sticky;
+          top: 0;
+          z-index: 100;
+        }
+
+        .navbar .container {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .nav-brand {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 1.5rem;
+          font-weight: 700;
+        }
+
+        .nav-icon {
+          font-size: 2rem;
+        }
+
+        .nav-links {
+          display: flex;
+          gap: 2rem;
+          align-items: center;
+        }
+
+        .nav-links a {
+          color: white;
+          text-decoration: none;
+          font-weight: 500;
+          transition: opacity 0.2s;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .nav-links a:hover {
+          opacity: 0.8;
+        }
+
+        .nav-links a.active {
+          border-bottom: 2px solid white;
+        }
+
+        .github-link {
+          background: rgba(255,255,255,0.2);
+          padding: 0.5rem 1rem;
+          border-radius: 6px;
+        }
+
+        /* Container */
+        .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 2rem;
+        }
+
+        /* Main Content */
+        main {
+          padding: 3rem 0;
+          min-height: calc(100vh - 200px);
+        }
+
+        .content {
+          background: white;
+          padding: 3rem;
+          border-radius: 12px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* Typography */
+        h1 {
+          font-size: 2.5rem;
+          font-weight: 700;
+          margin-bottom: 1.5rem;
+          color: var(--text-color);
+          border-bottom: 3px solid var(--primary-color);
+          padding-bottom: 0.5rem;
+        }
+
+        h2 {
+          font-size: 2rem;
+          font-weight: 600;
+          margin-top: 2.5rem;
+          margin-bottom: 1rem;
+          color: var(--text-color);
+        }
+
+        h3 {
+          font-size: 1.5rem;
+          font-weight: 600;
+          margin-top: 2rem;
+          margin-bottom: 0.75rem;
+          color: var(--text-color);
+        }
+
+        h4 {
+          font-size: 1.25rem;
+          font-weight: 600;
+          margin-top: 1.5rem;
+          margin-bottom: 0.5rem;
+        }
+
+        p {
+          margin-bottom: 1rem;
+          color: var(--text-color);
+        }
+
+        a {
+          color: var(--primary-color);
+          text-decoration: none;
+        }
+
+        a:hover {
+          text-decoration: underline;
+        }
+
+        /* Code Blocks */
+        code {
+          background: var(--code-bg);
+          padding: 0.2rem 0.4rem;
+          border-radius: 4px;
+          font-family: 'Monaco', 'Menlo', monospace;
+          font-size: 0.9em;
+          color: #e83e8c;
+        }
+
+        pre {
+          background: var(--code-bg);
+          padding: 1.5rem;
+          border-radius: 8px;
+          overflow-x: auto;
+          margin: 1.5rem 0;
+          border-left: 4px solid var(--primary-color);
+        }
+
+        pre code {
+          background: none;
+          padding: 0;
+          color: var(--text-color);
+        }
+
+        /* Lists */
+        ul, ol {
+          margin: 1rem 0 1rem 2rem;
+        }
+
+        li {
+          margin-bottom: 0.5rem;
+        }
+
+        /* Badges and Labels */
+        img[alt*="badge"] {
+          display: inline-block;
+          margin: 0.25rem;
+        }
+
+        /* Tables */
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 1.5rem 0;
+        }
+
+        th, td {
+          padding: 0.75rem;
+          text-align: left;
+          border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+          background: var(--bg-secondary);
+          font-weight: 600;
+        }
+
+        /* Blockquotes */
+        blockquote {
+          border-left: 4px solid var(--primary-color);
+          padding-left: 1rem;
+          margin: 1.5rem 0;
+          color: var(--text-light);
+          font-style: italic;
+        }
+
+        /* HR */
+        hr {
+          border: none;
+          border-top: 2px solid var(--border-color);
+          margin: 2rem 0;
+        }
+
+        /* Footer */
+        footer {
+          background: var(--bg-secondary);
+          padding: 2rem 0;
+          text-align: center;
+          color: var(--text-light);
+          border-top: 1px solid var(--border-color);
+        }
+
+        footer p {
+          margin: 0.5rem 0;
+        }
+
+        footer a {
+          color: var(--primary-color);
+          margin: 0 0.5rem;
+        }
+
+        /* Checkboxes */
+        input[type="checkbox"] {
+          margin-right: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+          .container {
+            padding: 0 1rem;
+          }
+
+          .content {
+            padding: 1.5rem;
+          }
+
+          .nav-links {
+            gap: 1rem;
+          }
+
+          .nav-links a {
+            font-size: 0.9rem;
+          }
+
+          h1 {
+            font-size: 2rem;
+          }
+
+          h2 {
+            font-size: 1.5rem;
+          }
+
+          pre {
+            padding: 1rem;
+          }
+        }
+
+        /* Anchor links */
+        .header-anchor {
+          opacity: 0;
+          transition: opacity 0.2s;
+          margin-left: -1.5rem;
+          padding-right: 0.5rem;
+          color: var(--primary-color);
+        }
+
+        h2:hover .header-anchor,
+        h3:hover .header-anchor,
+        h4:hover .header-anchor {
+          opacity: 1;
+        }
+
+        /* Badge styles */
+        .badge {
+          display: inline-block;
+          padding: 0.25rem 0.75rem;
+          background: var(--primary-color);
+          color: white;
+          border-radius: 12px;
+          font-size: 0.875rem;
+          font-weight: 500;
+        }
+        EOFCSS
+
+    - name: Create 404 page
+      run: |
+        cat > _site/404.html << 'EOF404'
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>404 - Page Not Found</title>
+          <link rel="stylesheet" href="/style.css">
+        </head>
+        <body>
+          <div class="container" style="text-align: center; padding: 4rem 2rem;">
+            <h1 style="font-size: 4rem; margin-bottom: 1rem;">404</h1>
+            <h2>Page Not Found</h2>
+            <p style="margin: 2rem 0;">The page you're looking for doesn't exist.</p>
+            <a href="/" style="display: inline-block; padding: 0.75rem 1.5rem; background: var(--primary-color); color: white; border-radius: 6px; text-decoration: none;">Go Home</a>
+          </div>
+        </body>
+        </html>
+        EOF404
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4

@@ -2,6 +2,13 @@
 
 Professional investment analysis and stock evaluation skills for Claude Code.
 
+[![Deploy](https://github.com/yennanliu/InvestSkill/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/yennanliu/InvestSkill/actions/workflows/deploy-pages.yml)
+[![Validate](https://github.com/yennanliu/InvestSkill/actions/workflows/validate.yml/badge.svg)](https://github.com/yennanliu/InvestSkill/actions/workflows/validate.yml)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Website](https://img.shields.io/badge/website-live-success)](https://yennanliu.github.io/InvestSkill/)
+
+📚 **[View Documentation Website](https://yennanliu.github.io/InvestSkill/)**
+
 
 ## Install
 

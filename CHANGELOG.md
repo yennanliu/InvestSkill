@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - GitHub Actions workflows for validation and release automation
+- GitHub Pages deployment workflow for automatic website generation
+- Professional website design with navigation and responsive layout
+- Automatic conversion of README, CONTRIBUTING, and CHANGELOG to HTML
+- Status badges for build and deployment status
+- Setup guide for GitHub Pages configuration (.github/SETUP_PAGES.md)
 
 ## [1.0.0] - 2026-02-16
 
