@@ -30,9 +30,19 @@ jobs:
       with:
         node-version: '20'
 
-    - name: Install dependencies
+    - name: Create package.json and install dependencies
       run: |
-        npm install -g markdown-it markdown-it-anchor markdown-it-table-of-contents
+        cat > package.json << 'PKGJSON'
+        {
+          "name": "investskill-site",
+          "version": "1.0.0",
+          "dependencies": {
+            "markdown-it": "^14.0.0",
+            "markdown-it-anchor": "^9.0.1"
+          }
+        }
+        PKGJSON
+        npm install
 
     - name: Create website directory
       run: mkdir -p _site
