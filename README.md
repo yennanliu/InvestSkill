@@ -2,6 +2,45 @@
 
 Professional investment analysis and stock evaluation skills for Claude Code.
 
+
+## Install
+
+```bash
+
+claude
+
+# add to marketplace
+/plugin marketplace add yennanliu/InvestSkill
+
+
+# install
+/plugin install us-stock-analysis
+
+
+# check installed list
+
+/plugin list
+
+# test
+- /us-stock-analysis:fundamental-analysis AAPL # - For fundamental analysis
+- /us-stock-analysis:technical-analysis AAPL # - For technical analysis
+- /us-stock-analysis:economics-analysis # - For economic context
+```
+
+
+- Local dev
+
+```bash
+
+claude
+
+# Add local marketplace
+/plugin marketplace add /Users/jerryliu/InvestSkill
+
+# Install plugin
+/plugin install us-stock-analysis@invest-skill
+```
+
 ## Overview
 
 InvestSkill is a comprehensive Claude Code plugin marketplace that provides professional-grade skills for US stock market analysis, including fundamental analysis, technical analysis, economic assessment, and portfolio management.
@@ -33,7 +72,7 @@ Add the marketplace and install the plugin:
 
 ```bash
 # Add local marketplace
-/plugin marketplace add /path/to/InvestSkill
+/plugin marketplace add /Users/jerryliu/InvestSkill
 
 # Install plugin
 /plugin install us-stock-analysis@invest-skill
