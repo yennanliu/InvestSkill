@@ -137,15 +137,104 @@ InvestSkill/
 └── README.md
 ```
 
+## CI/CD & Automation
+
+This project includes comprehensive GitHub Actions workflows for quality assurance and automated releases.
+
+### Automated Workflows
+
+**Validation (`validate.yml`)**
+- Runs on every push and PR to main/develop branches
+- Validates JSON structure (marketplace.json, plugin.json)
+- Checks required files and fields
+- Validates SKILL.md frontmatter
+- Ensures version consistency across files
+
+**PR Checks (`pr-check.yml`)**
+- Quick validation on pull requests
+- JSON syntax checking
+- Required fields validation
+- SKILL.md file linting
+
+**Auto Release (`release.yml`)**
+- Triggers on version tags (v*)
+- Creates distribution packages (.tar.gz)
+- Generates SHA256 checksums
+- Creates GitHub releases with artifacts
+- Extracts release notes from CHANGELOG.md
+
+**Auto Labeling (`label-pr.yml`)**
+- Automatically labels PRs based on changed files
+- Adds size labels (small/medium/large)
+- Helps with PR organization and review
+
+**First-Time Contributor Greetings (`greetings.yml`)**
+- Welcomes new contributors
+- Provides helpful information for first-time issues/PRs
+
+### Creating a Release
+
+To create a new release:
+
+1. Update version numbers:
+   ```bash
+   # Update plugins/us-stock-analysis/.claude-plugin/plugin.json
+   # Update .claude-plugin/marketplace.json
+   ```
+
+2. Update CHANGELOG.md:
+   ```markdown
+   ## [1.1.0] - 2026-02-16
+   ### Added
+   - New feature description
+   ```
+
+3. Commit changes:
+   ```bash
+   git add .
+   git commit -m "chore: bump version to 1.1.0"
+   git push origin main
+   ```
+
+4. Create and push tag:
+   ```bash
+   git tag v1.1.0
+   git push origin v1.1.0
+   ```
+
+5. GitHub Actions will automatically:
+   - Validate the plugin structure
+   - Create distribution packages
+   - Generate release notes
+   - Publish the release with artifacts
+
+### Validation Badges
+
+Add these badges to show build status (update username/repo):
+
+```markdown
+![Validate](https://github.com/yennanliu/InvestSkill/actions/workflows/validate.yml/badge.svg)
+![Release](https://github.com/yennanliu/InvestSkill/actions/workflows/release.yml/badge.svg)
+```
+
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for detailed information.
+
+**Quick Start:**
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+3. Commit your changes (`git commit -m 'feat: add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines on:
+- Adding new skills
+- Creating plugins
+- Testing changes
+- Commit message format
+- Version numbering
 
 ## Publishing
 

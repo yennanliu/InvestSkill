@@ -1,0 +1,111 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate:
+    name: Validate Changes
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Quick JSON validation
+      run: |
+        echo "Running quick JSON validation..."
+
+        # Validate marketplace.json
+        if [ -f ".claude-plugin/marketplace.json" ]; then
+          jq empty .claude-plugin/marketplace.json || {
+            echo "❌ marketplace.json is invalid"
+            exit 1
+          }
+          echo "✓ marketplace.json is valid"
+        fi
+
+        # Validate plugin.json files
+        for plugin_json in plugins/*/.claude-plugin/plugin.json; do
+          if [ -f "$plugin_json" ]; then
+            jq empty "$plugin_json" || {
+              echo "❌ $plugin_json is invalid"
+              exit 1
+            }
+            echo "✓ $(basename $(dirname $(dirname $plugin_json)))/plugin.json is valid"
+          fi
+        done
+
+    - name: Check for required fields
+      run: |
+        echo "Checking required fields in marketplace.json..."
+
+        required_fields=("name" "owner" "metadata" "plugins")
+        for field in "${required_fields[@]}"; do
+          if ! jq -e ".$field" .claude-plugin/marketplace.json > /dev/null 2>&1; then
+            echo "❌ Missing required field: $field"
+            exit 1
+          fi
+          echo "✓ Field '$field' exists"
+        done
+
+        echo "Checking required fields in plugin.json files..."
+        for plugin_json in plugins/*/.claude-plugin/plugin.json; do
+          if [ -f "$plugin_json" ]; then
+            plugin_name=$(basename $(dirname $(dirname $plugin_json)))
+            required_plugin_fields=("name" "description" "version" "author")
+
+            for field in "${required_plugin_fields[@]}"; do
+              if ! jq -e ".$field" "$plugin_json" > /dev/null 2>&1; then
+                echo "❌ Missing required field '$field' in $plugin_name"
+                exit 1
+              fi
+            done
+            echo "✓ All required fields present in $plugin_name"
+          fi
+        done
+
+    - name: Lint SKILL.md files
+      run: |
+        echo "Checking SKILL.md files..."
+
+        skill_count=0
+        warning_count=0
+
+        for skill_file in plugins/*/skills/*/SKILL.md; do
+          if [ -f "$skill_file" ]; then
+            skill_count=$((skill_count + 1))
+            skill_name=$(basename $(dirname "$skill_file"))
+
+            # Check for frontmatter
+            if ! grep -q "^---$" "$skill_file"; then
+              echo "⚠️  $skill_name: Missing frontmatter"
+              warning_count=$((warning_count + 1))
+            fi
+
+            # Check minimum content length
+            line_count=$(wc -l < "$skill_file")
+            if [ "$line_count" -lt 10 ]; then
+              echo "⚠️  $skill_name: File seems too short ($line_count lines)"
+              warning_count=$((warning_count + 1))
+            fi
+          fi
+        done
+
+        echo ""
+        echo "Summary:"
+        echo "  Skills found: $skill_count"
+        echo "  Warnings: $warning_count"
+
+        if [ "$skill_count" -eq 0 ]; then
+          echo "❌ No skills found in the repository"
+          exit 1
+        fi
+
+    - name: PR validation summary
+      if: success()
+      run: |
+        echo "========================================="
+        echo "✅ All PR checks passed!"
+        echo "========================================="

@@ -1,0 +1,113 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Get version from tag
+      id: get_version
+      run: |
+        VERSION=${GITHUB_REF#refs/tags/v}
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+    - name: Validate JSON files before release
+      run: |
+        echo "Validating JSON files..."
+        jq empty .claude-plugin/marketplace.json
+        for plugin_json in plugins/*/.claude-plugin/plugin.json; do
+          [ -f "$plugin_json" ] && jq empty "$plugin_json"
+        done
+        echo "✓ All JSON files are valid"
+
+    - name: Extract release notes
+      id: extract_notes
+      run: |
+        if [ -f "CHANGELOG.md" ]; then
+          echo "Extracting release notes from CHANGELOG.md..."
+          # Extract the section for this version
+          sed -n "/## \[${{ steps.get_version.outputs.version }}\]/,/## \[/p" CHANGELOG.md | sed '$d' > release_notes.md
+          if [ -s release_notes.md ]; then
+            echo "notes_file=release_notes.md" >> $GITHUB_OUTPUT
+          else
+            echo "No release notes found for version ${{ steps.get_version.outputs.version }}"
+            echo "notes_file=" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "CHANGELOG.md not found, will use auto-generated notes"
+          echo "notes_file=" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Create marketplace package
+      run: |
+        echo "Creating release package..."
+        mkdir -p dist
+
+        # Create a tarball of the marketplace
+        tar -czf dist/invest-skill-marketplace-${{ steps.get_version.outputs.version }}.tar.gz \
+          --exclude='.git' \
+          --exclude='.github' \
+          --exclude='dist' \
+          --exclude='.claude' \
+          --exclude='node_modules' \
+          .
+
+        # Create individual plugin packages
+        for plugin_dir in plugins/*/; do
+          plugin_name=$(basename "$plugin_dir")
+          echo "Packaging plugin: $plugin_name"
+
+          tar -czf "dist/${plugin_name}-${{ steps.get_version.outputs.version }}.tar.gz" \
+            -C plugins "$plugin_name"
+        done
+
+        # List created packages
+        ls -lh dist/
+
+    - name: Generate checksums
+      run: |
+        cd dist
+        sha256sum *.tar.gz > checksums.txt
+        cat checksums.txt
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.get_version.outputs.tag }}
+        name: Release ${{ steps.get_version.outputs.version }}
+        body_path: ${{ steps.extract_notes.outputs.notes_file || '' }}
+        draft: false
+        prerelease: ${{ contains(steps.get_version.outputs.version, 'alpha') || contains(steps.get_version.outputs.version, 'beta') || contains(steps.get_version.outputs.version, 'rc') }}
+        files: |
+          dist/*.tar.gz
+          dist/checksums.txt
+        generate_release_notes: ${{ steps.extract_notes.outputs.notes_file == '' }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Release summary
+      run: |
+        echo "========================================="
+        echo "✓ Release ${{ steps.get_version.outputs.version }} created successfully!"
+        echo "========================================="
+        echo ""
+        echo "Packages created:"
+        ls -lh dist/*.tar.gz
+        echo ""
+        echo "Installation command:"
+        echo "/plugin marketplace add yennanliu/InvestSkill"
+        echo "/plugin install us-stock-analysis@invest-skill"

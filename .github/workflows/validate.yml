@@ -1,0 +1,136 @@
+name: Validate Plugin Structure
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Validate JSON files
+      run: |
+        echo "Validating marketplace.json..."
+        if ! jq empty .claude-plugin/marketplace.json 2>/dev/null; then
+          echo "Error: marketplace.json is not valid JSON"
+          exit 1
+        fi
+        echo "✓ marketplace.json is valid"
+
+        echo "Validating plugin.json files..."
+        for plugin_json in plugins/*/.claude-plugin/plugin.json; do
+          if [ -f "$plugin_json" ]; then
+            echo "Checking $plugin_json..."
+            if ! jq empty "$plugin_json" 2>/dev/null; then
+              echo "Error: $plugin_json is not valid JSON"
+              exit 1
+            fi
+            echo "✓ $plugin_json is valid"
+          fi
+        done
+
+    - name: Check required files
+      run: |
+        echo "Checking required marketplace files..."
+
+        if [ ! -f ".claude-plugin/marketplace.json" ]; then
+          echo "Error: .claude-plugin/marketplace.json is missing"
+          exit 1
+        fi
+        echo "✓ marketplace.json exists"
+
+        if [ ! -f "README.md" ]; then
+          echo "Error: README.md is missing"
+          exit 1
+        fi
+        echo "✓ README.md exists"
+
+        if [ ! -f "LICENSE" ]; then
+          echo "Error: LICENSE file is missing"
+          exit 1
+        fi
+        echo "✓ LICENSE exists"
+
+    - name: Validate plugin structure
+      run: |
+        echo "Validating plugin structure..."
+
+        for plugin_dir in plugins/*/; do
+          plugin_name=$(basename "$plugin_dir")
+          echo "Checking plugin: $plugin_name"
+
+          if [ ! -f "$plugin_dir/.claude-plugin/plugin.json" ]; then
+            echo "Error: $plugin_dir/.claude-plugin/plugin.json is missing"
+            exit 1
+          fi
+          echo "✓ plugin.json exists for $plugin_name"
+
+          if [ ! -d "$plugin_dir/skills" ]; then
+            echo "Warning: $plugin_dir/skills directory is missing"
+          else
+            skill_count=$(find "$plugin_dir/skills" -name "SKILL.md" | wc -l)
+            echo "✓ Found $skill_count skill(s) in $plugin_name"
+
+            if [ "$skill_count" -eq 0 ]; then
+              echo "Warning: No SKILL.md files found in $plugin_dir/skills"
+            fi
+          fi
+        done
+
+    - name: Validate SKILL.md frontmatter
+      run: |
+        echo "Validating SKILL.md files..."
+
+        for skill_file in plugins/*/skills/*/SKILL.md; do
+          if [ -f "$skill_file" ]; then
+            echo "Checking $skill_file..."
+
+            # Check if file has frontmatter
+            if ! grep -q "^---$" "$skill_file"; then
+              echo "Warning: $skill_file missing frontmatter"
+            else
+              # Check for description in frontmatter
+              if ! sed -n '/^---$/,/^---$/p' "$skill_file" | grep -q "description:"; then
+                echo "Warning: $skill_file missing description in frontmatter"
+              else
+                echo "✓ $skill_file has valid frontmatter"
+              fi
+            fi
+          fi
+        done
+
+    - name: Check version consistency
+      run: |
+        echo "Checking version consistency..."
+
+        marketplace_version=$(jq -r '.metadata.version' .claude-plugin/marketplace.json)
+        echo "Marketplace version: $marketplace_version"
+
+        for plugin_json in plugins/*/.claude-plugin/plugin.json; do
+          if [ -f "$plugin_json" ]; then
+            plugin_name=$(jq -r '.name' "$plugin_json")
+            plugin_version=$(jq -r '.version' "$plugin_json")
+            echo "Plugin $plugin_name version: $plugin_version"
+
+            # Check if versions match
+            marketplace_plugin_version=$(jq -r --arg name "$plugin_name" '.plugins[] | select(.name == $name) | .version' .claude-plugin/marketplace.json)
+
+            if [ "$plugin_version" != "$marketplace_plugin_version" ]; then
+              echo "Warning: Version mismatch for $plugin_name - plugin.json: $plugin_version, marketplace.json: $marketplace_plugin_version"
+            else
+              echo "✓ Version consistent for $plugin_name"
+            fi
+          fi
+        done
+
+    - name: Validation summary
+      run: |
+        echo "========================================="
+        echo "✓ All validation checks passed!"
+        echo "========================================="
