@@ -11,6 +11,11 @@
 
 📚 **[查看文檔網站](https://yennanliu.github.io/InvestSkill/)**
 
+## 快速連結
+
+- 📝 **[部落格文章：InvestSkill - Claude Code 金融分析插件](https://yennj12.js.org/yennj12_blog_V4/posts/investskill-claude-code-financial-analysis-plugin/)**
+- 📊 **[範例輸出：完整分析報告 (PLTR)](https://github.com/yennanliu/finance_data/blob/main/claude_code/pltr/comprehensive_analysis_report.md)**
+
 ## 安裝
 
 ```bash
