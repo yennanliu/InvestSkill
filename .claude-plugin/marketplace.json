@@ -1,8 +1,8 @@
 {
   "name": "invest-skill",
   "owner": {
-    "name": "Jerry Liu",
-    "email": "jerry@investskill.com"
+    "name": "yennanliu",
+    "email": "yennanliu@users.noreply.github.com"
   },
   "metadata": {
     "description": "Professional investment analysis and stock evaluation skills for US markets",
@@ -15,7 +15,7 @@
       "description": "Comprehensive US stock evaluation with fundamental, technical, and economic analysis",
       "version": "1.0.0",
       "author": {
-        "name": "Jerry Liu"
+        "name": "yennanliu"
       },
       "category": "finance",
       "keywords": ["stock", "investment", "analysis", "us-markets", "finance"]

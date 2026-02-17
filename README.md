@@ -2,6 +2,8 @@
 
 Professional investment analysis and stock evaluation skills for Claude Code.
 
+> 📖 **[繁體中文版](README-zh-TW.md)** | [English](README.md)
+
 [![Deploy](https://github.com/yennanliu/InvestSkill/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/yennanliu/InvestSkill/actions/workflows/deploy-pages.yml)
 [![Validate](https://github.com/yennanliu/InvestSkill/actions/workflows/validate.yml/badge.svg)](https://github.com/yennanliu/InvestSkill/actions/workflows/validate.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -42,7 +44,7 @@ claude
 claude
 
 # Add local marketplace
-/plugin marketplace add /Users/jerryliu/InvestSkill
+/plugin marketplace add /Users/yennanliu/InvestSkill
 
 # Install plugin
 /plugin install us-stock-analysis@invest-skill
@@ -69,7 +71,7 @@ Add the marketplace and install the plugin:
 
 ```bash
 # Add marketplace from GitHub
-/plugin marketplace add jerryliu/InvestSkill
+/plugin marketplace add yennanliu/InvestSkill
 
 # Install the plugin
 /plugin install us-stock-analysis@invest-skill
@@ -79,7 +81,7 @@ Add the marketplace and install the plugin:
 
 ```bash
 # Add local marketplace
-/plugin marketplace add /Users/jerryliu/InvestSkill
+/plugin marketplace add /Users/yennanliu/InvestSkill
 
 # Install plugin
 /plugin install us-stock-analysis@invest-skill
@@ -256,7 +258,7 @@ git push origin main
 
 2. Users can then add your marketplace:
 ```bash
-/plugin marketplace add jerryliu/InvestSkill
+/plugin marketplace add yennanliu/InvestSkill
 ```
 
 ## Roadmap

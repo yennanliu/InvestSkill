@@ -56,7 +56,7 @@ US market sector analysis and rotation strategies:
 
 ### From GitHub
 ```bash
-/plugin marketplace add jerryliu/InvestSkill
+/plugin marketplace add yennanliu/InvestSkill
 /plugin install us-stock-analysis@invest-skill
 ```
 

@@ -41,7 +41,7 @@ claude
 claude
 
 # 添加本地市集
-/plugin marketplace add /Users/jerryliu/InvestSkill
+/plugin marketplace add /Users/yennanliu/InvestSkill
 
 # 安裝插件
 /plugin install us-stock-analysis@invest-skill
@@ -68,7 +68,7 @@ InvestSkill 是一個綜合性的 Claude Code 插件市集，提供專業級的�
 
 ```bash
 # 從 GitHub 添加市集
-/plugin marketplace add jerryliu/InvestSkill
+/plugin marketplace add yennanliu/InvestSkill
 
 # 安裝插件
 /plugin install us-stock-analysis@invest-skill
@@ -78,7 +78,7 @@ InvestSkill 是一個綜合性的 Claude Code 插件市集，提供專業級的�
 
 ```bash
 # 添加本地市集
-/plugin marketplace add /Users/jerryliu/InvestSkill
+/plugin marketplace add /Users/yennanliu/InvestSkill
 
 # 安裝插件
 /plugin install us-stock-analysis@invest-skill
@@ -255,7 +255,7 @@ git push origin main
 
 2. 使用者可以添加您的市集：
 ```bash
-/plugin marketplace add jerryliu/InvestSkill
+/plugin marketplace add yennanliu/InvestSkill
 ```
 
 ## 開發路線圖
