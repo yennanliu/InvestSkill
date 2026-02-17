@@ -62,10 +62,14 @@ InvestSkill 是一個綜合性的 Claude Code 插件市集，提供專業級的�
 
 - **股票評估**：全面的基本面與估值分析
 - **經濟分析**：美國經濟指標及市場影響分析
-- **基本面分析**：深入的財務報表分析
-- **技術分析**：圖表形態與技術指標分析
+- **基本面分析**：深入的財務報表分析，支援視覺化圖表
+- **技術分析**：圖表形態與技術指標分析，支援圖表生成
 - **投資組合檢視**：績效分析與優化建議
 - **產業分析**：產業輪動與市場定位分析
+- **互動式報告**：生成帶有視覺化圖表的 HTML/PDF 報告
+- **財報電話會議分析**：分析財報電話會議記錄的情緒與洞察
+- **內部人交易追蹤**：從 SEC 申報文件監控內部人買賣活動
+- **機構持股分析**：從 13F 申報追蹤聰明錢的動向
 
 ## 安裝方式
 
@@ -93,15 +97,23 @@ InvestSkill 是一個綜合性的 Claude Code 插件市集，提供專業級的�
 
 ## 可用技能
 
+### 核心分析技能
 - `/stock-eval` - 全面分析美股股票
 - `/economics-analysis` - 分析美國經濟指標
-- `/fundamental-analysis` - 使用財報進行深入基本面分析
-- `/technical-analysis` - 技術圖表與指標分析
+- `/fundamental-analysis` - 使用財報進行深入基本面分析（支援 `--visual` 旗標）
+- `/technical-analysis` - 技術圖表與指標分析（支援 `--chart` 旗標）
 - `/portfolio-review` - 投資組合績效與優化檢視
 - `/sector-analysis` - 美股市場產業分析與輪動
 
+### 增強數據分析（v1.1.0 新增）
+- `/report-generator` - 生成專業的 HTML/PDF 報告，包含互動式圖表
+- `/earnings-call-analysis` - 分析財報電話會議記錄的情緒、主題與管理層態度
+- `/insider-trading` - 從 SEC Form 4 申報追蹤內部人買賣活動
+- `/institutional-ownership` - 從 13F 申報監控機構持股變化
+
 ## 使用範例
 
+### 核心分析
 ```bash
 # 評估特定股票
 /stock-eval AAPL
@@ -112,14 +124,50 @@ InvestSkill 是一個綜合性的 Claude Code 插件市集，提供專業級的�
 # 深入基本面分析
 /fundamental-analysis MSFT
 
+# 帶視覺化的基本面分析
+/fundamental-analysis NVDA --visual
+
 # 技術圖表分析
 /technical-analysis TSLA
+
+# 帶圖表生成的技術分析
+/technical-analysis GOOGL --chart
 
 # 檢視投資組合
 /portfolio-review [貼上您的持股]
 
 # 分析產業
 /sector-analysis
+```
+
+### 增強數據分析（v1.1.0）
+```bash
+# 生成帶視覺化的 HTML/PDF 報告
+/report-generator --type comprehensive --data [貼上分析結果]
+
+# 分析財報電話會議記錄
+/earnings-call-analysis AAPL [貼上記錄或提供網址]
+
+# 追蹤內部人交易活動
+/insider-trading TSLA
+
+# 監控機構持股變化
+/institutional-ownership MSFT
+
+# 追蹤特定機構投資者
+/institutional-ownership META --smart-money
+```
+
+### 報告生成工作流程
+```bash
+# 步驟 1：執行帶視覺化的基本面分析
+/fundamental-analysis AAPL --visual
+
+# 步驟 2：從分析結果生成 HTML 報告
+/report-generator --type comprehensive
+
+# 步驟 3：在瀏覽器中開啟 HTML 檔案並匯出為 PDF
+# 報告包含互動式圖表，可以列印為 PDF 格式
 ```
 
 ## 專案結構
@@ -138,17 +186,73 @@ InvestSkill/
 │       │   ├── economics-analysis/
 │       │   │   └── SKILL.md
 │       │   ├── fundamental-analysis/
-│       │   │   └── SKILL.md
+│       │   │   └── SKILL.md      # 增強：支援視覺化
 │       │   ├── technical-analysis/
-│       │   │   └── SKILL.md
+│       │   │   └── SKILL.md      # 增強：支援圖表生成
 │       │   ├── portfolio-review/
 │       │   │   └── SKILL.md
-│       │   └── sector-analysis/
-│       │       └── SKILL.md
+│       │   ├── sector-analysis/
+│       │   │   └── SKILL.md
+│       │   ├── report-generator/
+│       │   │   └── SKILL.md      # 新增：生成 HTML/PDF 報告
+│       │   ├── earnings-call-analysis/
+│       │   │   └── SKILL.md      # 新增：財報電話會議分析
+│       │   ├── insider-trading/
+│       │   │   └── SKILL.md      # 新增：內部人交易追蹤
+│       │   └── institutional-ownership/
+│       │       └── SKILL.md      # 新增：13F 申報分析
 │       └── README.md
 ├── LICENSE
 └── README.md
 ```
+
+## 報告生成
+
+InvestSkill v1.1.0 引入了專業的報告生成功能，支援互動式視覺化。
+
+### 功能特色
+
+- **HTML 報告**：獨立的 HTML 檔案，內嵌 Chart.js 視覺化圖表
+- **PDF 匯出**：支援透過瀏覽器或命令列工具列印為 PDF
+- **互動式圖表**：折線圖、長條圖、K線圖等多種圖表類型
+- **專業樣式**：金融報告等級的格式與版面配置
+- **響應式設計**：支援桌面與行動裝置
+
+### 工作流程
+
+1. **執行帶視覺化的分析**
+   ```bash
+   /fundamental-analysis AAPL --visual
+   ```
+   生成包含圖表資料表的分析結果
+
+2. **生成 HTML 報告**
+   ```bash
+   /report-generator --type comprehensive
+   ```
+   建立 `investment-report-AAPL-20260217-143022.html`
+
+3. **匯出為 PDF**
+   - **瀏覽器**：開啟 HTML → 列印 → 儲存為 PDF
+   - **命令列**：`wkhtmltopdf report.html report.pdf`
+   - **Node.js**：使用 Playwright 或 Puppeteer
+
+### 報告範本
+
+- **執行摘要**：1-2 頁，關鍵指標與圖表
+- **完整分析**：5-10 頁，詳細分析內容
+- **投資組合檢視**：多檔股票比較與配置分析
+
+### 視覺化類型
+
+- 營收/獲利成長趨勢（折線圖）
+- 利潤率比較（折線圖）
+- 資產負債表組成（堆疊長條圖）
+- 現金流瀑布圖（瀑布圖）
+- 估值倍數（分組長條圖）
+- 價格圖表與指標（K線圖 + 疊加）
+- 成交量分析（長條圖）
+- 技術指標（RSI、MACD 面板）
 
 ## CI/CD 與自動化
 

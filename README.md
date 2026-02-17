@@ -62,10 +62,14 @@ InvestSkill is a comprehensive Claude Code plugin marketplace that provides prof
 
 - **Stock Evaluation**: Comprehensive fundamental and valuation analysis
 - **Economics Analysis**: US economic indicators and market implications
-- **Fundamental Analysis**: Deep-dive financial statement analysis
-- **Technical Analysis**: Chart patterns and technical indicators
+- **Fundamental Analysis**: Deep-dive financial statement analysis with visualizations
+- **Technical Analysis**: Chart patterns and technical indicators with chart generation
 - **Portfolio Review**: Performance analysis and optimization
 - **Sector Analysis**: Sector rotation and market positioning
+- **Interactive Reports**: Generate HTML/PDF reports with visualizations
+- **Earnings Call Analysis**: Analyze earnings call transcripts for sentiment and insights
+- **Insider Trading Tracking**: Monitor insider buying/selling activity from SEC filings
+- **Institutional Ownership**: Track smart money moves from 13F filings
 
 ## Installation
 
@@ -93,15 +97,23 @@ Add the marketplace and install the plugin:
 
 ## Available Skills
 
+### Core Analysis Skills
 - `/stock-eval` - Evaluate US stocks with comprehensive analysis
 - `/economics-analysis` - Analyze US economic indicators
-- `/fundamental-analysis` - Deep fundamental analysis using financials
-- `/technical-analysis` - Technical chart and indicator analysis
+- `/fundamental-analysis` - Deep fundamental analysis using financials (now with `--visual` flag)
+- `/technical-analysis` - Technical chart and indicator analysis (now with `--chart` flag)
 - `/portfolio-review` - Portfolio performance and optimization review
 - `/sector-analysis` - US market sector analysis and rotation
 
+### Enhanced Data Analysis (New in v1.1.0)
+- `/report-generator` - Generate professional HTML/PDF reports with interactive charts
+- `/earnings-call-analysis` - Analyze earnings call transcripts for sentiment, themes, and management tone
+- `/insider-trading` - Track insider buying/selling activity from SEC Form 4 filings
+- `/institutional-ownership` - Monitor institutional holdings changes from 13F filings
+
 ## Usage Examples
 
+### Core Analysis
 ```bash
 # Evaluate a specific stock
 /stock-eval AAPL
@@ -112,14 +124,50 @@ Add the marketplace and install the plugin:
 # Deep dive into fundamentals
 /fundamental-analysis MSFT
 
+# Deep dive with visualizations
+/fundamental-analysis NVDA --visual
+
 # Technical chart analysis
 /technical-analysis TSLA
+
+# Technical analysis with chart generation
+/technical-analysis GOOGL --chart
 
 # Review portfolio
 /portfolio-review [paste your holdings]
 
 # Analyze sectors
 /sector-analysis
+```
+
+### Enhanced Data Analysis (v1.1.0)
+```bash
+# Generate HTML/PDF report with visualizations
+/report-generator --type comprehensive --data [paste analysis results]
+
+# Analyze earnings call transcript
+/earnings-call-analysis AAPL [paste transcript or provide URL]
+
+# Track insider trading activity
+/insider-trading TSLA
+
+# Monitor institutional ownership changes
+/institutional-ownership MSFT
+
+# Track specific institutional investors
+/institutional-ownership META --smart-money
+```
+
+### Report Generation Workflow
+```bash
+# Step 1: Run fundamental analysis with visualization
+/fundamental-analysis AAPL --visual
+
+# Step 2: Generate HTML report from the analysis
+/report-generator --type comprehensive
+
+# Step 3: Open HTML file in browser and export to PDF
+# The report includes interactive charts and can be printed to PDF
 ```
 
 ## Structure
@@ -138,17 +186,73 @@ InvestSkill/
 │       │   ├── economics-analysis/
 │       │   │   └── SKILL.md
 │       │   ├── fundamental-analysis/
-│       │   │   └── SKILL.md
+│       │   │   └── SKILL.md      # Enhanced with visualization support
 │       │   ├── technical-analysis/
-│       │   │   └── SKILL.md
+│       │   │   └── SKILL.md      # Enhanced with chart generation
 │       │   ├── portfolio-review/
 │       │   │   └── SKILL.md
-│       │   └── sector-analysis/
-│       │       └── SKILL.md
+│       │   ├── sector-analysis/
+│       │   │   └── SKILL.md
+│       │   ├── report-generator/
+│       │   │   └── SKILL.md      # New: Generate HTML/PDF reports
+│       │   ├── earnings-call-analysis/
+│       │   │   └── SKILL.md      # New: Earnings call analysis
+│       │   ├── insider-trading/
+│       │   │   └── SKILL.md      # New: Insider transaction tracking
+│       │   └── institutional-ownership/
+│       │       └── SKILL.md      # New: 13F filings analysis
 │       └── README.md
 ├── LICENSE
 └── README.md
 ```
+
+## Report Generation
+
+InvestSkill v1.1.0 introduces professional report generation capabilities with interactive visualizations.
+
+### Features
+
+- **HTML Reports**: Standalone HTML files with embedded Chart.js visualizations
+- **PDF Export**: Print-to-PDF support via browser or command-line tools
+- **Interactive Charts**: Line charts, bar charts, candlestick charts, and more
+- **Professional Styling**: Financial report-grade formatting and layout
+- **Mobile Responsive**: Works on desktop and mobile devices
+
+### Workflow
+
+1. **Run Analysis with Visualization**
+   ```bash
+   /fundamental-analysis AAPL --visual
+   ```
+   This generates analysis with chart data tables
+
+2. **Generate HTML Report**
+   ```bash
+   /report-generator --type comprehensive
+   ```
+   Creates `investment-report-AAPL-20260217-143022.html`
+
+3. **Export to PDF**
+   - **Browser**: Open HTML → Print → Save as PDF
+   - **Command Line**: `wkhtmltopdf report.html report.pdf`
+   - **Node.js**: Use Playwright or Puppeteer
+
+### Report Templates
+
+- **Executive Summary**: 1-2 pages, key metrics and charts
+- **Comprehensive Analysis**: 5-10 pages, full detailed analysis
+- **Portfolio Review**: Multi-stock comparison and allocation
+
+### Visualization Types
+
+- Revenue/earnings growth trends (line charts)
+- Profit margin comparisons (line charts)
+- Balance sheet composition (stacked bar charts)
+- Cash flow waterfalls (waterfall charts)
+- Valuation multiples (grouped bar charts)
+- Price charts with indicators (candlestick + overlays)
+- Volume analysis (bar charts)
+- Technical indicators (RSI, MACD panels)
 
 ## CI/CD & Automation
 
