@@ -2,6 +2,8 @@
 
 專業投資分析與股票評估技能工具，適用於 Claude Code。
 
+> 📖 **[繁體中文版 (Traditional Chinese)](https://yennj12.js.org/InvestSkill/zh-tw.html)** | [English](https://yennj12.js.org/InvestSkill/)
+
 [![Deploy](https://github.com/yennanliu/InvestSkill/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/yennanliu/InvestSkill/actions/workflows/deploy-pages.yml)
 [![Validate](https://github.com/yennanliu/InvestSkill/actions/workflows/validate.yml/badge.svg)](https://github.com/yennanliu/InvestSkill/actions/workflows/validate.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)

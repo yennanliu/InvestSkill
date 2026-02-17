@@ -2,7 +2,7 @@
 
 Professional investment analysis and stock evaluation skills for Claude Code.
 
-> 📖 **[繁體中文版](README-zh-TW.md)** | [English](README.md)
+> 📖 [English](README.md) | **[繁體中文版 (Traditional Chinese)](https://yennj12.js.org/InvestSkill/zh-tw.html)**
 
 [![Deploy](https://github.com/yennanliu/InvestSkill/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/yennanliu/InvestSkill/actions/workflows/deploy-pages.yml)
 [![Validate](https://github.com/yennanliu/InvestSkill/actions/workflows/validate.yml/badge.svg)](https://github.com/yennanliu/InvestSkill/actions/workflows/validate.yml)
