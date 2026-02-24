@@ -370,3 +370,27 @@ Generate a complete, standalone HTML file containing:
 - For large portfolios (>20 stocks), consider pagination or summary views
 - Color scheme follows professional financial report standards (blue for primary, green for positive, red for negative)
 - All monetary values should be formatted with proper thousands separators and currency symbols
+
+## Integration with Signal Format
+
+When generating reports from other skills, the report MUST prominently display each skill's Investment Signal block in a styled box. Use the following HTML/CSS when generating HTML reports:
+
+```html
+<div class="signal-box">
+  <div class="signal-header">INVESTMENT SIGNAL</div>
+  <div class="signal-row"><span class="signal-label">Signal:</span> <span class="signal-bullish">BULLISH</span> / <span class="signal-neutral">NEUTRAL</span> / <span class="signal-bearish">BEARISH</span></div>
+  <div class="signal-row"><span class="signal-label">Confidence:</span> HIGH / MEDIUM / LOW</div>
+  <div class="signal-row"><span class="signal-label">Horizon:</span> SHORT / MEDIUM / LONG-TERM</div>
+  <div class="signal-row"><span class="signal-label">Score:</span> X.X / 10</div>
+  <div class="signal-divider"></div>
+  <div class="signal-row"><span class="signal-label">Action:</span> BUY / HOLD / SELL</div>
+  <div class="signal-row"><span class="signal-label">Conviction:</span> STRONG / MODERATE / WEAK</div>
+</div>
+```
+
+CSS styling:
+- Signal box: dark border, subtle background (light blue for bullish, light red for bearish, light gray for neutral)
+- Score displayed as a progress bar (0-10)
+- Signal word (BULLISH/BEARISH/NEUTRAL) displayed in large bold colored text
+
+For multi-skill bundle reports (like /research-bundle), show a composite signal summary at the top of the report with individual skill scores in a grid.

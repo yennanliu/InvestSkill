@@ -7,6 +7,99 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-02-24
+
+### Added
+- New `/dividend-analysis` skill for income investing and dividend safety analysis
+  - Dividend Safety Score (0-100) with letter grade and sector-specific thresholds
+  - Payout ratio analysis (EPS-based and FCF-based) with stress testing
+  - Dividend growth metrics: 1/3/5/10yr CAGR, Chowder Rule, Dividend Aristocrats/Kings
+  - Yield trap detection with red flag checklist
+  - Recession durability analysis (2000-2002, 2008-2009, 2020)
+  - DRIP compound growth projections and income portfolio modeling
+
+- New `/short-interest` skill for short squeeze and bearish positioning analysis
+  - Short Interest Squeeze Score (0-10 composite) with probability tiers
+  - Short float %, Days-to-Cover, and borrow rate tier classification tables
+  - Short seller thesis evaluation and counter-thesis analysis
+  - FINRA reporting schedule with data lag caveats
+  - Options market signal integration (put/call ratio, IV skew, unusual activity)
+
+- New `/options-analysis` skill for options Greeks, IV analysis, and strategy selection
+  - Full Greeks analysis: Delta, Gamma, Theta, Vega, Rho with practical usage guidance
+  - IV Rank (IVR) and IV Percentile (IVP) interpretation
+  - IV term structure and volatility skew analysis
+  - Strategy Selector with 6×2 selection matrix (bullish/bearish/neutral × high/low IV)
+  - Earnings play analysis: expected move formula, straddle setup, volatility crush dynamics
+  - Risk management: position sizing, delta hedging, rolling positions
+
+- New `/research-bundle` meta-skill for comprehensive multi-skill investment research
+  - 5-phase research process: Business Foundation → Valuation → Market Signals → Technical → Risk
+  - Composite scoring framework with weighted components (Business 25%, Valuation 25%, Signals 20%, Technical 15%, Risk 15%)
+  - Conflict resolution rules and consensus override logic
+  - Unified investment thesis with bull/bear cases and probability-weighted scenarios
+  - Entry/exit strategy and quarterly monitoring plan
+
+- New `/dcf-valuation` skill for intrinsic value modeling
+  - 8-step DCF methodology (base metrics → revenue projection → FCF margins → terminal value → WACC → discount → sensitivity → margin of safety)
+  - Full WACC calculation (CAPM cost of equity, after-tax cost of debt, capital structure)
+  - 5×5 sensitivity table (WACC rows vs. terminal growth rate columns)
+  - Three-scenario framework: Bull (20%) / Base (60%) / Bear (20%) with probability-weighted IV
+  - Common DCF pitfalls guide (SBC adjustment, TV dominance, cyclicality normalization)
+
+- New `/competitor-analysis` skill for economic moat and competitive positioning
+  - Five Sources of Economic Moat (Morningstar framework): network effects, cost advantages, intangibles, switching costs, efficient scale
+  - Moat width assessment (Wide/Narrow/None/At Risk) with ROIC signal interpretation
+  - Porter's Five Forces deep analysis with individual scores and industry attractiveness composite
+  - Competitive benchmarking table (8+ metrics vs. top 3-5 peers)
+  - Innovation and disruption positioning (disruptor vs. disrupted)
+  - Composite Moat Scorecard (6 weighted components, 0-10 scale)
+
+### Enhanced
+- Enhanced `/stock-eval` skill with investment-grade depth (50 → 421 lines)
+  - Piotroski F-Score (9-criterion quality scoring system)
+  - Earnings Quality Score (accruals ratio, cash conversion, non-recurring items)
+  - ROIC / WACC analysis with Economic Value Added (EVA) framework
+  - DCF framework with 3-scenario sensitivity table
+  - Management quality assessment (guidance accuracy, capital allocation track record)
+  - Analyst consensus tracking with estimate revision momentum (ERM)
+  - Risk Assessment Matrix (business, financial, valuation, macro)
+
+- Enhanced `/economics-analysis` skill with macro depth (55 → 295 lines)
+  - Yield Curve Analysis: 2s10s, 3M10Y, 5s30s spreads; curve shapes and recession lead times
+  - Credit Market Indicators: IG/HY OAS spreads, TED Spread, MOVE Index thresholds
+  - Global Macro Comparison: US/EU/China/Japan cycle positioning, PMI comparison, central bank divergence
+  - Recession Probability Scoring: NY Fed model, Conference Board LEI, Sahm Rule composite
+
+- Enhanced `/technical-analysis` skill with advanced techniques (267 → 493 lines)
+  - Multi-Timeframe Analysis (MTF): 3-TF framework, alignment scoring, confluence table
+  - Volume Profile Analysis: POC, Value Area (VAH/VAL), LVN/HVN trading rules, profile shapes
+  - Ichimoku Cloud: all 5 components, bullish/bearish signal matrix, Kumo twist signals
+  - Options Flow Integration: put/call ratio, unusual activity, IV vs. HV, GEX mechanics
+
+### Standardized
+- Added unified Investment Signal block to all 16 skills:
+  ```
+  ╔══════════════════════════════════════════════╗
+  ║              INVESTMENT SIGNAL               ║
+  ╠══════════════════════════════════════════════╣
+  ║ Signal:      BULLISH / NEUTRAL / BEARISH     ║
+  ║ Confidence:  HIGH / MEDIUM / LOW             ║
+  ║ Horizon:     SHORT / MEDIUM / LONG-TERM      ║
+  ║ Score:       X.X / 10                        ║
+  ╠══════════════════════════════════════════════╣
+  ║ Action:      BUY / HOLD / SELL               ║
+  ║ Conviction:  STRONG / MODERATE / WEAK        ║
+  ╚══════════════════════════════════════════════╝
+  ```
+- Consistent scoring guide (0-10), confidence levels (HIGH/MEDIUM/LOW), and time horizons
+- `/report-generator` updated to render signal blocks as styled HTML components
+
+### Changed
+- Updated plugin version from 1.1.0 to 1.2.0
+- Added 6 new skill directories under `plugins/us-stock-analysis/skills/`
+- Updated keywords to include: dcf, options, dividends, short-interest, competitive-analysis, moat, research
+
 ## [1.1.0] - 2026-02-17
 
 ### Added
@@ -97,6 +190,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Integration with financial data sources
   - Actionable investment insights
 
-[Unreleased]: https://github.com/yennanliu/InvestSkill/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/yennanliu/InvestSkill/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/yennanliu/InvestSkill/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/yennanliu/InvestSkill/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/yennanliu/InvestSkill/releases/tag/v1.0.0
