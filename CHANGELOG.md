@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-02-27
+
+### Added
+- New `/financial-report-analyst` skill for analyzing 10-K, 10-Q, annual reports, and earnings press releases
+  - 8-phase analysis framework: document orientation, MD&A deep read, financial statements, risk factors, footnotes, management tone, YoY comparison, insider activity
+  - Accounting quality score (0-21) with criterion breakdown
+  - Red flag detection: risk factor changes, footnote anomalies, segment reporting changes
+  - Management tone scoring and credibility tracking (guidance accuracy scorecard)
+  - DSO/DIO/AP working capital analysis, FCF conversion rate, SBC dilution assessment
+  - Supports: 10-K, 10-Q, 8-K, DEF 14A (proxy), S-1, earnings press releases
+
+- New `/stock-valuation` skill for multi-method stock valuation with football field summary
+  - Method 1: DCF with 3 scenarios (Bull 20% / Base 60% / Bear 20%), 10-year projection, sensitivity table
+  - Method 2: Comparable Company Analysis (CCA) — 5-8 peers, EV/Revenue, EV/EBITDA, P/E, EV/FCF
+  - Method 3: EV/EBITDA multiple valuation (conservative / base / premium)
+  - Method 4: P/E multiple with PEG ratio
+  - Method 5: Residual Income / Economic Value Added (for financial companies)
+  - Football field chart consolidating all methods
+  - Probability-weighted composite intrinsic value
+  - Risk-adjusted expected return with risk/reward ratio (target: 3:1+)
+  - Analyst consensus comparison
+
+- Cross-AI compatibility (v1.3.0)
+  - `GEMINI.md` — Project instructions for Gemini CLI with prompt file references
+  - `.github/copilot-instructions.md` — GitHub Copilot workspace configuration
+  - `.cursor/rules/invest-skill.mdc` — Cursor AI rules with skill discovery
+  - `prompts/` directory with 17 universal prompt files (AI-agnostic, work with any LLM)
+  - All 18 skills now available as standalone prompts for ChatGPT, Claude.ai, Gemini, and more
+
+### Changed
+- Plugin version bumped from 1.2.0 to 1.3.0
+- README updated with cross-AI compatibility guide and new skills documentation
+- Total skills: 16 → 18
+
 ## [1.2.0] - 2026-02-24
 
 ### Added

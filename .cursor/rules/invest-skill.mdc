@@ -1,0 +1,78 @@
+---
+description: Investment analysis rules and frameworks for InvestSkill project
+globs: ["**/*.md", "prompts/**", "plugins/**"]
+alwaysApply: true
+---
+
+# InvestSkill — Cursor Rules
+
+## Project Overview
+
+This is the InvestSkill repository — a collection of professional investment analysis frameworks for US stocks. When working in this project, apply the following guidelines.
+
+## Available Analysis Prompts
+
+When a user requests investment analysis, load the relevant prompt from `prompts/`:
+
+- **Stock Evaluation**: `prompts/stock-eval.md`
+- **Financial Report Analysis**: `prompts/financial-report-analyst.md` — for 10-K, 10-Q, annual reports
+- **Multi-Method Valuation**: `prompts/stock-valuation.md` — DCF + comparable company + EV multiples
+- **DCF Valuation**: `prompts/dcf-valuation.md`
+- **Fundamental Analysis**: `prompts/fundamental-analysis.md`
+- **Technical Analysis**: `prompts/technical-analysis.md`
+- **Economics**: `prompts/economics-analysis.md`
+- **Earnings Calls**: `prompts/earnings-call-analysis.md`
+- **Insider Trading**: `prompts/insider-trading.md`
+- **Institutional Ownership**: `prompts/institutional-ownership.md`
+- **Competitor Analysis**: `prompts/competitor-analysis.md`
+- **Dividends**: `prompts/dividend-analysis.md`
+- **Short Interest**: `prompts/short-interest.md`
+- **Options**: `prompts/options-analysis.md`
+- **Portfolio Review**: `prompts/portfolio-review.md`
+- **Sector Analysis**: `prompts/sector-analysis.md`
+- **Research Bundle**: `prompts/research-bundle.md`
+
+## File Structure Rules
+
+- Skill definitions live in `plugins/us-stock-analysis/skills/<name>/SKILL.md`
+- Each SKILL.md has a YAML frontmatter with `description` field
+- Universal prompts (AI-agnostic) live in `prompts/<name>.md`
+- Claude Code plugin config: `plugins/us-stock-analysis/.claude-plugin/plugin.json`
+
+## When Adding New Skills
+
+1. Create `plugins/us-stock-analysis/skills/<skill-name>/SKILL.md`
+2. Add frontmatter with `description`
+3. Create corresponding `prompts/<skill-name>.md` (stripped version for universal use)
+4. Update `plugins/us-stock-analysis/.claude-plugin/plugin.json` skills array
+5. Update `.claude-plugin/marketplace.json` version if major addition
+6. Update `README.md` skills list and structure diagram
+
+## Analysis Quality Standards
+
+Every analysis output MUST include:
+1. Quantitative data with specific numbers (not vague estimates)
+2. Year-over-year or period-over-period comparisons
+3. Industry/peer benchmarking context
+4. A standardized INVESTMENT SIGNAL block at the end
+5. Risk factors and what could invalidate the thesis
+
+## Signal Block Format
+
+```
+╔══════════════════════════════════════════════╗
+║              INVESTMENT SIGNAL               ║
+╠══════════════════════════════════════════════╣
+║ Signal:      BULLISH / NEUTRAL / BEARISH     ║
+║ Confidence:  HIGH / MEDIUM / LOW             ║
+║ Horizon:     SHORT / MEDIUM / LONG-TERM      ║
+║ Score:       X.X / 10                        ║
+╠══════════════════════════════════════════════╣
+║ Action:      BUY / HOLD / SELL               ║
+║ Conviction:  STRONG / MODERATE / WEAK        ║
+╚══════════════════════════════════════════════╝
+```
+
+## Disclaimer
+
+All analysis is educational. Not financial advice.

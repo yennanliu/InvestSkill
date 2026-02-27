@@ -5,20 +5,20 @@
     "email": "yennanliu@users.noreply.github.com"
   },
   "metadata": {
-    "description": "Professional investment analysis and stock evaluation skills for US markets with interactive reports, visualizations, and enhanced fundamental data",
-    "version": "1.1.0"
+    "description": "Professional investment analysis and stock evaluation skills for US markets — 18 skills covering fundamental, technical, valuation, financial report analysis, and more",
+    "version": "1.3.0"
   },
   "plugins": [
     {
       "name": "us-stock-analysis",
       "source": "./plugins/us-stock-analysis",
-      "description": "Comprehensive US stock evaluation with fundamental, technical, and economic analysis, plus interactive reports and enhanced data analysis",
-      "version": "1.1.0",
+      "description": "Comprehensive US stock evaluation: fundamental, technical, economic, DCF, multi-method valuation, financial report analysis, options, dividends, insider trading, institutional ownership, and more",
+      "version": "1.3.0",
       "author": {
         "name": "yennanliu"
       },
       "category": "finance",
-      "keywords": ["stock", "investment", "analysis", "us-markets", "finance"]
+      "keywords": ["stock", "investment", "analysis", "us-markets", "finance", "dcf", "valuation", "10-k", "10-q", "financial-reports"]
     }
   ]
 }
