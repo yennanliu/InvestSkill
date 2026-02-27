@@ -14,6 +14,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
     - name: Validate JSON files
       run: |
         echo "Validating marketplace.json..."
@@ -37,25 +42,37 @@ jobs:
 
     - name: Check required files
       run: |
-        echo "Checking required marketplace files..."
+        echo "Checking required files..."
 
-        if [ ! -f ".claude-plugin/marketplace.json" ]; then
-          echo "Error: .claude-plugin/marketplace.json is missing"
+        REQUIRED_FILES=(
+          ".claude-plugin/marketplace.json"
+          "plugins/us-stock-analysis/.claude-plugin/plugin.json"
+          "README.md"
+          "README-zh-TW.md"
+          "LICENSE"
+          "CHANGELOG.md"
+          "CONTRIBUTING.md"
+          "COOKBOOK.md"
+          "COOKBOOK-zh-TW.md"
+          "GEMINI.md"
+          ".github/copilot-instructions.md"
+          ".cursor/rules/invest-skill.mdc"
+        )
+
+        MISSING=0
+        for f in "${REQUIRED_FILES[@]}"; do
+          if [ -f "$f" ]; then
+            echo "✓ $f exists"
+          else
+            echo "✗ MISSING: $f"
+            MISSING=$((MISSING + 1))
+          fi
+        done
+
+        if [ "$MISSING" -gt 0 ]; then
+          echo "Error: $MISSING required file(s) missing"
           exit 1
         fi
-        echo "✓ marketplace.json exists"
-
-        if [ ! -f "README.md" ]; then
-          echo "Error: README.md is missing"
-          exit 1
-        fi
-        echo "✓ README.md exists"
-
-        if [ ! -f "LICENSE" ]; then
-          echo "Error: LICENSE file is missing"
-          exit 1
-        fi
-        echo "✓ LICENSE exists"
 
     - name: Validate plugin structure
       run: |
@@ -86,24 +103,28 @@ jobs:
     - name: Validate SKILL.md frontmatter
       run: |
         echo "Validating SKILL.md files..."
+        ERRORS=0
 
         for skill_file in plugins/*/skills/*/SKILL.md; do
           if [ -f "$skill_file" ]; then
-            echo "Checking $skill_file..."
+            skill=$(basename $(dirname "$skill_file"))
 
-            # Check if file has frontmatter
             if ! grep -q "^---$" "$skill_file"; then
-              echo "Warning: $skill_file missing frontmatter"
+              echo "✗ $skill_file missing frontmatter"
+              ERRORS=$((ERRORS + 1))
+            elif ! sed -n '/^---$/,/^---$/p' "$skill_file" | grep -q "description:"; then
+              echo "✗ $skill_file missing description in frontmatter"
+              ERRORS=$((ERRORS + 1))
             else
-              # Check for description in frontmatter
-              if ! sed -n '/^---$/,/^---$/p' "$skill_file" | grep -q "description:"; then
-                echo "Warning: $skill_file missing description in frontmatter"
-              else
-                echo "✓ $skill_file has valid frontmatter"
-              fi
+              echo "✓ $skill_file has valid frontmatter"
             fi
           fi
         done
+
+        if [ "$ERRORS" -gt 0 ]; then
+          echo "Error: $ERRORS SKILL.md frontmatter issue(s)"
+          exit 1
+        fi
 
     - name: Check version consistency
       run: |
@@ -118,16 +139,18 @@ jobs:
             plugin_version=$(jq -r '.version' "$plugin_json")
             echo "Plugin $plugin_name version: $plugin_version"
 
-            # Check if versions match
             marketplace_plugin_version=$(jq -r --arg name "$plugin_name" '.plugins[] | select(.name == $name) | .version' .claude-plugin/marketplace.json)
 
             if [ "$plugin_version" != "$marketplace_plugin_version" ]; then
-              echo "Warning: Version mismatch for $plugin_name - plugin.json: $plugin_version, marketplace.json: $marketplace_plugin_version"
-            else
-              echo "✓ Version consistent for $plugin_name"
+              echo "✗ Version mismatch for $plugin_name: plugin.json=$plugin_version, marketplace.json=$marketplace_plugin_version"
+              exit 1
             fi
+            echo "✓ Version consistent for $plugin_name: $plugin_version"
           fi
         done
+
+    - name: Run Node.js unit tests
+      run: node scripts/test-skills.js
 
     - name: Validation summary
       run: |

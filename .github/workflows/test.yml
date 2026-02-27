@@ -1,0 +1,556 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 1: Unit Tests (Node.js test-skills.js)
+  # Tests: JSON validity, skills registry, SKILL.md quality, prompts sync,
+  #        cross-AI files, cookbook files, documentation
+  # ─────────────────────────────────────────────────────────────────────────
+  unit-tests:
+    name: Unit Tests — Skills & Content Quality
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Run InvestSkill test suite
+      run: node scripts/test-skills.js
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 2: Build Test — GitHub Pages site generation
+  # Tests: that the deploy script builds all expected HTML pages correctly
+  # ─────────────────────────────────────────────────────────────────────────
+  build-test:
+    name: Build Test — GitHub Pages Site Generation
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install markdown dependencies
+      run: |
+        cat > package.json << 'EOF'
+        {
+          "name": "investskill-site-test",
+          "version": "1.0.0",
+          "dependencies": {
+            "markdown-it": "^14.0.0",
+            "markdown-it-anchor": "^9.0.1"
+          }
+        }
+        EOF
+        npm install --silent
+
+    - name: Run build script
+      run: |
+        mkdir -p _site
+        node -e "
+        const fs = require('fs');
+        const MarkdownIt = require('markdown-it');
+        const markdownItAnchor = require('markdown-it-anchor');
+        const md = new MarkdownIt({ html: true, linkify: true }).use(markdownItAnchor);
+
+        const files = {
+          'README.md':         '_site/index.html',
+          'README-zh-TW.md':   '_site/zh-tw.html',
+          'CONTRIBUTING.md':   '_site/contributing.html',
+          'CHANGELOG.md':      '_site/changelog.html',
+          'COOKBOOK.md':       '_site/cookbook.html',
+          'COOKBOOK-zh-TW.md': '_site/cookbook-zh-tw.html',
+        };
+
+        let built = 0;
+        for (const [src, dest] of Object.entries(files)) {
+          if (fs.existsSync(src)) {
+            const html = md.render(fs.readFileSync(src, 'utf8'));
+            fs.writeFileSync(dest, html);
+            console.log('✅ Built ' + dest + ' from ' + src);
+            built++;
+          } else {
+            console.error('❌ Source file missing: ' + src);
+            process.exit(1);
+          }
+        }
+        console.log('Total pages built: ' + built);
+        "
+
+    - name: Verify expected HTML pages exist
+      run: |
+        EXPECTED_PAGES=(
+          "_site/index.html"
+          "_site/zh-tw.html"
+          "_site/contributing.html"
+          "_site/changelog.html"
+          "_site/cookbook.html"
+          "_site/cookbook-zh-tw.html"
+        )
+
+        MISSING=0
+        for page in "${EXPECTED_PAGES[@]}"; do
+          if [ -f "$page" ]; then
+            size=$(wc -c < "$page")
+            echo "✅ $page exists (${size} bytes)"
+          else
+            echo "❌ MISSING: $page"
+            MISSING=$((MISSING + 1))
+          fi
+        done
+
+        if [ "$MISSING" -gt 0 ]; then
+          echo "❌ $MISSING expected HTML pages are missing"
+          exit 1
+        fi
+        echo "✅ All expected HTML pages generated successfully"
+
+    - name: Verify HTML content quality
+      run: |
+        node -e "
+        const fs = require('fs');
+        let errors = 0;
+
+        const checks = [
+          { file: '_site/index.html',       must_contain: ['InvestSkill', 'stock-eval', 'dcf-valuation'] },
+          { file: '_site/cookbook.html',    must_contain: ['Setup', 'Core Concept', 'Demo', 'INVESTMENT SIGNAL'] },
+          { file: '_site/cookbook-zh-tw.html', must_contain: ['安裝', '核心概念', '示範'] },
+          { file: '_site/changelog.html',   must_contain: ['1.3.0', 'Added'] },
+          { file: '_site/zh-tw.html',       must_contain: ['InvestSkill', '安裝'] },
+        ];
+
+        for (const { file, must_contain } of checks) {
+          const content = fs.readFileSync(file, 'utf8');
+          for (const term of must_contain) {
+            if (content.includes(term)) {
+              console.log('✅ ' + file + ' contains expected: ' + term);
+            } else {
+              console.error('❌ ' + file + ' missing expected content: ' + term);
+              errors++;
+            }
+          }
+        }
+
+        if (errors > 0) {
+          console.error('❌ ' + errors + ' HTML content check(s) failed');
+          process.exit(1);
+        }
+        console.log('✅ All HTML content checks passed');
+        "
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 3: Skill Syntax Checks (Claude Code plugin format)
+  # Tests: plugin.json schema, SKILL.md frontmatter, skills list integrity
+  # ─────────────────────────────────────────────────────────────────────────
+  skill-syntax:
+    name: Skill Syntax — Claude Code Plugin Format
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Validate plugin.json schema
+      run: |
+        echo "── plugin.json schema validation ──"
+        PLUGIN_JSON="plugins/us-stock-analysis/.claude-plugin/plugin.json"
+
+        # Valid JSON
+        jq empty "$PLUGIN_JSON" || { echo "❌ Invalid JSON"; exit 1; }
+        echo "✅ plugin.json is valid JSON"
+
+        # Required fields
+        for field in name description version author; do
+          val=$(jq -r ".$field // empty" "$PLUGIN_JSON")
+          if [ -z "$val" ]; then
+            echo "❌ plugin.json missing required field: $field"
+            exit 1
+          fi
+          echo "✅ plugin.json.$field = $val"
+        done
+
+        # skills must be a non-empty array
+        skill_count=$(jq '.skills | length' "$PLUGIN_JSON")
+        if [ "$skill_count" -lt 1 ]; then
+          echo "❌ plugin.json skills[] is empty"
+          exit 1
+        fi
+        echo "✅ plugin.json has $skill_count registered skills"
+
+        # Semver format check (major.minor.patch)
+        version=$(jq -r '.version' "$PLUGIN_JSON")
+        if echo "$version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+          echo "✅ Version format OK: $version"
+        else
+          echo "❌ Version format invalid (expected major.minor.patch): $version"
+          exit 1
+        fi
+
+    - name: Validate marketplace.json schema
+      run: |
+        echo "── marketplace.json schema validation ──"
+        MARKET_JSON=".claude-plugin/marketplace.json"
+
+        jq empty "$MARKET_JSON" || { echo "❌ Invalid JSON"; exit 1; }
+        echo "✅ marketplace.json is valid JSON"
+
+        for field in name owner metadata plugins; do
+          val=$(jq -r ".$field // empty" "$MARKET_JSON")
+          if [ -z "$val" ]; then
+            echo "❌ marketplace.json missing required field: $field"
+            exit 1
+          fi
+          echo "✅ marketplace.json.$field present"
+        done
+
+        mp_version=$(jq -r '.metadata.version' "$MARKET_JSON")
+        plugin_version=$(jq -r '.version' plugins/us-stock-analysis/.claude-plugin/plugin.json)
+        if [ "$mp_version" = "$plugin_version" ]; then
+          echo "✅ Version consistent: marketplace=$mp_version, plugin=$plugin_version"
+        else
+          echo "❌ Version mismatch: marketplace=$mp_version vs plugin=$plugin_version"
+          exit 1
+        fi
+
+    - name: Validate all SKILL.md files
+      run: |
+        echo "── SKILL.md validation ──"
+        ERRORS=0
+        SKILLS_CHECKED=0
+
+        for skill_file in plugins/us-stock-analysis/skills/*/SKILL.md; do
+          skill=$(basename $(dirname "$skill_file"))
+          SKILLS_CHECKED=$((SKILLS_CHECKED + 1))
+
+          # File must exist and be non-empty
+          if [ ! -s "$skill_file" ]; then
+            echo "❌ $skill/SKILL.md is empty or missing"
+            ERRORS=$((ERRORS + 1))
+            continue
+          fi
+
+          # Must start with YAML frontmatter
+          first_line=$(head -1 "$skill_file")
+          if [ "$first_line" != "---" ]; then
+            echo "❌ $skill/SKILL.md — must start with frontmatter (---)"
+            ERRORS=$((ERRORS + 1))
+          else
+            echo "✅ $skill/SKILL.md — has frontmatter"
+          fi
+
+          # Must have description: in frontmatter
+          if ! sed -n '/^---$/,/^---$/p' "$skill_file" | grep -q "^description:"; then
+            echo "❌ $skill/SKILL.md — missing 'description:' in frontmatter"
+            ERRORS=$((ERRORS + 1))
+          else
+            desc=$(sed -n '/^---$/,/^---$/p' "$skill_file" | grep "^description:" | head -1 | cut -d: -f2-)
+            echo "✅ $skill/SKILL.md — description:$desc"
+          fi
+
+          # Must have minimum content (50 lines)
+          line_count=$(wc -l < "$skill_file")
+          if [ "$line_count" -lt 50 ]; then
+            echo "⚠️  $skill/SKILL.md — only $line_count lines (min 50 recommended)"
+          else
+            echo "✅ $skill/SKILL.md — $line_count lines"
+          fi
+
+          # report-generator is exempt from signal block check
+          if [ "$skill" != "report-generator" ]; then
+            if grep -q "INVESTMENT SIGNAL" "$skill_file"; then
+              echo "✅ $skill/SKILL.md — has INVESTMENT SIGNAL block"
+            else
+              echo "❌ $skill/SKILL.md — missing INVESTMENT SIGNAL block"
+              ERRORS=$((ERRORS + 1))
+            fi
+          else
+            echo "✅ $skill/SKILL.md — signal block exempt (HTML output tool)"
+          fi
+        done
+
+        echo ""
+        echo "Skills checked: $SKILLS_CHECKED"
+        if [ "$ERRORS" -gt 0 ]; then
+          echo "❌ $ERRORS error(s) found in SKILL.md files"
+          exit 1
+        fi
+        echo "✅ All SKILL.md files valid"
+
+    - name: Verify skills registry integrity
+      run: |
+        echo "── Skills registry: plugin.json ↔ directories ──"
+        ERRORS=0
+
+        # Get registered skills from plugin.json
+        mapfile -t REGISTERED < <(jq -r '.skills[]' plugins/us-stock-analysis/.claude-plugin/plugin.json)
+
+        # Get actual skill directories
+        mapfile -t ACTUAL_DIRS < <(ls plugins/us-stock-analysis/skills/)
+
+        # Every registered skill must have a directory
+        for skill in "${REGISTERED[@]}"; do
+          if [ -d "plugins/us-stock-analysis/skills/$skill" ]; then
+            echo "✅ $skill — directory exists"
+          else
+            echo "❌ $skill — registered but directory MISSING"
+            ERRORS=$((ERRORS + 1))
+          fi
+        done
+
+        # Every directory must be registered
+        for dir in "${ACTUAL_DIRS[@]}"; do
+          if printf '%s\n' "${REGISTERED[@]}" | grep -q "^${dir}$"; then
+            echo "✅ $dir — registered in plugin.json"
+          else
+            echo "❌ $dir — directory exists but NOT registered in plugin.json"
+            ERRORS=$((ERRORS + 1))
+          fi
+        done
+
+        echo ""
+        echo "Registered: ${#REGISTERED[@]} | Directories: ${#ACTUAL_DIRS[@]}"
+        if [ "$ERRORS" -gt 0 ]; then
+          echo "❌ Registry mismatch: $ERRORS error(s)"
+          exit 1
+        fi
+        echo "✅ Skills registry is consistent"
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 4: Cross-AI Compatibility Checks
+  # Tests: Gemini CLI, GitHub Copilot, Cursor rules files
+  # ─────────────────────────────────────────────────────────────────────────
+  cross-ai-check:
+    name: Cross-AI Compatibility — Gemini / Copilot / Cursor
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Check GEMINI.md (Gemini CLI)
+      run: |
+        echo "── GEMINI.md validation ──"
+        if [ ! -f "GEMINI.md" ]; then
+          echo "❌ GEMINI.md missing"
+          exit 1
+        fi
+        echo "✅ GEMINI.md exists"
+
+        # Check minimum content
+        lines=$(wc -l < GEMINI.md)
+        echo "✅ GEMINI.md — $lines lines"
+
+        # Check all referenced prompt files exist
+        ERRORS=0
+        while IFS= read -r line; do
+          if echo "$line" | grep -qE '`prompts/[a-z-]+\.md`'; then
+            file=$(echo "$line" | grep -oE 'prompts/[a-z-]+\.md' | head -1)
+            if [ -f "$file" ]; then
+              echo "✅ GEMINI.md references $file — exists"
+            else
+              echo "❌ GEMINI.md references $file — FILE NOT FOUND"
+              ERRORS=$((ERRORS + 1))
+            fi
+          fi
+        done < GEMINI.md
+
+        if [ "$ERRORS" -gt 0 ]; then
+          echo "❌ $ERRORS missing prompt file reference(s) in GEMINI.md"
+          exit 1
+        fi
+        echo "✅ All GEMINI.md prompt references are valid"
+
+    - name: Check GitHub Copilot instructions
+      run: |
+        echo "── .github/copilot-instructions.md validation ──"
+        COPILOT=".github/copilot-instructions.md"
+
+        if [ ! -f "$COPILOT" ]; then
+          echo "❌ $COPILOT missing"
+          exit 1
+        fi
+        echo "✅ $COPILOT exists"
+
+        lines=$(wc -l < "$COPILOT")
+        echo "✅ $COPILOT — $lines lines"
+
+        # Must reference prompts directory
+        if grep -q "prompts/" "$COPILOT"; then
+          echo "✅ References prompts/ directory"
+        else
+          echo "❌ Does not reference prompts/ directory"
+          exit 1
+        fi
+
+        # Must include signal block standard
+        if grep -q "INVESTMENT SIGNAL\|BULLISH\|BEARISH" "$COPILOT"; then
+          echo "✅ Includes signal output standard"
+        else
+          echo "⚠️  Consider adding signal output standard"
+        fi
+
+    - name: Check Cursor rules
+      run: |
+        echo "── .cursor/rules/invest-skill.mdc validation ──"
+        MDC=".cursor/rules/invest-skill.mdc"
+
+        if [ ! -f "$MDC" ]; then
+          echo "❌ $MDC missing"
+          exit 1
+        fi
+        echo "✅ $MDC exists"
+
+        # Must have MDC frontmatter (---)
+        first_line=$(head -1 "$MDC")
+        if [ "$first_line" = "---" ]; then
+          echo "✅ Has MDC frontmatter"
+        else
+          echo "❌ Missing MDC frontmatter (should start with ---)"
+          exit 1
+        fi
+
+        # Required MDC fields
+        for field in description alwaysApply; do
+          if grep -q "^${field}:" "$MDC"; then
+            echo "✅ Has required field: $field"
+          else
+            echo "❌ Missing required MDC field: $field"
+            exit 1
+          fi
+        done
+
+        # Must reference prompts directory
+        if grep -q "prompts/" "$MDC"; then
+          echo "✅ References prompts/ directory"
+        else
+          echo "❌ Does not reference prompts/ directory"
+          exit 1
+        fi
+
+    - name: Validate prompts directory sync
+      run: |
+        echo "── Prompts sync: every skill has a universal prompt ──"
+        ERRORS=0
+        EXEMPT=("report-generator")
+
+        mapfile -t REGISTERED < <(jq -r '.skills[]' plugins/us-stock-analysis/.claude-plugin/plugin.json)
+
+        for skill in "${REGISTERED[@]}"; do
+          # Skip exempt skills
+          if printf '%s\n' "${EXEMPT[@]}" | grep -q "^${skill}$"; then
+            echo "✅ $skill — exempt from prompts sync"
+            continue
+          fi
+
+          if [ -f "prompts/${skill}.md" ]; then
+            echo "✅ prompts/${skill}.md — exists"
+          else
+            echo "❌ prompts/${skill}.md — MISSING"
+            ERRORS=$((ERRORS + 1))
+          fi
+        done
+
+        if [ "$ERRORS" -gt 0 ]; then
+          echo "❌ $ERRORS prompt file(s) missing"
+          exit 1
+        fi
+        echo "✅ All skills have corresponding universal prompts"
+
+    - name: Check prompts are AI-agnostic
+      run: |
+        echo "── Prompts AI-agnostic check ──"
+        ERRORS=0
+        WARNINGS=0
+
+        for prompt_file in prompts/*.md; do
+          name=$(basename "$prompt_file")
+
+          # Must NOT have YAML frontmatter
+          first_line=$(head -1 "$prompt_file")
+          if [ "$first_line" = "---" ]; then
+            echo "❌ $name — has YAML frontmatter (not AI-agnostic)"
+            ERRORS=$((ERRORS + 1))
+          else
+            echo "✅ $name — no YAML frontmatter"
+          fi
+
+          # Must have INVESTMENT SIGNAL block
+          if grep -q "INVESTMENT SIGNAL" "$prompt_file"; then
+            echo "✅ $name — has INVESTMENT SIGNAL block"
+          else
+            echo "❌ $name — missing INVESTMENT SIGNAL block"
+            ERRORS=$((ERRORS + 1))
+          fi
+
+          # Must have disclaimer
+          if grep -qi "not financial advice\|educational" "$prompt_file"; then
+            echo "✅ $name — has disclaimer"
+          else
+            echo "⚠️  $name — missing disclaimer"
+            WARNINGS=$((WARNINGS + 1))
+          fi
+        done
+
+        echo ""
+        echo "Warnings: $WARNINGS"
+        if [ "$ERRORS" -gt 0 ]; then
+          echo "❌ $ERRORS prompt(s) not AI-agnostic"
+          exit 1
+        fi
+        echo "✅ All prompts are AI-agnostic"
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Test Summary — requires all jobs to pass
+  # ─────────────────────────────────────────────────────────────────────────
+  test-summary:
+    name: Test Summary
+    needs: [unit-tests, build-test, skill-syntax, cross-ai-check]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+    - name: Report results
+      run: |
+        echo "════════════════════════════════════════════════"
+        echo "  InvestSkill Test Suite — Summary"
+        echo "════════════════════════════════════════════════"
+        echo "  unit-tests:     ${{ needs.unit-tests.result }}"
+        echo "  build-test:     ${{ needs.build-test.result }}"
+        echo "  skill-syntax:   ${{ needs.skill-syntax.result }}"
+        echo "  cross-ai-check: ${{ needs.cross-ai-check.result }}"
+        echo "════════════════════════════════════════════════"
+
+    - name: Fail if any job failed
+      if: >
+        needs.unit-tests.result == 'failure' ||
+        needs.build-test.result == 'failure' ||
+        needs.skill-syntax.result == 'failure' ||
+        needs.cross-ai-check.result == 'failure'
+      run: |
+        echo "❌ One or more test jobs failed — see details above"
+        exit 1
+
+    - name: All tests passed
+      if: >
+        needs.unit-tests.result == 'success' &&
+        needs.build-test.result == 'success' &&
+        needs.skill-syntax.result == 'success' &&
+        needs.cross-ai-check.result == 'success'
+      run: |
+        echo "✅ All InvestSkill tests passed!"

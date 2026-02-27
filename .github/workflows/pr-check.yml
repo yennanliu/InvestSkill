@@ -13,6 +13,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
     - name: Quick JSON validation
       run: |
         echo "Running quick JSON validation..."
@@ -54,7 +59,7 @@ jobs:
         for plugin_json in plugins/*/.claude-plugin/plugin.json; do
           if [ -f "$plugin_json" ]; then
             plugin_name=$(basename $(dirname $(dirname $plugin_json)))
-            required_plugin_fields=("name" "description" "version" "author")
+            required_plugin_fields=("name" "description" "version" "author" "skills")
 
             for field in "${required_plugin_fields[@]}"; do
               if ! jq -e ".$field" "$plugin_json" > /dev/null 2>&1; then
@@ -66,12 +71,33 @@ jobs:
           fi
         done
 
+    - name: Check version consistency
+      run: |
+        echo "Checking version consistency..."
+        marketplace_version=$(jq -r '.metadata.version' .claude-plugin/marketplace.json)
+        echo "Marketplace version: $marketplace_version"
+
+        for plugin_json in plugins/*/.claude-plugin/plugin.json; do
+          if [ -f "$plugin_json" ]; then
+            plugin_name=$(jq -r '.name' "$plugin_json")
+            plugin_version=$(jq -r '.version' "$plugin_json")
+            marketplace_plugin_version=$(jq -r --arg name "$plugin_name" '.plugins[] | select(.name == $name) | .version' .claude-plugin/marketplace.json)
+
+            if [ "$plugin_version" != "$marketplace_plugin_version" ]; then
+              echo "❌ Version mismatch for $plugin_name: plugin.json=$plugin_version, marketplace.json=$marketplace_plugin_version"
+              exit 1
+            fi
+            echo "✓ Version consistent: $plugin_name @ $plugin_version"
+          fi
+        done
+
     - name: Lint SKILL.md files
       run: |
         echo "Checking SKILL.md files..."
 
         skill_count=0
-        warning_count=0
+        error_count=0
+        SIGNAL_BLOCK='╔══════════════════════════════════════════════╗'
 
         for skill_file in plugins/*/skills/*/SKILL.md; do
           if [ -f "$skill_file" ]; then
@@ -80,28 +106,80 @@ jobs:
 
             # Check for frontmatter
             if ! grep -q "^---$" "$skill_file"; then
-              echo "⚠️  $skill_name: Missing frontmatter"
-              warning_count=$((warning_count + 1))
+              echo "❌ $skill_name: Missing frontmatter"
+              error_count=$((error_count + 1))
+            fi
+
+            # Check description in frontmatter
+            if ! grep -q "^description:" "$skill_file"; then
+              echo "❌ $skill_name: Missing description field"
+              error_count=$((error_count + 1))
             fi
 
             # Check minimum content length
             line_count=$(wc -l < "$skill_file")
-            if [ "$line_count" -lt 10 ]; then
-              echo "⚠️  $skill_name: File seems too short ($line_count lines)"
-              warning_count=$((warning_count + 1))
+            if [ "$line_count" -lt 20 ]; then
+              echo "❌ $skill_name: File too short ($line_count lines)"
+              error_count=$((error_count + 1))
+            fi
+
+            # Check for INVESTMENT SIGNAL block (skip report-generator — HTML output tool)
+            if [ "$skill_name" != "report-generator" ]; then
+              if ! grep -q "$SIGNAL_BLOCK" "$skill_file"; then
+                echo "❌ $skill_name: Missing INVESTMENT SIGNAL block"
+                error_count=$((error_count + 1))
+              else
+                echo "✓ $skill_name: SKILL.md valid"
+              fi
+            else
+              echo "✓ $skill_name: SKILL.md valid (signal block exempt)"
             fi
           fi
         done
 
         echo ""
-        echo "Summary:"
-        echo "  Skills found: $skill_count"
-        echo "  Warnings: $warning_count"
+        echo "Summary: $skill_count skills found, $error_count error(s)"
 
         if [ "$skill_count" -eq 0 ]; then
           echo "❌ No skills found in the repository"
           exit 1
         fi
+
+        if [ "$error_count" -gt 0 ]; then
+          echo "❌ $error_count SKILL.md error(s) found"
+          exit 1
+        fi
+
+    - name: Check skills registry integrity
+      run: |
+        echo "Checking skills registry (plugin.json ↔ directories)..."
+        ERRORS=0
+
+        for plugin_json in plugins/*/.claude-plugin/plugin.json; do
+          if [ -f "$plugin_json" ]; then
+            plugin_dir=$(dirname $(dirname "$plugin_json"))
+            skills_dir="$plugin_dir/skills"
+
+            registered=$(jq -r '.skills[]' "$plugin_json" 2>/dev/null || echo "")
+
+            for skill in $registered; do
+              if [ ! -d "$skills_dir/$skill" ]; then
+                echo "❌ Registered skill '$skill' has no directory"
+                ERRORS=$((ERRORS + 1))
+              else
+                echo "✓ $skill — directory exists"
+              fi
+            done
+          fi
+        done
+
+        if [ "$ERRORS" -gt 0 ]; then
+          echo "❌ $ERRORS registry mismatch(es) found"
+          exit 1
+        fi
+
+    - name: Run unit tests
+      run: node scripts/test-skills.js
 
     - name: PR validation summary
       if: success()

@@ -8,6 +8,7 @@ yarn-error.log*
 dist/
 build/
 *.js
+!scripts/*.js
 *.d.ts
 *.js.map
 
