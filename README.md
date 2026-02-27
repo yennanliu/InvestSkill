@@ -13,6 +13,7 @@ Professional investment analysis and stock evaluation skills — works with Clau
 
 ## Quick Links
 
+- 📖 **[Cookbook — Demo Examples, Setup & Core Concepts](https://yennanliu.github.io/InvestSkill/cookbook.html)**
 - 📝 **[Blog Post: InvestSkill - Claude Code Financial Analysis Plugin](https://yennj12.js.org/yennj12_blog_V4/posts/investskill-claude-code-financial-analysis-plugin/)**
 - 📊 **[Example Output: Comprehensive Analysis Report (PLTR)](https://github.com/yennanliu/finance_data/blob/main/claude_code/pltr/comprehensive_analysis_report.md)**
 - 📊 **[More Output: Finance data](https://github.com/yennanliu/finance_data/tree/main/claude_code)**

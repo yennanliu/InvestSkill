@@ -13,6 +13,7 @@
 
 ## 快速連結
 
+- 📖 **[操作手冊 — 示範範例、安裝指南與核心概念](https://yennanliu.github.io/InvestSkill/cookbook-zh-tw.html)**
 - 📝 **[部落格文章：InvestSkill - Claude Code 金融分析插件](https://yennj12.js.org/yennj12_blog_V4/posts/investskill-claude-code-financial-analysis-plugin/)**
 - 📊 **[範例輸出：完整分析報告 (PLTR)](https://github.com/yennanliu/finance_data/blob/main/claude_code/pltr/comprehensive_analysis_report.md)**
 
