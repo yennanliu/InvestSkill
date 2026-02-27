@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-02-27
+
+### Added
+- Auto-deploy workflow (`auto-deploy.yml`): triggers after Test Suite passes on main,
+  detects version bumps via git tag check, runs pre-deploy validation, publishes
+  GitHub Release with .tar.gz artifacts and checksums, records result in DEPLOYMENTS.md
+- `scripts/record-deploy.js`: appends structured deployment entry to DEPLOYMENTS.md
+  with version, commit SHA, timestamp, release URL, and marketplace targets table
+- `DEPLOYMENTS.md`: auto-maintained deployment history file seeded with v1.1.0–v1.3.0
+
+### Improved
+- `pr-check.yml`: added version consistency check, INVESTMENT SIGNAL block validation,
+  skills registry integrity check, and full unit test run
+- `validate.yml`: expanded required files list, stricter version mismatch handling,
+  Node.js unit test step
+- `.gitignore`: added `!scripts/*.js` exception so test scripts are tracked by git
+
 ## [1.3.0] - 2026-02-27
 
 ### Added
