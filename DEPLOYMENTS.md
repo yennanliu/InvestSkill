@@ -5,6 +5,28 @@ each time a new version passes all tests and is published to the marketplaces.
 
 ---
 
+## v1.4.0 — 2026-02-27 02:09 UTC
+
+| Field         | Value |
+|---------------|-------|
+| Version       | `1.4.0` |
+| Commit        | `8903101` |
+| Deployed at   | 2026-02-27 02:09 UTC |
+| Skills        | 18 |
+| Release       | [GitHub Release](https://github.com/yennanliu/InvestSkill/releases/tag/v1.4.0) |
+| CI run        | [Actions run](https://github.com/yennanliu/InvestSkill/actions/runs/22469756692) |
+
+### Marketplace targets
+
+| Target | Status | Install |
+|--------|--------|---------|
+| **Claude Code** | ✅ Deployed | `/plugin marketplace add yennanliu/InvestSkill` |
+| **Cursor** | ✅ Updated | Copy `.cursor/rules/invest-skill.mdc` to your project |
+| **Gemini CLI** | ✅ Updated | Reference `GEMINI.md` / `prompts/` directory |
+| **GitHub Copilot** | ✅ Updated | Auto-applied via `.github/copilot-instructions.md` |
+
+---
+
 ## v1.3.0 — 2026-02-27 (manual)
 
 | Field         | Value |
