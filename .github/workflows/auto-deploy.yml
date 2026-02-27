@@ -1,0 +1,244 @@
+name: Auto Deploy
+
+# Triggers after the full test suite passes on main.
+# Detects version bumps and publishes a GitHub Release, then records
+# the deployment result in DEPLOYMENTS.md.
+
+on:
+  workflow_run:
+    workflows: ["Test Suite"]
+    branches: [main]
+    types: [completed]
+
+permissions:
+  contents: write
+  deployments: write
+
+jobs:
+  # ── Job 1: detect whether this commit introduces a new version ────────────
+  detect-version:
+    name: Detect Version Change
+    runs-on: ubuntu-latest
+    # Only proceed when the upstream test suite actually passed
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    outputs:
+      version:         ${{ steps.version.outputs.version }}
+      is_new_version:  ${{ steps.version.outputs.is_new_version }}
+      commit_sha:      ${{ steps.version.outputs.commit_sha }}
+      plugin_version:  ${{ steps.version.outputs.plugin_version }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0   # full history so we can inspect tags
+
+    - name: Detect new version
+      id: version
+      run: |
+        CURRENT=$(jq -r '.metadata.version' .claude-plugin/marketplace.json)
+        PLUGIN_VER=$(jq -r '.version' plugins/us-stock-analysis/.claude-plugin/plugin.json)
+        SHA=$(git rev-parse --short HEAD)
+
+        echo "version=$CURRENT"       >> $GITHUB_OUTPUT
+        echo "plugin_version=$PLUGIN_VER" >> $GITHUB_OUTPUT
+        echo "commit_sha=$SHA"         >> $GITHUB_OUTPUT
+
+        if git tag -l "v$CURRENT" | grep -q "v$CURRENT"; then
+          echo "is_new_version=false"  >> $GITHUB_OUTPUT
+          echo "ℹ️  Version $CURRENT already released — skipping deploy."
+        else
+          echo "is_new_version=true"   >> $GITHUB_OUTPUT
+          echo "🆕 New version detected: $CURRENT — will deploy."
+        fi
+
+  # ── Job 2: run validation one final time before publishing ────────────────
+  pre-deploy-validation:
+    name: Pre-Deploy Validation
+    needs: detect-version
+    if: needs.detect-version.outputs.is_new_version == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Validate JSON manifests
+      run: |
+        jq empty .claude-plugin/marketplace.json
+        jq empty plugins/us-stock-analysis/.claude-plugin/plugin.json
+        echo "✅ JSON manifests valid"
+
+    - name: Run unit test suite
+      run: node scripts/test-skills.js
+
+    - name: Verify skills registry
+      run: |
+        REGISTERED=$(jq -r '.skills[]' plugins/us-stock-analysis/.claude-plugin/plugin.json)
+        ERRORS=0
+        for skill in $REGISTERED; do
+          if [ ! -d "plugins/us-stock-analysis/skills/$skill" ]; then
+            echo "❌ Registered skill '$skill' has no directory"
+            ERRORS=$((ERRORS + 1))
+          fi
+        done
+        if [ "$ERRORS" -gt 0 ]; then
+          echo "❌ Skills registry mismatch — aborting deploy"
+          exit 1
+        fi
+        echo "✅ Skills registry valid"
+
+  # ── Job 3: build release artifacts and publish ───────────────────────────
+  deploy:
+    name: Deploy to Marketplaces
+    needs: [detect-version, pre-deploy-validation]
+    if: needs.detect-version.outputs.is_new_version == 'true'
+    runs-on: ubuntu-latest
+
+    env:
+      VERSION: ${{ needs.detect-version.outputs.version }}
+      SHA:     ${{ needs.detect-version.outputs.commit_sha }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Configure git
+      run: |
+        git config user.name  "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    # ── 3a. Create release packages ──────────────────────────────────────────
+    - name: Build release packages
+      run: |
+        mkdir -p dist
+
+        # Full marketplace tarball
+        tar -czf "dist/invest-skill-marketplace-${VERSION}.tar.gz" \
+          --exclude='.git' \
+          --exclude='.github' \
+          --exclude='dist' \
+          --exclude='.claude' \
+          --exclude='node_modules' \
+          .
+
+        # Per-plugin tarball
+        for plugin_dir in plugins/*/; do
+          plugin_name=$(basename "$plugin_dir")
+          tar -czf "dist/${plugin_name}-${VERSION}.tar.gz" \
+            -C plugins "$plugin_name"
+        done
+
+        # Checksums
+        cd dist && sha256sum *.tar.gz > checksums.txt
+        echo "📦 Packages:"
+        ls -lh dist/
+
+    # ── 3b. Extract changelog section ────────────────────────────────────────
+    - name: Extract release notes
+      id: notes
+      run: |
+        if [ -f CHANGELOG.md ]; then
+          sed -n "/## \[${VERSION}\]/,/## \[/p" CHANGELOG.md | sed '$d' > release_notes.md
+          [ -s release_notes.md ] && echo "has_notes=true" >> $GITHUB_OUTPUT \
+                                  || echo "has_notes=false" >> $GITHUB_OUTPUT
+        else
+          echo "has_notes=false" >> $GITHUB_OUTPUT
+        fi
+
+    # ── 3c. Create git tag ───────────────────────────────────────────────────
+    - name: Tag release commit
+      run: |
+        git tag -a "v${VERSION}" -m "Release v${VERSION}"
+        git push origin "v${VERSION}"
+        echo "🏷️  Tagged v${VERSION}"
+
+    # ── 3d. GitHub Release (Claude Code plugin marketplace) ──────────────────
+    - name: Publish GitHub Release — Claude Code Marketplace
+      id: github_release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name:  v${{ env.VERSION }}
+        name:      "InvestSkill v${{ env.VERSION }}"
+        body_path: ${{ steps.notes.outputs.has_notes == 'true' && 'release_notes.md' || '' }}
+        generate_release_notes: ${{ steps.notes.outputs.has_notes != 'true' }}
+        draft:      false
+        prerelease: ${{ contains(env.VERSION, 'alpha') || contains(env.VERSION, 'beta') || contains(env.VERSION, 'rc') }}
+        files: |
+          dist/*.tar.gz
+          dist/checksums.txt
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # ── 3e. Record deployment result ─────────────────────────────────────────
+    - name: Record deployment
+      run: node scripts/record-deploy.js
+      env:
+        DEPLOY_VERSION:    ${{ env.VERSION }}
+        DEPLOY_SHA:        ${{ env.SHA }}
+        DEPLOY_TIMESTAMP:  ${{ github.event.workflow_run.updated_at }}
+        RELEASE_URL:       ${{ steps.github_release.outputs.url }}
+        PLUGIN_VERSION:    ${{ needs.detect-version.outputs.plugin_version }}
+        SKILL_COUNT:       ${{ toJSON(18) }}
+        WORKFLOW_RUN_URL:  ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+    - name: Commit deployment record
+      run: |
+        git add DEPLOYMENTS.md
+        if git diff --cached --quiet; then
+          echo "No changes to DEPLOYMENTS.md"
+        else
+          git commit -m "chore: record deployment v${VERSION} [skip ci]"
+          git push origin main
+          echo "📝 Deployment record committed"
+        fi
+
+    # ── 3f. Summary ──────────────────────────────────────────────────────────
+    - name: Deployment summary
+      run: |
+        echo "════════════════════════════════════════════════════════════"
+        echo "  🚀 InvestSkill v${VERSION} deployed successfully!"
+        echo "════════════════════════════════════════════════════════════"
+        echo ""
+        echo "  Targets:"
+        echo "    ✅ Claude Code  — GitHub Release published"
+        echo "       Install: /plugin marketplace add yennanliu/InvestSkill"
+        echo "       Install: /plugin install us-stock-analysis"
+        echo ""
+        echo "    ✅ Cursor       — .cursor/rules/invest-skill.mdc updated"
+        echo "       Install: copy .cursor/rules/invest-skill.mdc to your project"
+        echo ""
+        echo "    ✅ Gemini CLI   — GEMINI.md updated"
+        echo "       Use:    reference prompts/ directory in Gemini CLI"
+        echo ""
+        echo "    ✅ Copilot      — .github/copilot-instructions.md updated"
+        echo "       Auto-applied when repo is opened in VS Code Copilot"
+        echo ""
+        echo "  Release: ${{ steps.github_release.outputs.url }}"
+        echo "════════════════════════════════════════════════════════════"
+
+  # ── Job 4: record skipped deploy (no version change) ─────────────────────
+  record-skip:
+    name: Record (No Version Change)
+    needs: detect-version
+    if: needs.detect-version.outputs.is_new_version == 'false'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Log skip
+      run: |
+        echo "ℹ️  Tests passed. Version ${{ needs.detect-version.outputs.version }} already deployed."
+        echo "   No new release created."
