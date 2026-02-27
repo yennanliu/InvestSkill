@@ -129,11 +129,11 @@ jobs:
 
         # Full marketplace tarball
         tar -czf "dist/invest-skill-marketplace-${VERSION}.tar.gz" \
-          --exclude='.git' \
-          --exclude='.github' \
-          --exclude='dist' \
-          --exclude='.claude' \
-          --exclude='node_modules' \
+          --exclude='./.git' \
+          --exclude='./.github' \
+          --exclude='./dist' \
+          --exclude='./.claude' \
+          --exclude='./node_modules' \
           .
 
         # Per-plugin tarball
@@ -143,8 +143,8 @@ jobs:
             -C plugins "$plugin_name"
         done
 
-        # Checksums
-        cd dist && sha256sum *.tar.gz > checksums.txt
+        # Checksums (stay in repo root to avoid cd side-effects)
+        sha256sum dist/*.tar.gz > dist/checksums.txt
         echo "📦 Packages:"
         ls -lh dist/
 
