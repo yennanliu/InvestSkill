@@ -207,28 +207,76 @@ jobs:
           echo "📝 Deployment record committed"
         fi
 
-    # ── 3f. Summary ──────────────────────────────────────────────────────────
+    # ── 3f. Publish to Cursor Rules Registry ────────────────────────────────────
+    - name: Publish Cursor Rules
+      id: cursor_publish
+      run: |
+        echo "📤 Publishing Cursor rules..."
+        node scripts/publish-cursor-rules.js
+        echo "cursor_success=true" >> $GITHUB_OUTPUT
+      continue-on-error: true
+      env:
+        CURSOR_VERSION: ${{ env.VERSION }}
+
+    # ── 3g. Publish to Gemini CLI Registry (if credentials available) ─────────
+    - name: Publish Gemini CLI Package
+      id: gemini_publish
+      run: |
+        echo "📤 Publishing Gemini CLI package..."
+        node scripts/publish-gemini.js
+        echo "gemini_success=true" >> $GITHUB_OUTPUT
+      continue-on-error: true
+      env:
+        GEMINI_VERSION: ${{ env.VERSION }}
+
+    # ── 3h. Create platform-specific release notes ──────────────────────────────
+    - name: Generate Platform Release Notes
+      run: node scripts/generate-platform-release-notes.js
+      env:
+        RELEASE_VERSION: ${{ env.VERSION }}
+
+    # ── 3i. Summary ──────────────────────────────────────────────────────────
     - name: Deployment summary
       run: |
         echo "════════════════════════════════════════════════════════════"
-        echo "  🚀 InvestSkill v${VERSION} deployed successfully!"
+        echo "  🚀 InvestSkill v${VERSION} deployed to all platforms!"
         echo "════════════════════════════════════════════════════════════"
         echo ""
-        echo "  Targets:"
-        echo "    ✅ Claude Code  — GitHub Release published"
-        echo "       Install: /plugin marketplace add yennanliu/InvestSkill"
-        echo "       Install: /plugin install us-stock-analysis"
+        echo "  📦 DEPLOYMENT TARGETS:"
         echo ""
-        echo "    ✅ Cursor       — .cursor/rules/invest-skill.mdc updated"
-        echo "       Install: copy .cursor/rules/invest-skill.mdc to your project"
+        echo "    ✅ Claude Code Plugin"
+        echo "       Release:  ${{ steps.github_release.outputs.url }}"
+        echo "       Install:  /plugin marketplace add yennanliu/InvestSkill"
+        echo "       Install:  /plugin install us-stock-analysis"
         echo ""
-        echo "    ✅ Gemini CLI   — GEMINI.md updated"
-        echo "       Use:    reference prompts/ directory in Gemini CLI"
+        echo "    ✅ Cursor AI Rules"
+        if [ "${{ steps.cursor_publish.outputs.cursor_success }}" = "true" ]; then
+          echo "       Status:   Published to rules registry"
+        else
+          echo "       Status:   Rules updated in repository"
+        fi
+        echo "       File:     .cursor/rules/invest-skill.mdc"
+        echo "       Method:   Auto-loads from repository"
         echo ""
-        echo "    ✅ Copilot      — .github/copilot-instructions.md updated"
-        echo "       Auto-applied when repo is opened in VS Code Copilot"
+        echo "    ✅ Gemini CLI Prompts"
+        if [ "${{ steps.gemini_publish.outputs.gemini_success }}" = "true" ]; then
+          echo "       Status:   Published to Gemini registry"
+        else
+          echo "       Status:   Prompts available via GEMINI.md"
+        fi
+        echo "       File:     GEMINI.md + prompts/ directory"
+        echo "       Method:   Auto-loads GEMINI.md in project"
         echo ""
-        echo "  Release: ${{ steps.github_release.outputs.url }}"
+        echo "    ✅ GitHub Copilot"
+        echo "       File:     .github/copilot-instructions.md"
+        echo "       Method:   Auto-loads in VS Code/JetBrains"
+        echo ""
+        echo "  📊 RELEASE INFO:"
+        echo "       Version:  v${VERSION}"
+        echo "       Commit:   ${SHA}"
+        echo "       Skills:   18 analysis frameworks"
+        echo "       Release:  ${{ steps.github_release.outputs.url }}"
+        echo ""
         echo "════════════════════════════════════════════════════════════"
 
   # ── Job 4: record skipped deploy (no version change) ─────────────────────

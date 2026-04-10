@@ -624,9 +624,23 @@ InvestSkill v1.1.0 introduces professional report generation capabilities with i
 - Volume analysis (bar charts)
 - Technical indicators (RSI, MACD panels)
 
-## CI/CD & Automation
+## CI/CD & Multi-Platform Automation
 
-This project includes comprehensive GitHub Actions workflows for quality assurance and automated releases.
+This project includes comprehensive GitHub Actions workflows for quality assurance and automated releases to all supported AI platforms.
+
+### Multi-Platform Release System
+
+InvestSkill automatically releases to **5 AI platforms** simultaneously:
+
+| Platform | Trigger | Method |
+|----------|---------|--------|
+| **Claude Code** | Version change | GitHub Release + marketplace.json |
+| **Cursor** | Version change | Rules publishing script |
+| **Gemini CLI** | Version change | Prompts packaging script |
+| **GitHub Copilot** | Every commit | Auto-loaded from .github/ |
+| **Universal Prompts** | Version change | GitHub Release artifacts |
+
+**See [CI-CD-GUIDE.md](CI-CD-GUIDE.md) for complete documentation.**
 
 ### Automated Workflows
 
@@ -636,19 +650,27 @@ This project includes comprehensive GitHub Actions workflows for quality assuran
 - Checks required files and fields
 - Validates SKILL.md frontmatter
 - Ensures version consistency across files
+- Runs unit tests for all 18 skills
 
-**PR Checks (`pr-check.yml`)**
-- Quick validation on pull requests
-- JSON syntax checking
-- Required fields validation
-- SKILL.md file linting
+**Test Suite (`test.yml`)**
+- Comprehensive testing on every commit
+- Validates all 18 analysis frameworks
+- Checks output format standards
+- Verifies signal block formatting
 
-**Auto Release (`release.yml`)**
-- Triggers on version tags (v*)
-- Creates distribution packages (.tar.gz)
-- Generates SHA256 checksums
-- Creates GitHub releases with artifacts
-- Extracts release notes from CHANGELOG.md
+**Auto Deploy (`auto-deploy.yml`)** ⭐ **NEW**
+- Triggers after successful test suite on main
+- Detects version changes automatically
+- Publishes to all 5 platforms simultaneously
+- Generates platform-specific release notes
+- Records deployment in DEPLOYMENTS.md
+- Creates GitHub release with multi-platform artifacts
+
+**Deployment Recording**
+- Auto-updates DEPLOYMENTS.md after each release
+- Shows platform-by-platform status
+- Links to GitHub release and CI runs
+- Tracks deployment history over time
 
 **Auto Labeling (`label-pr.yml`)**
 - Automatically labels PRs based on changed files
@@ -661,48 +683,124 @@ This project includes comprehensive GitHub Actions workflows for quality assuran
 
 ### Creating a Release
 
-To create a new release:
+To create a new release to all platforms:
 
 1. Update version numbers:
    ```bash
-   # Update plugins/us-stock-analysis/.claude-plugin/plugin.json
-   # Update .claude-plugin/marketplace.json
+   # .claude-plugin/marketplace.json
+   "version": "X.Y.Z"
+   
+   # plugins/us-stock-analysis/.claude-plugin/plugin.json
+   "version": "X.Y.Z"
    ```
 
 2. Update CHANGELOG.md:
    ```markdown
-   ## [1.1.0] - 2026-02-16
+   ## [X.Y.Z] - YYYY-MM-DD
    ### Added
    - New feature description
+   ### Changed
+   - Change description
+   ### Fixed
+   - Bug fix description
    ```
 
-3. Commit changes:
+3. Commit and push:
    ```bash
-   git add .
-   git commit -m "chore: bump version to 1.1.0"
+   git add .claude-plugin/marketplace.json plugins/us-stock-analysis/.claude-plugin/plugin.json CHANGELOG.md
+   git commit -m "chore: bump version to X.Y.Z"
    git push origin main
    ```
 
-4. Create and push tag:
-   ```bash
-   git tag v1.1.0
-   git push origin v1.1.0
+4. GitHub Actions automatically:
+   - Detects version change
+   - Validates everything
+   - Tests all 18 skills
+   - Publishes to Claude Code marketplace
+   - Publishes Cursor rules
+   - Publishes Gemini CLI prompts
+   - Updates GitHub Copilot instructions
+   - Generates platform-specific release notes
+   - Creates GitHub release with artifacts
+   - Records deployment in DEPLOYMENTS.md
+
+**No manual release tag needed** — version change detection is automatic!
+
+### Deployment Artifacts
+
+After each release, the following files are available in GitHub Releases:
+
+```
+dist/
+├── invest-skill-marketplace-X.Y.Z.tar.gz      # Full marketplace
+├── us-stock-analysis-X.Y.Z.tar.gz             # Claude Code plugin
+├── cursor-rules-X.Y.Z.mdc                     # Cursor rules
+├── gemini-prompts-X.Y.Z.tar.gz                # Gemini CLI prompts
+├── checksums.txt                              # SHA256 checksums
+├── CLAUDE-CODE-RELEASE-NOTES.md               # Claude Code guide
+├── CURSOR-RELEASE-NOTES.md                    # Cursor guide
+├── GEMINI-RELEASE-NOTES.md                    # Gemini guide
+├── COPILOT-RELEASE-NOTES.md                   # Copilot guide
+└── UNIVERSAL-RELEASE-NOTES.md                 # Universal guide
+```
+
+### Platform-Specific Registry Integration (Optional)
+
+To enable direct registry publishing (instead of GitHub artifacts):
+
+1. Add GitHub Secrets for registry credentials:
+   ```
+   CURSOR_REGISTRY_TOKEN=<your-token>
+   GEMINI_REGISTRY_TOKEN=<your-token>
+   GEMINI_REGISTRY_URL=<registry-endpoint>
    ```
 
-5. GitHub Actions will automatically:
-   - Validate the plugin structure
-   - Create distribution packages
-   - Generate release notes
-   - Publish the release with artifacts
+2. CI/CD will automatically publish to registries
+
+Without these credentials, the system publishes to GitHub Releases and instructions guide users to copy files manually.
+
+### Viewing Deployment History
+
+See [DEPLOYMENTS.md](DEPLOYMENTS.md) for a complete record of all releases, including:
+- Version numbers
+- Deployment timestamps
+- Commit SHAs
+- Skill counts
+- Links to releases and CI runs
+- Platform-by-platform status
+
+### CI/CD Debugging
+
+**View workflow logs**: https://github.com/yennanliu/InvestSkill/actions
+
+**Common workflow files**:
+- `.github/workflows/validate.yml` — Structure validation
+- `.github/workflows/test.yml` — Unit tests
+- `.github/workflows/auto-deploy.yml` — Release automation
+- `.github/workflows/deploy-pages.yml` — Website deployment
+
+### Release Checklist
+
+Before bumping version:
+- [ ] All features complete and tested
+- [ ] CHANGELOG.md updated
+- [ ] Documentation updated
+- [ ] No uncommitted changes
+- [ ] Tests passing locally
 
 ### Validation Badges
 
-Add these badges to show build status (update username/repo):
+Add these badges to show build status:
 
 ```markdown
 ![Validate](https://github.com/yennanliu/InvestSkill/actions/workflows/validate.yml/badge.svg)
-![Release](https://github.com/yennanliu/InvestSkill/actions/workflows/release.yml/badge.svg)
+![Test](https://github.com/yennanliu/InvestSkill/actions/workflows/test.yml/badge.svg)
+![Deploy](https://github.com/yennanliu/InvestSkill/actions/workflows/auto-deploy.yml/badge.svg)
 ```
+
+### More Information
+
+For comprehensive CI/CD documentation, see [CI-CD-GUIDE.md](CI-CD-GUIDE.md).
 
 ## Contributing
 

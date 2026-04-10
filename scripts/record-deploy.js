@@ -52,14 +52,26 @@ const entry = `
 | Release       | ${releaseLink} |
 | CI run        | ${runLink} |
 
-### Marketplace targets
+### Multi-Platform Deployment
 
-| Target | Status | Install |
-|--------|--------|---------|
-| **Claude Code** | ✅ Deployed | \`/plugin marketplace add yennanliu/InvestSkill\` |
-| **Cursor** | ✅ Updated | Copy \`.cursor/rules/invest-skill.mdc\` to your project |
-| **Gemini CLI** | ✅ Updated | Reference \`GEMINI.md\` / \`prompts/\` directory |
-| **GitHub Copilot** | ✅ Updated | Auto-applied via \`.github/copilot-instructions.md\` |
+| Platform | Status | Access | Docs |
+|----------|--------|--------|------|
+| **Claude Code** | ✅ Published | \`/plugin install us-stock-analysis\` | [Plugin Guide](CI-CD-GUIDE.md#1-claude-code-plugin-marketplace) |
+| **Cursor** | ✅ Published | Auto-loads from \`.cursor/rules/\` | [Cursor Guide](CI-CD-GUIDE.md#2-cursor-rules-publishing) |
+| **Gemini CLI** | ✅ Published | \`@prompts/stock-valuation.md\` | [Gemini Guide](CI-CD-GUIDE.md#3-gemini-cli-prompts) |
+| **GitHub Copilot** | ✅ Published | Auto-loads in VS Code/JetBrains | [Copilot Guide](CI-CD-GUIDE.md#4-github-copilot) |
+| **Universal Prompts** | ✅ Available | Copy from \`prompts/\` directory | [Universal Guide](CI-CD-GUIDE.md#5-universal-prompts-any-ai-tool) |
+
+### Release Artifacts
+
+| Artifact | Purpose |
+|----------|---------|
+| \`invest-skill-marketplace-${version}.tar.gz\` | Full marketplace package |
+| \`us-stock-analysis-${version}.tar.gz\` | Claude Code plugin only |
+| \`cursor-rules-${version}.mdc\` | Cursor rules file |
+| \`gemini-prompts-${version}.tar.gz\` | Gemini CLI prompts |
+| \`checksums.txt\` | SHA256 checksums |
+| \`*-RELEASE-NOTES.md\` | Platform-specific guides |
 
 ---
 `;
