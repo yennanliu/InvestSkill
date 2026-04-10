@@ -12,6 +12,8 @@
     "verify:setup": "node scripts/setup-verify.js",
     "pre-release-check": "node scripts/pre-release-check.js",
     "pre-release": "node scripts/pre-release-check.js && node scripts/validate-prompts.js && npm test",
+    "release": "node scripts/release-interactive.js",
+    "release:dry-run": "node scripts/release-dry-run.js",
     "publish:cursor": "node scripts/publish-cursor-rules.js",
     "publish:gemini": "node scripts/publish-gemini.js",
     "publish:release-notes": "node scripts/generate-platform-release-notes.js",

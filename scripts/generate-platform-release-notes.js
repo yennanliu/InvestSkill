@@ -2,10 +2,13 @@
 /**
  * generate-platform-release-notes.js
  * Generates platform-specific release notes with availability table
+ * Auto-detects prerelease (beta, rc, alpha) status from version number
  * Called by auto-deploy.yml during GitHub Release creation
  *
  * Usage:
  *   RELEASE_VERSION=1.4.0 node scripts/generate-platform-release-notes.js
+ *   RELEASE_VERSION=1.4.0-beta.1 node scripts/generate-platform-release-notes.js
+ *   RELEASE_VERSION=1.4.0-rc.1 node scripts/generate-platform-release-notes.js
  */
 
 const fs = require('fs');
@@ -15,8 +18,22 @@ const ROOT = path.resolve(__dirname, '..');
 const RELEASE_VERSION = process.env.RELEASE_VERSION || 'Unknown';
 
 /**
+ * Detect if version is a prerelease
+ */
+function isPrerelease(version) {
+  return /-(alpha|beta|rc)/.test(version);
+}
+
+/**
+ * Get prerelease type
+ */
+function getPrereleaseType(version) {
+  const match = version.match(/-(alpha|beta|rc)/);
+  return match ? match[1].toUpperCase() : null;
+}
+
+/**
  * Platform availability data structure
- * Maps platform names to installation methods and status
  */
 const PLATFORMS = {
   'Claude Code': {
@@ -170,20 +187,58 @@ function generateQuickStart() {
 }
 
 /**
+ * Generate prerelease notice if applicable
+ */
+function generatePrereleaseNotice() {
+  if (!isPrerelease(RELEASE_VERSION)) {
+    return '';
+  }
+
+  const type = getPrereleaseType(RELEASE_VERSION);
+  let notice = `## ⚠️  ${type} Release\n\n`;
+  
+  if (type === 'ALPHA') {
+    notice += 'This is an **early-stage preview** for testing new features.\n';
+    notice += '- ❌ Not recommended for production use\n';
+    notice += '- 🧪 Expect breaking changes\n';
+    notice += '- 📝 Please report bugs and feedback\n\n';
+  } else if (type === 'BETA') {
+    notice += 'This is a **beta release** with new features approaching production readiness.\n';
+    notice += '- ⚠️  May have minor bugs or incomplete features\n';
+    notice += '- 🔄 Some API changes may still occur\n';
+    notice += '- 📝 Your feedback helps us reach stable release\n\n';
+  } else if (type === 'RC') {
+    notice += 'This is a **release candidate** pending final validation.\n';
+    notice += '- ✅ Feature-complete and production-ready\n';
+    notice += '- 🔒 Minimal changes before stable release\n';
+    notice += '- 🧪 Please test thoroughly\n\n';
+  }
+
+  return notice;
+}
+
+/**
  * Main function
  */
 function main() {
   console.log('📋 Generating platform release notes...\n');
 
   const releaseNotes = extractReleaseNotes();
+  const prerelease = isPrerelease(RELEASE_VERSION);
 
-  if (!releaseNotes) {
+  if (!releaseNotes && !prerelease) {
     console.warn(`⚠️  No release notes found for v${RELEASE_VERSION} in CHANGELOG.md`);
     console.log('   Proceeding with minimal body.\n');
   }
 
   // Build the full release body
   let body = `## InvestSkill v${RELEASE_VERSION}\n\n`;
+  
+  // Add prerelease notice if applicable
+  if (prerelease) {
+    body += generatePrereleaseNotice();
+  }
+  
   body += '**18 Professional Investment Analysis Frameworks**\n\n';
 
   // Add highlights if we have them
@@ -213,12 +268,14 @@ function main() {
   body += '- 📊 [Platform Compatibility](PLATFORM-COMPATIBILITY.md) — Feature comparison\n';
   body += '- 📚 [Cookbook](COOKBOOK.md) — Examples and walkthroughs\n';
   body += '- 🔧 [CI/CD Guide](CI-CD-GUIDE.md) — Automated release pipeline\n';
-  body += '- 💡 [16 Investment Frameworks](prompts/) — Universal prompt files\n\n';
+  body += '- 🎯 [Adding Skills Guide](ADDING-NEW-SKILLS.md) — Contribute new frameworks\n';
+  body += '- 💡 [17 Investment Frameworks](prompts/) — Universal prompt files\n\n';
 
-  body += '## Support\n\n';
+  body += '## Support & Feedback\n\n';
   body += '- 🐛 [Report Issues](https://github.com/yennanliu/InvestSkill/issues)\n';
   body += '- 💬 [Discussions](https://github.com/yennanliu/InvestSkill/discussions)\n';
-  body += '- 📧 Feedback: [GitHub Issues](https://github.com/yennanliu/InvestSkill/issues/new)\n\n';
+  body += '- 📧 Feedback: [GitHub Issues](https://github.com/yennanliu/InvestSkill/issues/new)\n';
+  body += '- 📖 [FAQ & Troubleshooting](FAQ.md)\n\n';
 
   body += '---\n\n';
   body += '**Legal:** This toolkit provides educational analysis only and does NOT constitute financial advice. Always consult qualified financial advisors and do your own research.\n';
@@ -231,6 +288,10 @@ function main() {
   console.log(`\n📝 Preview:\n`);
   console.log(body.substring(0, 500) + '\n...\n');
   console.log(`\n✨ Total length: ${body.length} characters`);
+  
+  if (prerelease) {
+    console.log(`\n${getPrereleaseType(RELEASE_VERSION)} Release: Yes`);
+  }
 }
 
 main();
