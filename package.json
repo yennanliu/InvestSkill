@@ -17,7 +17,10 @@
     "publish:cursor": "node scripts/publish-cursor-rules.js",
     "publish:gemini": "node scripts/publish-gemini.js",
     "publish:release-notes": "node scripts/generate-platform-release-notes.js",
-    "record:deploy": "node scripts/record-deploy.js"
+    "record:deploy": "node scripts/record-deploy.js",
+    "integration-tests": "node scripts/integration-tests.js",
+    "integration-tests:verbose": "node scripts/integration-tests.js --verbose",
+    "notify:release": "node scripts/notify-release.js"
   },
   "keywords": [
     "investment",
