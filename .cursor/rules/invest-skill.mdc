@@ -4,60 +4,251 @@ globs: ["**/*.md", "prompts/**", "plugins/**"]
 alwaysApply: true
 ---
 
-# InvestSkill — Cursor Rules
+# InvestSkill — Cursor Rules & Setup Guide
 
-## Project Overview
+This is the InvestSkill repository — a collection of 18 professional investment analysis frameworks for US stocks. These rules automatically apply when you work in this project.
 
-This is the InvestSkill repository — a collection of professional investment analysis frameworks for US stocks. When working in this project, apply the following guidelines.
+## Installation & Setup
 
-## Available Analysis Prompts
+### Automatic Setup
 
-When a user requests investment analysis, load the relevant prompt from `prompts/`:
+Cursor automatically loads this file when you open the InvestSkill repository. **No manual installation required.**
 
-- **Stock Evaluation**: `prompts/stock-eval.md`
-- **Financial Report Analysis**: `prompts/financial-report-analyst.md` — for 10-K, 10-Q, annual reports
-- **Multi-Method Valuation**: `prompts/stock-valuation.md` — DCF + comparable company + EV multiples
-- **DCF Valuation**: `prompts/dcf-valuation.md`
-- **Fundamental Analysis**: `prompts/fundamental-analysis.md`
-- **Technical Analysis**: `prompts/technical-analysis.md`
-- **Economics**: `prompts/economics-analysis.md`
-- **Earnings Calls**: `prompts/earnings-call-analysis.md`
-- **Insider Trading**: `prompts/insider-trading.md`
-- **Institutional Ownership**: `prompts/institutional-ownership.md`
-- **Competitor Analysis**: `prompts/competitor-analysis.md`
-- **Dividends**: `prompts/dividend-analysis.md`
-- **Short Interest**: `prompts/short-interest.md`
-- **Options**: `prompts/options-analysis.md`
-- **Portfolio Review**: `prompts/portfolio-review.md`
-- **Sector Analysis**: `prompts/sector-analysis.md`
-- **Research Bundle**: `prompts/research-bundle.md`
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yennanliu/InvestSkill.git
+   ```
 
-## File Structure Rules
+2. **Open in Cursor:**
+   ```bash
+   cd InvestSkill
+   cursor .
+   ```
 
-- Skill definitions live in `plugins/us-stock-analysis/skills/<name>/SKILL.md`
-- Each SKILL.md has a YAML frontmatter with `description` field
-- Universal prompts (AI-agnostic) live in `prompts/<name>.md`
-- Claude Code plugin config: `plugins/us-stock-analysis/.claude-plugin/plugin.json`
+3. **Open AI Chat** (usually `Cmd+K`)
+   - Cursor automatically loads the investment analysis rules
+   - All 18 frameworks are immediately available
 
-## When Adding New Skills
+### Verify Setup
 
-1. Create `plugins/us-stock-analysis/skills/<skill-name>/SKILL.md`
-2. Add frontmatter with `description`
-3. Create corresponding `prompts/<skill-name>.md` (stripped version for universal use)
-4. Update `plugins/us-stock-analysis/.claude-plugin/plugin.json` skills array
-5. Update `.claude-plugin/marketplace.json` version if major addition
-6. Update `README.md` skills list and structure diagram
+In Cursor AI Chat, try:
+```
+@prompts/stock-valuation.md Analyze Apple (AAPL)
+```
 
-## Analysis Quality Standards
+If the framework loads, setup is complete!
 
-Every analysis output MUST include:
-1. Quantitative data with specific numbers (not vague estimates)
-2. Year-over-year or period-over-period comparisons
-3. Industry/peer benchmarking context
-4. A standardized INVESTMENT SIGNAL block at the end
-5. Risk factors and what could invalidate the thesis
+---
 
-## Signal Block Format
+## Available Analysis Frameworks (18 Total)
+
+### Core Stock Analysis (6 frameworks)
+
+| Framework | File | Best For |
+|-----------|------|----------|
+| Stock Evaluation | `@prompts/stock-eval.md` | Piotroski scoring, quality metrics |
+| Stock Valuation | `@prompts/stock-valuation.md` | DCF + comparable companies + EV multiples |
+| Fundamental Analysis | `@prompts/fundamental-analysis.md` | Financial statement deep dive |
+| Technical Analysis | `@prompts/technical-analysis.md` | Chart patterns, volume, indicators |
+| DCF Valuation | `@prompts/dcf-valuation.md` | Intrinsic value modeling |
+| Economics Analysis | `@prompts/economics-analysis.md` | Macro indicators, recession probability |
+
+### Financial Report Analysis (2 frameworks)
+
+| Framework | File | Best For |
+|-----------|------|----------|
+| Financial Report Analyst | `@prompts/financial-report-analyst.md` | 10-K, 10-Q, annual reports |
+| Earnings Call Analysis | `@prompts/earnings-call-analysis.md` | Management tone, guidance, themes |
+
+### Market Monitoring (4 frameworks)
+
+| Framework | File | Best For |
+|-----------|------|----------|
+| Insider Trading | `@prompts/insider-trading.md` | Form 4 insider buying/selling |
+| Institutional Ownership | `@prompts/institutional-ownership.md` | 13F holdings, smart money moves |
+| Dividend Analysis | `@prompts/dividend-analysis.md` | Dividend safety, yield trap detection |
+| Short Interest | `@prompts/short-interest.md` | Short squeeze scoring, thesis evaluation |
+
+### Advanced Analysis (4 frameworks)
+
+| Framework | File | Best For |
+|-----------|------|----------|
+| Competitor Analysis | `@prompts/competitor-analysis.md` | Moat scoring, Porter's Five Forces |
+| Options Analysis | `@prompts/options-analysis.md` | Greeks, IV rank, strategy selection |
+| Portfolio Review | `@prompts/portfolio-review.md` | Allocation optimization, performance |
+| Sector Analysis | `@prompts/sector-analysis.md` | Sector rotation, opportunity identification |
+
+### Full Research Bundle (2 frameworks)
+
+| Framework | File | Best For |
+|-----------|------|----------|
+| Research Bundle | `@prompts/research-bundle.md` | Complete multi-framework analysis |
+
+---
+
+## Usage Examples
+
+### Natural Language Queries
+
+Cursor understands the investment context naturally:
+
+```
+# Evaluate a stock
+Perform a comprehensive stock evaluation of Microsoft
+
+# Get a valuation
+What's a fair valuation for Apple using DCF and comparable companies?
+
+# Technical analysis
+Analyze Tesla's technical chart setup and key resistance levels
+
+# Financial statement analysis
+Deep dive into NVIDIA's balance sheet and cash flow quality
+
+# Economics outlook
+Is a recession likely in the next 12 months?
+
+# Combined analysis
+Analyze Apple from both fundamental and technical angles
+```
+
+### Explicit Framework References
+
+Use `@prompts/` references for precise methodology:
+
+```
+# Stock valuation with all methods
+@prompts/stock-valuation.md Analyze AAPL using all valuation methods
+
+# Fundamental analysis
+@prompts/fundamental-analysis.md Deep dive on Microsoft's fundamentals
+
+# Technical setup
+@prompts/technical-analysis.md What are the key chart levels for NVDA?
+
+# Financial reports
+@prompts/financial-report-analyst.md Analyze this 10-K filing: [paste text]
+
+# Earnings transcript
+@prompts/earnings-call-analysis.md What's the management tone here? [paste transcript]
+```
+
+### With Financial Data
+
+```
+# Paste balance sheet
+@prompts/fundamental-analysis.md
+[paste balance sheet, income statement, cash flow]
+
+# Paste SEC filing
+@prompts/financial-report-analyst.md
+[paste 10-Q or annual report text]
+
+# Paste earnings transcript
+@prompts/earnings-call-analysis.md
+[paste earnings call transcript]
+
+# Portfolio holdings
+@prompts/portfolio-review.md Review my portfolio:
+AAPL: 30%
+MSFT: 25%
+NVDA: 20%
+JNJ: 15%
+TSLA: 10%
+```
+
+### Stock Comparison
+
+```
+# Compare valuations
+@prompts/stock-valuation.md Compare AAPL vs MSFT valuations
+
+# Compare fundamentals
+@prompts/fundamental-analysis.md Compare AAPL and MSFT balance sheets
+
+# Multi-stock analysis
+@prompts/research-bundle.md Analyze AAPL, MSFT, and GOOGL
+```
+
+### Specialized Analysis
+
+```
+# Dividend safety
+@prompts/dividend-analysis.md Is the JNJ dividend safe?
+
+# Short squeeze potential
+@prompts/short-interest.md Evaluate short squeeze potential in GME
+
+# Options strategy
+@prompts/options-analysis.md Find bullish options strategies for AAPL earnings
+
+# Competitive moat
+@prompts/competitor-analysis.md Does Apple have a defensible moat?
+
+# Insider activity
+@prompts/insider-trading.md What are insiders buying at Tesla?
+
+# Smart money tracking
+@prompts/institutional-ownership.md Which institutions are buying tech stocks?
+
+# Sector opportunities
+@prompts/sector-analysis.md Which sectors should rotate into?
+```
+
+### Full Research Report
+
+```
+# Complete analysis on one stock
+@prompts/research-bundle.md Provide a comprehensive analysis of Apple (AAPL)
+
+# Quick version
+@prompts/research-bundle.md Quick analysis of Microsoft
+
+# Multi-stock comparison
+@prompts/research-bundle.md Compare AAPL, MSFT, and GOOGL comprehensively
+```
+
+### Follow-Up Questions
+
+Cursor remembers context for follow-ups:
+
+```
+# Initial analysis
+@prompts/dcf-valuation.md Build a DCF model for Microsoft
+
+# Natural follow-ups:
+What if revenue growth slows to 8%?
+How sensitive is the valuation to WACC?
+What's the downside case?
+What's the margin of safety?
+```
+
+---
+
+## Output Format Standards
+
+Every analysis in this workspace follows this structure:
+
+### 1. Executive Summary
+- Clear investment thesis
+- Primary bullish/bearish drivers
+- Time horizon and conviction
+
+### 2. Quantitative Analysis
+- **Specific numbers** (not estimates)
+- Year-over-year or period comparisons
+- Industry/peer benchmarking
+- Valuation multiples and metrics
+
+### 3. Qualitative Assessment
+- Management quality and capital allocation
+- Competitive positioning and economic moat
+- Market opportunity and growth drivers
+- Risk factors and thesis invalidators
+
+### 4. Standardized Signal Block
+
+All analyses MUST end with this format:
 
 ```
 ╔══════════════════════════════════════════════╗
@@ -73,6 +264,255 @@ Every analysis output MUST include:
 ╚══════════════════════════════════════════════╝
 ```
 
+---
+
+## File Structure Rules
+
+### When Working on Skills
+
+- **Skill definitions**: `plugins/us-stock-analysis/skills/<skill-name>/SKILL.md`
+  - Requires YAML frontmatter with `description` field
+  - Used only for Claude Code plugin
+
+- **Universal prompts**: `prompts/<skill-name>.md`
+  - Works with Gemini, Copilot, Cursor, and any AI
+  - Must match the corresponding SKILL.md
+  - NO slash commands or platform-specific syntax
+
+- **Plugin manifest**: `plugins/us-stock-analysis/.claude-plugin/plugin.json`
+  - Lists all available skills for Claude Code
+  - Update when adding new skills
+
+- **Marketplace config**: `.claude-plugin/marketplace.json`
+  - Version and marketplace metadata
+  - Update when releasing new versions
+
+### When Adding New Skills
+
+1. **Create skill definition:**
+   ```
+   plugins/us-stock-analysis/skills/<skill-name>/SKILL.md
+   ```
+   - Add frontmatter with `description`
+   - Write the full prompt framework
+   - Include signal block template
+
+2. **Create universal prompt:**
+   ```
+   prompts/<skill-name>.md
+   ```
+   - Copy from SKILL.md
+   - Remove any platform-specific syntax
+   - Ensure it's AI-agnostic
+
+3. **Update manifest files:**
+   - Add to `plugins/us-stock-analysis/.claude-plugin/plugin.json` skills array
+   - Update `.claude-plugin/marketplace.json` version
+   - Update `README.md` skills list and structure
+
+4. **Update documentation:**
+   - Add entry to `README.md` (Skills section)
+   - Update structure diagram in README
+   - Update CHANGELOG.md with new feature
+
+---
+
+## Analysis Quality Standards
+
+Every analysis output in this repository MUST include:
+
+1. **Quantitative Data**
+   - Specific numbers (not "around X%" or "approximately")
+   - Financial metrics with actual values
+   - Valuation multiples with proper context
+
+2. **Comparisons**
+   - Year-over-year growth rates
+   - Period-over-period trends
+   - Industry/peer benchmarking
+   - Historical ranges
+
+3. **Context & Benchmarking**
+   - How does metric X compare to peers?
+   - Is this above or below historical average?
+   - What's the industry standard?
+
+4. **Risk Assessment**
+   - What could invalidate this thesis?
+   - Downside scenarios and triggers
+   - Key assumptions and sensitivities
+
+5. **Standardized Signal Block**
+   - Always at the end of every analysis
+   - Uses consistent format
+   - Provides actionable recommendation
+
+---
+
+## Project Structure
+
+```
+InvestSkill/
+├── .cursor/
+│   └── rules/
+│       └── invest-skill.mdc      # This file (auto-loaded)
+├── .github/
+│   └── copilot-instructions.md   # GitHub Copilot integration
+├── prompts/                       # 18 universal frameworks
+│   ├── stock-eval.md
+│   ├── stock-valuation.md
+│   ├── fundamental-analysis.md
+│   ├── technical-analysis.md
+│   ├── dcf-valuation.md
+│   ├── economics-analysis.md
+│   ├── financial-report-analyst.md
+│   ├── earnings-call-analysis.md
+│   ├── insider-trading.md
+│   ├── institutional-ownership.md
+│   ├── competitor-analysis.md
+│   ├── dividend-analysis.md
+│   ├── short-interest.md
+│   ├── options-analysis.md
+│   ├── portfolio-review.md
+│   ├── sector-analysis.md
+│   └── research-bundle.md
+├── plugins/
+│   └── us-stock-analysis/
+│       ├── .claude-plugin/
+│       │   └── plugin.json        # Claude Code plugin manifest
+│       └── skills/                # Claude Code skills
+├── .claude-plugin/
+│   └── marketplace.json           # Marketplace config
+├── GEMINI.md                      # Gemini CLI setup
+├── README.md                      # Complete documentation
+└── CHANGELOG.md                   # Version history
+```
+
+---
+
+## Tips for Best Results
+
+### 1. Use Framework References
+```
+# Good: explicit reference
+@prompts/stock-valuation.md Analyze AAPL
+
+# Also works: natural language (Cursor applies framework context)
+What's a fair valuation for Apple?
+```
+
+### 2. Provide Context Data
+```
+# Better results with specific info
+@prompts/dcf-valuation.md
+Analyze MSFT assuming:
+- Revenue growth: 10% CAGR
+- WACC: 8.5%
+- Terminal growth: 2.5%
+- Current price: $450/share
+```
+
+### 3. Paste Financial Data
+```
+# Cursor can analyze pasted data directly
+@prompts/fundamental-analysis.md
+[paste balance sheet]
+[paste income statement]
+Analyze liquidity and profitability trends
+```
+
+### 4. Chain Multiple Analyses
+```
+# Comprehensive approach
+First: @prompts/stock-eval.md for NVDA quality
+Then: @prompts/technical-analysis.md for chart patterns
+Finally: @prompts/institutional-ownership.md for positioning
+```
+
+### 5. Ask Follow-Ups
+```
+# Cursor remembers context
+@prompts/stock-valuation.md Value MSFT
+
+Then ask:
+What's the valuation if growth slows to 8%?
+How important is the cloud margin assumption?
+What's the bull/bear case range?
+```
+
+---
+
+## Cursor-Specific Tips
+
+### Use @-mentions for Files
+```
+# Reference prompt files directly
+@prompts/stock-valuation.md [your query]
+
+# Cursor will load the framework automatically
+```
+
+### Paste Documents
+```
+# You can paste or upload documents
+@prompts/financial-report-analyst.md [upload 10-K PDF or paste text]
+```
+
+### Use Chat Memory
+```
+# Cursor remembers your conversation
+1. First message: analyze AAPL fundamentals
+2. Follow-up: "What about the technical setup?"
+3. Cursor remembers it's about AAPL
+```
+
+---
+
+## Troubleshooting
+
+### Framework not loading
+```
+# Make sure file reference is correct:
+@prompts/stock-valuation.md (not stock-val or valuation)
+
+# Files are in the prompts/ directory
+# Verify the exact filename matches
+```
+
+### Want more detailed analysis
+```
+# Ask Cursor for more depth:
+@prompts/fundamental-analysis.md
+Analyze AAPL with:
+- Detailed cash flow quality metrics
+- Working capital trends
+- Debt maturity schedule
+- Segment margin analysis
+```
+
+### Need specific format
+```
+# Request format changes:
+@prompts/stock-eval.md Value MSFT, format as:
+1. Executive summary (1 paragraph)
+2. Key metrics (table)
+3. Quality score with breakdown
+4. Bull/bear case
+5. Investment signal
+```
+
+---
+
+## Additional Resources
+
+- **README.md** — Full setup for Claude Code, Gemini, Copilot, Cursor
+- **GEMINI.md** — Detailed Gemini CLI guide
+- **.github/copilot-instructions.md** — GitHub Copilot integration guide
+- **prompts/** — All 18 framework files
+- **GitHub Issues** — Report problems or request features
+
+---
+
 ## Disclaimer
 
-All analysis is educational. Not financial advice.
+These analysis frameworks are for **educational purposes only** and do **not** constitute financial advice. Always consult a qualified financial advisor before making investment decisions. Past performance does not guarantee future results.

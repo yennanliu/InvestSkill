@@ -269,52 +269,236 @@ prompts/
 └── research-bundle.md            # Full chained analysis
 ```
 
-### Using with Gemini CLI
+---
+
+## Installation for Different AI Platforms
+
+### Claude Code (Official Plugin Marketplace)
+
+**Installation:**
+```bash
+# Open Claude Code
+claude
+
+# Add marketplace
+/plugin marketplace add yennanliu/InvestSkill
+
+# Install plugin
+/plugin install us-stock-analysis
+
+# List installed plugins
+/plugin list
+```
+
+**Usage:**
+```bash
+# All 18 skills available as slash commands
+/us-stock-analysis:stock-eval AAPL
+/us-stock-analysis:fundamental-analysis NVDA --visual
+/us-stock-analysis:technical-analysis TSLA --chart
+/us-stock-analysis:research-bundle MSFT --full
+/us-stock-analysis:financial-report-analyst AAPL 10-K
+/us-stock-analysis:stock-valuation GOOGL --methods dcf,cca,ev-ebitda
+```
+
+---
+
+### Gemini CLI
+
+**Installation:**
+
+Gemini CLI automatically loads `GEMINI.md` when you enter the project directory — **no manual installation needed**.
 
 ```bash
-# Gemini CLI reads GEMINI.md automatically for project context
+# Navigate to InvestSkill directory
+cd /path/to/InvestSkill
+
+# Start Gemini CLI
 gemini
 
-# Reference a prompt file directly
-> @prompts/stock-valuation.md Analyze NVDA using all valuation methods
-
-# Financial report analysis
-> @prompts/financial-report-analyst.md [paste your 10-K text here]
+# You now have access to all 18 analysis prompts via the prompts/ directory
 ```
 
-### Using with GitHub Copilot
+**Usage:**
 
-The `.github/copilot-instructions.md` file configures Copilot with InvestSkill's analysis frameworks. Open a chat and ask:
+Reference prompt files directly in the chat:
+
+```bash
+# Stock valuation analysis
+> @prompts/stock-valuation.md Analyze AAPL using all valuation methods
+
+# Financial report analysis with 10-K text
+> @prompts/financial-report-analyst.md [paste 10-K text here]
+
+# Fundamental analysis for a specific stock
+> @prompts/fundamental-analysis.md Deep dive on NVDA
+
+# Economic analysis
+> @prompts/economics-analysis.md What's the current economic outlook?
+
+# Full research bundle
+> @prompts/research-bundle.md Complete analysis on MSFT
+
+# Multiple analyses in one query
+> @prompts/stock-eval.md @prompts/technical-analysis.md Analyze TSLA holistically
+```
+
+**Key Points:**
+- The `@prompts/` file reference loads the entire analysis framework
+- You can paste financial data, transcripts, or 10-K text directly
+- Gemini CLI displays the GEMINI.md file automatically when first loaded
+- All 18 analysis frameworks are available in the `prompts/` directory
+
+---
+
+### GitHub Copilot
+
+**Installation:**
+
+GitHub Copilot automatically loads `.github/copilot-instructions.md` when you work in this repository — **no manual installation needed**.
+
+```bash
+# Clone or open the repository in any editor with GitHub Copilot
+git clone https://github.com/yennanliu/InvestSkill.git
+cd InvestSkill
+
+# Open in VS Code, JetBrains IDE, or GitHub.com editor
+# GitHub Copilot will automatically load copilot-instructions.md
+```
+
+**Usage:**
+
+Open Copilot Chat and ask naturally or reference prompt files:
 
 ```
-# In Copilot Chat
-Analyze AAPL using the stock-valuation framework
+# Natural language queries (Copilot uses the instructions context)
+Perform a fundamental analysis of Apple stock.
 
-# Reference a prompt file
-Use the framework in prompts/fundamental-analysis.md to analyze MSFT
+Do a DCF valuation for Microsoft using the stock-valuation framework.
+
+# Reference prompt files explicitly
+Use the framework in prompts/financial-report-analyst.md to analyze this 10-Q [paste text]
+
+# Combine analysis requests
+First use stock-eval.md to evaluate NVDA, then use technical-analysis.md for chart patterns
+
+# Request specific analysis types
+Run an insider-trading analysis on Tesla using prompts/insider-trading.md
+
+# Multiple stocks comparison
+Compare AAPL and MSFT using the portfolio-review framework
+
+# Technical analysis with chart patterns
+Analyze the technical setup of NVDA using prompts/technical-analysis.md
 ```
 
-### Using with Cursor
+**Key Points:**
+- Copilot automatically understands InvestSkill frameworks when working in this repository
+- Reference `prompts/<name>.md` to explicitly invoke a framework
+- You can paste financial statements, transcripts, or SEC filings directly
+- The `.github/copilot-instructions.md` file is automatically loaded
 
-The `.cursor/rules/invest-skill.mdc` file is automatically loaded by Cursor. Use the AI chat:
+---
+
+### Cursor
+
+**Installation:**
+
+Cursor automatically loads `.cursor/rules/invest-skill.mdc` when you open this repository — **no manual installation needed**.
+
+```bash
+# Clone or open the repository in Cursor
+git clone https://github.com/yennanliu/InvestSkill.git
+cd InvestSkill
+
+# Open Cursor in this directory
+cursor .
+
+# Cursor will automatically load the investment analysis rules
+```
+
+**Usage:**
+
+Open Cursor's AI chat and ask naturally or reference prompt files:
 
 ```
-# Cursor AI Chat
-@prompts/financial-report-analyst.md Analyze this 10-Q section: [paste text]
+# Direct references to prompt files
+@prompts/stock-valuation.md Analyze AAPL using all valuation methods
 
-# Or just ask naturally — Cursor knows the frameworks
-Perform a DCF valuation of NVDA using the InvestSkill methodology
+@prompts/financial-report-analyst.md Extract key insights from this 10-K [paste text]
+
+@prompts/dcf-valuation.md Build a DCF model for Microsoft
+
+# Natural language queries (Cursor applies the rules context)
+Do a comprehensive evaluation of NVDA stock
+
+Analyze the technical chart patterns for Tesla
+
+# Combine multiple analysis types
+First analyze fundamentals, then do technical analysis on MSFT using the prompts
+
+# Financial report analysis with uploaded documents
+@prompts/financial-report-analyst.md Analyze this annual report PDF [file reference]
+
+# Portfolio analysis
+@prompts/portfolio-review.md Review my portfolio allocation
 ```
 
-### Using with Any AI Assistant (ChatGPT, Claude.ai, etc.)
+**Key Points:**
+- Cursor rules are automatically loaded from `.cursor/rules/invest-skill.mdc`
+- All 18 analysis frameworks are available in the `prompts/` directory
+- You can use `@prompts/` references to explicitly invoke a framework
+- You can paste or upload financial documents for analysis
 
-Copy the content of any `prompts/*.md` file and paste it as a system prompt or at the start of your conversation:
+---
+
+### Any AI Assistant (ChatGPT, Claude.ai, Anthropic Console, etc.)
+
+**Installation:**
+
+No installation needed — copy and paste the prompt content directly.
+
+**Usage:**
+
+1. **Copy a prompt file from `prompts/` directory**
+   - Example: Open `prompts/stock-valuation.md` in your text editor
+   
+2. **Paste the content into your AI chat as the system message or context**
+
+3. **Ask your analysis question:**
 
 ```
-# Copy prompts/stock-valuation.md content
-# Paste into any AI chat, then:
-"Analyze AAPL using the framework above"
+# Paste prompts/stock-valuation.md content, then ask:
+Analyze Apple (AAPL) using the framework above
+
+# Paste prompts/financial-report-analyst.md, then:
+Analyze this 10-K filing: [paste 10-K text]
+
+# Paste prompts/fundamental-analysis.md, then:
+Deep dive on Microsoft's fundamentals
+
+# Multiple prompts: paste several, then ask:
+Provide a complete analysis combining stock-eval, technical-analysis, and economics-analysis frameworks
 ```
+
+**Quick Copy Command (macOS):**
+```bash
+# Copy a prompt file to clipboard
+cat prompts/stock-valuation.md | pbcopy
+
+# Then paste into ChatGPT, Claude.ai, etc.
+```
+
+**Quick Copy Command (Linux):**
+```bash
+# Copy a prompt file to clipboard
+cat prompts/stock-valuation.md | xclip -selection clipboard
+```
+
+**Key Points:**
+- All 18 analysis frameworks work with any AI model
+- No API key or special setup required
+- Best for ad-hoc analysis without persistent setup
 
 ## Structure
 
