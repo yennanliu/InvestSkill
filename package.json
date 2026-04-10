@@ -3,7 +3,6 @@
   "version": "1.4.0",
   "description": "Professional investment analysis frameworks for US stock markets — works with Claude Code, Cursor, Gemini CLI, GitHub Copilot, and any AI assistant",
   "main": "scripts/test-skills.js",
-  "type": "module",
   "scripts": {
     "test": "node scripts/test-skills.js",
     "test:skills": "node scripts/test-skills.js",
