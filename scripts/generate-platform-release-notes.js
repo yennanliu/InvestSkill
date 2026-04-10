@@ -1,474 +1,236 @@
 #!/usr/bin/env node
 /**
  * generate-platform-release-notes.js
- * Generates platform-specific release notes for all supported AI platforms
+ * Generates platform-specific release notes with availability table
+ * Called by auto-deploy.yml during GitHub Release creation
  *
- * Environment variables:
- *   - RELEASE_VERSION: Version being released
+ * Usage:
+ *   RELEASE_VERSION=1.4.0 node scripts/generate-platform-release-notes.js
  */
 
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = process.env.RELEASE_VERSION || 'unknown';
 const ROOT = path.resolve(__dirname, '..');
-const DIST_DIR = path.join(ROOT, 'dist');
+const RELEASE_VERSION = process.env.RELEASE_VERSION || 'Unknown';
 
-if (!fs.existsSync(DIST_DIR)) {
-  fs.mkdirSync(DIST_DIR, { recursive: true });
+/**
+ * Platform availability data structure
+ * Maps platform names to installation methods and status
+ */
+const PLATFORMS = {
+  'Claude Code': {
+    status: '✅ Available',
+    install: '/plugin install us-stock-analysis',
+    docs: 'README-claude-code.md',
+    marketplace: 'Claude Code Plugin Marketplace',
+  },
+  'Cursor IDE': {
+    status: '✅ Available',
+    install: 'Auto-loads from `.cursor/rules/invest-skill.mdc`',
+    docs: 'README-cursor.md',
+    registry: 'Cursor Rules Registry',
+  },
+  'Gemini CLI': {
+    status: '✅ Available',
+    install: 'Auto-loads from `GEMINI.md` (project directory)',
+    docs: 'README-gemini.md',
+    registry: 'Prompt library in repository',
+  },
+  'GitHub Copilot': {
+    status: '✅ Available',
+    install: 'Auto-loads from `.github/copilot-instructions.md`',
+    docs: 'README.md',
+    registry: 'VS Code / JetBrains',
+  },
+  'Universal (ChatGPT, Claude.ai, etc)': {
+    status: '✅ Available',
+    install: 'Copy prompts from `prompts/` directory',
+    docs: 'README.md',
+    registry: 'File-based (`prompts/*.md`)',
+  },
+};
+
+/**
+ * Extract release notes from CHANGELOG.md
+ */
+function extractReleaseNotes() {
+  try {
+    const changelogPath = path.join(ROOT, 'CHANGELOG.md');
+    const content = fs.readFileSync(changelogPath, 'utf8');
+
+    // Find the section for this version
+    const versionRegex = new RegExp(`## \\[${RELEASE_VERSION}\\]([\\s\\S]*?)(?=## \\[|$)`);
+    const match = content.match(versionRegex);
+
+    if (match && match[1]) {
+      return match[1].trim();
+    }
+
+    return null;
+  } catch (err) {
+    console.error('Error reading CHANGELOG.md:', err.message);
+    return null;
+  }
 }
 
 /**
- * Generate Claude Code platform notes
+ * Generate platform availability table
  */
-function generateClaudeCodeNotes() {
-  const notes = `# 🚀 InvestSkill v${VERSION} — Claude Code Plugin
+function generatePlatformTable() {
+  let table = '## Platform Availability\n\n';
+  table += '| Platform | Status | Installation | Documentation |\n';
+  table += '|----------|--------|---------------|----------------|\n';
 
-## Installation
+  Object.entries(PLATFORMS).forEach(([platform, info]) => {
+    const installCmd = info.install.includes('`') ? info.install : `\`${info.install}\``;
+    const docLink = `[${info.docs}](${info.docs})`;
+    table += `| ${platform} | ${info.status} | ${installCmd} | ${docLink} |\n`;
+  });
 
-\`\`\`bash
-# Add marketplace
-/plugin marketplace add yennanliu/InvestSkill
-
-# Install plugin
-/plugin install us-stock-analysis
-
-# Verify installation
-/plugin list
-\`\`\`
-
-## Quick Start
-
-\`\`\`bash
-# Evaluate a stock
-/us-stock-analysis:stock-eval AAPL
-
-# Stock valuation with all methods
-/us-stock-analysis:stock-valuation MSFT
-
-# Deep fundamental analysis
-/us-stock-analysis:fundamental-analysis NVDA --visual
-
-# Technical analysis with charts
-/us-stock-analysis:technical-analysis TSLA --chart
-
-# Full research bundle
-/us-stock-analysis:research-bundle GOOGL
-\`\`\`
-
-## All 18 Skills
-
-### Core Analysis (6)
-- \`stock-eval\` — Piotroski F-Score, quality metrics
-- \`stock-valuation\` — DCF + comparable companies + EV multiples
-- \`fundamental-analysis\` — Financial statement deep dive
-- \`technical-analysis\` — Chart patterns and indicators
-- \`dcf-valuation\` — Intrinsic value modeling
-- \`economics-analysis\` — Macro indicators and recession risk
-
-### Financial Reports (2)
-- \`financial-report-analyst\` — 10-K, 10-Q, annual reports
-- \`earnings-call-analysis\` — Management tone and guidance
-
-### Market Monitoring (4)
-- \`insider-trading\` — Form 4 insider activity
-- \`institutional-ownership\` — 13F smart money moves
-- \`dividend-analysis\` — Dividend safety and yield traps
-- \`short-interest\` — Short squeeze scoring
-
-### Advanced Analysis (4)
-- \`competitor-analysis\` — Economic moats and Porter's Five Forces
-- \`options-analysis\` — Greeks, IV rank, strategy selection
-- \`portfolio-review\` — Allocation optimization
-- \`sector-analysis\` — Sector rotation opportunities
-
-### Full Research (2)
-- \`research-bundle\` — All frameworks combined
-
-## What's New in v${VERSION}
-
-See CHANGELOG.md for detailed updates.
-
-## Platform Support
-
-✅ Claude Code — Native plugin support
-✅ Cursor — Rules (.cursor/rules/invest-skill.mdc)
-✅ Gemini CLI — Prompts (GEMINI.md + prompts/)
-✅ GitHub Copilot — Instructions (.github/copilot-instructions.md)
-✅ Any AI Tool — Universal prompts (prompts/ directory)
-
-## Documentation
-
-- [Full README](https://github.com/yennanliu/InvestSkill)
-- [Installation Guide](https://github.com/yennanliu/InvestSkill#install)
-- [Usage Examples](https://github.com/yennanliu/InvestSkill#usage-examples)
-- [Cross-AI Compatibility](https://github.com/yennanliu/InvestSkill#cross-ai-compatibility)
-
-## Support
-
-For issues or feature requests: https://github.com/yennanliu/InvestSkill/issues
-`;
-
-  const path_file = path.join(DIST_DIR, 'CLAUDE-CODE-RELEASE-NOTES.md');
-  fs.writeFileSync(path_file, notes, 'utf8');
-  console.log(`✅ Claude Code release notes: ${path_file}`);
+  table += '\n';
+  return table;
 }
 
 /**
- * Generate Cursor platform notes
+ * Generate download badges and checksums section
  */
-function generateCursorNotes() {
-  const notes = `# 🎯 InvestSkill v${VERSION} — Cursor Rules
-
-## Installation
-
-### Automatic (Recommended)
-
-Cursor automatically loads rules from \`.cursor/rules/invest-skill.mdc\` when you open the repository.
-
-\`\`\`bash
-# Clone and open
-git clone https://github.com/yennanliu/InvestSkill.git
-cd InvestSkill
-cursor .
-
-# Open AI Chat (Cmd+K)
-# Cursor rules are automatically loaded
-\`\`\`
-
-### Manual Installation
-
-1. Download \`cursor-rules-${VERSION}.mdc\` from the release
-2. Place in your project: \`.cursor/rules/invest-skill.mdc\`
-3. Open Cursor AI Chat (Cmd+K)
-4. Rules are automatically applied
-
-## Quick Start
-
-In Cursor AI Chat:
-
-\`\`\`
-@prompts/stock-valuation.md Analyze Apple (AAPL)
-
-@prompts/fundamental-analysis.md Deep dive on Microsoft
-
-@prompts/technical-analysis.md What are TSLA's key chart levels?
-
-@prompts/research-bundle.md Complete analysis on NVDA
-\`\`\`
-
-## All 18 Frameworks
-
-Available in the \`prompts/\` directory:
-
-- stock-eval.md
-- stock-valuation.md
-- fundamental-analysis.md
-- technical-analysis.md
-- dcf-valuation.md
-- economics-analysis.md
-- financial-report-analyst.md
-- earnings-call-analysis.md
-- insider-trading.md
-- institutional-ownership.md
-- competitor-analysis.md
-- dividend-analysis.md
-- short-interest.md
-- options-analysis.md
-- portfolio-review.md
-- sector-analysis.md
-- research-bundle.md
-
-## Features
-
-✅ 18 professional analysis frameworks
-✅ Auto-loading from .cursor/rules directory
-✅ File references with @prompts/<name>
-✅ Paste financial data directly
-✅ Standardized INVESTMENT SIGNAL output
-
-## Documentation
-
-See .cursor/rules/invest-skill.mdc for full setup and examples.
-
-## Support
-
-For issues: https://github.com/yennanliu/InvestSkill/issues
-`;
-
-  const path_file = path.join(DIST_DIR, 'CURSOR-RELEASE-NOTES.md');
-  fs.writeFileSync(path_file, notes, 'utf8');
-  console.log(`✅ Cursor release notes: ${path_file}`);
+function generateDownloadSection() {
+  let section = '## Download & Verify\n\n';
+  section += 'All releases include checksums for verification:\n\n';
+  section += '```bash\n';
+  section += '# Download artifacts\n';
+  section += `tar xzf invest-skill-marketplace-${RELEASE_VERSION}.tar.gz\n\n`;
+  section += '# Verify checksums\n';
+  section += 'sha256sum -c checksums.txt\n';
+  section += '```\n\n';
+  section += '**Artifacts:**\n';
+  section += `- \`invest-skill-marketplace-${RELEASE_VERSION}.tar.gz\` — Full marketplace (all platforms)\n`;
+  section += `- \`us-stock-analysis-${RELEASE_VERSION}.tar.gz\` — Claude Code plugin only\n`;
+  section += '- \`checksums.txt\` — SHA-256 verification file\n\n';
+  return section;
 }
 
 /**
- * Generate Gemini platform notes
+ * Generate feature highlights from release notes
  */
-function generateGeminiNotes() {
-  const notes = `# 🔮 InvestSkill v${VERSION} — Gemini CLI Prompts
+function generateHighlights(notes) {
+  if (!notes) return '';
 
-## Installation
+  let highlights = '## What\'s New\n\n';
 
-\`\`\`bash
-# Navigate to InvestSkill directory
-cd /path/to/InvestSkill
+  // Extract Added section
+  const addedMatch = notes.match(/### Added\n([\s\S]*?)(?=###|$)/);
+  if (addedMatch && addedMatch[1]) {
+    highlights += '**✨ New Features:**\n';
+    highlights += addedMatch[1].trim() + '\n\n';
+  }
 
-# Start Gemini CLI (auto-loads GEMINI.md)
-gemini
+  // Extract Fixed section
+  const fixedMatch = notes.match(/### Fixed\n([\s\S]*?)(?=###|$)/);
+  if (fixedMatch && fixedMatch[1]) {
+    highlights += '**🐛 Fixes:**\n';
+    highlights += fixedMatch[1].trim() + '\n\n';
+  }
 
-# Use any framework
-> @prompts/stock-valuation.md Analyze AAPL using all valuation methods
-\`\`\`
+  // Extract Changed section
+  const changedMatch = notes.match(/### Changed\n([\s\S]*?)(?=###|$)/);
+  if (changedMatch && changedMatch[1]) {
+    highlights += '**🔧 Improvements:**\n';
+    highlights += changedMatch[1].trim() + '\n\n';
+  }
 
-## Quick Start
-
-In Gemini CLI:
-
-\`\`\`
-# Stock analysis
-> @prompts/stock-eval.md Evaluate Apple with Piotroski scoring
-
-# Valuation
-> @prompts/stock-valuation.md Value Microsoft
-
-# Financial reports
-> @prompts/financial-report-analyst.md [paste 10-K]
-
-# Full research
-> @prompts/research-bundle.md Complete analysis on NVDA
-\`\`\`
-
-## All 18 Prompts
-
-| Framework | Command |
-|-----------|---------|
-| Stock Evaluation | \`@prompts/stock-eval.md AAPL\` |
-| Stock Valuation | \`@prompts/stock-valuation.md MSFT\` |
-| Fundamental Analysis | \`@prompts/fundamental-analysis.md NVDA\` |
-| Technical Analysis | \`@prompts/technical-analysis.md TSLA\` |
-| DCF Valuation | \`@prompts/dcf-valuation.md GOOGL\` |
-| Economics Analysis | \`@prompts/economics-analysis.md\` |
-| Financial Report Analyst | \`@prompts/financial-report-analyst.md\` |
-| Earnings Call Analysis | \`@prompts/earnings-call-analysis.md AAPL\` |
-| Insider Trading | \`@prompts/insider-trading.md TSLA\` |
-| Institutional Ownership | \`@prompts/institutional-ownership.md META\` |
-| Competitor Analysis | \`@prompts/competitor-analysis.md AAPL\` |
-| Dividend Analysis | \`@prompts/dividend-analysis.md JNJ\` |
-| Short Interest | \`@prompts/short-interest.md GME\` |
-| Options Analysis | \`@prompts/options-analysis.md AAPL\` |
-| Portfolio Review | \`@prompts/portfolio-review.md\` |
-| Sector Analysis | \`@prompts/sector-analysis.md\` |
-| Research Bundle | \`@prompts/research-bundle.md AAPL\` |
-
-## Features
-
-✅ 18 universal AI-agnostic prompts
-✅ File references with @prompts/<name>.md
-✅ Paste financial data directly
-✅ Works with any AI model
-✅ Standardized INVESTMENT SIGNAL output
-
-## Package Contents
-
-\`gemini-prompts-${VERSION}.tar.gz\` includes:
-
-- \`prompts/\` — All 18 analysis frameworks
-- \`GEMINI.md\` — Complete setup and usage guide
-- \`.cursor/rules/invest-skill.mdc\` — Cursor rules
-- \`.github/copilot-instructions.md\` — Copilot setup
-
-## Documentation
-
-See GEMINI.md for detailed setup and examples.
-
-## Support
-
-For issues: https://github.com/yennanliu/InvestSkill/issues
-`;
-
-  const path_file = path.join(DIST_DIR, 'GEMINI-RELEASE-NOTES.md');
-  fs.writeFileSync(path_file, notes, 'utf8');
-  console.log(`✅ Gemini CLI release notes: ${path_file}`);
+  return highlights;
 }
 
 /**
- * Generate Copilot platform notes
+ * Generate quick start section
  */
-function generateCopilotNotes() {
-  const notes = `# 🤖 InvestSkill v${VERSION} — GitHub Copilot
+function generateQuickStart() {
+  let section = '## Quick Start\n\n';
+  section += '### Claude Code\n```bash\n';
+  section += '/plugin install us-stock-analysis\n';
+  section += '/us-stock-analysis:stock-eval AAPL\n';
+  section += '```\n\n';
 
-## Installation
+  section += '### Cursor\n';
+  section += 'Rules auto-load in Cursor AI Chat (Cmd+K):\n';
+  section += '```\n';
+  section += '@prompts/stock-eval.md Evaluate Apple (AAPL)\n';
+  section += '```\n\n';
 
-Copilot automatically loads \`.github/copilot-instructions.md\` when you work in this repository.
+  section += '### Gemini CLI\n';
+  section += 'In project directory:\n';
+  section += '```bash\n';
+  section += 'gemini\n';
+  section += '> @prompts/stock-eval.md Evaluate Apple (AAPL)\n';
+  section += '```\n\n';
 
-\`\`\`bash
-# Clone and open in VS Code or JetBrains IDE
-git clone https://github.com/yennanliu/InvestSkill.git
-cd InvestSkill
-
-# VS Code
-code .
-
-# JetBrains IDE (IntelliJ, PyCharm, etc.)
-# Open folder in IDE
-
-# GitHub.com Web Editor
-# Press . key in GitHub repo
-\`\`\`
-
-## Quick Start
-
-Open Copilot Chat and ask:
-
-\`\`\`
-# Natural language queries
-Perform a stock evaluation of Apple using Piotroski scoring
-
-What's a fair valuation for Microsoft?
-
-Deep dive into Tesla's balance sheet
-
-# Explicit framework references
-Use prompts/stock-valuation.md to analyze AAPL
-
-Apply prompts/fundamental-analysis.md to MSFT financials
-\`\`\`
-
-## All 18 Frameworks
-
-Copilot understands all frameworks in the \`prompts/\` directory:
-
-- stock-eval.md — Comprehensive evaluation
-- stock-valuation.md — Multi-method valuation
-- fundamental-analysis.md — Financial statement analysis
-- technical-analysis.md — Chart pattern analysis
-- dcf-valuation.md — Intrinsic value model
-- economics-analysis.md — Macro analysis
-- financial-report-analyst.md — 10-K/10-Q analysis
-- earnings-call-analysis.md — Earnings transcript analysis
-- insider-trading.md — Insider activity tracking
-- institutional-ownership.md — Smart money tracking
-- competitor-analysis.md — Competitive moat analysis
-- dividend-analysis.md — Dividend safety
-- short-interest.md — Short squeeze potential
-- options-analysis.md — Options strategy selection
-- portfolio-review.md — Portfolio optimization
-- sector-analysis.md — Sector rotation
-- research-bundle.md — Full multi-framework analysis
-
-## Features
-
-✅ 18 professional analysis frameworks
-✅ Auto-loaded in VS Code and JetBrains
-✅ Works with all major IDEs
-✅ Paste financial data or documents
-✅ Standardized INVESTMENT SIGNAL output
-
-## Documentation
-
-See .github/copilot-instructions.md for detailed setup and examples.
-
-## Support
-
-For issues: https://github.com/yennanliu/InvestSkill/issues
-`;
-
-  const path_file = path.join(DIST_DIR, 'COPILOT-RELEASE-NOTES.md');
-  fs.writeFileSync(path_file, notes, 'utf8');
-  console.log(`✅ Copilot release notes: ${path_file}`);
-}
-
-/**
- * Generate universal notes
- */
-function generateUniversalNotes() {
-  const notes = `# 🌍 InvestSkill v${VERSION} — Universal Prompts
-
-For use with any AI assistant: ChatGPT, Claude.ai, Anthropic Console, etc.
-
-## Quick Start
-
-1. Copy any prompt from \`prompts/\` directory
-2. Paste into your AI chat
-3. Ask your analysis question
-
-\`\`\`bash
-# Example: Copy to clipboard
-cat prompts/stock-valuation.md | pbcopy
-
-# Then paste into ChatGPT and ask:
-# "Analyze Apple (AAPL) using the framework above"
-\`\`\`
-
-## All 18 Prompts
-
-All prompts are AI-agnostic and work with any model:
-
-- stock-eval.md — Stock evaluation with quality scoring
-- stock-valuation.md — Multi-method valuation (DCF + comps + EV)
-- fundamental-analysis.md — Financial statement analysis
-- technical-analysis.md — Chart patterns and indicators
-- dcf-valuation.md — DCF intrinsic value model
-- economics-analysis.md — Macro analysis
-- financial-report-analyst.md — 10-K/10-Q analysis
-- earnings-call-analysis.md — Earnings transcript analysis
-- insider-trading.md — Insider activity analysis
-- institutional-ownership.md — Institutional tracking
-- competitor-analysis.md — Competitive moat analysis
-- dividend-analysis.md — Dividend safety scoring
-- short-interest.md — Short squeeze analysis
-- options-analysis.md — Options strategy selection
-- portfolio-review.md — Portfolio optimization
-- sector-analysis.md — Sector rotation analysis
-- research-bundle.md — Full multi-framework analysis
-
-## Features
-
-✅ 18 professional analysis frameworks
-✅ Works with any AI model
-✅ No API keys or special setup required
-✅ Paste financial data directly
-✅ Standardized INVESTMENT SIGNAL output
-
-## Documentation
-
-See README.md for complete platform guide.
-
-## Support
-
-For issues: https://github.com/yennanliu/InvestSkill/issues
-`;
-
-  const path_file = path.join(DIST_DIR, 'UNIVERSAL-RELEASE-NOTES.md');
-  fs.writeFileSync(path_file, notes, 'utf8');
-  console.log(`✅ Universal release notes: ${path_file}`);
+  return section;
 }
 
 /**
  * Main function
  */
 function main() {
-  try {
-    console.log(`📋 Generating platform release notes for v${VERSION}`);
-    console.log('');
+  console.log('📋 Generating platform release notes...\n');
 
-    generateClaudeCodeNotes();
-    generateCursorNotes();
-    generateGeminiNotes();
-    generateCopilotNotes();
-    generateUniversalNotes();
+  const releaseNotes = extractReleaseNotes();
 
-    console.log('');
-    console.log('✅ All platform release notes generated');
-    console.log('');
-    console.log('📂 Generated files in dist/:');
-    const files = fs.readdirSync(DIST_DIR).filter(f => f.includes('RELEASE-NOTES') || f.includes('INSTALLATION'));
-    files.forEach(f => console.log(`   - ${f}`));
-
-  } catch (err) {
-    console.error('❌ Error generating release notes:', err.message);
-    process.exit(1);
+  if (!releaseNotes) {
+    console.warn(`⚠️  No release notes found for v${RELEASE_VERSION} in CHANGELOG.md`);
+    console.log('   Proceeding with minimal body.\n');
   }
+
+  // Build the full release body
+  let body = `## InvestSkill v${RELEASE_VERSION}\n\n`;
+  body += '**18 Professional Investment Analysis Frameworks**\n\n';
+
+  // Add highlights if we have them
+  if (releaseNotes) {
+    body += generateHighlights(releaseNotes);
+  }
+
+  // Add quick start
+  body += generateQuickStart();
+
+  // Add platform table
+  body += generatePlatformTable();
+
+  // Add download section
+  body += generateDownloadSection();
+
+  // Add full changelog
+  if (releaseNotes) {
+    body += '## Full Changelog\n\n';
+    body += releaseNotes;
+  }
+
+  // Add resources footer
+  body += '\n---\n\n';
+  body += '## Documentation & Resources\n\n';
+  body += '- 📖 [Complete README](README.md) — All platforms setup guide\n';
+  body += '- 📊 [Platform Compatibility](PLATFORM-COMPATIBILITY.md) — Feature comparison\n';
+  body += '- 📚 [Cookbook](COOKBOOK.md) — Examples and walkthroughs\n';
+  body += '- 🔧 [CI/CD Guide](CI-CD-GUIDE.md) — Automated release pipeline\n';
+  body += '- 💡 [16 Investment Frameworks](prompts/) — Universal prompt files\n\n';
+
+  body += '## Support\n\n';
+  body += '- 🐛 [Report Issues](https://github.com/yennanliu/InvestSkill/issues)\n';
+  body += '- 💬 [Discussions](https://github.com/yennanliu/InvestSkill/discussions)\n';
+  body += '- 📧 Feedback: [GitHub Issues](https://github.com/yennanliu/InvestSkill/issues/new)\n\n';
+
+  body += '---\n\n';
+  body += '**Legal:** This toolkit provides educational analysis only and does NOT constitute financial advice. Always consult qualified financial advisors and do your own research.\n';
+
+  // Write to file for use in GitHub Release
+  const outputPath = path.join(ROOT, 'RELEASE_NOTES.md');
+  fs.writeFileSync(outputPath, body, 'utf8');
+
+  console.log(`✅ Platform release notes generated: ${outputPath}`);
+  console.log(`\n📝 Preview:\n`);
+  console.log(body.substring(0, 500) + '\n...\n');
+  console.log(`\n✨ Total length: ${body.length} characters`);
 }
 
 main();

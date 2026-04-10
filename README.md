@@ -18,6 +18,18 @@ Professional investment analysis and stock evaluation skills — works with Clau
 - 📊 **[Example Output: Comprehensive Analysis Report (PLTR)](https://github.com/yennanliu/finance_data/blob/main/claude_code/pltr/comprehensive_analysis_report.md)**
 - 📊 **[More Output: Finance data](https://github.com/yennanliu/finance_data/tree/main/claude_code)**
 
+## Platform-Specific Guides
+
+Choose your platform for detailed setup and usage instructions:
+
+- 🔌 **[Claude Code Plugin Guide](README-claude-code.md)** — Installation, skills reference, advanced workflows
+- 🎯 **[Cursor IDE Rules Guide](README-cursor.md)** — Auto-loading rules, @prompts/ references, natural language queries
+- 💬 **[Gemini CLI Guide](README-gemini.md)** — Project-directory auto-loading, @prompts/ file references, session memory
+- 🤖 **[GitHub Copilot Guide](README.md#github-copilot)** — Auto-loading configuration, natural language support
+- 📚 **[Universal Access](README.md#any-ai-assistant)** — Works with ChatGPT, Claude.ai, Anthropic Console, etc.
+
+**Status Dashboard**: [Deployment Status](DEPLOYMENT-STATUS.md) — Platform availability, version sync, release history
+
 - 
 ## Install
 
