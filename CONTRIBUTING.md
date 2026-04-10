@@ -1,260 +1,290 @@
 # Contributing to InvestSkill
 
-Thank you for your interest in contributing to InvestSkill! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing! We welcome contributions of all kinds—bug reports, feature requests, documentation, and code improvements.
 
 ## Code of Conduct
 
-By participating in this project, you agree to maintain a respectful and inclusive environment for all contributors.
+Be respectful, inclusive, and professional. We're building a community for investment research enthusiasts and professionals.
 
-## How Can I Contribute?
-
-### Reporting Bugs
-
-Before creating bug reports, please check existing issues to avoid duplicates. When creating a bug report, include:
-
-- Clear and descriptive title
-- Detailed steps to reproduce the issue
-- Expected behavior vs actual behavior
-- Claude Code version and OS information
-- Screenshots if applicable
-
-### Suggesting Enhancements
-
-Enhancement suggestions are tracked as GitHub issues. When creating an enhancement suggestion, include:
-
-- Clear and descriptive title
-- Detailed description of the proposed functionality
-- Rationale for why this enhancement would be useful
-- Examples of how it would work
-
-### Adding New Skills
-
-We welcome new skills that align with investment analysis and financial markets. To add a new skill:
-
-1. Fork the repository
-2. Create a new branch (`git checkout -b feature/new-skill-name`)
-3. Add your skill under `plugins/us-stock-analysis/skills/your-skill-name/`
-4. Create a `SKILL.md` file with proper frontmatter
-5. Update `README.md` to list the new skill
-6. Update `CHANGELOG.md`
-7. Submit a pull request
-
-#### Skill Requirements
-
-Each skill must:
-- Have a clear, descriptive name (kebab-case)
-- Include a `SKILL.md` file with YAML frontmatter containing a description
-- Provide professional-grade, actionable analysis
-- Include clear documentation of what the skill does
-- Align with the investment/finance theme
-
-Example SKILL.md structure:
-```markdown
----
-description: Brief description of what this skill does
 ---
 
-# Skill Name
+## Ways to Contribute
 
-Detailed description and instructions for the skill.
+### 1. 🐛 Report Bugs
 
-## Analysis Components
+Found an issue? Help us fix it.
 
-1. Component 1
-2. Component 2
+**[Open a Bug Report →](https://github.com/yennanliu/InvestSkill/issues/new?template=bug_report.md)**
 
-## Output Format
+Include:
+- Platform (Claude Code, Cursor, Gemini CLI, etc.)
+- Your version: `npm test` shows version
+- Steps to reproduce
+- Expected vs. actual behavior
+- Error messages (full output)
 
-Description of expected output format.
-```
+### 2. 💡 Suggest Features
 
-### Creating New Plugins
+Have an idea for a new skill or improvement?
 
-To add a completely new plugin to the marketplace:
+**[Start a Discussion →](https://github.com/yennanliu/InvestSkill/discussions)**
 
-1. Create a new directory under `plugins/your-plugin-name/`
-2. Add `.claude-plugin/plugin.json` with metadata:
-   ```json
-   {
-     "name": "your-plugin-name",
-     "description": "Plugin description",
-     "version": "1.0.0",
-     "author": {
-       "name": "Your Name"
-     },
-     "homepage": "https://github.com/yennanliu/InvestSkill",
-     "license": "MIT",
-     "keywords": ["keyword1", "keyword2"]
-   }
-   ```
-3. Create `skills/` directory with at least one skill
-4. Update `.claude-plugin/marketplace.json` to include your plugin
-5. Add documentation in plugin's `README.md`
-6. Update root `CHANGELOG.md`
+Describe:
+- Feature overview
+- Use case example
+- Why it helps users
+- Implementation ideas (optional)
 
-## Development Workflow
+### 3. 📚 Improve Documentation
 
-### 1. Fork and Clone
+Documentation improvements are always welcome:
+- Typo fixes
+- Clearer examples
+- Better organization
+- Updated screenshots
+
+Improvements to:
+- README files
+- Inline code comments
+- Guides and tutorials
+- FAQs
+
+### 4. 🎯 Add a New Skill
+
+Want to create a new analysis framework?
+
+**See [ADDING-NEW-SKILLS.md](ADDING-NEW-SKILLS.md)** for:
+- Complete 12-step walkthrough
+- File structure & templates
+- Platform sync checklist
+- Testing procedures
+- Review process
+
+### 5. 🧪 Fix Bugs
+
+Found and fixed a bug? We'd love your PR!
+
+### 6. ✨ Enhance Existing Skills
+
+Improvements to existing frameworks:
+- Better algorithms
+- More comprehensive analysis
+- Faster computation
+- Better documentation
+
+---
+
+## Development Setup
+
+### Prerequisites
+
+- Node.js 18.0.0+
+- git
+- GitHub account
+
+### Local Setup
 
 ```bash
-# Fork the repository on GitHub
-# Clone your fork
-git clone https://github.com/YOUR-USERNAME/InvestSkill.git
+# Clone repository
+git clone https://github.com/yennanliu/InvestSkill.git
 cd InvestSkill
+
+# Install dependencies (if any)
+npm install
+
+# Run test suite
+npm test
+
+# Run validation
+npm run pre-release
+
+# Verify setup
+npm run verify
 ```
 
-### 2. Create a Branch
+### Test Before Submitting
 
 ```bash
-git checkout -b feature/your-feature-name
-# or
-git checkout -b fix/your-bug-fix
+# All checks
+npm run pre-release
+
+# Or individually
+npm test                          # Unit tests
+npm run validate                  # Prompt quality
+npm run verify                    # Setup verification
+npm run integration-tests         # Platform artifacts
 ```
 
-### 3. Make Changes
+All tests must pass before submitting a PR.
 
-- Follow existing code style and structure
-- Keep changes focused on a single issue
-- Write clear, descriptive commit messages
+---
 
-### 4. Test Your Changes
+## Submitting Changes
 
-```bash
-# Test locally by installing the plugin
-claude
+### Before You Start
 
-# Add local marketplace
-/plugin marketplace add /path/to/InvestSkill
+1. Check if your idea is already discussed in [Issues](https://github.com/yennanliu/InvestSkill/issues) or [Discussions](https://github.com/yennanliu/InvestSkill/discussions)
+2. For new skills: read [ADDING-NEW-SKILLS.md](ADDING-NEW-SKILLS.md)
+3. For bugs: confirm it's reproducible locally
 
-# Install and test your changes
-/plugin install us-stock-analysis@invest-skill
+### Creating a Pull Request
 
-# Test the skills
-/your-skill-name argument
-```
+1. **Fork the repository**
+   ```bash
+   git clone https://github.com/YOUR-USERNAME/InvestSkill.git
+   cd InvestSkill
+   ```
 
-### 5. Validate JSON Files
+2. **Create a feature branch**
+   ```bash
+   git checkout -b feature/your-feature-name
+   # or: git checkout -b fix/issue-name
+   ```
 
-```bash
-# Validate marketplace.json
-jq empty .claude-plugin/marketplace.json
+3. **Make your changes**
+   - Keep commits focused (one feature/fix per commit)
+   - Write clear commit messages
+   - Reference issues: `fixes #123`
 
-# Validate plugin.json
-jq empty plugins/us-stock-analysis/.claude-plugin/plugin.json
-```
+4. **Test your changes**
+   ```bash
+   npm test                    # Unit tests
+   npm run integration-tests   # Platform tests
+   npm run pre-release         # Full validation
+   ```
 
-### 6. Update Documentation
+5. **Push to your fork**
+   ```bash
+   git push origin feature/your-feature-name
+   ```
 
-- Update `README.md` if adding new features
-- Update `CHANGELOG.md` following [Keep a Changelog](https://keepachangelog.com/) format
-- Update skill documentation as needed
+6. **Open a Pull Request**
+   - Reference the issue being fixed: `fixes #123`
+   - Describe what your change does
+   - Explain why it's needed
+   - Include test results (screenshots, output, etc.)
 
-### 7. Commit and Push
+### PR Checklist
 
-```bash
-git add .
-git commit -m "feat: add new stock screening skill"
-git push origin feature/your-feature-name
-```
+- [ ] Tests pass: `npm test` shows 270+ passed
+- [ ] Linting passes: No warnings
+- [ ] Documentation updated
+- [ ] Commit messages are clear
+- [ ] Changes follow project conventions
+- [ ] Added new tests if needed
 
-### 8. Create Pull Request
+---
 
-- Go to your fork on GitHub
-- Click "New Pull Request"
-- Fill out the PR template completely
-- Wait for CI checks to pass
-- Respond to review feedback
+## Code Standards
 
-## Commit Message Guidelines
+### Naming Conventions
 
-We follow [Conventional Commits](https://www.conventionalcommits.org/):
+- **Files**: kebab-case (`stock-eval.md`)
+- **Functions**: camelCase (`getStockMetrics()`)
+- **Constants**: UPPER_SNAKE_CASE (`MAX_RETRIES`)
+- **Classes**: PascalCase (`StockAnalyzer`)
 
-- `feat:` New feature
-- `fix:` Bug fix
-- `docs:` Documentation changes
-- `style:` Formatting, missing semicolons, etc.
-- `refactor:` Code restructuring
-- `test:` Adding tests
-- `chore:` Maintenance tasks
+### JavaScript Style
 
-Examples:
-```
-feat: add options analysis skill
-fix: correct P/E ratio calculation in stock-eval
-docs: update installation instructions
-```
+- Use `'use strict'` at top of files
+- 2-space indentation
+- Semicolons required
+- No trailing commas in objects
 
-## Version Numbering
+### Markdown Style
 
-We follow [Semantic Versioning](https://semver.org/):
+- 80-character line limit
+- Clear section headers (# Main, ## Sub, ### Detail)
+- Code blocks with language tags
+- Tables for structured data
+- Links in markdown: `[text](url)`
 
-- **MAJOR** version for incompatible changes
-- **MINOR** version for new features (backwards compatible)
-- **PATCH** version for bug fixes
+### Comments
 
-When updating versions:
-1. Update version in `plugin.json`
-2. Update version in `marketplace.json`
-3. Add entry to `CHANGELOG.md`
+- **Code comments**: Why, not what
+  ```javascript
+  // Filter out delisted tickers (removed from exchanges)
+  const activeTickers = tickers.filter(t => !delistedSet.has(t));
+  ```
 
-## Pull Request Process
+- **Documentation**: Clear, concise, complete
+  ```markdown
+  ### Feature Name
+  Brief description. Key benefits. Use case.
+  ```
 
-1. Ensure all CI checks pass (validation, JSON linting)
-2. Update documentation as necessary
-3. Add or update tests if applicable
-4. Get approval from at least one maintainer
-5. Maintainers will merge once approved
+---
 
-## Style Guidelines
+## Adding a New Skill
 
-### JSON Files
-- Use 2 spaces for indentation
-- Include all required fields
-- Keep descriptions clear and concise
+**See [ADDING-NEW-SKILLS.md](ADDING-NEW-SKILLS.md)** for the comprehensive guide.
 
-### Markdown Files
-- Use headers consistently (# for title, ## for sections)
-- Include code blocks with appropriate language tags
-- Keep line length reasonable (< 120 characters when possible)
+Quick summary:
 
-### Skills
-- Use professional, objective tone
-- Provide actionable insights
-- Include clear analysis structure
-- Add relevant disclaimers for financial content
+1. Create skill directory: `plugins/us-stock-analysis/skills/skill-name/`
+2. Write `SKILL.md` (Claude Code skill definition)
+3. Copy to `prompts/skill-name.md` (universal prompt, no frontmatter)
+4. Register in `plugin.json`
+5. Update `.cursor/rules/`, `GEMINI.md`, `.github/copilot-instructions.md`
+6. Update README files & CHANGELOG
+7. Run full test suite
+8. Submit PR with all changes
 
-## Financial Content Guidelines
+---
 
-All financial analysis skills must include appropriate disclaimers:
+## Review Process
 
-```markdown
-## Disclaimer
+### What We Look For
 
-This analysis is for educational purposes only and does not constitute financial advice.
-Always consult with qualified financial advisors before making investment decisions.
-```
+✅ **Good PRs have:**
+- Clear purpose & description
+- Tests passing (270+ unit tests, 22 integration tests)
+- Updated documentation
+- Focused, logical commits
+- Follows project conventions
 
-## Testing
+❌ **Issues that delay approval:**
+- Tests failing
+- Documentation not updated
+- Unclear commit messages
+- Style inconsistencies
+- Too many unrelated changes
 
-Before submitting:
+### Timeline
 
-1. Install the plugin locally
-2. Test all affected skills
-3. Verify JSON files are valid
-4. Check that documentation is accurate
-5. Ensure no breaking changes (or document them)
+- **Small fixes**: 1-3 days
+- **New skills**: 3-7 days
+- **Major changes**: 1-2 weeks
+
+Reviewers will provide feedback, or approve and merge.
+
+---
 
 ## Questions?
 
-- Open an issue for questions about contributing
-- Check existing issues and discussions
-- Review the main README.md for project overview
+- **How do I add a new skill?** → [ADDING-NEW-SKILLS.md](ADDING-NEW-SKILLS.md)
+- **I'm stuck.** → [GitHub Discussions](https://github.com/yennanliu/InvestSkill/discussions)
+- **Found a bug.** → [GitHub Issues](https://github.com/yennanliu/InvestSkill/issues)
+- **Need help?** → [FAQ.md](FAQ.md)
 
-## Recognition
+---
 
-Contributors will be recognized in:
-- GitHub contributors list
-- Release notes for significant contributions
-- CHANGELOG.md for feature additions
+## Resources
 
-Thank you for contributing to InvestSkill! 🚀
+| Resource | Purpose |
+|----------|---------|
+| **[README.md](README.md)** | Project overview |
+| **[ADDING-NEW-SKILLS.md](ADDING-NEW-SKILLS.md)** | Complete contributor guide |
+| **[FAQ.md](FAQ.md)** | Common questions & answers |
+| **[CHANGELOG.md](CHANGELOG.md)** | Version history |
+| **[DEPLOYMENT-STATUS.md](DEPLOYMENT-STATUS.md)** | Current platform status |
+
+---
+
+<div align="center">
+
+### Thank you for making InvestSkill better! 🙌
+
+Your contributions help build professional investment analysis tools for everyone.
+
+</div>
