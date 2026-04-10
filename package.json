@@ -1,0 +1,48 @@
+{
+  "name": "investskill",
+  "version": "1.4.0",
+  "description": "Professional investment analysis frameworks for US stock markets — works with Claude Code, Cursor, Gemini CLI, GitHub Copilot, and any AI assistant",
+  "main": "scripts/test-skills.js",
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/test-skills.js",
+    "test:skills": "node scripts/test-skills.js",
+    "validate": "node scripts/validate-prompts.js",
+    "validate:prompts": "node scripts/validate-prompts.js",
+    "verify": "node scripts/setup-verify.js",
+    "verify:setup": "node scripts/setup-verify.js",
+    "pre-release-check": "node scripts/pre-release-check.js",
+    "pre-release": "node scripts/pre-release-check.js && node scripts/validate-prompts.js && npm test",
+    "publish:cursor": "node scripts/publish-cursor-rules.js",
+    "publish:gemini": "node scripts/publish-gemini.js",
+    "publish:release-notes": "node scripts/generate-platform-release-notes.js",
+    "record:deploy": "node scripts/record-deploy.js"
+  },
+  "keywords": [
+    "investment",
+    "stock-analysis",
+    "valuation",
+    "fundamental-analysis",
+    "technical-analysis",
+    "portfolio",
+    "finance",
+    "claude-code",
+    "cursor",
+    "gemini-cli",
+    "github-copilot",
+    "prompts"
+  ],
+  "author": "yennanliu",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yennanliu/InvestSkill"
+  },
+  "homepage": "https://github.com/yennanliu/InvestSkill",
+  "bugs": {
+    "url": "https://github.com/yennanliu/InvestSkill/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

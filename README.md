@@ -108,6 +108,23 @@ Add the marketplace and install the plugin:
 /plugin install us-stock-analysis@invest-skill
 ```
 
+### Verify Installation
+
+After installation, verify everything is working:
+
+```bash
+# Check all platforms
+node scripts/setup-verify.js
+```
+
+This script checks:
+- ✅ Claude Code plugin installation
+- ✅ Cursor rules setup
+- ✅ Gemini CLI availability
+- ✅ GitHub Copilot configuration
+- ✅ Universal prompts availability
+- ✅ Project file structure
+
 ## Available Skills
 
 ### Core Analysis Skills
@@ -802,6 +819,65 @@ Add these badges to show build status:
 
 For comprehensive CI/CD documentation, see [CI-CD-GUIDE.md](CI-CD-GUIDE.md).
 
+## Quality Assurance & Validation
+
+InvestSkill includes comprehensive validation and testing tools:
+
+### Pre-Release Validation
+
+Before bumping version numbers, run:
+
+```bash
+# Validate everything before release
+node scripts/pre-release-check.js
+```
+
+Checks:
+- ✅ All 18 skills registered in plugin.json
+- ✅ Prompts synchronized with skills
+- ✅ Required documentation files exist
+- ✅ Version consistency across files
+- ✅ SKILL.md frontmatter validity
+- ✅ Signal block templates present
+- ✅ CHANGELOG entries exist
+- ✅ JSON file syntax
+- ✅ Git status clean
+- ✅ Prompts directory structure
+
+### Prompt Validation
+
+Validate all prompts for quality and consistency:
+
+```bash
+# Validate all prompts
+node scripts/validate-prompts.js
+```
+
+Checks:
+- ✅ Signal block templates present
+- ✅ No platform-specific syntax
+- ✅ Token count estimates
+- ✅ Required sections present
+- ✅ Formatting consistency
+- ✅ Synchronization with SKILL.md files
+
+### Installation Verification
+
+Verify InvestSkill installation across all platforms:
+
+```bash
+# Check installation for all platforms
+node scripts/setup-verify.js
+```
+
+Verifies:
+- ✅ Claude Code plugin
+- ✅ Cursor rules
+- ✅ Gemini CLI
+- ✅ GitHub Copilot
+- ✅ Universal prompts
+- ✅ File structure
+
 ## Contributing
 
 Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for detailed information.
@@ -862,15 +938,60 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 This plugin provides educational analysis and is not financial advice. Always consult with qualified financial advisors before making investment decisions. Past performance does not guarantee future results.
 
+## Documentation & Guides
+
+### Core Documentation
+- **[README.md](README.md)** — This file (complete overview)
+- **[CHANGELOG.md](CHANGELOG.md)** — Version history and updates
+- **[PLATFORM-COMPATIBILITY.md](PLATFORM-COMPATIBILITY.md)** — Platform comparison and requirements
+- **[CI-CD-GUIDE.md](CI-CD-GUIDE.md)** — Multi-platform CI/CD automation
+- **[RELEASE-QUICK-REFERENCE.md](RELEASE-QUICK-REFERENCE.md)** — Fast release guide
+- **[DEPLOYMENTS.md](DEPLOYMENTS.md)** — Deployment history log
+
+### Platform-Specific Guides
+- **[GEMINI.md](GEMINI.md)** — Gemini CLI setup and usage
+- **[.github/copilot-instructions.md](.github/copilot-instructions.md)** — GitHub Copilot guide
+- **[.cursor/rules/invest-skill.mdc](.cursor/rules/invest-skill.mdc)** — Cursor rules
+
+### Validation & Verification
+```bash
+# Pre-release validation checklist
+node scripts/pre-release-check.js
+
+# Validate all prompts
+node scripts/validate-prompts.js
+
+# Verify installation
+node scripts/setup-verify.js
+```
+
 ## Resources
 
 - [Claude Code Documentation](https://code.claude.com/docs/)
 - [Plugin Development Guide](https://code.claude.com/docs/plugins)
 - [Marketplace Guide](https://code.claude.com/docs/plugin-marketplaces)
+- [Cursor Rules Guide](https://cursor.sh/docs/rules)
+- [Gemini CLI Documentation](https://gemini.ai/docs)
+- [GitHub Copilot Configuration](https://docs.github.com/en/copilot)
 
 ## Support
 
 For issues, questions, or suggestions, please open an issue on GitHub.
+
+### Quick Help Commands
+```bash
+# Verify installation
+npm run verify
+
+# Pre-release validation
+npm run pre-release-check
+
+# Validate prompts
+npm run validate-prompts
+
+# Available npm scripts
+npm run
+```
 
 
 
