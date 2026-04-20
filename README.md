@@ -11,7 +11,7 @@
 [![GitHub Release](https://img.shields.io/github/v/release/yennanliu/InvestSkill?style=for-the-badge&color=green)](https://github.com/yennanliu/InvestSkill/releases)
 [![Test Suite](https://img.shields.io/github/actions/workflow/status/yennanliu/InvestSkill/test.yml?style=for-the-badge&label=Tests)](https://github.com/yennanliu/InvestSkill/actions)
 
-[🌐 Live Documentation](https://yennanliu.github.io/InvestSkill/) • [📚 Cookbook](https://yennanliu.github.io/InvestSkill/cookbook.html) • [🐛 Issues](https://github.com/yennanliu/InvestSkill/issues) • [💬 Discussions](https://github.com/yennanliu/InvestSkill/discussions)
+[🌐 Live Documentation](https://yennanliu.github.io/InvestSkill/) • [📚 Cookbook](https://yennanliu.github.io/InvestSkill/cookbook.html) • [🐛 Issues](https://github.com/yennanliu/InvestSkill/issues) • [💬 Discussions](https://github.com/yennanliu/InvestSkill/discussions) • [🇹🇼 繁體中文](README-zh-TW.md)
 
 </div>
 

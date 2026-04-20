@@ -1,398 +1,342 @@
-# InvestSkill
+<div align="center">
 
-專業投資分析與股票評估技能工具，適用於 Claude Code。
+# 📊 InvestSkill
 
-> 📖 **[繁體中文版 (Traditional Chinese)](https://yennj12.js.org/InvestSkill/zh-tw.html)** | [English](https://yennj12.js.org/InvestSkill/)
+### 美股市場專業投資分析工具
 
-[![Deploy](https://github.com/yennanliu/InvestSkill/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/yennanliu/InvestSkill/actions/workflows/deploy-pages.yml)
-[![Validate](https://github.com/yennanliu/InvestSkill/actions/workflows/validate.yml/badge.svg)](https://github.com/yennanliu/InvestSkill/actions/workflows/validate.yml)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Website](https://img.shields.io/badge/website-live-success)](https://yennanliu.github.io/InvestSkill/)
+**18 個 AI 驅動分析框架 · 全平台支援 · 完全開源**
 
-📚 **[查看文檔網站](https://yennanliu.github.io/InvestSkill/)**
+[![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/yennanliu/InvestSkill?style=for-the-badge&color=gold)](https://github.com/yennanliu/InvestSkill/stargazers)
+[![GitHub Release](https://img.shields.io/github/v/release/yennanliu/InvestSkill?style=for-the-badge&color=green)](https://github.com/yennanliu/InvestSkill/releases)
+[![Test Suite](https://img.shields.io/github/actions/workflow/status/yennanliu/InvestSkill/test.yml?style=for-the-badge&label=Tests)](https://github.com/yennanliu/InvestSkill/actions)
 
-## 快速連結
+[🌐 線上文件](https://yennanliu.github.io/InvestSkill/) • [📚 操作手冊](https://yennanliu.github.io/InvestSkill/cookbook.html) • [🐛 回報問題](https://github.com/yennanliu/InvestSkill/issues) • [💬 社群討論](https://github.com/yennanliu/InvestSkill/discussions) • [🇺🇸 English](README.md)
 
-- 📖 **[操作手冊 — 示範範例、安裝指南與核心概念](https://yennanliu.github.io/InvestSkill/cookbook-zh-tw.html)**
-- 📝 **[部落格文章：InvestSkill - Claude Code 金融分析插件](https://yennj12.js.org/yennj12_blog_V4/posts/investskill-claude-code-financial-analysis-plugin/)**
-- 📊 **[範例輸出：完整分析報告 (PLTR)](https://github.com/yennanliu/finance_data/blob/main/claude_code/pltr/comprehensive_analysis_report.md)**
+</div>
 
-## 安裝
+---
 
+## 🎯 什麼是 InvestSkill？
+
+InvestSkill 是企業級投資分析工具包，為各 AI 平台帶來機構級分析框架。透過 18 個完整框架進行專業股票分析——無需金融執照，無需 API 費用。
+
+> **適合用於**：投資研究 · 盡職調查 · 投資組合管理 · 金融教育 · 股票評估
+
+<table>
+  <tr>
+    <td width="50%">
+
+### ✨ 18 個專業框架
+- 6 個核心分析框架
+- 2 個財務報告分析
+- 4 個市場監控工具
+- 4 個進階研究工具
+- 2 個自動化元技能
+
+    </td>
+    <td width="50%">
+
+### 🔌 全平台支援
+- Claude Code 插件
+- Cursor IDE 規則
+- Gemini CLI 提示詞
+- GitHub Copilot
+- ChatGPT & Claude.ai
+- 任何大型語言模型
+
+    </td>
+  </tr>
+</table>
+
+---
+
+## 🚀 快速開始（30 秒）
+
+### Claude Code（推薦）
 ```bash
-
 claude
-
-# 添加到市集
 /plugin marketplace add yennanliu/InvestSkill
-
-
-# 安裝
 /plugin install us-stock-analysis
-
-
-# 檢查已安裝列表
-
-/plugin list
-
-# 測試
-- /us-stock-analysis:fundamental-analysis AAPL # - 基本面分析
-- /us-stock-analysis:technical-analysis AAPL # - 技術面分析
-- /us-stock-analysis:economics-analysis # - 經濟分析
+/us-stock-analysis:stock-eval AAPL
 ```
 
+### Cursor 或 GitHub Copilot
+```bash
+git clone https://github.com/yennanliu/InvestSkill.git
+cd InvestSkill
+cursor .  # 或使用 GitHub Copilot
+@prompts/stock-eval.md 評估蘋果公司
+```
 
-- 本地開發
+### Gemini CLI
+```bash
+cd /path/to/InvestSkill
+gemini
+> @prompts/stock-eval.md 評估蘋果公司
+```
+
+---
+
+## 🏆 核心功能
+
+<table>
+<tr>
+<td width="50%">
+
+### 📊 估值與分析
+- **股票估值** — DCF + 比較公司法 + EV 倍數
+- **基本面分析** — 深入財務報表分析
+- **技術分析** — 圖表形態與技術指標
+- **DCF 建模** — 情境式內在價值估算
+- **競爭護城河** — 波特五力分析
+
+</td>
+<td width="50%">
+
+### 💰 專項分析
+- **股息分析** — 安全評分與殖利率陷阱識別
+- **選擇權分析** — Greeks、隱含波動率與策略
+- **放空興趣** — 軋空潛力評估
+- **內部人交易** — SEC Form 4 追蹤
+- **財報電話會議** — 情緒與語調分析
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 📈 市場情報
+- **機構持股** — 13F 申報追蹤
+- **產業輪動** — 市場定位分析
+- **經濟分析** — 總體經濟指標
+- **投資組合檢視** — 配置優化建議
+- **報告生成** — 專業 HTML/PDF 報告
+
+</td>
+<td width="50%">
+
+### 🔗 進階功能
+- **研究套組** — 串接所有框架
+- **財務報告** — 10-K/10-Q 分析
+- **多股比較** — 並排分析
+- **批次分析** — 處理整個投資組合
+- **情境測試** — 多頭/基本/空頭情境
+
+</td>
+</tr>
+</table>
+
+---
+
+## 📋 18 個框架總覽
+
+| 類別 | 框架 | 用途 |
+|------|------|------|
+| **核心分析** (6) | stock-eval · fundamental-analysis · technical-analysis · economics-analysis · dcf-valuation · stock-valuation | 全方位股票評估 |
+| **財務報告** (2) | financial-report-analyst · earnings-call-analysis | 深度文件分析 |
+| **市場監控** (4) | insider-trading · institutional-ownership · dividend-analysis · short-interest | 活動與情緒追蹤 |
+| **進階分析** (4) | competitor-analysis · options-analysis · portfolio-review · sector-analysis | 專項研究角度 |
+| **元技能** (2) | research-bundle · report-generator | 自動化與綜合輸出 |
+
+---
+
+## 💡 實際應用場景
+
+<details open>
+<summary><b>📍 收購目標盡職調查</b></summary>
 
 ```bash
+/us-stock-analysis:stock-eval TARGET
+/us-stock-analysis:financial-report-analyst TARGET 10-K
+/us-stock-analysis:competitor-analysis TARGET --peers COMPETITORS
+/us-stock-analysis:stock-valuation TARGET --methods all
+→ 數分鐘內完成機構級估值報告
+```
+</details>
 
+<details>
+<summary><b>💼 投資組合再平衡決策</b></summary>
+
+```bash
+/us-stock-analysis:portfolio-review
+[貼上您的持股]
+→ 配置分析與優化建議
+```
+</details>
+
+<details>
+<summary><b>🔍 深度財報分析</b></summary>
+
+```bash
+/us-stock-analysis:fundamental-analysis TICKER --visual
+/us-stock-analysis:earnings-call-analysis TICKER
+[貼上電話會議記錄]
+→ 管理層語調、業績指引、風險與機會
+```
+</details>
+
+<details>
+<summary><b>📈 選擇權進場規劃</b></summary>
+
+```bash
+/us-stock-analysis:technical-analysis TICKER --chart
+/us-stock-analysis:options-analysis TICKER --earnings
+→ 技術面設置 + 波動率預期 → 策略選擇
+```
+</details>
+
+---
+
+## 🛠️ 安裝方式
+
+### Claude Code（一般使用者推薦）
+
+```bash
 claude
-
-# 添加本地市集
-/plugin marketplace add /Users/yennanliu/InvestSkill
-
-# 安裝插件
-/plugin install us-stock-analysis@invest-skill
-```
-
-## 概述
-
-InvestSkill 是一個綜合性的 Claude Code 插件市集，提供專業級的美股市場分析技能，包括基本面分析、技術分析、經濟評估和投資組合管理。
-
-## 功能特色
-
-- **股票評估**：全面的基本面與估值分析
-- **經濟分析**：美國經濟指標及市場影響分析
-- **基本面分析**：深入的財務報表分析，支援視覺化圖表
-- **技術分析**：圖表形態與技術指標分析，支援圖表生成
-- **投資組合檢視**：績效分析與優化建議
-- **產業分析**：產業輪動與市場定位分析
-- **互動式報告**：生成帶有視覺化圖表的 HTML/PDF 報告
-- **財報電話會議分析**：分析財報電話會議記錄的情緒與洞察
-- **內部人交易追蹤**：從 SEC 申報文件監控內部人買賣活動
-- **機構持股分析**：從 13F 申報追蹤聰明錢的動向
-
-## 安裝方式
-
-### 一般使用者
-
-添加市集並安裝插件：
-
-```bash
-# 從 GitHub 添加市集
 /plugin marketplace add yennanliu/InvestSkill
-
-# 安裝插件
-/plugin install us-stock-analysis@invest-skill
+/plugin install us-stock-analysis
+/plugin list  # 確認安裝
 ```
 
-### 本地開發
-
+**驗證安裝：**
 ```bash
-# 添加本地市集
-/plugin marketplace add /Users/yennanliu/InvestSkill
-
-# 安裝插件
-/plugin install us-stock-analysis@invest-skill
+node scripts/setup-verify.js
 ```
 
-## 可用技能
+### Cursor IDE（自動載入）
 
-### 核心分析技能
-- `/stock-eval` - 全面分析美股股票
-- `/economics-analysis` - 分析美國經濟指標
-- `/fundamental-analysis` - 使用財報進行深入基本面分析（支援 `--visual` 旗標）
-- `/technical-analysis` - 技術圖表與指標分析（支援 `--chart` 旗標）
-- `/portfolio-review` - 投資組合績效與優化檢視
-- `/sector-analysis` - 美股市場產業分析與輪動
-
-### 增強數據分析（v1.1.0 新增）
-- `/report-generator` - 生成專業的 HTML/PDF 報告，包含互動式圖表
-- `/earnings-call-analysis` - 分析財報電話會議記錄的情緒、主題與管理層態度
-- `/insider-trading` - 從 SEC Form 4 申報追蹤內部人買賣活動
-- `/institutional-ownership` - 從 13F 申報監控機構持股變化
-
-## 使用範例
-
-### 核心分析
 ```bash
-# 評估特定股票
+git clone https://github.com/yennanliu/InvestSkill.git
+cd InvestSkill
+cursor .
+# 在 AI Chat（Cmd+K）中規則會自動載入
+```
+
+### Gemini CLI（自動載入）
+
+```bash
+cd /path/to/InvestSkill
+gemini
+# GEMINI.md 自動載入
+# 所有提示詞可透過 @prompts/ 使用
+```
+
+### GitHub Copilot（自動載入）
+
+在 **VS Code** 或 **JetBrains IDE** 中開啟儲存庫
+Copilot 會自動載入 `.github/copilot-instructions.md`
+
+### 通用存取（任何 AI）
+
+1. 複製提示詞：`cat prompts/stock-valuation.md | pbcopy`
+2. 貼入 ChatGPT、Claude.ai 或任何大型語言模型
+3. 提問分析
+
+---
+
+## 🎓 範例工作流程
+
+### 工作流程 1：快速股票篩選
+```bash
+# 5 分鐘評估
+/stock-eval NVDA
+/stock-eval AMD
+/stock-eval QCOM
+→ Piotroski 評分、ROIC、風險矩陣，快速決策
+```
+
+### 工作流程 2：完整盡職調查
+```bash
+# 完整機構級分析
 /stock-eval AAPL
-
-# 獲取經濟展望
-/economics-analysis
-
-# 深入基本面分析
-/fundamental-analysis MSFT
-
-# 帶視覺化的基本面分析
-/fundamental-analysis NVDA --visual
-
-# 技術圖表分析
-/technical-analysis TSLA
-
-# 帶圖表生成的技術分析
-/technical-analysis GOOGL --chart
-
-# 檢視投資組合
-/portfolio-review [貼上您的持股]
-
-# 分析產業
-/sector-analysis
-```
-
-### 增強數據分析（v1.1.0）
-```bash
-# 生成帶視覺化的 HTML/PDF 報告
-/report-generator --type comprehensive --data [貼上分析結果]
-
-# 分析財報電話會議記錄
-/earnings-call-analysis AAPL [貼上記錄或提供網址]
-
-# 追蹤內部人交易活動
-/insider-trading TSLA
-
-# 監控機構持股變化
-/institutional-ownership MSFT
-
-# 追蹤特定機構投資者
-/institutional-ownership META --smart-money
-```
-
-### 報告生成工作流程
-```bash
-# 步驟 1：執行帶視覺化的基本面分析
 /fundamental-analysis AAPL --visual
-
-# 步驟 2：從分析結果生成 HTML 報告
-/report-generator --type comprehensive
-
-# 步驟 3：在瀏覽器中開啟 HTML 檔案並匯出為 PDF
-# 報告包含互動式圖表，可以列印為 PDF 格式
+/technical-analysis AAPL --chart
+/stock-valuation AAPL --methods all
+/competitor-analysis AAPL --moat
+/financial-report-analyst AAPL 10-K
+→ 相當於完整 50 頁分析報告
 ```
 
-## 專案結構
-
-```
-InvestSkill/
-├── .claude-plugin/
-│   └── marketplace.json          # 市集配置
-├── plugins/
-│   └── us-stock-analysis/
-│       ├── .claude-plugin/
-│       │   └── plugin.json       # 插件清單
-│       ├── skills/
-│       │   ├── stock-eval/
-│       │   │   └── SKILL.md
-│       │   ├── economics-analysis/
-│       │   │   └── SKILL.md
-│       │   ├── fundamental-analysis/
-│       │   │   └── SKILL.md      # 增強：支援視覺化
-│       │   ├── technical-analysis/
-│       │   │   └── SKILL.md      # 增強：支援圖表生成
-│       │   ├── portfolio-review/
-│       │   │   └── SKILL.md
-│       │   ├── sector-analysis/
-│       │   │   └── SKILL.md
-│       │   ├── report-generator/
-│       │   │   └── SKILL.md      # 新增：生成 HTML/PDF 報告
-│       │   ├── earnings-call-analysis/
-│       │   │   └── SKILL.md      # 新增：財報電話會議分析
-│       │   ├── insider-trading/
-│       │   │   └── SKILL.md      # 新增：內部人交易追蹤
-│       │   └── institutional-ownership/
-│       │       └── SKILL.md      # 新增：13F 申報分析
-│       └── README.md
-├── LICENSE
-└── README.md
-```
-
-## 報告生成
-
-InvestSkill v1.1.0 引入了專業的報告生成功能，支援互動式視覺化。
-
-### 功能特色
-
-- **HTML 報告**：獨立的 HTML 檔案，內嵌 Chart.js 視覺化圖表
-- **PDF 匯出**：支援透過瀏覽器或命令列工具列印為 PDF
-- **互動式圖表**：折線圖、長條圖、K線圖等多種圖表類型
-- **專業樣式**：金融報告等級的格式與版面配置
-- **響應式設計**：支援桌面與行動裝置
-
-### 工作流程
-
-1. **執行帶視覺化的分析**
-   ```bash
-   /fundamental-analysis AAPL --visual
-   ```
-   生成包含圖表資料表的分析結果
-
-2. **生成 HTML 報告**
-   ```bash
-   /report-generator --type comprehensive
-   ```
-   建立 `investment-report-AAPL-20260217-143022.html`
-
-3. **匯出為 PDF**
-   - **瀏覽器**：開啟 HTML → 列印 → 儲存為 PDF
-   - **命令列**：`wkhtmltopdf report.html report.pdf`
-   - **Node.js**：使用 Playwright 或 Puppeteer
-
-### 報告範本
-
-- **執行摘要**：1-2 頁，關鍵指標與圖表
-- **完整分析**：5-10 頁，詳細分析內容
-- **投資組合檢視**：多檔股票比較與配置分析
-
-### 視覺化類型
-
-- 營收/獲利成長趨勢（折線圖）
-- 利潤率比較（折線圖）
-- 資產負債表組成（堆疊長條圖）
-- 現金流瀑布圖（瀑布圖）
-- 估值倍數（分組長條圖）
-- 價格圖表與指標（K線圖 + 疊加）
-- 成交量分析（長條圖）
-- 技術指標（RSI、MACD 面板）
-
-## CI/CD 與自動化
-
-本專案包含完整的 GitHub Actions 工作流程，用於品質保證和自動發布。
-
-### 自動化工作流程
-
-**驗證 (`validate.yml`)**
-- 在每次推送和 PR 至 main/develop 分支時執行
-- 驗證 JSON 結構 (marketplace.json, plugin.json)
-- 檢查必要檔案和欄位
-- 驗證 SKILL.md frontmatter
-- 確保檔案間的版本一致性
-
-**PR 檢查 (`pr-check.yml`)**
-- 在 Pull Request 上進行快速驗證
-- JSON 語法檢查
-- 必要欄位驗證
-- SKILL.md 檔案檢查
-
-**自動發布 (`release.yml`)**
-- 在版本標籤 (v*) 觸發
-- 建立發布套件 (.tar.gz)
-- 生成 SHA256 校驗碼
-- 建立包含附件的 GitHub 發布
-- 從 CHANGELOG.md 提取發布說明
-
-**自動標籤 (`label-pr.yml`)**
-- 根據變更的檔案自動為 PR 加上標籤
-- 添加大小標籤 (small/medium/large)
-- 協助 PR 組織和審查
-
-**首次貢獻者問候 (`greetings.yml`)**
-- 歡迎新貢獻者
-- 為首次提交 issues/PR 提供有用資訊
-
-### 建立發布版本
-
-建立新版本的步驟：
-
-1. 更新版本號碼：
-   ```bash
-   # 更新 plugins/us-stock-analysis/.claude-plugin/plugin.json
-   # 更新 .claude-plugin/marketplace.json
-   ```
-
-2. 更新 CHANGELOG.md：
-   ```markdown
-   ## [1.1.0] - 2026-02-16
-   ### Added
-   - 新功能描述
-   ```
-
-3. 提交變更：
-   ```bash
-   git add .
-   git commit -m "chore: bump version to 1.1.0"
-   git push origin main
-   ```
-
-4. 建立並推送標籤：
-   ```bash
-   git tag v1.1.0
-   git push origin v1.1.0
-   ```
-
-5. GitHub Actions 將自動：
-   - 驗證插件結構
-   - 建立發布套件
-   - 生成發布說明
-   - 發布包含附件的版本
-
-### 驗證徽章
-
-添加這些徽章以顯示建置狀態（更新使用者名稱/儲存庫）：
-
-```markdown
-![Validate](https://github.com/yennanliu/InvestSkill/actions/workflows/validate.yml/badge.svg)
-![Release](https://github.com/yennanliu/InvestSkill/actions/workflows/release.yml/badge.svg)
-```
-
-## 貢獻
-
-歡迎貢獻！請閱讀我們的[貢獻指南](CONTRIBUTING.md)以了解詳細資訊。
-
-**快速開始：**
-
-1. Fork 此儲存庫
-2. 建立您的功能分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交您的變更 (`git commit -m 'feat: add some AmazingFeature'`)
-4. 推送至分支 (`git push origin feature/AmazingFeature`)
-5. 開啟 Pull Request
-
-詳細指南請參閱 [CONTRIBUTING.md](CONTRIBUTING.md)，包括：
-- 添加新技能
-- 建立插件
-- 測試變更
-- 提交訊息格式
-- 版本編號
-
-## 發布
-
-與他人分享此市集：
-
-1. 推送至 GitHub：
+### 工作流程 3：財報季研究
 ```bash
-git add .
-git commit -m "Initial plugin marketplace setup"
-git push origin main
+# 30 分鐘財報研究流程
+/fundamental-analysis TICKER --visual  # 財報前基準線
+/earnings-call-analysis TICKER [貼上電話會議記錄]  # 財報後分析
+/technical-analysis TICKER --chart  # 技術面設置
+/options-analysis TICKER --earnings  # 波動率預期
+→ 完整財報投資論點
 ```
 
-2. 使用者可以添加您的市集：
+### 工作流程 4：投資組合優化
 ```bash
-/plugin marketplace add yennanliu/InvestSkill
+/portfolio-review [貼上您的持股]
+→ 配置分析 + 再平衡建議
 ```
 
-## 開發路線圖
+---
 
-- [ ] 添加選擇權分析技能
-- [ ] 添加加密貨幣分析技能
-- [ ] 整合財報日曆
-- [ ] 添加新聞情緒分析
-- [ ] 添加風險管理計算器
-- [ ] 添加回測功能
+## ✨ InvestSkill 的差異化優勢
 
-## 授權
+| 功能 | InvestSkill | 通用 AI |
+|------|------------|---------|
+| **18 個精選框架** | ✅ 內建 | ❌ 需手動設定 |
+| **信號區塊** | ✅ 標準化格式 | ❌ 格式不一致 |
+| **全平台支援** | ✅ 原生支援 | ❌ 需要變通方案 |
+| **零 API 費用** | ✅ 免費 | ❌ 需付費 API |
+| **離線提示詞** | ✅ 全部內建 | ❌ 依賴外部連結 |
+| **專業品質** | ✅ 機構級 | ⚠️ 品質不穩定 |
+| **教育性** | ✅ 教授分析框架 | ❌ 只給答案 |
 
-MIT License - 詳見 [LICENSE](LICENSE) 檔案。
+---
 
-## 免責聲明
+## 📊 專案狀態
 
-本插件提供教育性分析，不構成財務建議。在做出投資決策前，請務必諮詢合格的財務顧問。過去的績效不保證未來的結果。
+**目前版本：** 1.4.0
+**技能框架：** 18 個
+**通用提示詞：** 17 個
+**支援平台：** 5 個
+**測試數量：** 292 個（全數通過）✅
 
-## 資源
+---
 
-- [Claude Code 文檔](https://code.claude.com/docs/)
-- [插件開發指南](https://code.claude.com/docs/plugins)
-- [市集指南](https://code.claude.com/docs/plugin-marketplaces)
+## 🤝 貢獻
 
-## 支援
+### 添加新技能
 
-如有問題、疑問或建議，請在 GitHub 上開啟 issue。
+詳見 [**ADDING-NEW-SKILLS.md**](ADDING-NEW-SKILLS.md) 完整指南：
+- 12 步驟說明
+- 檔案結構範本
+- 平台同步檢查清單
+- 測試程序
+
+### 回報問題
+
+發現錯誤？請[開啟 Issue](https://github.com/yennanliu/InvestSkill/issues) 並附上：
+- 平台與版本
+- 重現步驟
+- 預期與實際行為
+
+---
+
+## ⚖️ 法律聲明
+
+**僅供教育用途。** InvestSkill 提供分析框架，用於學習與研究目的。
+
+> 本工具包**不構成**財務建議。請務必：
+> - 諮詢合格的財務顧問
+> - 自行研究（DYOR）
+> - 獨立驗證分析結果
+> - 考量個人風險承受度
+
+**過去績效不代表未來結果**
+
+---
+
+<div align="center">
+
+### 為投資研究社群用心製作
+
+**[GitHub](https://github.com/yennanliu/InvestSkill)** • **[網站](https://yennanliu.github.io/InvestSkill/)** • **[回報問題](https://github.com/yennanliu/InvestSkill/issues)** • **[社群討論](https://github.com/yennanliu/InvestSkill/discussions)**
+
+</div>
