@@ -135,7 +135,7 @@ gemini
 
 | Category | Frameworks | Purpose |
 |----------|-----------|---------|
-| **Core Analysis** (6) | Stock Eval · Fundamental · Technical · Economics · DCF · Valuation | Comprehensive stock evaluation |
+| **Core Analysis** (6) | stock-eval · fundamental-analysis · technical-analysis · economics-analysis · dcf-valuation · stock-valuation | Comprehensive stock evaluation |
 | **Financial Reports** (2) | 10-K/10-Q Analyst · Earnings Call | Deep-dive document analysis |
 | **Market Monitoring** (4) | Insider Trading · Institutional · Dividends · Short Interest | Activity & sentiment tracking |
 | **Advanced** (4) | Competitor · Options · Portfolio · Sector | Specialized research angles |
