@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-04-28
+
+### Added
+- New `/result-validator` skill: meta-analysis agent that audits any InvestSkill output across five dimensions (data quality, methodology soundness, signal consistency, risk coverage, reasoning transparency) and produces a 0–100 confidence score with tier rating (Very High / High / Medium / Low / Very Low) plus adjusted signal block
+- New `/chart-master` skill: visualization agent that generates financial charts in Mermaid (primary), ASCII (fallback), and HTML/Chart.js (rich/interactive); supports bar, line, pie, horizontal comparison, fair-value range, and multi-factor signal dashboard chart types; works across Claude Code, Gemini, Cursor, and GitHub Copilot
+- Both skills available as universal `prompts/result-validator.md` and `prompts/chart-master.md` for AI-agnostic platforms
+
 ## [1.4.0] - 2026-02-27
 
 ### Added

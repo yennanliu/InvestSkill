@@ -28,7 +28,7 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 
 ---
 
-## Available Analysis Prompts (18 Total)
+## Available Analysis Prompts (20 Total)
 
 ### Core Stock Analysis (6 skills)
 
@@ -71,7 +71,14 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 | Analysis Type               | Prompt File                            | Usage Example                              |
 |-----------------------------|----------------------------------------|--------------------------------------------|
 | Research Bundle             | `@prompts/research-bundle.md`          | `Complete analysis on AAPL`                |
-| (All 18 skills combined)    | (chains multiple analyses)             | `Full thesis with all frameworks`          |
+| (All 20 skills combined)    | (chains multiple analyses)             | `Full thesis with all frameworks`          |
+
+### Meta-Analysis & Visualization (2 skills)
+
+| Analysis Type               | Prompt File                            | Usage Example                              |
+|-----------------------------|----------------------------------------|--------------------------------------------|
+| Result Validator            | `@prompts/result-validator.md`         | `[paste analysis] Score confidence`        |
+| Chart Master                | `@prompts/chart-master.md`             | `[paste data] Generate revenue chart`      |
 
 ---
 

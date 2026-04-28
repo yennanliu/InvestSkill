@@ -34,7 +34,7 @@ If Copilot references the frameworks, setup is complete!
 
 ---
 
-## Available Analysis Frameworks (18 Total)
+## Available Analysis Frameworks (20 Total)
 
 ### Core Stock Analysis (6 frameworks)
 
@@ -78,6 +78,13 @@ If Copilot references the frameworks, setup is complete!
 |-----------|------|----------|
 | Research Bundle | `prompts/research-bundle.md` | Comprehensive multi-framework analysis |
 | (Combined) | (all frameworks) | Complete investment thesis |
+
+### Meta-Analysis & Visualization (2 frameworks)
+
+| Framework | File | Best For |
+|-----------|------|----------|
+| Result Validator | `prompts/result-validator.md` | Validate any analysis + confidence score (0–100) |
+| Chart Master | `prompts/chart-master.md` | Generate Mermaid/ASCII/HTML charts from financial data |
 
 ---
 

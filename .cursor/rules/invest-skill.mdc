@@ -40,7 +40,7 @@ If the framework loads, setup is complete!
 
 ---
 
-## Available Analysis Frameworks (18 Total)
+## Available Analysis Frameworks (20 Total)
 
 ### Core Stock Analysis (6 frameworks)
 
@@ -83,6 +83,13 @@ If the framework loads, setup is complete!
 | Framework | File | Best For |
 |-----------|------|----------|
 | Research Bundle | `@prompts/research-bundle.md` | Complete multi-framework analysis |
+
+### Meta-Analysis & Visualization (2 frameworks)
+
+| Framework | File | Best For |
+|-----------|------|----------|
+| Result Validator | `@prompts/result-validator.md` | Validate any analysis + confidence score |
+| Chart Master | `@prompts/chart-master.md` | Generate Mermaid/ASCII/HTML charts |
 
 ---
 
