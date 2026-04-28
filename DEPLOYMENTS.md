@@ -5,6 +5,40 @@ each time a new version passes all tests and is published to the marketplaces.
 
 ---
 
+## v1.5.0 — 2026-04-28 00:50 UTC
+
+| Field         | Value |
+|---------------|-------|
+| Version       | `1.5.0` |
+| Commit        | `711fca8` |
+| Deployed at   | 2026-04-28 00:50 UTC |
+| Skills        | 18 |
+| Release       | [GitHub Release](https://github.com/yennanliu/InvestSkill/releases/tag/v1.5.0) |
+| CI run        | [Actions run](https://github.com/yennanliu/InvestSkill/actions/runs/25027728785) |
+
+### Multi-Platform Deployment
+
+| Platform | Status | Access | Docs |
+|----------|--------|--------|------|
+| **Claude Code** | ✅ Published | `/plugin install us-stock-analysis` | [Plugin Guide](CI-CD-GUIDE.md#1-claude-code-plugin-marketplace) |
+| **Cursor** | ✅ Published | Auto-loads from `.cursor/rules/` | [Cursor Guide](CI-CD-GUIDE.md#2-cursor-rules-publishing) |
+| **Gemini CLI** | ✅ Published | `@prompts/stock-valuation.md` | [Gemini Guide](CI-CD-GUIDE.md#3-gemini-cli-prompts) |
+| **GitHub Copilot** | ✅ Published | Auto-loads in VS Code/JetBrains | [Copilot Guide](CI-CD-GUIDE.md#4-github-copilot) |
+| **Universal Prompts** | ✅ Available | Copy from `prompts/` directory | [Universal Guide](CI-CD-GUIDE.md#5-universal-prompts-any-ai-tool) |
+
+### Release Artifacts
+
+| Artifact | Purpose |
+|----------|---------|
+| `invest-skill-marketplace-1.5.0.tar.gz` | Full marketplace package |
+| `us-stock-analysis-1.5.0.tar.gz` | Claude Code plugin only |
+| `cursor-rules-1.5.0.mdc` | Cursor rules file |
+| `gemini-prompts-1.5.0.tar.gz` | Gemini CLI prompts |
+| `checksums.txt` | SHA256 checksums |
+| `*-RELEASE-NOTES.md` | Platform-specific guides |
+
+---
+
 ## v1.4.0 — 2026-02-27 02:09 UTC
 
 | Field         | Value |
