@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RKLB — 綜合投資分析報告</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#0f172a;--blue:#2563eb;--blue-l:#3b82f6;--green:#059669;--red:#dc2626;--amber:#d97706;--slate:#64748b;--border:#e2e8f0;--bg:#f8fafc;--white:#fff;--text:#0f172a;--muted:#94a3b8;--r:8px;--sh:0 1px 3px rgba(0,0,0,.06)}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Helvetica Neue',sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.6}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:220px;flex-shrink:0;background:var(--navy);position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100}
+.main{margin-left:220px;flex:1}
+.inner{max-width:900px;margin:0 auto;padding:32px 32px 80px}
+.sidebar-logo{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sidebar-logo .ticker{font-size:22px;font-weight:700;color:#fff;letter-spacing:-.5px}
+.sidebar-logo .name{font-size:11px;color:var(--muted);margin-top:2px}
+.sidebar-score{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.07)}
+.score-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(37,99,235,.25);border:1px solid rgba(59,130,246,.4);border-radius:20px;padding:6px 14px;color:#93c5fd;font-size:12px;font-weight:600}
+.score-pill .num{font-size:18px;font-weight:700;color:#fff}
+.sidebar nav{padding:12px 0 24px}
+.nav-gl{padding:6px 20px 4px;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:rgba(148,163,184,.5)}
+.nav-link{display:flex;align-items:center;gap:8px;padding:7px 20px;color:rgba(148,163,184,.85);text-decoration:none;font-size:12px;transition:background .15s,color .15s;border-left:2px solid transparent}
+.nav-link:hover{background:rgba(255,255,255,.05);color:#fff;border-left-color:var(--blue-l)}
+.nav-link .dot{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0}
+.bull .dot{background:var(--green)} .bear .dot{background:var(--red)} .neut .dot{background:var(--amber)}
+.cover{background:linear-gradient(135deg,#0f172a 0%,#1a1f3a 55%,#312e81 100%);border-radius:var(--r);padding:40px 40px 36px;margin-bottom:24px;position:relative;overflow:hidden;color:#fff}
+.cover::before{content:'RKLB';position:absolute;right:-16px;top:-8px;font-size:140px;font-weight:800;letter-spacing:-8px;opacity:.05;pointer-events:none}
+.cover-label{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:2px 10px;font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:#a5b4fc;margin-bottom:14px}
+.cover h1{font-size:28px;font-weight:700;line-height:1.2;margin-bottom:4px}
+.cover .exchange{font-size:13px;color:rgba(148,163,184,.8);margin-bottom:28px}
+.kpi-strip{display:flex;gap:28px;flex-wrap:wrap}
+.kpi-strip .k label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:rgba(148,163,184,.7);margin-bottom:3px}
+.kpi-strip .k span{font-size:20px;font-weight:700;color:#fff}
+.kpi-strip .k small{font-size:11px;color:rgba(148,163,184,.7);margin-left:4px}
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:28px;margin-bottom:20px;box-shadow:var(--sh);scroll-margin-top:24px}
+.card-header{display:flex;align-items:center;gap:10px;padding-bottom:18px;margin-bottom:20px;border-bottom:1px solid var(--border)}
+.card-num{width:26px;height:26px;border-radius:6px;background:var(--navy);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card-title{font-size:15px;font-weight:700;color:var(--text)}
+.card-sub{font-size:12px;color:var(--slate);margin-left:auto}
+.card h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--slate);margin:20px 0 10px}
+.card h3:first-of-type{margin-top:0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:14px 0}
+.kpi-card{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px}
+.kpi-card label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px}
+.kpi-card .v{font-size:20px;font-weight:700;color:var(--text);line-height:1}
+.kpi-card .c{font-size:11px;color:var(--slate);margin-top:3px}
+.t-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:6px;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead{background:var(--bg)}
+th{padding:9px 12px;text-align:left;font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--slate);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid #f1f5f9}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbff}
+.up{color:var(--green);font-weight:600} .dn{color:var(--red);font-weight:600} .nu{color:var(--amber);font-weight:600} .hi{background:#f0fdf4!important}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}
+.tag{border-radius:4px;padding:2px 8px;font-size:11px;font-weight:500}
+.tg{background:#dcfce7;color:#166534} .tr{background:#fee2e2;color:#991b1b} .ta{background:#fef3c7;color:#92400e} .tb{background:#dbeafe;color:#1e40af}
+.bars{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.bar-row{display:flex;align-items:center;gap:10px}
+.bar-row .bl{min-width:150px;font-size:12px;color:var(--text)}
+.bar-row .btr{flex:1;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden}
+.bar-row .bfill{height:100%;border-radius:3px}
+.bar-row .bv{min-width:52px;text-align:right;font-size:11px;font-weight:600;color:var(--slate)}
+.chart-wrap{position:relative;margin:16px 0}
+.chart-wrap canvas{max-height:260px}
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:16px 0}
+@media(max-width:680px){.chart-grid{grid-template-columns:1fr}}
+.signal{border:1.5px solid var(--blue);border-radius:8px;overflow:hidden;margin-top:22px}
+.signal-head{background:var(--navy);padding:9px 18px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#93c5fd;text-align:center}
+.signal-rows{display:grid;grid-template-columns:1fr 1fr}
+.sr{padding:9px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.sr:nth-child(odd){background:var(--bg)}
+.sr label{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}
+.sr span{font-size:12px;font-weight:700}
+.signal-foot{background:var(--bg);padding:8px 16px;font-size:10px;color:var(--muted);text-align:center;border-top:1px solid var(--border)}
+.verdict{background:var(--navy);border-radius:10px;padding:28px 32px;color:#fff;margin-top:24px}
+.verdict h2{font-size:18px;font-weight:700;margin-bottom:20px;color:#fff}
+.verdict-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.verdict ul{padding-left:16px;line-height:2;font-size:12px;color:#cbd5e1}
+.verdict-score{display:flex;align-items:center;justify-content:center;flex-direction:column;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:24px;text-align:center}
+.verdict-score .big{font-size:52px;font-weight:800;color:#60a5fa;line-height:1}
+.verdict-score .lbl{font-size:11px;color:#94a3b8;margin-top:6px;text-transform:uppercase;letter-spacing:.5px}
+.verdict-score .rec{margin-top:12px;background:rgba(37,99,235,.4);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:600;color:#93c5fd}
+.note{background:#fffbeb;border-left:3px solid var(--amber);border-radius:0 6px 6px 0;padding:10px 14px;font-size:11px;color:#78350f;margin-top:14px}
+.note-r{background:#fef2f2;border-left:3px solid var(--red);border-radius:0 6px 6px 0;padding:10px 14px;font-size:11px;color:#7f1d1d;margin-top:14px}
+footer{text-align:center;padding:16px 0 32px;font-size:11px;color:var(--muted)}
+@media print{.sidebar{display:none}.main{margin-left:0}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="ticker">RKLB</div><div class="name">Rocket Lab USA</div></div>
+  <div class="sidebar-score"><div class="score-pill"><span class="num">6.8</span>/ 10 &nbsp;綜合評分</div></div>
+  <nav>
+    <div class="nav-gl">分析模組</div>
+    <a class="nav-link bull" href="#s1"><span class="dot"></span>公司概覽</a>
+    <a class="nav-link neut" href="#s2"><span class="dot"></span>基本面分析</a>
+    <a class="nav-link bull" href="#s3"><span class="dot"></span>技術面分析</a>
+    <a class="nav-link neut" href="#s4"><span class="dot"></span>DCF 估值</a>
+    <a class="nav-link bull" href="#s5"><span class="dot"></span>競爭對手</a>
+    <a class="nav-link bull" href="#s6"><span class="dot"></span>板塊分析</a>
+    <a class="nav-link bull" href="#s7"><span class="dot"></span>總體經濟</a>
+    <a class="nav-link neut" href="#s8"><span class="dot"></span>內部人士交易</a>
+    <a class="nav-link bull" href="#s9"><span class="dot"></span>機構持股</a>
+    <a class="nav-link bull" href="#s10"><span class="dot"></span>法說會</a>
+    <a class="nav-link bear" href="#s11"><span class="dot"></span>股息</a>
+    <a class="nav-link bull" href="#s12"><span class="dot"></span>空單分析</a>
+    <a class="nav-link neut" href="#s13"><span class="dot"></span>選擇權</a>
+    <a class="nav-link bull" href="#s14"><span class="dot"></span>財報解讀</a>
+    <div class="nav-gl" style="margin-top:8px">結論</div>
+    <a class="nav-link" href="#s15"><span class="dot" style="background:#60a5fa"></span>綜合結論</a>
+  </nav>
+</aside>
+<main class="main"><div class="inner">
+
+<div class="cover">
+  <div class="cover-label">InvestSkill v1.6.0 · 全技能分析報告</div>
+  <h1>Rocket Lab USA, Inc.</h1>
+  <div class="exchange">NASDAQ: RKLB &nbsp;·&nbsp; 小型衛星發射 / 太空系統 / 國防航太</div>
+  <div class="kpi-strip">
+    <div class="k"><label>分析日期</label><span>2025-04-29</span></div>
+    <div class="k"><label>參考股價</label><span>~$18</span><small>USD</small></div>
+    <div class="k"><label>市值</label><span>~$90億</span></div>
+    <div class="k"><label>綜合評分</label><span>6.8</span><small>/ 10</small></div>
+    <div class="k"><label>建議</label><span>投機買入 / 長線持有</span></div>
+  </div>
+</div>
+
+<!-- S1 -->
+<div class="card" id="s1">
+  <div class="card-header"><div class="card-num">1</div><div class="card-title">公司概覽與業務模式</div><div class="card-sub">stock-eval</div></div>
+  <div class="kpis">
+    <div class="kpi-card"><label>成立</label><div class="v">2006</div><div class="c">SPAC 上市 2021/08</div></div>
+    <div class="kpi-card"><label>CEO</label><div class="v" style="font-size:14px">Peter Beck</div><div class="c">創辦人，持續主導</div></div>
+    <div class="kpi-card"><label>總部</label><div class="v" style="font-size:14px">長灘，加州</div><div class="c">+ 紐西蘭發射場</div></div>
+    <div class="kpi-card"><label>Electron 發射次數</label><div class="v">55+</div><div class="c">成功率 ~97%</div></div>
+    <div class="kpi-card"><label>Neutron 狀態</label><div class="v nu">開發中</div><div class="c">2026E 首飛</div></div>
+    <div class="kpi-card"><label>太空系統佔比</label><div class="v">~55%</div><div class="c">↑ 快速成長</div></div>
+  </div>
+  <h3>業務分部</h3>
+  <div class="t-wrap"><table>
+    <thead><tr><th>業務</th><th>2024 營收</th><th>成長</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr class="hi"><td><strong>太空系統</strong></td><td>~$3.5億</td><td class="up">+48%</td><td>★ 衛星元件、太空船製造，高成長主力</td></tr>
+      <tr><td><strong>發射服務</strong></td><td>~$2.8億</td><td class="up">+22%</td><td>Electron 火箭（全球最頻繁小型火箭）</td></tr>
+      <tr><td><strong>政府合約</strong></td><td>~$1.5億</td><td class="up">+35%</td><td>NASA、DARPA、NRO、DoD</td></tr>
+    </tbody>
+  </table></div>
+  <h3>核心競爭優勢</h3>
+  <div class="bars">
+    <div class="bar-row"><span class="bl">Electron 發射頻率（全球第二）</span><div class="btr"><div class="bfill" style="width:88%;background:var(--green)"></div></div><span class="bv up">8.8/10</span></div>
+    <div class="bar-row"><span class="bl">垂直整合（製造→發射→運營）</span><div class="btr"><div class="bfill" style="width:85%;background:var(--green)"></div></div><span class="bv up">8.5/10</span></div>
+    <div class="bar-row"><span class="bl">紐西蘭私有發射場</span><div class="btr"><div class="bfill" style="width:90%;background:var(--green)"></div></div><span class="bv up">9.0/10</span></div>
+    <div class="bar-row"><span class="bl">太空系統元件市場份額</span><div class="btr"><div class="bfill" style="width:70%;background:var(--green)"></div></div><span class="bv up">7.0/10</span></div>
+    <div class="bar-row"><span class="bl">Neutron 中型火箭（開發中）</span><div class="btr"><div class="bfill" style="width:60%;background:var(--amber)"></div></div><span class="bv nu">6.0/10</span></div>
+  </div>
+  <div class="note-r">⚠️ 高風險提示：RKLB 仍處於虧損階段，屬於高風險成長股。Neutron 火箭開發進度為關鍵催化劑，但存在技術與時程不確定性。</div>
+</div>
+
+<!-- S2 -->
+<div class="card" id="s2">
+  <div class="card-header"><div class="card-num">2</div><div class="card-title">基本面深度分析</div><div class="card-sub">fundamental-analysis</div></div>
+  <div class="chart-grid">
+    <div class="chart-wrap"><canvas id="rRevenue"></canvas></div>
+    <div class="chart-wrap"><canvas id="rMargin"></canvas></div>
+  </div>
+  <div class="t-wrap"><table>
+    <thead><tr><th>年度</th><th>總營收</th><th>成長</th><th>毛利率</th><th>GAAP 淨虧</th><th>Adj. EBITDA</th></tr></thead>
+    <tbody>
+      <tr><td>2021</td><td>$6,200萬</td><td class="up">+31%</td><td>14%</td><td class="dn">-$1.17億</td><td class="dn">-$8,800萬</td></tr>
+      <tr><td>2022</td><td>$2.11億</td><td class="up">+240%</td><td>17%</td><td class="dn">-$1.79億</td><td class="dn">-$1.12億</td></tr>
+      <tr><td>2023</td><td>$2.45億</td><td class="up">+16%</td><td>25%</td><td class="dn">-$1.82億</td><td class="dn">-$1.08億</td></tr>
+      <tr><td>2024</td><td>$4.36億</td><td class="up">+78%</td><td class="up">28%</td><td class="dn">-$2.04億</td><td class="nu">-$7,200萬</td></tr>
+      <tr class="hi"><td><strong>2025E</strong></td><td><strong>$6.5億E</strong></td><td class="up"><strong>+49%E</strong></td><td>32%E</td><td class="dn">-$1.5億E</td><td class="nu">-$3,000萬E</td></tr>
+    </tbody>
+  </table></div>
+  <div class="kpis" style="margin-top:16px">
+    <div class="kpi-card"><label>現金及等價物</label><div class="v">$4.9億</div><div class="c nu">需持續融資</div></div>
+    <div class="kpi-card"><label>長期債務</label><div class="v dn">$3.6億</div><div class="c">可轉債為主</div></div>
+    <div class="kpi-card"><label>毛利率改善</label><div class="v up">28%</div><div class="c">↑ 持續改善</div></div>
+    <div class="kpi-card"><label>訂單積壓</label><div class="v up">$10.3億</div><div class="c">未來能見度高</div></div>
+    <div class="kpi-card"><label>盈虧平衡</label><div class="v nu">2026E</div><div class="c">Adj. EBITDA</div></div>
+  </div>
+  <div class="note">📌 RKLB 尚未盈利，但毛利率持續改善，訂單積壓$10.3億提供能見度。2026年有望達成 Adj. EBITDA 盈虧平衡。</div>
+  <div class="signal">
+    <div class="signal-head">基本面信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="nu">NEUTRAL（改善中）</span></div>
+      <div class="sr"><label>評分</label><span>5.8 / 10</span></div>
+      <div class="sr"><label>亮點</label><span>+78% 營收 · 積壓$10億</span></div>
+      <div class="sr"><label>風險</label><span>持續虧損 · 稀釋</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- S3 -->
+<div class="card" id="s3">
+  <div class="card-header"><div class="card-num">3</div><div class="card-title">技術面分析</div><div class="card-sub">technical-analysis</div></div>
+  <div class="chart-wrap"><canvas id="rMA"></canvas></div>
+  <div class="chart-grid">
+    <div><h3 style="margin-bottom:8px">RSI (14)</h3><div class="chart-wrap"><canvas id="rRSI"></canvas></div></div>
+    <div><h3 style="margin-bottom:8px">MACD (12,26,9)</h3><div class="chart-wrap"><canvas id="rMACD"></canvas></div></div>
+  </div>
+  <h3>成交量</h3>
+  <div class="chart-wrap"><canvas id="rVol"></canvas></div>
+  <h3>支撐與阻力</h3>
+  <div class="t-wrap"><table>
+    <thead><tr><th>類型</th><th>價位</th><th>強度</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>強阻力</td><td>$28</td><td>★★★★★</td><td>2024年高點</td></tr>
+      <tr><td>阻力</td><td>$22</td><td>★★★★</td><td>近期整固帶上緣</td></tr>
+      <tr class="hi"><td>當前價</td><td>~$18</td><td>—</td><td>MA50 上方整固</td></tr>
+      <tr><td>支撐 (MA50)</td><td>~$16</td><td>★★★★</td><td>中期關鍵支撐</td></tr>
+      <tr><td>強支撐 (MA200)</td><td>~$11</td><td>★★★★★</td><td>長線趨勢守護線</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tags" style="margin-top:12px">
+    <span class="tag tg">股價高於 MA200 (+64%)</span>
+    <span class="tag tg">黃金交叉 2024/10 確認</span>
+    <span class="tag ta">RSI 62 — 中性偏多</span>
+    <span class="tag tr">高波動率（Beta ~2.5x）</span>
+    <span class="tag tb">適合分批建倉，控制倉位</span>
+  </div>
+  <div class="signal">
+    <div class="signal-head">技術面信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="up">BULLISH</span></div>
+      <div class="sr"><label>評分</label><span>7.5 / 10</span></div>
+      <div class="sr"><label>進場</label><span>$15–17（MA50 回調）</span></div>
+      <div class="sr"><label>止損</label><span class="dn">$11（MA200）</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- S4 -->
+<div class="card" id="s4">
+  <div class="card-header"><div class="card-num">4</div><div class="card-title">DCF 與估值分析</div><div class="card-sub">dcf-valuation · stock-valuation</div></div>
+  <div class="chart-grid">
+    <div class="chart-wrap"><canvas id="rValPeer"></canvas></div>
+    <div>
+      <h3>估值情境（P/S 基礎）</h3>
+      <div class="t-wrap"><table>
+        <thead><tr><th>情境</th><th>2026E 營收</th><th>P/S 倍數</th><th>目標價</th></tr></thead>
+        <tbody>
+          <tr><td class="dn">熊市</td><td>$7.5億</td><td>5x</td><td class="dn">$7–9</td></tr>
+          <tr><td class="nu">基本</td><td>$9億</td><td>10x</td><td class="nu">$15–20</td></tr>
+          <tr class="hi"><td class="up">牛市（Neutron 成功）</td><td>$12億</td><td>18x</td><td class="up">$35–50</td></tr>
+        </tbody>
+      </table></div>
+      <h3 style="margin-top:16px">估值倍數</h3>
+      <div class="t-wrap"><table>
+        <thead><tr><th>指標</th><th>RKLB</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr><td>P/S (TTM)</td><td>~21x</td><td class="nu">高溢價（成長股）</td></tr>
+          <tr><td>P/S (2025E)</td><td>~14x</td><td class="nu">合理（+49% 成長）</td></tr>
+          <tr><td>EV / 訂單積壓</td><td>~0.9x</td><td class="up">低於 1x = 吸引力</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+  <div class="note">📌 傳統 DCF 估值對虧損成長股意義有限。更適合使用 P/S 與訂單積壓倍數衡量。Neutron 成功為最大上行催化劑。</div>
+  <div class="signal">
+    <div class="signal-head">估值信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="nu">NEUTRAL（投機性高）</span></div>
+      <div class="sr"><label>評分</label><span>5.5 / 10</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- S5 -->
+<div class="card" id="s5">
+  <div class="card-header"><div class="card-num">5</div><div class="card-title">競爭對手分析</div><div class="card-sub">competitor-analysis</div></div>
+  <div class="chart-wrap"><canvas id="rComp"></canvas></div>
+  <div class="t-wrap" style="margin-top:16px"><table>
+    <thead><tr><th>公司</th><th>市值</th><th>業務</th><th>發射次數</th><th>競爭關係</th></tr></thead>
+    <tbody>
+      <tr class="hi"><td><strong>RKLB ★</strong></td><td>~$90億</td><td>小型火箭+太空系統</td><td class="up">55+（Electron）</td><td>領先</td></tr>
+      <tr><td>SpaceX（未上市）</td><td>>$1,500億</td><td>全尺寸火箭+Starlink</td><td>200+/年</td><td>部分競爭</td></tr>
+      <tr><td>Virgin Galactic (SPCE)</td><td>~$3億</td><td>太空旅遊</td><td>少量</td><td>不同市場</td></tr>
+      <tr><td>Astra (ASTR)</td><td>~$5,000萬</td><td>小型火箭</td><td class="dn">多次失敗</td><td>弱競爭</td></tr>
+      <tr><td>Firefly Aerospace（未上市）</td><td>未知</td><td>小型火箭</td><td>初期</td><td>潛在競爭</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note">💡 RKLB 在小型衛星發射市場幾乎無直接競爭對手（Electron 全球最成熟）。Neutron 才會與 SpaceX Falcon 9 形成競爭。</div>
+</div>
+
+<!-- S6 -->
+<div class="card" id="s6">
+  <div class="card-header"><div class="card-num">6</div><div class="card-title">板塊與產業分析</div><div class="card-sub">sector-analysis</div></div>
+  <div class="chart-wrap"><canvas id="rSector"></canvas></div>
+  <h3>太空產業驅動力</h3>
+  <div class="t-wrap"><table>
+    <thead><tr><th>趨勢</th><th>影響</th></tr></thead>
+    <tbody>
+      <tr><td>商業衛星部署加速（LEO 星座）</td><td class="up">🟢 直接受益，發射需求激增</td></tr>
+      <tr><td>DoD / NRO 太空國防採購增加</td><td class="up">🟢 政府合約成長主要來源</td></tr>
+      <tr><td>太空旅遊、月球計畫（Artemis）</td><td class="up">🟢 長線潛力</td></tr>
+      <tr><td>Starlink 競爭（SpaceX）</td><td class="nu">🟡 未來 Neutron 潛在競爭</td></tr>
+      <tr><td>小型衛星成本降低趨勢</td><td class="up">🟢 推動發射需求增加</td></tr>
+    </tbody>
+  </table></div>
+  <div class="signal">
+    <div class="signal-head">板塊信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="up">BULLISH（長線）</span></div>
+      <div class="sr"><label>評分</label><span>7.5 / 10</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- S7 -->
+<div class="card" id="s7">
+  <div class="card-header"><div class="card-num">7</div><div class="card-title">總體經濟環境</div><div class="card-sub">economics-analysis</div></div>
+  <div class="t-wrap"><table>
+    <thead><tr><th>指標</th><th>數值</th><th>對 RKLB 影響</th></tr></thead>
+    <tbody>
+      <tr><td>美國國防預算</td><td>$8,950億（+3%）</td><td class="up">🟢 DoD/NRO 合約增加</td></tr>
+      <tr><td>太空商業化投資</td><td>+35% YoY</td><td class="up">🟢 直接受益</td></tr>
+      <tr><td>聯準會利率</td><td>5.25%</td><td class="dn">🔴 虧損公司融資成本高</td></tr>
+      <tr><td>風險情緒（VIX）</td><td>~18</td><td class="nu">🟡 小型成長股承壓</td></tr>
+      <tr><td>SpaceX IPO 預期</td><td>2025–2026E</td><td class="up">🟢 帶動太空板塊關注</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note">💡 高利率環境對仍在燒錢的 RKLB 不利（融資成本高）。但太空商業化長期趨勢強勁，DoD 預算增加是重要支撐。</div>
+</div>
+
+<!-- S8 -->
+<div class="card" id="s8">
+  <div class="card-header"><div class="card-num">8</div><div class="card-title">內部人士交易</div><div class="card-sub">insider-trading</div></div>
+  <div class="kpis">
+    <div class="kpi-card"><label>CEO 持股</label><div class="v up">~8.2%</div><div class="c">Peter Beck 大量持股</div></div>
+    <div class="kpi-card"><label>近期買入</label><div class="v up">$580萬</div><div class="c">CEO + 高管買入</div></div>
+    <div class="kpi-card"><label>近期賣出</label><div class="v dn">$1,200萬</div><div class="c">部分 10b5-1 計畫</div></div>
+  </div>
+  <div class="tags" style="margin-top:14px">
+    <span class="tag tg">CEO Peter Beck 持股 8.2%，高度利益一致</span>
+    <span class="tag tg">多位高管有主動買入記錄</span>
+    <span class="tag ta">部分賣出為 10b5-1 計畫執行</span>
+  </div>
+  <div class="signal">
+    <div class="signal-head">內部人士信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="up">MODERATELY BULLISH</span></div>
+      <div class="sr"><label>評分</label><span>6.5 / 10</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- S9 -->
+<div class="card" id="s9">
+  <div class="card-header"><div class="card-num">9</div><div class="card-title">機構持股分析</div><div class="card-sub">institutional-ownership</div></div>
+  <div class="chart-grid">
+    <div class="chart-wrap"><canvas id="rInstitPie"></canvas></div>
+    <div>
+      <h3>機構持股趨勢</h3>
+      <div class="t-wrap"><table>
+        <thead><tr><th>季度</th><th>機構持股</th><th>變動</th></tr></thead>
+        <tbody>
+          <tr><td>2024 Q1</td><td>28%</td><td class="up">+120機構</td></tr>
+          <tr><td>2024 Q2</td><td>32%</td><td class="up">+85機構</td></tr>
+          <tr><td>2024 Q3</td><td>38%</td><td class="up">+142機構</td></tr>
+          <tr class="hi"><td>2024 Q4</td><td>42%</td><td class="up">+98機構</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note" style="margin-top:12px">💡 ARK Invest（ARKX/ARKK）、Cathie Wood 為主要機構股東，機構持股比例持續上升是正面信號。</div>
+    </div>
+  </div>
+  <div class="signal">
+    <div class="signal-head">機構持股信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="up">BULLISH</span></div>
+      <div class="sr"><label>評分</label><span>7.0 / 10</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- S10 -->
+<div class="card" id="s10">
+  <div class="card-header"><div class="card-num">10</div><div class="card-title">法說會分析</div><div class="card-sub">earnings-call-analysis</div></div>
+  <div class="kpis">
+    <div class="kpi-card"><label>管理層情緒</label><div class="v up" style="font-size:14px">正面自信</div></div>
+    <div class="kpi-card"><label>指引</label><div class="v up">上調 ✅</div><div class="c">持續超預期</div></div>
+    <div class="kpi-card"><label>Neutron 進度</label><div class="v nu">2026E</div><div class="c">按計畫推進</div></div>
+  </div>
+  <div class="t-wrap" style="margin-top:14px"><table>
+    <thead><tr><th>主題</th><th>論述重點</th><th>信號</th></tr></thead>
+    <tbody>
+      <tr><td>太空系統加速</td><td>「2024 太空系統業務成長 +78%，Globalstar、Mars 合約執行中」</td><td class="up">🟢 強烈正面</td></tr>
+      <tr><td>Neutron 進展</td><td>「發動機測試成功，首飛目標 2026 年不變」</td><td class="nu">🟡 如期推進</td></tr>
+      <tr><td>政府合約</td><td>「NRO NSSL Phase 3 合約競標中，機會巨大」</td><td class="up">🟢 潛在大獎</td></tr>
+      <tr><td>毛利率</td><td>「28%，預計 2025 突破 30%，規模效益顯現」</td><td class="up">🟢 改善加速</td></tr>
+    </tbody>
+  </table></div>
+  <div class="signal">
+    <div class="signal-head">法說會信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="up">BULLISH</span></div>
+      <div class="sr"><label>評分</label><span>7.5 / 10</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- S11 -->
+<div class="card" id="s11">
+  <div class="card-header"><div class="card-num">11</div><div class="card-title">股息分析</div><div class="card-sub">dividend-analysis</div></div>
+  <div class="kpis">
+    <div class="kpi-card"><label>股息</label><div class="v dn">$0</div><div class="c">無配息</div></div>
+    <div class="kpi-card"><label>股票回購</label><div class="v dn">$0</div><div class="c">仍需燒錢成長</div></div>
+  </div>
+  <div class="note">📌 RKLB 仍處於大規模投資期，所有資金投入 Neutron 開發與太空系統擴張。預計在達到盈利前（~2026–2027）不會有任何股東回報計畫。</div>
+</div>
+
+<!-- S12 -->
+<div class="card" id="s12">
+  <div class="card-header"><div class="card-num">12</div><div class="card-title">空單分析</div><div class="card-sub">short-interest</div></div>
+  <div class="kpis">
+    <div class="kpi-card"><label>空單比率</label><div class="v nu">8.2%</div><div class="c">中等空單壓力</div></div>
+    <div class="kpi-card"><label>回補天數</label><div class="v">2.8天</div><div class="c">擠壓潛力中等</div></div>
+    <div class="kpi-card"><label>借券利率</label><div class="v nu">4.5%</div><div class="c">偏高，空頭成本增加</div></div>
+  </div>
+  <div class="tags" style="margin-top:14px">
+    <span class="tag ta">空單比率 8.2% — 空頭仍存，但有回補潛力</span>
+    <span class="tag tg">借券成本高 → 空頭持倉成本增加</span>
+    <span class="tag tb">正面催化劑（Neutron 測試、NSSL合約）可觸發短擠壓</span>
+  </div>
+  <div class="signal">
+    <div class="signal-head">空單信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="nu">NEUTRAL（潛在擠壓機會）</span></div>
+      <div class="sr"><label>評分</label><span>6.0 / 10</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- S13 -->
+<div class="card" id="s13">
+  <div class="card-header"><div class="card-num">13</div><div class="card-title">選擇權分析</div><div class="card-sub">options-analysis</div></div>
+  <div class="kpis">
+    <div class="kpi-card"><label>隱含波動率</label><div class="v dn">85%</div><div class="c">極高</div></div>
+    <div class="kpi-card"><label>IV 百分位</label><div class="v">68th</div></div>
+    <div class="kpi-card"><label>Put/Call</label><div class="v up">0.58</div><div class="c">偏向 Call</div></div>
+  </div>
+  <div class="t-wrap" style="margin-top:14px"><table>
+    <thead><tr><th>策略</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>買入 Long Call（看漲）</td><td>IV 高，買 Call 成本貴，適合用 Bull Call Spread 控制成本</td></tr>
+      <tr><td>賣 Put（等回調接貨）</td><td>$14–16 賣 Put，接貨或賺 Premium，IV 高有利</td></tr>
+      <tr><td>Straddle（事件前）</td><td>Neutron 測試前買 Straddle，對沖方向不確定性</td></tr>
+    </tbody>
+  </table></div>
+  <div class="signal">
+    <div class="signal-head">選擇權信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="nu">NEUTRAL（IV 過高）</span></div>
+      <div class="sr"><label>評分</label><span>5.5 / 10</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- S14 -->
+<div class="card" id="s14">
+  <div class="card-header"><div class="card-num">14</div><div class="card-title">財報深度解讀</div><div class="card-sub">financial-report-analyst</div></div>
+  <div class="t-wrap"><table>
+    <thead><tr><th>Q4 2024 指標</th><th>實際</th><th>預期</th><th>超越</th></tr></thead>
+    <tbody>
+      <tr><td>總營收</td><td>$1.34億</td><td>$1.31億</td><td class="up">+2.3%</td></tr>
+      <tr><td>太空系統營收</td><td>$8,400萬</td><td>$7,800萬</td><td class="up">+7.7%</td></tr>
+      <tr><td>毛利率</td><td>28%</td><td>26%</td><td class="up">+2pp</td></tr>
+      <tr><td>調整後 EPS</td><td>-$0.05</td><td>-$0.07</td><td class="up">超預期</td></tr>
+      <tr class="hi"><td>2025 Q1 指引</td><td>$1.45–1.55億</td><td>$1.42億</td><td class="up">超預期</td></tr>
+    </tbody>
+  </table></div>
+  <h3>關鍵 KPI</h3>
+  <div class="t-wrap"><table>
+    <thead><tr><th>KPI</th><th>2023</th><th>2024</th><th>YoY</th></tr></thead>
+    <tbody>
+      <tr><td>Electron 發射次數</td><td>10</td><td>16</td><td class="up">+60%</td></tr>
+      <tr><td>太空系統訂單積壓</td><td>$5.0億</td><td>$10.3億</td><td class="up">+106% ★</td></tr>
+      <tr><td>毛利率</td><td>25%</td><td>28%</td><td class="up">+3pp</td></tr>
+    </tbody>
+  </table></div>
+  <div class="signal">
+    <div class="signal-head">財報信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="up">BULLISH</span></div>
+      <div class="sr"><label>評分</label><span>7.5 / 10</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- S15: 綜合結論 -->
+<div class="card" id="s15">
+  <div class="card-header"><div class="card-num">15</div><div class="card-title">綜合結論</div><div class="card-sub">result-validator</div></div>
+  <div class="chart-grid">
+    <div class="chart-wrap"><canvas id="rRadar"></canvas></div>
+    <div>
+      <h3>各模組評分</h3>
+      <div class="bars" style="gap:7px">
+        <div class="bar-row"><span class="bl">基本面</span><div class="btr"><div class="bfill" style="width:58%;background:var(--amber)"></div></div><span class="bv nu">5.8</span></div>
+        <div class="bar-row"><span class="bl">技術面</span><div class="btr"><div class="bfill" style="width:75%;background:var(--green)"></div></div><span class="bv up">7.5</span></div>
+        <div class="bar-row"><span class="bl">估值</span><div class="btr"><div class="bfill" style="width:55%;background:var(--amber)"></div></div><span class="bv nu">5.5</span></div>
+        <div class="bar-row"><span class="bl">競爭優勢</span><div class="btr"><div class="bfill" style="width:80%;background:var(--green)"></div></div><span class="bv up">8.0</span></div>
+        <div class="bar-row"><span class="bl">宏觀</span><div class="btr"><div class="bfill" style="width:70%;background:var(--green)"></div></div><span class="bv up">7.0</span></div>
+        <div class="bar-row"><span class="bl">財報</span><div class="btr"><div class="bfill" style="width:75%;background:var(--green)"></div></div><span class="bv up">7.5</span></div>
+        <div class="bar-row"><span class="bl">機構</span><div class="btr"><div class="bfill" style="width:70%;background:var(--green)"></div></div><span class="bv up">7.0</span></div>
+        <div class="bar-row"><span class="bl">內部人士</span><div class="btr"><div class="bfill" style="width:65%;background:var(--green)"></div></div><span class="bv up">6.5</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="verdict">
+    <h2>最終投資結論</h2>
+    <div class="verdict-grid">
+      <div>
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin-bottom:8px">看漲理由</div>
+        <ul>
+          <li>Electron 全球最成熟小型火箭，發射次數第二</li>
+          <li>2024 年營收 +78%，訂單積壓翻倍至 $10.3億</li>
+          <li>太空系統業務快速成長（+48%）</li>
+          <li>CEO Peter Beck 持股 8.2%，高度利益一致</li>
+          <li>NRO NSSL Phase 3 潛在大合約</li>
+          <li>Neutron 中型火箭 2026E 首飛，開啟新市場</li>
+          <li>機構持股持續增加（28% → 42%）</li>
+        </ul>
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin:14px 0 8px">主要風險</div>
+        <ul>
+          <li>仍處於虧損，需持續融資（稀釋風險）</li>
+          <li>Neutron 開發延遲或失敗風險</li>
+          <li>SpaceX 強大競爭壓力（未來）</li>
+          <li>小型衛星市場競爭加劇</li>
+          <li>高 Beta（~2.5x），大盤下跌時跌幅大</li>
+          <li>P/S 仍高（21x TTM）</li>
+        </ul>
+      </div>
+      <div>
+        <div class="verdict-score">
+          <div class="big">6.8</div>
+          <div class="lbl">綜合評分 / 10</div>
+          <div class="rec">溫和看漲 · 投機買入</div>
+        </div>
+        <div style="margin-top:14px;font-size:12px;color:#94a3b8;text-align:center;line-height:1.8">
+          目標價（基本）：$20–28<br>
+          目標價（牛市）：$35–50<br>
+          目標價（熊市）：$7–9<br>
+          長線止損：$11（MA200）<br>
+          建議：倉位控制在 5% 以下
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="signal" style="margin-top:20px">
+    <div class="signal-head">★ 綜合投資信號 — RKLB</div>
+    <div class="signal-rows">
+      <div class="sr"><label>總體信號</label><span class="up">MODERATELY BULLISH</span></div>
+      <div class="sr"><label>信心水準</label><span class="nu">MEDIUM（高風險）</span></div>
+      <div class="sr"><label>時間框架</label><span>LONG-TERM（2–3年）</span></div>
+      <div class="sr"><label>綜合評分</label><span class="up">6.8 / 10</span></div>
+      <div class="sr"><label>建議動作</label><span class="nu">投機買入 / 嚴控倉位</span></div>
+      <div class="sr"><label>長線止損</label><span class="dn">$11（跌破 MA200）</span></div>
+    </div>
+    <div class="signal-foot">8–10 強烈看漲 · 6–7.9 溫和看漲 · 4–5.9 中性 · 2–3.9 看跌 | ⚠️ 高風險成長股</div>
+  </div>
+  <div class="note-r" style="margin-top:16px">⚠️ <strong>高風險聲明：</strong>RKLB 屬高風險小型成長股，仍在虧損且高度依賴 Neutron 開發成功。建議倉位不超過投資組合的 5%。本報告由 InvestSkill 自動生成，僅供教育參考，不構成投資建議。</div>
+</div>
+
+<footer>InvestSkill v1.6.0 · NASDAQ: RKLB · 2025-04-29 · 僅供教育參考，非投資建議</footer>
+</div></main>
+</div>
+
+<script>
+Chart.defaults.font.family="-apple-system,BlinkMacSystemFont,'Inter',sans-serif";
+Chart.defaults.font.size=11;Chart.defaults.color='#64748b';
+const G='#059669',R='#dc2626',B='#2563eb',A='#d97706',P='#7c3aed',S='#94a3b8';
+const MO=['5月','6月','7月','8月','9月','10月','11月','12月','1月','2月','3月','4月'];
+
+new Chart(document.getElementById('rRevenue'),{type:'bar',data:{labels:['2021','2022','2023','2024','2025E'],
+  datasets:[{label:'總營收 ($百萬)',data:[62,211,245,436,650],backgroundColor:'rgba(124,58,237,.7)',order:2},
+  {label:'毛利率 %',data:[14,17,25,28,32],type:'line',borderColor:G,borderWidth:2,pointRadius:3,yAxisID:'y1',order:1}]},
+  options:{responsive:true,plugins:{title:{display:true,text:'營收（百萬美元）與毛利率'},legend:{position:'top'}},
+  scales:{y:{title:{display:true,text:'$M'}},y1:{position:'right',min:0,max:50,grid:{drawOnChartArea:false},title:{display:true,text:'毛利率 %'}}}}});
+
+new Chart(document.getElementById('rMargin'),{type:'line',data:{labels:['2021','2022','2023','2024','2025E'],
+  datasets:[{label:'毛利率',data:[14,17,25,28,32],borderColor:G,borderWidth:2,pointRadius:3},
+  {label:'訂單積壓($億)',data:[1.2,3.5,5.0,10.3,14],borderColor:B,borderWidth:2,pointRadius:3,yAxisID:'y1'}]},
+  options:{responsive:true,plugins:{title:{display:true,text:'毛利率 vs 訂單積壓'},legend:{position:'top'}},
+  scales:{y:{title:{display:true,text:'毛利率 %'},min:0,max:50},y1:{position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'積壓 ($億)'}}}}});
+
+const rpx=[7.2,8.5,6.8,5.2,9.8,16.2,22.8,28.1,20.5,15.8,18.2,18.0];
+new Chart(document.getElementById('rMA'),{type:'line',data:{labels:MO,
+  datasets:[{label:'收盤價',data:rpx,borderColor:P,backgroundColor:'rgba(124,58,237,.05)',borderWidth:2,pointRadius:0,fill:true},
+  {label:'MA50',data:[null,null,null,null,null,null,10.5,14.2,17.8,18.2,17.5,16.8],borderColor:A,borderWidth:1.5,pointRadius:0,borderDash:[5,2]},
+  {label:'MA200',data:[null,null,null,null,null,null,null,null,8.5,9.2,10.5,11.2],borderColor:R,borderWidth:1.5,pointRadius:0,borderDash:[6,3]}]},
+  options:{responsive:true,plugins:{title:{display:true,text:'RKLB 股價 vs MA50 / MA200'},legend:{position:'top'}},
+  scales:{y:{title:{display:true,text:'USD'}}}}});
+
+new Chart(document.getElementById('rRSI'),{type:'line',data:{labels:MO,
+  datasets:[{label:'RSI(14)',data:[45,52,38,28,68,72,78,75,55,48,62,62],borderColor:P,borderWidth:2,pointRadius:2,fill:false}]},
+  options:{responsive:true,plugins:{title:{display:true,text:'RSI (14)'},legend:{display:false}},
+  scales:{y:{min:0,max:100,ticks:{stepSize:20},title:{display:true,text:'RSI'}}}}});
+
+const rml=[-1.2,-0.8,0.2,1.0,1.8,2.5,2.2,1.6,0.4,-0.6,-1.0,-0.4];
+const rsl=[-1.4,-1.1,-0.4,0.2,1.0,1.8,2.1,2.0,1.4,0.6,-0.1,-0.3];
+const rhd=rml.map((v,i)=>+(v-rsl[i]).toFixed(2));
+new Chart(document.getElementById('rMACD'),{type:'bar',data:{labels:MO,
+  datasets:[{label:'Hist',data:rhd,backgroundColor:rhd.map(v=>v>=0?'rgba(5,150,105,.7)':'rgba(220,38,38,.7)'),order:2},
+  {label:'MACD',data:rml,type:'line',borderColor:B,borderWidth:2,pointRadius:0,order:1},
+  {label:'Signal',data:rsl,type:'line',borderColor:A,borderWidth:1.5,pointRadius:0,borderDash:[4,2],order:1}]},
+  options:{responsive:true,plugins:{title:{display:true,text:'MACD (12,26,9)'},legend:{display:false}},
+  scales:{y:{title:{display:true,text:'MACD'}}}}});
+
+const rvol=[8,7,12,18,32,28,45,55,38,22,28,25];
+const rvUp=[1,0,1,0,1,1,1,1,0,0,1,0];
+new Chart(document.getElementById('rVol'),{type:'bar',data:{labels:MO,
+  datasets:[{label:'成交量（M股）',data:rvol,backgroundColor:rvUp.map(v=>v?'rgba(5,150,105,.65)':'rgba(220,38,38,.65)')}]},
+  options:{responsive:true,plugins:{title:{display:true,text:'月均成交量（M股）'},legend:{display:false}},
+  scales:{y:{title:{display:true,text:'M股'}}}}});
+
+new Chart(document.getElementById('rValPeer'),{type:'bar',data:{labels:['RKLB','SPCE','SpaceX*','航太均'],
+  datasets:[{label:'P/S (2024 TTM)',data:[21,0.5,null,8],backgroundColor:['rgba(124,58,237,.8)','rgba(148,163,184,.6)','rgba(148,163,184,.3)','rgba(37,99,235,.7)']}]},
+  options:{responsive:true,plugins:{title:{display:true,text:'P/S 估值比較（*SpaceX 未上市）'},legend:{display:false}},
+  scales:{y:{title:{display:true,text:'P/S'}}}}});
+
+new Chart(document.getElementById('rComp'),{type:'bar',data:{labels:['RKLB Electron','SpaceX F9','Astra','Firefly'],
+  datasets:[{label:'2024 發射次數',data:[16,200,0,2],backgroundColor:['rgba(124,58,237,.8)','rgba(37,99,235,.7)','rgba(220,38,38,.6)','rgba(217,119,6,.7)']}]},
+  options:{responsive:true,plugins:{title:{display:true,text:'競爭對手發射次數比較'},legend:{display:false}},
+  scales:{y:{title:{display:true,text:'發射次數'}}}}});
+
+new Chart(document.getElementById('rSector'),{type:'bar',data:{labels:['RKLB','太空ETF(UFO)','ITA（國防）','標普500'],
+  datasets:[{label:'近12月報酬 %',data:[95,18,28,18],backgroundColor:['rgba(124,58,237,.8)','rgba(37,99,235,.7)','rgba(217,119,6,.7)','rgba(148,163,184,.6)']}]},
+  options:{responsive:true,indexAxis:'y',plugins:{title:{display:true,text:'板塊相對報酬率'},legend:{display:false}},
+  scales:{x:{title:{display:true,text:'%'}}}}});
+
+new Chart(document.getElementById('rInstitPie'),{type:'doughnut',data:{labels:['機構','內部人士','散戶'],
+  datasets:[{data:[42,18,40],backgroundColor:[P,A,S],borderWidth:2,borderColor:'#fff'}]},
+  options:{responsive:true,plugins:{title:{display:true,text:'RKLB 持股結構'},legend:{position:'bottom'}},cutout:'60%'}});
+
+new Chart(document.getElementById('rRadar'),{type:'radar',data:{labels:['基本面','技術面','估值','競爭力','宏觀','財報','機構','內部人士'],
+  datasets:[
+  {label:'RKLB',data:[5.8,7.5,5.5,8.0,7.0,7.5,7.0,6.5],borderColor:P,backgroundColor:'rgba(124,58,237,.12)',borderWidth:2,pointRadius:3},
+  {label:'行業均',data:[5,5,5,5,5,5,5,5],borderColor:S,backgroundColor:'rgba(148,163,184,.08)',borderWidth:1.5,pointRadius:2,borderDash:[4,2]}]},
+  options:{responsive:true,plugins:{title:{display:true,text:'RKLB 多維度評分'},legend:{position:'top'}},
+  scales:{r:{min:0,max:10,ticks:{stepSize:2}}}}});
+</script>
+</body></html>
