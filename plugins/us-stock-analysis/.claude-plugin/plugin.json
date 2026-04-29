@@ -1,7 +1,7 @@
 {
   "name": "us-stock-analysis",
   "description": "Comprehensive US stock evaluation with fundamental, technical, economic, valuation, and financial report analysis",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "author": {
     "name": "yennanliu"
   },
@@ -28,6 +28,7 @@
     "financial-report-analyst",
     "stock-valuation",
     "result-validator",
-    "chart-master"
+    "chart-master",
+    "full-report"
   ]
 }

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-04-29
+
+### Added
+- `full-report` skill — orchestrates all 15 analysis modules on a ticker and saves a single professional HTML report to `output/`
+- Enhanced `chart-master` skill with MA overlay, Price+Volume dual-panel, Return Histogram, RSI, MACD, and Support/Resistance charts
+- Consistent Chart.js color palette and style guidelines in chart-master
+
 ## [1.5.0] - 2026-04-28
 
 ### Added

@@ -3,1287 +3,1142 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PLTR — Palantir Technologies 綜合投資分析報告</title>
+<title>PLTR — 綜合投資分析報告</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&family=Inter:wght@400;600;700&display=swap');
+/* ─── Reset & Tokens ─────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --blue:    #3b82f6;
-    --amber:   #f59e0b;
-    --red:     #ef4444;
-    --green:   #10b981;
-    --purple:  #8b5cf6;
-    --gray:    #6b7280;
-    --light:   #f8fafc;
-    --border:  #e2e8f0;
-    --text:    #1e293b;
-    --muted:   #64748b;
-  }
+:root {
+  --navy:   #0f172a;
+  --navy2:  #1e293b;
+  --blue:   #2563eb;
+  --blue-l: #3b82f6;
+  --green:  #059669;
+  --red:    #dc2626;
+  --amber:  #d97706;
+  --slate:  #64748b;
+  --border: #e2e8f0;
+  --bg:     #f8fafc;
+  --white:  #ffffff;
+  --text:   #0f172a;
+  --muted:  #94a3b8;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.08);
+}
 
-  * { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
 
-  body {
-    font-family: 'Noto Sans TC', 'Inter', sans-serif;
-    background: #f1f5f9;
-    color: var(--text);
-    font-size: 14px;
-    line-height: 1.7;
-  }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.6;
+}
 
-  /* ── layout ── */
-  .page { max-width: 1100px; margin: 0 auto; padding: 32px 20px 80px; }
+/* ─── Layout ─────────────────────────────────────── */
+.layout    { display: flex; min-height: 100vh; }
+.sidebar   { width: 220px; flex-shrink: 0; background: var(--navy); position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 100; }
+.main      { margin-left: 220px; flex: 1; }
+.inner     { max-width: 900px; margin: 0 auto; padding: 32px 32px 80px; }
 
-  /* ── cover ── */
-  .cover {
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #1e40af 100%);
-    color: #fff;
-    border-radius: 16px;
-    padding: 48px 48px 40px;
-    margin-bottom: 32px;
-    position: relative;
-    overflow: hidden;
-  }
-  .cover::after {
-    content: 'PLTR';
-    position: absolute;
-    right: -20px; top: -10px;
-    font-size: 160px;
-    font-weight: 700;
-    opacity: 0.06;
-    letter-spacing: -8px;
-  }
-  .cover .badge {
-    display: inline-block;
-    background: rgba(59,130,246,0.35);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: #93c5fd;
-    border-radius: 6px;
-    padding: 3px 10px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: .5px;
-    margin-bottom: 16px;
-  }
-  .cover h1 { font-size: 34px; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
-  .cover .sub { color: #94a3b8; font-size: 15px; margin-bottom: 28px; }
-  .cover-meta { display: flex; gap: 32px; flex-wrap: wrap; }
-  .cover-meta .item label { display: block; color: #64748b; font-size: 11px; letter-spacing:.5px; text-transform: uppercase; }
-  .cover-meta .item span  { color: #f1f5f9; font-size: 18px; font-weight: 700; }
+/* ─── Sidebar ────────────────────────────────────── */
+.sidebar-logo {
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.sidebar-logo .ticker { font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -.5px; }
+.sidebar-logo .name   { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
-  /* ── toc ── */
-  .toc {
-    background: #fff;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    padding: 24px 28px;
-    margin-bottom: 28px;
-  }
-  .toc h2 { font-size: 13px; letter-spacing:.8px; text-transform:uppercase; color:var(--muted); margin-bottom:14px; }
-  .toc ol { padding-left: 20px; column-count: 2; column-gap: 32px; }
-  .toc li { margin-bottom: 5px; }
-  .toc a  { color: var(--blue); text-decoration: none; font-size: 13px; }
-  .toc a:hover { text-decoration: underline; }
+.sidebar-score {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.score-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(37,99,235,.25);
+  border: 1px solid rgba(59,130,246,.4);
+  border-radius: 20px;
+  padding: 6px 14px;
+  color: #93c5fd;
+  font-size: 12px; font-weight: 600;
+}
+.score-pill .num { font-size: 18px; font-weight: 700; color: #fff; }
 
-  /* ── sections ── */
-  .section {
-    background: #fff;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    padding: 32px;
-    margin-bottom: 24px;
-    scroll-margin-top: 20px;
-  }
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 2px solid var(--border);
-  }
-  .section-num {
-    width: 32px; height: 32px;
-    background: var(--blue);
-    color: #fff;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700;
-    flex-shrink: 0;
-  }
-  .section h2 { font-size: 18px; font-weight: 700; color: var(--text); }
-  .section h3 { font-size: 14px; font-weight: 700; color: var(--text); margin: 20px 0 10px; }
-  .section h4 { font-size: 13px; font-weight: 600; color: var(--muted); margin: 14px 0 8px; }
+.sidebar nav { padding: 12px 0 24px; }
+.nav-group { margin-bottom: 4px; }
+.nav-group-label {
+  padding: 6px 20px 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  color: rgba(148,163,184,.5);
+}
+.nav-link {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 20px;
+  color: rgba(148,163,184,.85);
+  text-decoration: none;
+  font-size: 12px;
+  transition: background .15s, color .15s;
+  border-left: 2px solid transparent;
+}
+.nav-link:hover, .nav-link.active {
+  background: rgba(255,255,255,.05);
+  color: #fff;
+  border-left-color: var(--blue-l);
+}
+.nav-link .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--muted); flex-shrink: 0;
+}
+.nav-link.bull .dot { background: var(--green); }
+.nav-link.bear .dot { background: var(--red); }
+.nav-link.neut .dot { background: var(--amber); }
 
-  /* ── tables ── */
-  .tbl-wrap { overflow-x: auto; margin: 12px 0; border-radius: 8px; border: 1px solid var(--border); }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  thead tr { background: #f8fafc; }
-  th { padding: 10px 14px; text-align: left; font-weight: 600; color: var(--muted); font-size: 11px; letter-spacing:.4px; text-transform:uppercase; border-bottom: 1px solid var(--border); white-space: nowrap; }
-  td { padding: 9px 14px; border-bottom: 1px solid #f1f5f9; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #fafbff; }
-  .up   { color: var(--green); font-weight: 600; }
-  .down { color: var(--red);   font-weight: 600; }
-  .neu  { color: var(--muted); }
+/* ─── Cover ──────────────────────────────────────── */
+.cover {
+  background: linear-gradient(135deg, var(--navy) 0%, #1e3a5f 55%, #1d4ed8 100%);
+  border-radius: var(--radius);
+  padding: 40px 40px 36px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+}
+.cover::before {
+  content: 'PLTR';
+  position: absolute; right: -16px; top: -8px;
+  font-size: 140px; font-weight: 800; letter-spacing: -8px;
+  opacity: .05; pointer-events: none; user-select: none;
+}
+.cover-label {
+  display: inline-block;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 4px;
+  padding: 2px 10px;
+  font-size: 10px; font-weight: 600; letter-spacing: .7px; text-transform: uppercase;
+  color: #93c5fd;
+  margin-bottom: 14px;
+}
+.cover h1 { font-size: 28px; font-weight: 700; line-height: 1.2; margin-bottom: 4px; }
+.cover .exchange { font-size: 13px; color: rgba(148,163,184,.8); margin-bottom: 28px; }
+.kpi-strip { display: flex; gap: 28px; flex-wrap: wrap; }
+.kpi-strip .k label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .5px; color: rgba(148,163,184,.7); margin-bottom: 3px; }
+.kpi-strip .k span  { font-size: 20px; font-weight: 700; color: #fff; }
+.kpi-strip .k small { font-size: 11px; color: rgba(148,163,184,.7); margin-left: 4px; }
 
-  /* ── kpi cards ── */
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin: 16px 0; }
-  .kpi {
-    background: var(--light);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-  }
-  .kpi label { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing:.5px; margin-bottom: 6px; }
-  .kpi .val  { font-size: 22px; font-weight: 700; color: var(--text); }
-  .kpi .chg  { font-size: 11px; margin-top: 4px; }
+/* ─── Cards ──────────────────────────────────────── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  scroll-margin-top: 24px;
+}
+.card-header {
+  display: flex; align-items: center; gap: 10px;
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.card-num {
+  width: 26px; height: 26px; border-radius: 6px;
+  background: var(--navy);
+  color: #fff; font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.card-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.card-sub   { font-size: 12px; color: var(--slate); margin-left: auto; }
 
-  /* ── signal block ── */
-  .signal-box {
-    border: 2px solid var(--blue);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-top: 24px;
-    font-family: 'Inter', monospace;
-  }
-  .signal-box .sig-title {
-    background: var(--blue);
-    color: #fff;
-    text-align: center;
-    padding: 10px;
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 1px;
-  }
-  .signal-box .sig-body { display: grid; grid-template-columns: 1fr 1fr; }
-  .signal-box .sig-row {
-    padding: 10px 18px;
-    border-bottom: 1px solid var(--border);
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 13px;
-  }
-  .signal-box .sig-row:nth-child(odd) { background: #fafbff; }
-  .signal-box .sig-row label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing:.4px; }
-  .signal-box .sig-row span  { font-weight: 700; }
-  .sig-footer {
-    background: #0f172a;
-    color: #94a3b8;
-    text-align: center;
-    padding: 8px;
-    font-size: 11px;
-  }
-  .bull { color: var(--green); }
-  .bear { color: var(--red); }
-  .neut { color: var(--amber); }
+.card h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--slate); margin: 20px 0 10px; }
+.card h3:first-of-type { margin-top: 0; }
 
-  /* ── progress bars ── */
-  .bar-row { display: flex; align-items: center; gap: 10px; margin: 6px 0; font-size: 13px; }
-  .bar-row .lbl { min-width: 140px; color: var(--text); }
-  .bar-row .track { flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
-  .bar-row .fill  { height: 100%; border-radius: 4px; }
-  .bar-row .num   { min-width: 44px; text-align: right; font-weight: 600; font-size: 12px; color: var(--muted); }
+/* ─── KPI Grid ───────────────────────────────────── */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 12px; margin: 14px 0; }
+.kpi-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px;
+}
+.kpi-card label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin-bottom: 4px; }
+.kpi-card .v    { font-size: 20px; font-weight: 700; color: var(--text); line-height: 1; }
+.kpi-card .c    { font-size: 11px; color: var(--slate); margin-top: 3px; }
 
-  /* ── chart container ── */
-  .chart-wrap { position: relative; margin: 20px 0; }
-  .chart-wrap canvas { max-height: 280px; }
-  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
-  @media(max-width: 700px) { .chart-grid { grid-template-columns: 1fr; } }
+/* ─── Tables ─────────────────────────────────────── */
+.t-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 6px; margin: 12px 0; }
+table   { width: 100%; border-collapse: collapse; font-size: 12px; }
+thead   { background: var(--bg); }
+th {
+  padding: 9px 12px; text-align: left;
+  font-size: 10px; font-weight: 600; letter-spacing: .4px; text-transform: uppercase;
+  color: var(--slate); border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+td { padding: 9px 12px; border-bottom: 1px solid #f1f5f9; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #fafbff; }
 
-  /* ── alert tags ── */
-  .tag { display: inline-block; border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; margin: 2px; }
-  .tag-green  { background: #dcfce7; color: #166534; }
-  .tag-red    { background: #fee2e2; color: #991b1b; }
-  .tag-amber  { background: #fef3c7; color: #92400e; }
-  .tag-blue   { background: #dbeafe; color: #1e40af; }
+.up   { color: var(--green); font-weight: 600; }
+.dn   { color: var(--red);   font-weight: 600; }
+.nu   { color: var(--amber); font-weight: 600; }
+.hi   { background: #f0fdf4 !important; }
 
-  /* ── disclaimer ── */
-  .disclaimer {
-    background: #fffbeb;
-    border: 1px solid #fde68a;
-    border-radius: 8px;
-    padding: 12px 16px;
-    font-size: 12px;
-    color: #92400e;
-    margin-top: 16px;
-  }
+/* ─── Tags ───────────────────────────────────────── */
+.tags  { display: flex; flex-wrap: wrap; gap: 5px; margin: 8px 0; }
+.tag   { border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 500; }
+.tg    { background: #dcfce7; color: #166534; }
+.tr    { background: #fee2e2; color: #991b1b; }
+.ta    { background: #fef3c7; color: #92400e; }
+.tb    { background: #dbeafe; color: #1e40af; }
 
-  /* ── risk gauge ── */
-  .gauge-row { display: flex; gap: 6px; margin: 10px 0; align-items: center; font-size: 12px; }
-  .gauge-row .g-lbl { min-width: 110px; }
-  .gauge-row .dots  { display: flex; gap: 4px; }
-  .dot { width: 12px; height: 12px; border-radius: 50%; background: #e2e8f0; }
-  .dot.active-g { background: var(--green); }
-  .dot.active-a { background: var(--amber); }
-  .dot.active-r { background: var(--red); }
+/* ─── Bar Rows ───────────────────────────────────── */
+.bars { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+.bar-row { display: flex; align-items: center; gap: 10px; }
+.bar-row .bl  { min-width: 150px; font-size: 12px; color: var(--text); }
+.bar-row .btr { flex: 1; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+.bar-row .bfill { height: 100%; border-radius: 3px; }
+.bar-row .bv  { min-width: 52px; text-align: right; font-size: 11px; font-weight: 600; color: var(--slate); }
 
-  footer {
-    text-align: center;
-    color: var(--muted);
-    font-size: 11px;
-    padding-top: 20px;
-  }
+/* ─── Chart ──────────────────────────────────────── */
+.chart-wrap { position: relative; margin: 16px 0; }
+.chart-wrap canvas { max-height: 260px; }
+.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0; }
+@media(max-width:680px) { .chart-grid { grid-template-columns: 1fr; } }
+
+/* ─── Signal Block ───────────────────────────────── */
+.signal {
+  border: 1.5px solid var(--blue);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 22px;
+}
+.signal-head {
+  background: var(--navy);
+  padding: 9px 18px;
+  font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  color: #93c5fd;
+  text-align: center;
+}
+.signal-rows { display: grid; grid-template-columns: 1fr 1fr; }
+.sr {
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.sr:nth-child(odd) { background: var(--bg); }
+.sr label { font-size: 10px; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); }
+.sr span  { font-size: 12px; font-weight: 700; }
+.signal-foot {
+  background: var(--bg);
+  padding: 8px 16px;
+  font-size: 10px; color: var(--muted); text-align: center;
+  border-top: 1px solid var(--border);
+}
+
+/* ─── Verdict (final) ────────────────────────────── */
+.verdict {
+  background: var(--navy);
+  border-radius: 10px;
+  padding: 28px 32px;
+  color: #fff;
+  margin-top: 24px;
+}
+.verdict h2 { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: #fff; }
+.verdict-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.verdict ul  { padding-left: 16px; line-height: 2; font-size: 12px; color: #cbd5e1; }
+.verdict li  { margin-bottom: 1px; }
+.verdict-score {
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+}
+.verdict-score .big { font-size: 52px; font-weight: 800; color: #60a5fa; line-height: 1; }
+.verdict-score .lbl { font-size: 11px; color: #94a3b8; margin-top: 6px; text-transform: uppercase; letter-spacing: .5px; }
+.verdict-score .rec { margin-top: 12px; background: rgba(37,99,235,.4); border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 600; color: #93c5fd; }
+
+/* ─── Note / Disclaimer ──────────────────────────── */
+.note {
+  background: #fffbeb;
+  border-left: 3px solid var(--amber);
+  border-radius: 0 6px 6px 0;
+  padding: 10px 14px;
+  font-size: 11px; color: #78350f;
+  margin-top: 14px;
+}
+
+/* ─── Footer ─────────────────────────────────────── */
+footer { text-align: center; padding: 16px 0 32px; font-size: 11px; color: var(--muted); }
+
+/* ─── Print ──────────────────────────────────────── */
+@media print {
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+  .card { break-inside: avoid; }
+}
 </style>
 </head>
 <body>
-<div class="page">
+<div class="layout">
 
-<!-- ═══════════════ COVER ═══════════════ -->
+<!-- ═══ SIDEBAR ═══════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="ticker">PLTR</div>
+    <div class="name">Palantir Technologies</div>
+  </div>
+  <div class="sidebar-score">
+    <div class="score-pill"><span class="num">7.1</span>/ 10 &nbsp;綜合評分</div>
+  </div>
+  <nav>
+    <div class="nav-group-label">分析模組</div>
+    <a class="nav-link bull" href="#s1"><span class="dot"></span>公司概覽</a>
+    <a class="nav-link bull" href="#s2"><span class="dot"></span>基本面分析</a>
+    <a class="nav-link bull" href="#s3"><span class="dot"></span>技術面分析</a>
+    <a class="nav-link neut" href="#s4"><span class="dot"></span>DCF 估值</a>
+    <a class="nav-link neut" href="#s5"><span class="dot"></span>競爭對手</a>
+    <a class="nav-link bull" href="#s6"><span class="dot"></span>板塊分析</a>
+    <a class="nav-link bull" href="#s7"><span class="dot"></span>總體經濟</a>
+    <a class="nav-link neut" href="#s8"><span class="dot"></span>內部人士交易</a>
+    <a class="nav-link bull" href="#s9"><span class="dot"></span>機構持股</a>
+    <a class="nav-link bull" href="#s10"><span class="dot"></span>法說會</a>
+    <a class="nav-link bear" href="#s11"><span class="dot"></span>股息</a>
+    <a class="nav-link neut" href="#s12"><span class="dot"></span>空單分析</a>
+    <a class="nav-link neut" href="#s13"><span class="dot"></span>選擇權</a>
+    <a class="nav-link bull" href="#s14"><span class="dot"></span>財報解讀</a>
+    <a class="nav-link bull" href="#s15"><span class="dot"></span>圖表視覺化</a>
+    <div class="nav-group-label" style="margin-top:8px">結論</div>
+    <a class="nav-link" href="#s16"><span class="dot" style="background:#60a5fa"></span>綜合結論</a>
+  </nav>
+</aside>
+
+<!-- ═══ MAIN ════════════════════════════════════════ -->
+<main class="main">
+<div class="inner">
+
+<!-- Cover -->
 <div class="cover">
-  <div class="badge">AI 投資分析報告 · InvestSkill v1.5.0</div>
-  <h1>Palantir Technologies<br>綜合投資分析</h1>
-  <p class="sub">NYSE: PLTR &nbsp;·&nbsp; AI 數據分析 / 國防科技平台</p>
-  <div class="cover-meta">
-    <div class="item"><label>分析日期</label><span>2025-04-29</span></div>
-    <div class="item"><label>參考股價</label><span>~$95</span></div>
-    <div class="item"><label>市值</label><span>~$2,050億</span></div>
-    <div class="item"><label>綜合評分</label><span>7.1 / 10</span></div>
-    <div class="item"><label>投資建議</label><span>持有 / 回調買入</span></div>
+  <div class="cover-label">InvestSkill v1.6.0 · 全技能分析報告</div>
+  <h1>Palantir Technologies</h1>
+  <div class="exchange">NYSE: PLTR &nbsp;·&nbsp; AI 數據分析 / 國防科技平台</div>
+  <div class="kpi-strip">
+    <div class="k"><label>分析日期</label><span>2025-04-29</span></div>
+    <div class="k"><label>參考股價</label><span>$95</span><small>USD</small></div>
+    <div class="k"><label>市值</label><span>~$2,050億</span></div>
+    <div class="k"><label>綜合評分</label><span>7.1</span><small>/ 10</small></div>
+    <div class="k"><label>建議</label><span>持有 / 回調買入</span></div>
   </div>
 </div>
 
-<!-- ═══════════════ TOC ═══════════════ -->
-<div class="toc">
-  <h2>目錄</h2>
-  <ol>
-    <li><a href="#s1">公司概覽與業務模式</a></li>
-    <li><a href="#s2">基本面深度分析</a></li>
-    <li><a href="#s3">技術面分析</a></li>
-    <li><a href="#s4">DCF 與估值分析</a></li>
-    <li><a href="#s5">競爭對手分析</a></li>
-    <li><a href="#s6">板塊與產業分析</a></li>
-    <li><a href="#s7">總體經濟環境</a></li>
-    <li><a href="#s8">內部人士交易分析</a></li>
-    <li><a href="#s9">機構持股分析</a></li>
-    <li><a href="#s10">法說會分析</a></li>
-    <li><a href="#s11">股息分析</a></li>
-    <li><a href="#s12">空單與做空壓力</a></li>
-    <li><a href="#s13">選擇權分析</a></li>
-    <li><a href="#s14">財報深度解讀</a></li>
-    <li><a href="#s15">圖表與視覺化</a></li>
-    <li><a href="#s16">綜合結論與投資信號</a></li>
-  </ol>
-</div>
-
-<!-- ═══════════════ S1: 公司概覽 ═══════════════ -->
-<div class="section" id="s1">
-  <div class="section-header">
-    <div class="section-num">1</div>
-    <h2>公司概覽與業務模式</h2>
+<!-- ─── S1: 公司概覽 ──────────────────────────── -->
+<div class="card" id="s1">
+  <div class="card-header">
+    <div class="card-num">1</div>
+    <div class="card-title">公司概覽與業務模式</div>
+    <div class="card-sub">stock-eval</div>
   </div>
 
-  <div class="kpi-grid">
-    <div class="kpi"><label>成立年份</label><div class="val">2003</div><div class="chg">IPO: 2020年9月</div></div>
-    <div class="kpi"><label>CEO</label><div class="val" style="font-size:16px">Alex Karp</div><div class="chg">創辦人，哲學博士</div></div>
-    <div class="kpi"><label>員工數</label><div class="val">3,800+</div><div class="chg">YoY +12%</div></div>
-    <div class="kpi"><label>總部</label><div class="val" style="font-size:15px">科羅拉多州</div><div class="chg">丹佛市</div></div>
-    <div class="kpi"><label>標普500</label><div class="val" style="font-size:15px">2024/09</div><div class="chg">納入指數</div></div>
-    <div class="kpi"><label>客戶數</label><div class="val">593</div><div class="chg">2024年底</div></div>
+  <div class="kpis">
+    <div class="kpi-card"><label>成立</label><div class="v">2003</div><div class="c">IPO 2020/09</div></div>
+    <div class="kpi-card"><label>CEO</label><div class="v" style="font-size:14px">Alex Karp</div><div class="c">創辦人 · 哲學博士</div></div>
+    <div class="kpi-card"><label>員工</label><div class="v">3,800+</div><div class="c">YoY +12%</div></div>
+    <div class="kpi-card"><label>客戶數</label><div class="v">593</div><div class="c">2024 年底</div></div>
+    <div class="kpi-card"><label>標普500</label><div class="v">2024/09</div><div class="c">納入指數</div></div>
+    <div class="kpi-card"><label>護城河</label><div class="v up">8.5/10</div><div class="c">政府許可壁壘</div></div>
   </div>
 
   <h3>核心平台</h3>
-  <div class="tbl-wrap">
+  <div class="t-wrap">
     <table>
-      <thead><tr><th>平台</th><th>目標客群</th><th>核心功能</th><th>2024 營收佔比</th></tr></thead>
+      <thead><tr><th>平台</th><th>客群</th><th>核心功能</th><th>佔比</th></tr></thead>
       <tbody>
-        <tr><td><strong>Gotham</strong></td><td>政府、軍事、情報機構</td><td>反恐、戰場指揮、情報融合</td><td>~25%</td></tr>
-        <tr><td><strong>Foundry</strong></td><td>商業企業</td><td>供應鏈優化、營運決策、數據整合</td><td>~35%</td></tr>
-        <tr><td><strong>AIP</strong></td><td>政府 + 商業</td><td>LLM 企業安全部署、AI 工作流自動化</td><td>~30%（高速成長）</td></tr>
-        <tr><td><strong>Apollo</strong></td><td>邊緣運算場景</td><td>離線、低連線環境部署</td><td>~10%</td></tr>
+        <tr><td><strong>Gotham</strong></td><td>政府 / 軍事 / 情報</td><td>反恐、戰場指揮、情報融合</td><td>~25%</td></tr>
+        <tr><td><strong>Foundry</strong></td><td>商業企業</td><td>供應鏈優化、營運決策</td><td>~35%</td></tr>
+        <tr><td><strong>AIP</strong></td><td>政府 + 商業</td><td>LLM 企業安全部署、AI 工作流</td><td>~30% ↑</td></tr>
+        <tr><td><strong>Apollo</strong></td><td>邊緣運算</td><td>離線 / 低連線環境部署</td><td>~10%</td></tr>
       </tbody>
     </table>
   </div>
 
-  <h3>競爭護城河評估</h3>
-  <div class="bar-row"><span class="lbl">政府安全許可壁壘</span><div class="track"><div class="fill" style="width:95%;background:var(--green)"></div></div><span class="num">9.5/10</span></div>
-  <div class="bar-row"><span class="lbl">客戶數據整合深度</span><div class="track"><div class="fill" style="width:90%;background:var(--green)"></div></div><span class="num">9.0/10</span></div>
-  <div class="bar-row"><span class="lbl">轉換成本</span><div class="track"><div class="fill" style="width:88%;background:var(--green)"></div></div><span class="num">8.8/10</span></div>
-  <div class="bar-row"><span class="lbl">AIP 技術領先性</span><div class="track"><div class="fill" style="width:82%;background:var(--green)"></div></div><span class="num">8.2/10</span></div>
-  <div class="bar-row"><span class="lbl">商業市場競爭優勢</span><div class="track"><div class="fill" style="width:65%;background:var(--amber)"></div></div><span class="num">6.5/10</span></div>
-  <div class="bar-row"><span class="lbl">品牌知名度</span><div class="track"><div class="fill" style="width:72%;background:var(--amber)"></div></div><span class="num">7.2/10</span></div>
+  <h3>護城河評估</h3>
+  <div class="bars">
+    <div class="bar-row"><span class="bl">政府安全許可壁壘</span><div class="btr"><div class="bfill" style="width:95%;background:var(--green)"></div></div><span class="bv up">9.5/10</span></div>
+    <div class="bar-row"><span class="bl">客戶數據整合深度</span><div class="btr"><div class="bfill" style="width:90%;background:var(--green)"></div></div><span class="bv up">9.0/10</span></div>
+    <div class="bar-row"><span class="bl">轉換成本</span><div class="btr"><div class="bfill" style="width:88%;background:var(--green)"></div></div><span class="bv up">8.8/10</span></div>
+    <div class="bar-row"><span class="bl">AIP 技術領先性</span><div class="btr"><div class="bfill" style="width:82%;background:var(--green)"></div></div><span class="bv up">8.2/10</span></div>
+    <div class="bar-row"><span class="bl">商業市場競爭力</span><div class="btr"><div class="bfill" style="width:65%;background:var(--amber)"></div></div><span class="bv nu">6.5/10</span></div>
+  </div>
 </div>
 
-<!-- ═══════════════ S2: 基本面 ═══════════════ -->
-<div class="section" id="s2">
-  <div class="section-header">
-    <div class="section-num">2</div>
-    <h2>基本面深度分析</h2>
+<!-- ─── S2: 基本面 ────────────────────────────── -->
+<div class="card" id="s2">
+  <div class="card-header">
+    <div class="card-num">2</div>
+    <div class="card-title">基本面深度分析</div>
+    <div class="card-sub">fundamental-analysis</div>
   </div>
 
-  <h3>營收與獲利趨勢</h3>
   <div class="chart-grid">
-    <div class="chart-wrap"><canvas id="revenueChart"></canvas></div>
-    <div class="chart-wrap"><canvas id="marginChart"></canvas></div>
+    <div class="chart-wrap"><canvas id="cRevenue"></canvas></div>
+    <div class="chart-wrap"><canvas id="cMargin"></canvas></div>
   </div>
 
-  <div class="tbl-wrap">
+  <h3>財務摘要</h3>
+  <div class="t-wrap">
     <table>
-      <thead><tr><th>年度</th><th>總營收</th><th>YoY 成長</th><th>政府營收</th><th>商業營收</th><th>GAAP 淨利</th><th>FCF</th></tr></thead>
+      <thead><tr><th>年度</th><th>營收</th><th>成長</th><th>毛利率</th><th>FCF 利潤率</th><th>GAAP 淨利</th></tr></thead>
       <tbody>
-        <tr><td>2021</td><td>$15.4億</td><td class="up">+41%</td><td>$8.97億</td><td>$6.45億</td><td class="down">-$5.20億</td><td>$3.21億</td></tr>
-        <tr><td>2022</td><td>$19.1億</td><td class="up">+24%</td><td>$10.7億</td><td>$8.37億</td><td class="down">-$3.74億</td><td>$3.40億</td></tr>
-        <tr><td>2023</td><td>$22.3億</td><td class="up">+17%</td><td>$12.2億</td><td>$10.1億</td><td class="up">+$2.10億 ✅</td><td>$7.28億</td></tr>
-        <tr><td>2024</td><td>$28.7億</td><td class="up">+29%</td><td>$14.6億</td><td>$14.1億</td><td class="up">+$4.62億</td><td>$11.0億</td></tr>
-        <tr style="background:#f0fdf4"><td><strong>2025E</strong></td><td><strong>$37.5億</strong></td><td class="up"><strong>+31%E</strong></td><td>$17億E</td><td>$20億E</td><td class="up"><strong>+$7億E</strong></td><td>$14億E</td></tr>
+        <tr><td>2021</td><td>$15.4億</td><td class="up">+41%</td><td>78.4%</td><td>21%</td><td class="dn">-$5.2億</td></tr>
+        <tr><td>2022</td><td>$19.1億</td><td class="up">+24%</td><td>78.2%</td><td>18%</td><td class="dn">-$3.7億</td></tr>
+        <tr><td>2023</td><td>$22.3億</td><td class="up">+17%</td><td>80.1%</td><td>33%</td><td class="up">+$2.1億 ✅</td></tr>
+        <tr><td>2024</td><td>$28.7億</td><td class="up">+29%</td><td>81.3%</td><td class="up">38%</td><td class="up">+$4.6億</td></tr>
+        <tr class="hi"><td><strong>2025E</strong></td><td><strong>$37.5億</strong></td><td class="up"><strong>+31%E</strong></td><td>82%E</td><td>40%E</td><td class="up"><strong>+$7億E</strong></td></tr>
       </tbody>
     </table>
   </div>
 
-  <h3>利潤率矩陣</h3>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>指標</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>趨勢</th></tr></thead>
-      <tbody>
-        <tr><td>毛利率</td><td>78.4%</td><td>78.2%</td><td>80.1%</td><td>81.3%</td><td class="up">↑ 持續改善</td></tr>
-        <tr><td>調整後營業利益率</td><td>30%</td><td>23%</td><td>29%</td><td>35%</td><td class="up">↑ 快速擴張</td></tr>
-        <tr><td>GAAP 營業利益率</td><td>-18%</td><td>-7%</td><td>+5%</td><td>+11%</td><td class="up">↑ 轉正加速</td></tr>
-        <tr><td>FCF 利潤率</td><td>21%</td><td>18%</td><td>33%</td><td>38%</td><td class="up">↑ 頂尖水準</td></tr>
-        <tr><td>SBC 佔營收比</td><td>49%</td><td>32%</td><td>22%</td><td>17%</td><td class="up">↓ 持續壓縮</td></tr>
-      </tbody>
-    </table>
+  <div class="kpis" style="margin-top:16px">
+    <div class="kpi-card"><label>現金</label><div class="v">$41億</div><div class="c up">↑ 持續累積</div></div>
+    <div class="kpi-card"><label>長期債務</label><div class="v up">$0</div><div class="c">零槓桿 ✅</div></div>
+    <div class="kpi-card"><label>流動比率</label><div class="v">6.5x</div><div class="c up">極強</div></div>
+    <div class="kpi-card"><label>ROE</label><div class="v">12.3%</div><div class="c up">↑ 改善中</div></div>
+    <div class="kpi-card"><label>SBC / 營收</label><div class="v nu">17%</div><div class="c">↓ 從 49% 降來</div></div>
   </div>
 
-  <h3>資產負債表健康度</h3>
-  <div class="kpi-grid">
-    <div class="kpi"><label>現金及等價物</label><div class="val">$41億</div><div class="chg up">↑ 持續累積</div></div>
-    <div class="kpi"><label>長期債務</label><div class="val">$0</div><div class="chg up">零槓桿 ✅</div></div>
-    <div class="kpi"><label>流動比率</label><div class="val">6.5x</div><div class="chg up">極強</div></div>
-    <div class="kpi"><label>股東權益</label><div class="val">$37.6億</div><div class="chg up">↑ 成長中</div></div>
-    <div class="kpi"><label>ROE</label><div class="val">12.3%</div><div class="chg up">↑ 改善中</div></div>
-    <div class="kpi"><label>ROIC</label><div class="val">11.5%</div><div class="chg up">↑ 改善中</div></div>
+  <div class="signal">
+    <div class="signal-head">基本面信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="up">BULLISH</span></div>
+      <div class="sr"><label>評分</label><span>7.5 / 10</span></div>
+      <div class="sr"><label>關鍵優勢</label><span>FCF 38%・零債務</span></div>
+      <div class="sr"><label>主要風險</label><span>SBC 稀釋</span></div>
+    </div>
   </div>
-
-  <div class="disclaimer">⚠️ 主要風險：股份計酬（SBC）佔營收仍達 17%，累積稀釋效應需持續關注。流通股從 2020 年 ~18.5億 增至 2024 年 ~22億（+19%）。</div>
 </div>
 
-<!-- ═══════════════ S3: 技術面 ═══════════════ -->
-<div class="section" id="s3">
-  <div class="section-header">
-    <div class="section-num">3</div>
-    <h2>技術面分析</h2>
+<!-- ─── S3: 技術面 ────────────────────────────── -->
+<div class="card" id="s3">
+  <div class="card-header">
+    <div class="card-num">3</div>
+    <div class="card-title">技術面分析</div>
+    <div class="card-sub">technical-analysis</div>
   </div>
 
-  <h3>價格與移動均線</h3>
-  <div class="chart-wrap"><canvas id="maChart"></canvas></div>
+  <div class="chart-wrap"><canvas id="cMA"></canvas></div>
 
-  <div class="tbl-wrap" style="margin-top:16px">
-    <table>
-      <thead><tr><th>均線</th><th>數值</th><th>股價位置</th><th>信號</th></tr></thead>
-      <tbody>
-        <tr><td>MA20</td><td>~$88</td><td>股價高於均線 +8%</td><td class="up">🟢 看漲</td></tr>
-        <tr><td>MA50</td><td>~$82</td><td>股價高於均線 +16%</td><td class="up">🟢 看漲</td></tr>
-        <tr><td>MA200</td><td>~$58</td><td>股價高於均線 +64%</td><td class="up">🟢 強勢上升趨勢</td></tr>
-        <tr><td>黃金交叉</td><td>2024/11</td><td>MA50 > MA200 確認</td><td class="up">🟢 長線多頭確認</td></tr>
-      </tbody>
-    </table>
+  <div class="chart-grid">
+    <div><h3 style="margin-bottom:8px">RSI (14)</h3><div class="chart-wrap"><canvas id="cRSI"></canvas></div></div>
+    <div><h3 style="margin-bottom:8px">MACD (12,26,9)</h3><div class="chart-wrap"><canvas id="cMACD"></canvas></div></div>
   </div>
 
-  <div class="chart-grid" style="margin-top:20px">
-    <div>
-      <h3>RSI (14 日)</h3>
-      <div class="chart-wrap"><canvas id="rsiChart"></canvas></div>
-    </div>
-    <div>
-      <h3>MACD (12,26,9)</h3>
-      <div class="chart-wrap"><canvas id="macdChart"></canvas></div>
-    </div>
-  </div>
+  <h3>成交量</h3>
+  <div class="chart-wrap"><canvas id="cVol"></canvas></div>
 
-  <h3>成交量分析</h3>
-  <div class="chart-wrap"><canvas id="volumeChart"></canvas></div>
-
-  <h3>支撐與阻力位</h3>
-  <div class="tbl-wrap">
+  <h3>支撐與阻力</h3>
+  <div class="t-wrap">
     <table>
       <thead><tr><th>類型</th><th>價位</th><th>強度</th><th>說明</th></tr></thead>
       <tbody>
-        <tr><td>強阻力</td><td>$120</td><td>⭐⭐⭐⭐⭐</td><td>心理關口 + 前高</td></tr>
-        <tr><td>次要阻力</td><td>$100</td><td>⭐⭐⭐⭐</td><td>圓整數位心理壓力</td></tr>
-        <tr><td>當前價格</td><td>~$95</td><td>—</td><td>處於 $88–$100 整固帶上緣</td></tr>
-        <tr><td>支撐一（MA20）</td><td>~$88</td><td>⭐⭐⭐</td><td>短線支撐，近期整固帶</td></tr>
-        <tr><td>支撐二（MA50）</td><td>~$82</td><td>⭐⭐⭐⭐</td><td>關鍵中期支撐</td></tr>
-        <tr><td>強支撐（前阻力）</td><td>~$75</td><td>⭐⭐⭐⭐</td><td>2025年1月突破位轉支撐</td></tr>
-        <tr><td>長線支撐（MA200）</td><td>~$58</td><td>⭐⭐⭐⭐⭐</td><td>長線趨勢守護線</td></tr>
+        <tr><td>強阻力</td><td>$120</td><td>★★★★★</td><td>前高 + 心理關口</td></tr>
+        <tr><td>阻力</td><td>$100</td><td>★★★★</td><td>圓整數位</td></tr>
+        <tr class="hi"><td>當前價</td><td>~$95</td><td>—</td><td>整固帶上緣</td></tr>
+        <tr><td>支撐 (MA20)</td><td>~$88</td><td>★★★</td><td>短線支撐</td></tr>
+        <tr><td>支撐 (MA50)</td><td>~$82</td><td>★★★★</td><td>中期關鍵支撐</td></tr>
+        <tr><td>強支撐 (MA200)</td><td>~$58</td><td>★★★★★</td><td>長線趨勢守護線</td></tr>
       </tbody>
     </table>
   </div>
 
-  <h3>技術信號總結</h3>
-  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
-    <span class="tag tag-green">多頭排列（MA20>MA50>MA200）</span>
-    <span class="tag tag-green">黃金交叉已確認</span>
-    <span class="tag tag-green">量增價漲</span>
-    <span class="tag tag-green">OBV 持續上升</span>
-    <span class="tag tag-amber">RSI 72 — 接近超買</span>
-    <span class="tag tag-amber">MACD 動能略微放緩</span>
-    <span class="tag tag-blue">操作建議：等待回調至 $85–90 再介入</span>
+  <div class="tags" style="margin-top:12px">
+    <span class="tag tg">多頭排列 MA20>MA50>MA200</span>
+    <span class="tag tg">黃金交叉已確認（2024/11）</span>
+    <span class="tag tg">量增價漲 · OBV 上升</span>
+    <span class="tag ta">RSI 72 — 接近超買</span>
+    <span class="tag tb">建議等回調 $85–90 再買</span>
+  </div>
+
+  <div class="signal">
+    <div class="signal-head">技術面信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="up">BULLISH</span></div>
+      <div class="sr"><label>評分</label><span>7.8 / 10</span></div>
+      <div class="sr"><label>進場區</label><span>$85–90（MA20回調）</span></div>
+      <div class="sr"><label>止損</label><span class="dn">$80（跌破MA50）</span></div>
+    </div>
   </div>
 </div>
 
-<!-- ═══════════════ S4: 估值分析 ═══════════════ -->
-<div class="section" id="s4">
-  <div class="section-header">
-    <div class="section-num">4</div>
-    <h2>DCF 與多維度估值分析</h2>
+<!-- ─── S4: 估值 ──────────────────────────────── -->
+<div class="card" id="s4">
+  <div class="card-header">
+    <div class="card-num">4</div>
+    <div class="card-title">DCF 與估值分析</div>
+    <div class="card-sub">dcf-valuation · stock-valuation</div>
   </div>
 
   <div class="chart-grid">
-    <div class="chart-wrap"><canvas id="valuationPeerChart"></canvas></div>
+    <div class="chart-wrap"><canvas id="cValPeer"></canvas></div>
     <div>
       <h3>DCF 情境分析</h3>
-      <div class="tbl-wrap">
+      <div class="t-wrap">
         <table>
-          <thead><tr><th>情境</th><th>FCF 成長率</th><th>折現率</th><th>出口倍數</th><th>目標價</th></tr></thead>
+          <thead><tr><th>情境</th><th>FCF 成長</th><th>目標價</th></tr></thead>
           <tbody>
-            <tr><td class="bear">熊市情境</td><td>+12%</td><td>12%</td><td>35x FCF</td><td class="bear">$35–45</td></tr>
-            <tr><td class="neut">基本情境</td><td>+22%</td><td>10%</td><td>60x FCF</td><td class="neut">$70–85</td></tr>
-            <tr style="background:#f0fdf4"><td class="bull">牛市情境</td><td>+32%</td><td>9%</td><td>85x FCF</td><td class="bull">$125–155</td></tr>
+            <tr><td class="dn">熊市</td><td>+12%</td><td class="dn">$35–45</td></tr>
+            <tr><td class="nu">基本</td><td>+22%</td><td class="nu">$70–85</td></tr>
+            <tr class="hi"><td class="up">牛市</td><td>+32%</td><td class="up">$125–155</td></tr>
           </tbody>
         </table>
       </div>
-      <h3 style="margin-top:16px">估值敏感性矩陣</h3>
-      <div class="tbl-wrap">
+      <h3 style="margin-top:16px">估值敏感性（目標價）</h3>
+      <div class="t-wrap">
         <table>
-          <thead><tr><th>FCF 成長 \\ 出口倍數</th><th>40x</th><th>60x</th><th>80x</th></tr></thead>
+          <thead><tr><th>FCF 成長 \\ 倍數</th><th>40x</th><th>60x</th><th>80x</th></tr></thead>
           <tbody>
             <tr><td>+15%</td><td>$42</td><td>$63</td><td>$84</td></tr>
             <tr><td>+22%</td><td>$55</td><td>$82</td><td>$110</td></tr>
-            <tr><td>+30%</td><td>$72</td><td>$108</td><td class="up">$144</td></tr>
-            <tr><td>+38%</td><td>$91</td><td>$137</td><td class="up">$182</td></tr>
+            <tr class="hi"><td><strong>+30%</strong></td><td>$72</td><td>$108</td><td class="up"><strong>$144</strong></td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <h3>當前估值指標 vs. 同業（股價約 $95）</h3>
-  <div class="tbl-wrap">
+  <h3>估值倍數 vs 同業</h3>
+  <div class="t-wrap">
     <table>
-      <thead><tr><th>指標</th><th>PLTR</th><th>軟體業平均</th><th>5年均值</th><th>評估</th></tr></thead>
+      <thead><tr><th>指標</th><th>PLTR</th><th>軟體業均</th><th>評估</th></tr></thead>
       <tbody>
-        <tr><td>市盈率（P/E TTM）</td><td>195x</td><td>35x</td><td>N/M</td><td class="down">極度高估</td></tr>
-        <tr><td>遠期 P/E（2025E）</td><td>115x</td><td>28x</td><td>N/M</td><td class="down">高估</td></tr>
-        <tr><td>市銷率（P/S）</td><td>33x</td><td>9x</td><td>18x</td><td class="down">大幅高估</td></tr>
-        <tr><td>EV/EBITDA</td><td>120x</td><td>25x</td><td>N/M</td><td class="down">高估</td></tr>
-        <tr><td>EV/FCF</td><td>85x</td><td>30x</td><td>N/M</td><td class="down">高估</td></tr>
-        <tr><td>PEG 比率</td><td>3.8x</td><td>1.5x</td><td>N/M</td><td class="down">高估</td></tr>
+        <tr><td>P/E (TTM)</td><td>195x</td><td>35x</td><td class="dn">極高估</td></tr>
+        <tr><td>P/S</td><td>33x</td><td>9x</td><td class="dn">高估</td></tr>
+        <tr><td>EV/EBITDA</td><td>120x</td><td>25x</td><td class="dn">高估</td></tr>
+        <tr><td>EV/FCF</td><td>85x</td><td>30x</td><td class="dn">高估</td></tr>
+        <tr><td>PEG</td><td>3.8x</td><td>1.5x</td><td class="dn">高估</td></tr>
       </tbody>
     </table>
   </div>
-  <div class="disclaimer">📌 估值說明：依傳統財務指標衡量，PLTR 估值偏高。市場為其 AI 平台獨特定位、政府合約護城河、以及成長加速支付溢價，屬「成長溢價型」股票。</div>
+  <div class="note">📌 依傳統指標衡量高估。市場為 AI 平台護城河與成長加速支付溢價，屬「成長溢價型」股票。</div>
+
+  <div class="signal">
+    <div class="signal-head">估值信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="dn">BEARISH（傳統指標）</span></div>
+      <div class="sr"><label>評分</label><span>3.0 / 10</span></div>
+    </div>
+  </div>
 </div>
 
-<!-- ═══════════════ S5: 競爭對手 ═══════════════ -->
-<div class="section" id="s5">
-  <div class="section-header">
-    <div class="section-num">5</div>
-    <h2>競爭對手分析</h2>
+<!-- ─── S5: 競爭對手 ──────────────────────────── -->
+<div class="card" id="s5">
+  <div class="card-header">
+    <div class="card-num">5</div>
+    <div class="card-title">競爭對手分析</div>
+    <div class="card-sub">competitor-analysis</div>
   </div>
 
-  <div class="chart-wrap"><canvas id="competitorChart"></canvas></div>
+  <div class="chart-wrap"><canvas id="cComp"></canvas></div>
 
-  <div class="tbl-wrap" style="margin-top:16px">
+  <div class="t-wrap" style="margin-top:16px">
     <table>
-      <thead><tr><th>公司</th><th>市值</th><th>P/S</th><th>營收成長</th><th>毛利率</th><th>FCF 利潤率</th><th>政府 AI 定位</th><th>推薦度</th></tr></thead>
+      <thead><tr><th>公司</th><th>市值</th><th>P/S</th><th>營收成長</th><th>毛利率</th><th>FCF 利潤率</th></tr></thead>
       <tbody>
-        <tr style="background:#f0fdf4"><td><strong>PLTR ★</strong></td><td>~$2,050億</td><td>33x</td><td class="up">+29%</td><td>81%</td><td class="up">38%</td><td>⭐⭐⭐⭐⭐</td><td class="up">首選</td></tr>
-        <tr><td>CrowdStrike (CRWD)</td><td>~$800億</td><td>20x</td><td class="up">+33%</td><td>78%</td><td>28%</td><td>⭐⭐⭐</td><td>資安 AI</td></tr>
-        <tr><td>Snowflake (SNOW)</td><td>~$500億</td><td>15x</td><td class="up">+26%</td><td>68%</td><td>15%</td><td>⭐⭐</td><td>數據平台</td></tr>
-        <tr><td>Leidos (LDOS)</td><td>~$250億</td><td>1.2x</td><td>+7%</td><td>15%</td><td>8%</td><td>⭐⭐⭐⭐</td><td>傳統國防</td></tr>
-        <tr><td>Booz Allen (BAH)</td><td>~$220億</td><td>1.5x</td><td>+13%</td><td>23%</td><td>7%</td><td>⭐⭐⭐⭐</td><td>顧問服務</td></tr>
-        <tr><td>C3.ai (AI)</td><td>~$40億</td><td>8x</td><td>+18%</td><td>61%</td><td>-5%</td><td>⭐⭐</td><td>競爭者</td></tr>
+        <tr class="hi"><td><strong>PLTR ★</strong></td><td>~$2,050億</td><td>33x</td><td class="up">+29%</td><td>81%</td><td class="up">38%</td></tr>
+        <tr><td>CrowdStrike</td><td>~$800億</td><td>20x</td><td class="up">+33%</td><td>78%</td><td>28%</td></tr>
+        <tr><td>Snowflake</td><td>~$500億</td><td>15x</td><td>+26%</td><td>68%</td><td>15%</td></tr>
+        <tr><td>Booz Allen</td><td>~$220億</td><td>1.5x</td><td>+13%</td><td>23%</td><td>7%</td></tr>
+        <tr><td>C3.ai</td><td>~$40億</td><td>8x</td><td>+18%</td><td>61%</td><td class="dn">-5%</td></tr>
       </tbody>
     </table>
   </div>
 
-  <h3>波特五力分析</h3>
-  <div class="bar-row"><span class="lbl">新進者威脅</span><div class="track"><div class="fill" style="width:20%;background:var(--green)"></div></div><span class="num">低 🟢</span></div>
-  <div class="bar-row"><span class="lbl">替代品威脅</span><div class="track"><div class="fill" style="width:45%;background:var(--amber)"></div></div><span class="num">中 🟡</span></div>
-  <div class="bar-row"><span class="lbl">供應商議價力</span><div class="track"><div class="fill" style="width:20%;background:var(--green)"></div></div><span class="num">低 🟢</span></div>
-  <div class="bar-row"><span class="lbl">客戶議價力</span><div class="track"><div class="fill" style="width:45%;background:var(--amber)"></div></div><span class="num">中 🟡</span></div>
-  <div class="bar-row"><span class="lbl">現有競爭程度</span><div class="track"><div class="fill" style="width:40%;background:var(--amber)"></div></div><span class="num">中 🟡</span></div>
-  <div class="bar-row"><span class="lbl">整體護城河</span><div class="track"><div class="fill" style="width:80%;background:var(--green)"></div></div><span class="num">強 🟢</span></div>
+  <h3>波特五力</h3>
+  <div class="bars">
+    <div class="bar-row"><span class="bl">新進者威脅</span><div class="btr"><div class="bfill" style="width:18%;background:var(--green)"></div></div><span class="bv up">低</span></div>
+    <div class="bar-row"><span class="bl">替代品威脅</span><div class="btr"><div class="bfill" style="width:44%;background:var(--amber)"></div></div><span class="bv nu">中</span></div>
+    <div class="bar-row"><span class="bl">供應商議價力</span><div class="btr"><div class="bfill" style="width:18%;background:var(--green)"></div></div><span class="bv up">低</span></div>
+    <div class="bar-row"><span class="bl">客戶議價力</span><div class="btr"><div class="bfill" style="width:44%;background:var(--amber)"></div></div><span class="bv nu">中</span></div>
+    <div class="bar-row"><span class="bl">現有競爭程度</span><div class="btr"><div class="bfill" style="width:40%;background:var(--amber)"></div></div><span class="bv nu">中</span></div>
+  </div>
 </div>
 
-<!-- ═══════════════ S6: 板塊分析 ═══════════════ -->
-<div class="section" id="s6">
-  <div class="section-header">
-    <div class="section-num">6</div>
-    <h2>板塊與產業分析</h2>
+<!-- ─── S6: 板塊 ──────────────────────────────── -->
+<div class="card" id="s6">
+  <div class="card-header">
+    <div class="card-num">6</div>
+    <div class="card-title">板塊與產業分析</div>
+    <div class="card-sub">sector-analysis</div>
+  </div>
+
+  <div class="chart-wrap"><canvas id="cSector"></canvas></div>
+
+  <div class="t-wrap" style="margin-top:16px">
+    <table>
+      <thead><tr><th>比較基準</th><th>近12個月報酬率</th><th>PLTR 超額</th></tr></thead>
+      <tbody>
+        <tr><td>SPY（標普 500）</td><td>+18%</td><td class="up">+169%</td></tr>
+        <tr><td>QQQ（那斯達克）</td><td>+22%</td><td class="up">+165%</td></tr>
+        <tr><td>XLK（科技 ETF）</td><td>+32%</td><td class="up">+155%</td></tr>
+        <tr><td>ITA（國防 ETF）</td><td>+28%</td><td class="up">+159%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="signal">
+    <div class="signal-head">板塊信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="up">BULLISH</span></div>
+      <div class="sr"><label>評分</label><span>7.5 / 10</span></div>
+      <div class="sr"><label>定位</label><span>AI 國防科技 — 超配</span></div>
+      <div class="sr"><label>RS 排名</label><span class="up">前 3%</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── S7: 總體經濟 ──────────────────────────── -->
+<div class="card" id="s7">
+  <div class="card-header">
+    <div class="card-num">7</div>
+    <div class="card-title">總體經濟環境</div>
+    <div class="card-sub">economics-analysis</div>
+  </div>
+
+  <div class="chart-wrap"><canvas id="cMacro"></canvas></div>
+
+  <div class="t-wrap" style="margin-top:16px">
+    <table>
+      <thead><tr><th>指標</th><th>數值</th><th>對 PLTR 影響</th></tr></thead>
+      <tbody>
+        <tr><td>AI 基礎設施支出</td><td>+45% YoY</td><td class="up">🟢 強力正面</td></tr>
+        <tr><td>美國國防預算</td><td>$8,950億 (+3%)</td><td class="up">🟢 正面</td></tr>
+        <tr><td>企業 IT 支出</td><td>+12% YoY</td><td class="up">🟢 正面</td></tr>
+        <tr><td>聯準會利率</td><td>5.25–5.50%</td><td class="nu">🟡 估值壓力</td></tr>
+        <tr><td>GDP 成長</td><td>+2.1%</td><td class="nu">🟡 中性</td></tr>
+        <tr><td>CPI</td><td>3.4%</td><td class="up">🟢 合約定價能力</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">⚠️ DOGE 風險：馬斯克政府削減計畫可能影響部分非核心合約。核心軍事 AI 合約屬優先保護項目，風險有限。</div>
+</div>
+
+<!-- ─── S8: 內部人士 ──────────────────────────── -->
+<div class="card" id="s8">
+  <div class="card-header">
+    <div class="card-num">8</div>
+    <div class="card-title">內部人士交易分析</div>
+    <div class="card-sub">insider-trading · SEC Form 4</div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi-card"><label>買入（12M）</label><div class="v up">$2,340萬</div><div class="c">8 筆</div></div>
+    <div class="kpi-card"><label>賣出（12M）</label><div class="v dn">$2.38億</div><div class="c">47 筆</div></div>
+    <div class="kpi-card"><label>淨情緒</label><div class="v dn">-0.83</div><div class="c">賣出主導</div></div>
+    <div class="kpi-card"><label>CEO 持股</label><div class="v">~3.0%</div><div class="c">仍持有大量</div></div>
+  </div>
+
+  <div class="tags" style="margin-top:14px">
+    <span class="tag ta">大量賣出為 10b5-1 預排計畫（信號有限）</span>
+    <span class="tag tg">CEO 仍持有約 3% 股份</span>
+    <span class="tag tg">獨立董事有主動買入</span>
+  </div>
+
+  <div class="signal">
+    <div class="signal-head">內部人士交易信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="nu">NEUTRAL</span></div>
+      <div class="sr"><label>評分</label><span>5.5 / 10</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── S9: 機構持股 ──────────────────────────── -->
+<div class="card" id="s9">
+  <div class="card-header">
+    <div class="card-num">9</div>
+    <div class="card-title">機構持股分析</div>
+    <div class="card-sub">institutional-ownership · 13F</div>
   </div>
 
   <div class="chart-grid">
-    <div class="chart-wrap"><canvas id="sectorChart"></canvas></div>
+    <div class="chart-wrap"><canvas id="cInstitPie"></canvas></div>
     <div>
-      <h3>板塊配置建議</h3>
-      <div class="bar-row"><span class="lbl">AI / 科技軟體</span><div class="track"><div class="fill" style="width:90%;background:var(--green)"></div></div><span class="num">超配 🟢</span></div>
-      <div class="bar-row"><span class="lbl">國防科技</span><div class="track"><div class="fill" style="width:80%;background:var(--green)"></div></div><span class="num">超配 🟢</span></div>
-      <div class="bar-row"><span class="lbl">醫療科技</span><div class="track"><div class="fill" style="width:55%;background:var(--amber)"></div></div><span class="num">標配 🟡</span></div>
-      <div class="bar-row"><span class="lbl">傳統金融</span><div class="track"><div class="fill" style="width:50%;background:var(--amber)"></div></div><span class="num">標配 🟡</span></div>
-      <div class="bar-row"><span class="lbl">能源</span><div class="track"><div class="fill" style="width:30%;background:var(--red)"></div></div><span class="num">低配 🔴</span></div>
-      <div class="bar-row"><span class="lbl">公用事業</span><div class="track"><div class="fill" style="width:20%;background:var(--red)"></div></div><span class="num">低配 🔴</span></div>
-
-      <h3 style="margin-top:20px">PLTR 板塊相對表現（近12個月）</h3>
-      <div class="tbl-wrap">
+      <h3>季度趨勢</h3>
+      <div class="t-wrap">
         <table>
-          <thead><tr><th>比較基準</th><th>PLTR 超額報酬</th></tr></thead>
+          <thead><tr><th>季度</th><th>機構持股</th><th>淨變動機構數</th></tr></thead>
           <tbody>
-            <tr><td>vs. SPY（標普500）</td><td class="up">+142%</td></tr>
-            <tr><td>vs. XLK（科技ETF）</td><td class="up">+118%</td></tr>
-            <tr><td>vs. QQQ（那斯達克）</td><td class="up">+129%</td></tr>
-            <tr><td>vs. ITA（國防ETF）</td><td class="up">+159%</td></tr>
-            <tr><td>RS 排名</td><td class="up">前 3%（市場強勢股）</td></tr>
+            <tr><td>2024 Q1</td><td>38%</td><td class="up">+88</td></tr>
+            <tr><td>2024 Q2</td><td>40%</td><td class="up">+123</td></tr>
+            <tr><td>2024 Q3</td><td>43%</td><td class="up">+296 🟢（標普納入）</td></tr>
+            <tr class="hi"><td>2024 Q4</td><td>46%</td><td class="up">+126</td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <h3>關鍵政府合約催化劑</h3>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>合約</th><th>規模</th><th>狀態</th><th>重要性</th></tr></thead>
-      <tbody>
-        <tr><td>Maven Smart System（陸軍）</td><td>$4.8億 5年</td><td class="up">✅ 進行中</td><td>⭐⭐⭐⭐⭐</td></tr>
-        <tr><td>聯合作戰雲端能力（JWCC）</td><td>潛在數十億</td><td class="neut">🔄 競標中</td><td>⭐⭐⭐⭐⭐</td></tr>
-        <tr><td>烏克蘭援助情報系統</td><td>未公開</td><td class="up">✅ 進行中</td><td>⭐⭐⭐⭐</td></tr>
-        <tr><td>NHS（英國醫療）</td><td>£3.3億</td><td class="up">✅ 進行中</td><td>⭐⭐⭐</td></tr>
-        <tr><td>ICE / DHS 合約</td><td>數億</td><td class="up">✅ 續約</td><td>⭐⭐⭐</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- ═══════════════ S7: 總體經濟 ═══════════════ -->
-<div class="section" id="s7">
-  <div class="section-header">
-    <div class="section-num">7</div>
-    <h2>總體經濟環境分析</h2>
-  </div>
-
-  <h3>關鍵總經指標對 PLTR 的影響</h3>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>指標</th><th>當前數值</th><th>趨勢</th><th>對 PLTR 影響</th><th>評估</th></tr></thead>
-      <tbody>
-        <tr><td>GDP 成長率</td><td>+2.1%（Q1）</td><td>→ 穩定</td><td>中性</td><td class="neu">🟡</td></tr>
-        <tr><td>聯準會利率</td><td>5.25–5.50%</td><td>→ 持平</td><td>估值壓力（但業務不受影響）</td><td class="neu">🟡</td></tr>
-        <tr><td>10年期美債殖利率</td><td>4.45%</td><td>↑ 微升</td><td>輕微負面（折現率上升）</td><td class="down">🔴</td></tr>
-        <tr><td>CPI 通膨</td><td>3.4%</td><td>↓ 改善</td><td>正面（合約定價能力）</td><td class="up">🟢</td></tr>
-        <tr><td>企業 IT 支出</td><td>+12% YoY</td><td>↑ 強勁</td><td>商業 AIP 需求拉升</td><td class="up">🟢</td></tr>
-        <tr><td>美國國防預算</td><td>$8,950億</td><td>↑ +3%</td><td>政府合約持續擴大</td><td class="up">🟢</td></tr>
-        <tr><td>AI 基礎設施支出</td><td>+45% YoY</td><td>↑ 爆發</td><td>AIP 直接受益</td><td class="up">🟢🟢</td></tr>
-        <tr><td>VIX（市場波動率）</td><td>~18</td><td>→ 正常</td><td>無直接影響</td><td class="neu">🟡</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="chart-wrap"><canvas id="macroChart"></canvas></div>
-
-  <h3>DOGE 政策風險</h3>
-  <div class="disclaimer">⚠️ 重要風險：馬斯克主導的 DOGE 政府支出削減計畫可能影響部分 PLTR 政府合約。但核心軍事 AI 合約（Maven Smart System 等）屬優先保護項目，風險相對有限。已有部分非核心 HHS 合約受到延遲影響，需持續監控。</div>
-
-  <div class="signal-box" style="margin-top:20px">
-    <div class="sig-title">宏觀環境信號</div>
-    <div class="sig-body">
-      <div class="sig-row"><label>宏觀信號</label><span class="bull">BULLISH（順風）</span></div>
-      <div class="sig-row"><label>信心水準</label><span>HIGH</span></div>
-      <div class="sig-row"><label>時間框架</label><span>中期（6–18個月）</span></div>
-      <div class="sig-row"><label>評分</label><span>7.5 / 10</span></div>
+  <div class="signal">
+    <div class="signal-head">機構持股信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="up">BULLISH</span></div>
+      <div class="sr"><label>評分</label><span>7.0 / 10</span></div>
+      <div class="sr"><label>機構持股趨勢</label><span class="up">持續增加 ↑</span></div>
+      <div class="sr"><label>被動 ETF 效應</label><span>標普 500 強制買入</span></div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════ S8: 內部人士交易 ═══════════════ -->
-<div class="section" id="s8">
-  <div class="section-header">
-    <div class="section-num">8</div>
-    <h2>內部人士交易分析（SEC Form 4）</h2>
+<!-- ─── S10: 法說會 ───────────────────────────── -->
+<div class="card" id="s10">
+  <div class="card-header">
+    <div class="card-num">10</div>
+    <div class="card-title">法說會分析</div>
+    <div class="card-sub">earnings-call-analysis</div>
   </div>
 
-  <h3>近 12 個月交易摘要</h3>
-  <div class="kpi-grid">
-    <div class="kpi"><label>買入交易</label><div class="val">8筆</div><div class="chg up">$2,340萬</div></div>
-    <div class="kpi"><label>賣出交易</label><div class="val">47筆</div><div class="chg down">$2.38億</div></div>
-    <div class="kpi"><label>淨情緒分數</label><div class="val down">-0.83</div><div class="chg down">偏空（賣為主）</div></div>
-    <div class="kpi"><label>CEO 持股</label><div class="val">~3.0%</div><div class="chg">~6.6億股</div></div>
+  <div class="kpis">
+    <div class="kpi-card"><label>整體情緒</label><div class="v up" style="font-size:16px">正面</div><div class="c">信心十足</div></div>
+    <div class="kpi-card"><label>展望指引</label><div class="v up" style="font-size:15px">上調 ✅</div><div class="c">連續多季</div></div>
+    <div class="kpi-card"><label>"AI" 提及次數</label><div class="v">87次</div><div class="c up">YoY +156%</div></div>
+    <div class="kpi-card"><label>管理層信心</label><div class="v">8.5/10</div><div class="c up">強烈正面</div></div>
   </div>
 
-  <h3>重大交易記錄</h3>
-  <div class="tbl-wrap">
+  <div class="t-wrap" style="margin-top:14px">
     <table>
-      <thead><tr><th>日期</th><th>內部人士</th><th>職位</th><th>交易類型</th><th>金額</th><th>10b5-1計畫</th><th>說明</th></tr></thead>
+      <thead><tr><th>主題</th><th>管理層論述</th><th>信號</th></tr></thead>
       <tbody>
-        <tr><td>2025/03</td><td>Alex Karp</td><td>CEO</td><td class="down">賣出</td><td>$5,600萬</td><td>✅ 是</td><td>預排計畫執行，非主動賣出</td></tr>
-        <tr><td>2025/02</td><td>Stephen Cohen</td><td>總裁</td><td class="down">賣出</td><td>$3,200萬</td><td>✅ 是</td><td>預排計畫執行</td></tr>
-        <tr><td>2025/01</td><td>Ryan Taylor</td><td>CFO</td><td class="down">賣出</td><td>$1,800萬</td><td>✅ 是</td><td>薪酬稅務用途</td></tr>
-        <tr><td>2024/11</td><td>Peter Thiel</td><td>董事</td><td class="down">賣出</td><td>$8,400萬</td><td>✅ 是</td><td>納入標普500後獲利了結</td></tr>
-        <tr><td>2024/10</td><td>機構董事</td><td>獨立董事</td><td class="up">買入</td><td>$85萬</td><td>❌ 否</td><td>✅ 主動買入，具看漲意義</td></tr>
+        <tr><td>AIP 商業化</td><td>「有史以來最強商業引擎」「需求超出部署能力」</td><td class="up">🟢 強烈正面</td></tr>
+        <tr><td>美國商業成長</td><td>客戶 YoY +73%，Boot Camp 排隊名單持續增長</td><td class="up">🟢 加速</td></tr>
+        <tr><td>政府業務</td><td>「美軍 AI 轉型核心受益者」</td><td class="up">🟢 正面</td></tr>
+        <tr><td>2025 指引</td><td>上調全年至 $37.5億（超市場預期 $36.2億）</td><td class="up">🟢 正面</td></tr>
+        <tr><td>DOGE 風險</td><td>「核心國防合約不在削減範圍內」</td><td class="nu">🟡 需觀察</td></tr>
       </tbody>
     </table>
   </div>
 
-  <h3>信號解讀</h3>
-  <div style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0">
-    <span class="tag tag-amber">大量賣出為 10b5-1 預排計畫（信號意義有限）</span>
-    <span class="tag tag-green">CEO 仍持有大量股份（~3%）</span>
-    <span class="tag tag-green">獨立董事主動買入為正面信號</span>
-    <span class="tag tag-amber">整體情緒中性偏弱（賣出金額遠大於買入）</span>
-  </div>
-
-  <div class="disclaimer">📌 重要說明：PLTR 內部人士的大量賣出多屬薪酬計畫（RSU）釋放後的常規性賣出，加上 10b5-1 預排計畫的執行，實際看跌意義有限。應關注非計畫性的主動交易。</div>
-</div>
-
-<!-- ═══════════════ S9: 機構持股 ═══════════════ -->
-<div class="section" id="s9">
-  <div class="section-header">
-    <div class="section-num">9</div>
-    <h2>機構持股分析（13F 報告）</h2>
-  </div>
-
-  <div class="chart-grid">
-    <div class="chart-wrap"><canvas id="institutionPieChart"></canvas></div>
-    <div>
-      <h3>持股結構</h3>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>類別</th><th>持股比例</th><th>趨勢</th></tr></thead>
-          <tbody>
-            <tr><td>機構投資者</td><td>46%</td><td class="up">↑ 持續增加</td></tr>
-            <tr><td>內部人士</td><td>12%</td><td class="down">↓ 緩慢減少（薪酬賣出）</td></tr>
-            <tr><td>散戶投資者</td><td>42%</td><td class="neu">→ 穩定</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <h3 style="margin-top:16px">前十大機構股東</h3>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>機構</th><th>持股（億股）</th><th>變動</th></tr></thead>
-          <tbody>
-            <tr><td>Vanguard Group</td><td>2.18億</td><td class="up">↑+3%</td></tr>
-            <tr><td>BlackRock</td><td>1.94億</td><td class="up">↑+5%</td></tr>
-            <tr><td>State Street</td><td>0.98億</td><td class="up">↑+2%</td></tr>
-            <tr><td>Ark Invest（ARKK）</td><td>0.72億</td><td class="up">↑+12%</td></tr>
-            <tr><td>Morgan Stanley</td><td>0.58億</td><td class="up">↑+8%</td></tr>
-            <tr><td>Geode Capital</td><td>0.52億</td><td class="up">↑+4%</td></tr>
-          </tbody>
-        </table>
-      </div>
+  <div class="signal">
+    <div class="signal-head">法說會信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="up">BULLISH</span></div>
+      <div class="sr"><label>評分</label><span>8.0 / 10</span></div>
     </div>
   </div>
-
-  <h3>機構持股變動趨勢（季度）</h3>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>季度</th><th>機構持股比例</th><th>新增機構數</th><th>減少機構數</th><th>淨情緒</th></tr></thead>
-      <tbody>
-        <tr><td>2024 Q1</td><td>38%</td><td>182</td><td>94</td><td class="up">+88 🟢</td></tr>
-        <tr><td>2024 Q2</td><td>40%</td><td>210</td><td>87</td><td class="up">+123 🟢</td></tr>
-        <tr><td>2024 Q3</td><td>43%</td><td>368</td><td>72</td><td class="up">+296 🟢🟢（標普500納入）</td></tr>
-        <tr><td>2024 Q4</td><td>46%</td><td>244</td><td>118</td><td class="up">+126 🟢</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="disclaimer">💡 機構持股持續增加，尤其 2024 Q3 納入標普 500 後，被動型 ETF 強制買入帶來大量機構資金，為股價重要支撐力量。</div>
 </div>
 
-<!-- ═══════════════ S10: 法說會 ═══════════════ -->
-<div class="section" id="s10">
-  <div class="section-header">
-    <div class="section-num">10</div>
-    <h2>法說會分析（2025 Q1 Earnings Call）</h2>
+<!-- ─── S11: 股息 ─────────────────────────────── -->
+<div class="card" id="s11">
+  <div class="card-header">
+    <div class="card-num">11</div>
+    <div class="card-title">股息分析</div>
+    <div class="card-sub">dividend-analysis</div>
   </div>
 
-  <h3>管理層情緒分析</h3>
-  <div class="kpi-grid">
-    <div class="kpi"><label>整體情緒</label><div class="val" style="color:var(--green)">正面</div><div class="chg">信心十足</div></div>
-    <div class="kpi"><label>展望指引</label><div class="val">上調 ✅</div><div class="chg">連續多季上調</div></div>
-    <div class="kpi"><label>「AI」提及次數</label><div class="val">87次</div><div class="chg up">YoY +156%</div></div>
-    <div class="kpi"><label>管理層信心度</label><div class="val">8.5/10</div><div class="chg up">強烈正面</div></div>
+  <div class="kpis">
+    <div class="kpi-card"><label>股息</label><div class="v dn">$0</div><div class="c">無配息</div></div>
+    <div class="kpi-card"><label>殖利率</label><div class="v dn">0%</div><div class="c">不適合收益投資</div></div>
+    <div class="kpi-card"><label>回購（2024）</label><div class="v">$1.48億</div><div class="c">象徵性</div></div>
   </div>
 
-  <h3>關鍵主題與管理層用語</h3>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>主題</th><th>管理層論述重點</th><th>信號</th></tr></thead>
-      <tbody>
-        <tr><td>AIP 商業化</td><td>「AIP 是我們有史以來最強的商業引擎」「需求遠超我們的部署能力」</td><td class="up">🟢 強烈正面</td></tr>
-        <tr><td>美國商業成長</td><td>美國商業客戶 YoY +73%，Boot Camp 排隊等候名單持續增長</td><td class="up">🟢 加速成長</td></tr>
-        <tr><td>政府業務</td><td>「美軍 AI 轉型的核心受益者」，Maven 合約超出預期</td><td class="up">🟢 正面</td></tr>
-        <tr><td>DOGE 風險</td><td>「我們的核心國防合約不在削減範圍內」（謹慎回應）</td><td class="neu">🟡 需觀察</td></tr>
-        <tr><td>財務展望</td><td>上調 2025 年全年營收指引至 $37–38億（超市場預期）</td><td class="up">🟢 正面</td></tr>
-        <tr><td>國際業務</td><td>「歐洲市場有所回暖，但成長仍落後美國」</td><td class="neu">🟡 中性</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="note">📌 PLTR 無配息計畫，FCF 全用於 AI 研發與業務擴張。預計 3–5 年內不會開始配息。不適合以股息收益為主要目的的投資人。</div>
 
-  <h3>分析師 Q&A 重點</h3>
-  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
-    <span class="tag tag-green">競爭壁壘問題：管理層強調 18 個月技術領先優勢</span>
-    <span class="tag tag-green">定價能力：AIP 合約 ASP 持續提升</span>
-    <span class="tag tag-amber">估值問題：Alex Karp 以「AI 革命」回應，未直接評論股價</span>
-    <span class="tag tag-amber">國際擴張時間表：管理層較保守</span>
+  <div class="signal">
+    <div class="signal-head">股息信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="dn">N/A — 無配息</span></div>
+      <div class="sr"><label>評分</label><span>2.0 / 10</span></div>
+    </div>
   </div>
 </div>
 
-<!-- ═══════════════ S11: 股息分析 ═══════════════ -->
-<div class="section" id="s11">
-  <div class="section-header">
-    <div class="section-num">11</div>
-    <h2>股息分析</h2>
+<!-- ─── S12: 空單 ─────────────────────────────── -->
+<div class="card" id="s12">
+  <div class="card-header">
+    <div class="card-num">12</div>
+    <div class="card-title">空單與做空壓力</div>
+    <div class="card-sub">short-interest</div>
   </div>
 
-  <div class="kpi-grid">
-    <div class="kpi"><label>當前股息</label><div class="val">$0</div><div class="chg">無配息</div></div>
-    <div class="kpi"><label>股息殖利率</label><div class="val">0%</div><div class="chg down">不適用</div></div>
-    <div class="kpi"><label>股票回購</label><div class="val">$1.48億</div><div class="chg">2024年</div></div>
-    <div class="kpi"><label>回購殖利率</label><div class="val">~0.07%</div><div class="chg">象徵性回購</div></div>
+  <div class="kpis">
+    <div class="kpi-card"><label>空單比率</label><div class="v">5.8%</div><div class="c up">↓ 從高峰 12% 下降</div></div>
+    <div class="kpi-card"><label>回補天數</label><div class="v">1.8天</div><div class="c">擠壓風險低</div></div>
+    <div class="kpi-card"><label>借券利率</label><div class="v">2.1%</div><div class="c">成本不高</div></div>
   </div>
 
-  <h3>資本配置策略</h3>
-  <div class="tbl-wrap">
+  <div class="t-wrap" style="margin-top:14px">
     <table>
-      <thead><tr><th>用途</th><th>2024 金額</th><th>策略說明</th></tr></thead>
+      <thead><tr><th>時間</th><th>空單比率</th><th>趨勢</th></tr></thead>
       <tbody>
-        <tr><td>研發投入</td><td>~$6.8億</td><td>持續加碼 AIP、Foundry 功能開發</td></tr>
-        <tr><td>銷售與行銷</td><td>~$5.6億</td><td>Boot Camp 擴張，美國商業業務衝刺</td></tr>
-        <tr><td>股票回購</td><td>$1.48億</td><td>象徵性回購，優先保留現金</td></tr>
-        <tr><td>股利支出</td><td>$0</td><td>目前無配息計畫</td></tr>
-        <tr><td>M&A 活動</td><td>~$0</td><td>有機成長優先，不追求收購</td></tr>
+        <tr><td>2024 Q2</td><td>12.3%</td><td class="dn">↑ 高峰</td></tr>
+        <tr><td>2024 Q3</td><td>9.8%</td><td class="up">↓ 空頭回補</td></tr>
+        <tr><td>2024 Q4</td><td>7.2%</td><td class="up">↓ 持續下降</td></tr>
+        <tr class="hi"><td>2025 Q1</td><td>5.8%</td><td class="up">↓ 空頭大敗退</td></tr>
       </tbody>
     </table>
   </div>
 
-  <div class="disclaimer">📌 PLTR 目前不發放股息，所有自由現金流用於業務成長與研發投入。適合以成長為目標的投資者，不適合以收益為目標的股息投資者。預計 3–5 年內不太可能開始配息。</div>
-</div>
-
-<!-- ═══════════════ S12: 空單分析 ═══════════════ -->
-<div class="section" id="s12">
-  <div class="section-header">
-    <div class="section-num">12</div>
-    <h2>空單與做空壓力分析</h2>
-  </div>
-
-  <div class="kpi-grid">
-    <div class="kpi"><label>空單比率</label><div class="val">5.8%</div><div class="chg down">↓ 從高峰下降</div></div>
-    <div class="kpi"><label>空單股數</label><div class="val">~1.28億股</div><div class="chg"></div></div>
-    <div class="kpi"><label>回補天數（Days to Cover）</label><div class="val">1.8天</div><div class="chg">擠壓風險：低</div></div>
-    <div class="kpi"><label>借券利率（Borrow Rate）</label><div class="val">~2.1%</div><td><div class="chg">成本不高</div></div>
-  </div>
-
-  <h3>空單趨勢</h3>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>時間</th><th>空單比率</th><th>趨勢</th><th>背景</th></tr></thead>
-      <tbody>
-        <tr><td>2024 Q2</td><td>12.3%</td><td class="down">↑ 高峰</td><td>估值質疑聲浪最大</td></tr>
-        <tr><td>2024 Q3（標普500納入前）</td><td>9.8%</td><td class="down">↓</td><td>空頭開始回補</td></tr>
-        <tr><td>2024 Q4</td><td>7.2%</td><td class="down">↓</td><td>空頭持續敗退，股價強勢</td></tr>
-        <tr><td>2025 Q1</td><td>5.8%</td><td class="down">↓</td><td>空頭大幅減少</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3>空頭論點 vs. 多頭反駁</h3>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>空頭論點</th><th>多頭反駁</th></tr></thead>
-      <tbody>
-        <tr><td>估值極高（P/S 33x）</td><td>FCF 利潤率 38%，成長加速，市場給 AI 壁壘公司溢價</td></tr>
-        <tr><td>SBC 稀釋嚴重</td><td>SBC 佔比從 49% 降至 17%，持續改善</td></tr>
-        <tr><td>國際業務成長緩慢</td><td>美國市場已足夠大，AIP 正在改變局面</td></tr>
-        <tr><td>政府合約集中風險</td><td>商業業務快速成長，收入來源持續多元化</td></tr>
-        <tr><td>DOGE 政策削減風險</td><td>核心軍事 AI 合約屬保護項目</td></tr>
-      </tbody>
-    </table>
+  <div class="signal">
+    <div class="signal-head">空單信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="up">MODERATELY BULLISH</span></div>
+      <div class="sr"><label>評分</label><span>6.5 / 10</span></div>
+    </div>
   </div>
 </div>
 
-<!-- ═══════════════ S13: 選擇權分析 ═══════════════ -->
-<div class="section" id="s13">
-  <div class="section-header">
-    <div class="section-num">13</div>
-    <h2>選擇權市場分析</h2>
+<!-- ─── S13: 選擇權 ───────────────────────────── -->
+<div class="card" id="s13">
+  <div class="card-header">
+    <div class="card-num">13</div>
+    <div class="card-title">選擇權分析</div>
+    <div class="card-sub">options-analysis</div>
   </div>
 
-  <div class="kpi-grid">
-    <div class="kpi"><label>隱含波動率（IV）</label><div class="val">68%</div><div class="chg down">高於歷史均值</div></div>
-    <div class="kpi"><label>IV 歷史百分位</label><div class="val">72nd</div><div class="chg">IV 偏高</div></div>
-    <div class="kpi"><label>Put/Call 比率</label><div class="val">0.62</div><div class="chg up">偏向 Call（看漲）</div></div>
-    <div class="kpi"><label>最大痛點（Max Pain）</label><div class="val">~$85</td><div class="chg">月選擇權到期前壓力</div></div>
-  </div>
-
-  <h3>隱含波動率分析</h3>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>到期月份</th><th>平值 IV</th><th>偏斜（Skew）</th><th>市場含義</th></tr></thead>
-      <tbody>
-        <tr><td>近月（1個月）</td><td>72%</td><td>下偏斜</td><td>短線投資人防護情緒上升</td></tr>
-        <tr><td>季度（3個月）</td><td>65%</td><td>略微下偏斜</td><td>中性偏謹慎</td></tr>
-        <tr><td>半年（6個月）</td><td>60%</td><td>接近平坦</td><td>長線投資人較平靜</td></tr>
-      </tbody>
-    </table>
+  <div class="kpis">
+    <div class="kpi-card"><label>隱含波動率</label><div class="v">68%</div><div class="c dn">高於歷史均值</div></div>
+    <div class="kpi-card"><label>IV 百分位</label><div class="v">72nd</div><div class="c">IV 偏高</div></div>
+    <div class="kpi-card"><label>Put/Call 比率</label><div class="v up">0.62</div><div class="c">偏向 Call（看漲）</div></div>
+    <div class="kpi-card"><label>最大痛點</label><div class="v">~$85</div><div class="c">月到期壓力</div></div>
   </div>
 
   <h3>建議策略</h3>
-  <div class="tbl-wrap">
+  <div class="t-wrap">
     <table>
       <thead><tr><th>情境</th><th>策略</th><th>說明</th></tr></thead>
       <tbody>
-        <tr><td>看漲（等回調）</td><td>賣 Put（現金擔保）</td><td>在 $82–88 賣 Put，接貨或賺取時間價值；IV 高有利</td></tr>
-        <tr><td>持有者保護</td><td>買保護性 Put</td><td>買 3 個月到期 $80 Put 對沖下跌風險</td></tr>
-        <tr><td>中性偏多</td><td>牛市價差（Bull Call Spread）</td><td>買 $95 Call / 賣 $110 Call，控制成本</td></tr>
-        <tr><td>IV 高，賺時間價值</td><td>賣 Covered Call</td><td>持有股票者，賣 $105–110 Call 收取 Premium</td></tr>
+        <tr><td>等回調買入</td><td>賣 Put（$82–88）</td><td>IV 高 → 時間價值豐厚；接貨或賺 Premium</td></tr>
+        <tr><td>持有者保護</td><td>買保護性 Put $80</td><td>對沖下跌風險</td></tr>
+        <tr><td>中性偏多</td><td>Bull Call Spread</td><td>買 $95 Call / 賣 $110 Call</td></tr>
+        <tr><td>收益增強</td><td>Covered Call $105–110</td><td>持股者賣 Call 收 Premium</td></tr>
       </tbody>
     </table>
   </div>
 
-  <div class="disclaimer">⚠️ 選擇權為高風險工具，需完整了解 Greeks（Delta/Gamma/Theta/Vega）後再操作。本分析僅供教育參考。</div>
-</div>
-
-<!-- ═══════════════ S14: 財報深度解讀 ═══════════════ -->
-<div class="section" id="s14">
-  <div class="section-header">
-    <div class="section-num">14</div>
-    <h2>財報深度解讀（10-K / 10-Q）</h2>
-  </div>
-
-  <h3>最新財報亮點（2024 全年 + Q4）</h3>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>財報指標</th><th>實際值</th><th>市場預期</th><th>超越幅度</th><th>評估</th></tr></thead>
-      <tbody>
-        <tr><td>Q4 2024 總營收</td><td>$8.28億</td><td>$7.76億</td><td class="up">+6.7%</td><td class="up">🟢 大幅超預期</td></tr>
-        <tr><td>美國商業營收</td><td>$2.14億</td><td>$1.93億</td><td class="up">+10.9%</td><td class="up">🟢🟢 最亮眼</td></tr>
-        <tr><td>調整後營業利益率</td><td>37%</td><td>33%</td><td class="up">+4%</td><td class="up">🟢</td></tr>
-        <tr><td>GAAP EPS</td><td>$0.05</td><td>$0.04</td><td class="up">+25%</td><td class="up">🟢</td></tr>
-        <tr><td>調整後 EPS</td><td>$0.14</td><td>$0.11</td><td class="up">+27%</td><td class="up">🟢</td></tr>
-        <tr><td>2025 全年指引（中點）</td><td>$37.5億</td><td>$36.2億</td><td class="up">+3.6%</td><td class="up">🟢 上調</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3>關鍵業務指標（KPIs）追蹤</h3>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>KPI</th><th>Q4 2023</th><th>Q2 2024</th><th>Q4 2024</th><th>YoY 成長</th></tr></thead>
-      <tbody>
-        <tr><td>美國商業客戶數</td><td>221</td><td>295</td><td>382</td><td class="up">+73%</td></tr>
-        <tr><td>總客戶數</td><td>498</td><td>546</td><td>593</td><td class="up">+19%</td></tr>
-        <tr><td>剩餘績效義務（RPO）</td><td>$13.5億</td><td>$15.8億</td><td>$18.8億</td><td class="up">+39%</td></tr>
-        <tr><td>合約總值積壓（TCV）</td><td>$38億</td><td>$46億</td><td>$53億</td><td class="up">+39%</td></tr>
-        <tr><td>美國商業 NRR</td><td>114%</td><td>118%</td><td>119%</td><td class="up">↑ 改善</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3>10-K 風險因子重點</h3>
-  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
-    <span class="tag tag-red">高股份計酬（SBC）稀釋風險</span>
-    <span class="tag tag-red">政府預算削減（DOGE）不確定性</span>
-    <span class="tag tag-red">AI 競爭加劇（Microsoft、Google、AWS）</span>
-    <span class="tag tag-amber">國際業務成長落後美國</span>
-    <span class="tag tag-amber">單一客戶集中風險（政府）</span>
-    <span class="tag tag-amber">高估值下的股價波動風險</span>
-    <span class="tag tag-green">AIP 商業化成功帶來的成長加速</span>
-    <span class="tag tag-green">新合約積壓持續增加</span>
+  <div class="signal">
+    <div class="signal-head">選擇權信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="up">MODERATELY BULLISH</span></div>
+      <div class="sr"><label>評分</label><span>6.5 / 10</span></div>
+    </div>
   </div>
 </div>
 
-<!-- ═══════════════ S15: 圖表視覺化 ═══════════════ -->
-<div class="section" id="s15">
-  <div class="section-header">
-    <div class="section-num">15</div>
-    <h2>圖表與視覺化（Chart Master）</h2>
+<!-- ─── S14: 財報 ─────────────────────────────── -->
+<div class="card" id="s14">
+  <div class="card-header">
+    <div class="card-num">14</div>
+    <div class="card-title">財報深度解讀</div>
+    <div class="card-sub">financial-report-analyst · 10-K / 10-Q</div>
   </div>
 
-  <h3>報酬率分佈直方圖</h3>
-  <div class="chart-wrap"><canvas id="returnHistogram"></canvas></div>
-
-  <h3>多因子信號儀表板</h3>
-  <div class="chart-wrap"><canvas id="signalDashboard"></canvas></div>
-
-  <h3>費波那契回撤位分析</h3>
-  <div class="tbl-wrap">
+  <h3>Q4 2024 vs 市場預期</h3>
+  <div class="t-wrap">
     <table>
-      <thead><tr><th>費波那契水準</th><th>價格（以$22低→$120高計算）</th><th>重要性</th><th>當前狀態</th></tr></thead>
+      <thead><tr><th>指標</th><th>實際</th><th>預期</th><th>超越</th></tr></thead>
       <tbody>
-        <tr><td>0% (高點)</td><td>$120</td><td>強阻力</td><td>未到達</td></tr>
-        <tr><td>23.6% 回撤</td><td>~$97</td><td>近期支撐</td><td class="up">★ 接近當前價格</td></tr>
-        <tr><td>38.2% 回撤</td><td>~$83</td><td>重要支撐（接近 MA50）</td><td>下方支撐</td></tr>
-        <tr><td>50.0% 回撤</td><td>~$71</td><td>強力支撐</td><td>下方支撐</td></tr>
-        <tr><td>61.8% 回撤</td><td>~$59</td><td>最後防線（MA200）</td><td>長線支撐</td></tr>
-        <tr><td>100% (低點)</td><td>$22</td><td>底部</td><td>已遠離</td></tr>
+        <tr><td>總營收</td><td>$8.28億</td><td>$7.76億</td><td class="up">+6.7%</td></tr>
+        <tr><td>美國商業營收</td><td>$2.14億</td><td>$1.93億</td><td class="up">+10.9% ★</td></tr>
+        <tr><td>調整後營業利益率</td><td>37%</td><td>33%</td><td class="up">+4pp</td></tr>
+        <tr><td>調整後 EPS</td><td>$0.14</td><td>$0.11</td><td class="up">+27%</td></tr>
+        <tr class="hi"><td>2025 指引（中點）</td><td>$37.5億</td><td>$36.2億</td><td class="up">+3.6%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>核心 KPI 追蹤</h3>
+  <div class="t-wrap">
+    <table>
+      <thead><tr><th>KPI</th><th>Q4 2023</th><th>Q4 2024</th><th>YoY</th></tr></thead>
+      <tbody>
+        <tr><td>美國商業客戶數</td><td>221</td><td>382</td><td class="up">+73% ★</td></tr>
+        <tr><td>總客戶數</td><td>498</td><td>593</td><td class="up">+19%</td></tr>
+        <tr><td>合約積壓（TCV）</td><td>$38億</td><td>$53億</td><td class="up">+39%</td></tr>
+        <tr><td>美國商業 NRR</td><td>114%</td><td>119%</td><td class="up">↑ 改善</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="signal">
+    <div class="signal-head">財報信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>信號</label><span class="up">STRONGLY BULLISH</span></div>
+      <div class="sr"><label>評分</label><span>8.5 / 10</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── S15: 圖表 ─────────────────────────────── -->
+<div class="card" id="s15">
+  <div class="card-header">
+    <div class="card-num">15</div>
+    <div class="card-title">圖表視覺化</div>
+    <div class="card-sub">chart-master</div>
+  </div>
+
+  <h3>報酬率分佈直方圖（近1年）</h3>
+  <div class="chart-wrap"><canvas id="cHistogram"></canvas></div>
+
+  <h3>費波那契回撤位</h3>
+  <div class="t-wrap">
+    <table>
+      <thead><tr><th>水準</th><th>價格</th><th>說明</th></tr></thead>
+      <tbody>
+        <tr><td>0%（高點）</td><td>$120</td><td>強阻力</td></tr>
+        <tr class="hi"><td>23.6% 回撤</td><td>~$97</td><td>★ 接近當前價格</td></tr>
+        <tr><td>38.2% 回撤</td><td>~$83</td><td>重要支撐（接近 MA50）</td></tr>
+        <tr><td>50.0% 回撤</td><td>~$71</td><td>強力支撐</td></tr>
+        <tr><td>61.8% 回撤</td><td>~$59</td><td>最後防線（MA200）</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<!-- ═══════════════ S16: 綜合結論 ═══════════════ -->
-<div class="section" id="s16">
-  <div class="section-header">
-    <div class="section-num">16</div>
-    <h2>綜合結論與投資信號</h2>
+<!-- ─── S16: 綜合結論 ──────────────────────────── -->
+<div class="card" id="s16">
+  <div class="card-header">
+    <div class="card-num">16</div>
+    <div class="card-title">綜合結論</div>
+    <div class="card-sub">result-validator</div>
   </div>
 
-  <h3>各維度評分摘要</h3>
-  <div class="chart-wrap"><canvas id="summaryRadar"></canvas></div>
-
-  <div class="tbl-wrap" style="margin-top:16px">
-    <table>
-      <thead><tr><th>分析維度</th><th>評分</th><th>信號</th><th>關鍵發現</th></tr></thead>
-      <tbody>
-        <tr><td>公司概覽與業務模式</td><td>8.5/10</td><td class="up">🟢 強勢</td><td>護城河深，AIP 定位獨特</td></tr>
-        <tr><td>基本面分析</td><td>7.5/10</td><td class="up">🟢 正面</td><td>FCF 38% 利潤率，零債務，成長加速</td></tr>
-        <tr><td>技術面分析</td><td>7.8/10</td><td class="up">🟢 看漲</td><td>多頭排列，但 RSI 72 偏高</td></tr>
-        <tr><td>估值分析</td><td>3.0/10</td><td class="down">🔴 高估</td><td>P/S 33x，P/E 195x，估值偏貴</td></tr>
-        <tr><td>競爭對手分析</td><td>7.0/10</td><td class="up">🟢 領先</td><td>政府端幾乎無對手，商業端仍在競爭</td></tr>
-        <tr><td>板塊分析</td><td>7.5/10</td><td class="up">🟢 順風</td><td>AI 國防板塊最強勁，超配</td></tr>
-        <tr><td>總體經濟環境</td><td>7.5/10</td><td class="up">🟢 正面</td><td>AI 支出爆發，國防預算增加</td></tr>
-        <tr><td>內部人士交易</td><td>5.5/10</td><td class="neu">🟡 中性</td><td>多為計畫性賣出，信號有限</td></tr>
-        <tr><td>機構持股</td><td>7.0/10</td><td class="up">🟢 正面</td><td>納入標普 500 後機構持股持續增加</td></tr>
-        <tr><td>法說會分析</td><td>8.0/10</td><td class="up">🟢 強勁</td><td>連續上調指引，管理層信心十足</td></tr>
-        <tr><td>股息分析</td><td>2.0/10</td><td class="down">🔴 無配息</td><td>無股息，不適合收益型投資者</td></tr>
-        <tr><td>空單分析</td><td>6.5/10</td><td class="up">🟢 偏多</td><td>空頭持續敗退，比率從高峰大降</td></tr>
-        <tr><td>選擇權分析</td><td>6.5/10</td><td class="up">🟢 偏多</td><td>Put/Call 0.62，市場偏向看漲</td></tr>
-        <tr><td>財報解讀</td><td>8.5/10</td><td class="up">🟢 優秀</td><td>連續超預期，美國商業 +73%</td></tr>
-        <tr style="background:#f0fdf4;font-weight:700"><td>加權綜合評分</td><td>7.1/10</td><td class="up">🟢 正面偏多</td><td>成長強勁，估值為主要制約因素</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3>多空論點摘要</h3>
   <div class="chart-grid">
+    <div class="chart-wrap"><canvas id="cRadar"></canvas></div>
     <div>
-      <h4 style="color:var(--green);margin-bottom:8px">✅ 看漲理由</h4>
-      <ul style="padding-left:18px;line-height:2">
-        <li>AIP 商業化加速，美國商業客戶 YoY +73%</li>
-        <li>FCF 利潤率 38%，頂尖軟體公司水準</li>
-        <li>零長期債務，$41億現金墊底</li>
-        <li>政府 AI 採購趨勢長期向好</li>
-        <li>連續多季上調財務指引</li>
-        <li>技術面多頭排列，黃金交叉已確認</li>
-        <li>機構持股持續增加，標普 500 成分股</li>
-        <li>空頭持續敗退，空單比率從 12% 降至 5.8%</li>
-      </ul>
-    </div>
-    <div>
-      <h4 style="color:var(--red);margin-bottom:8px">⚠️ 風險與疑慮</h4>
-      <ul style="padding-left:18px;line-height:2">
-        <li>P/S 33x、P/E 195x，估值極高</li>
-        <li>SBC 稀釋：流通股 4年增加 19%</li>
-        <li>DOGE 政策：部分政府合約存在不確定性</li>
-        <li>國際業務成長顯著落後美國</li>
-        <li>AI 競爭加劇（微軟 Copilot、Google Vertex AI）</li>
-        <li>RSI 偏高（72），短線回調風險</li>
-        <li>無股息，不適合收益型投資者</li>
-        <li>高Beta股（~2.1x），大盤下跌時跌幅放大</li>
-      </ul>
+      <h3>各模組評分</h3>
+      <div class="bars" style="gap:7px">
+        <div class="bar-row"><span class="bl">基本面分析</span><div class="btr"><div class="bfill" style="width:75%;background:var(--green)"></div></div><span class="bv up">7.5</span></div>
+        <div class="bar-row"><span class="bl">技術面分析</span><div class="btr"><div class="bfill" style="width:78%;background:var(--green)"></div></div><span class="bv up">7.8</span></div>
+        <div class="bar-row"><span class="bl">估值</span><div class="btr"><div class="bfill" style="width:30%;background:var(--red)"></div></div><span class="bv dn">3.0</span></div>
+        <div class="bar-row"><span class="bl">競爭護城河</span><div class="btr"><div class="bfill" style="width:80%;background:var(--green)"></div></div><span class="bv up">8.0</span></div>
+        <div class="bar-row"><span class="bl">宏觀環境</span><div class="btr"><div class="bfill" style="width:75%;background:var(--green)"></div></div><span class="bv up">7.5</span></div>
+        <div class="bar-row"><span class="bl">財報品質</span><div class="btr"><div class="bfill" style="width:85%;background:var(--green)"></div></div><span class="bv up">8.5</span></div>
+        <div class="bar-row"><span class="bl">機構支持</span><div class="btr"><div class="bfill" style="width:70%;background:var(--green)"></div></div><span class="bv up">7.0</span></div>
+        <div class="bar-row"><span class="bl">內部人士交易</span><div class="btr"><div class="bfill" style="width:55%;background:var(--amber)"></div></div><span class="bv nu">5.5</span></div>
+      </div>
     </div>
   </div>
 
-  <!-- 最終信號 -->
-  <div class="signal-box" style="margin-top:28px">
-    <div class="sig-title">★ 綜合投資信號 — PLTR ★</div>
-    <div class="sig-body">
-      <div class="sig-row"><label>總體信號</label><span class="bull">MODERATELY BULLISH（溫和看漲）</span></div>
-      <div class="sig-row"><label>信心水準</label><span>MEDIUM（估值高、成長強，有不確定性）</span></div>
-      <div class="sig-row"><label>時間框架</label><span>LONG-TERM（長期 1年以上）</span></div>
-      <div class="sig-row"><label>綜合評分</label><span class="bull">7.1 / 10</span></div>
-      <div class="sig-row"><label>建議動作</label><span class="neut">HOLD / 回調至 $85–90 時買入</span></div>
-      <div class="sig-row"><label>投資信念強度</label><span>MODERATE</span></div>
-      <div class="sig-row"><label>目標價（基本情境）</label><span>$70–85（保守）/ $110–130（樂觀）</span></div>
-      <div class="sig-row"><label>長線止損</label><span class="bear">$58（跌破 MA200 重新評估）</span></div>
+  <!-- Verdict -->
+  <div class="verdict">
+    <h2>最終投資結論</h2>
+    <div class="verdict-grid">
+      <div>
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin-bottom:8px">看漲理由</div>
+        <ul>
+          <li>AIP 商業客戶 YoY +73%，成長加速</li>
+          <li>FCF 利潤率 38%，頂尖軟體公司水準</li>
+          <li>零長期債務，$41億現金</li>
+          <li>連續多季上調財務指引</li>
+          <li>技術面多頭排列，黃金交叉確認</li>
+          <li>機構持股從 38% 增至 46%</li>
+          <li>空頭持續敗退（12% → 5.8%）</li>
+        </ul>
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin:14px 0 8px">主要風險</div>
+        <ul>
+          <li>P/S 33x / P/E 195x — 估值偏高</li>
+          <li>SBC 稀釋：4年增加 19%</li>
+          <li>DOGE 政策不確定性</li>
+          <li>AI 競爭加劇（微軟、Google）</li>
+          <li>RSI 72，短線回調風險</li>
+        </ul>
+      </div>
+      <div>
+        <div class="verdict-score">
+          <div class="big">7.1</div>
+          <div class="lbl">綜合評分 / 10</div>
+          <div class="rec">溫和看漲 · 持有</div>
+        </div>
+        <div style="margin-top:14px;font-size:12px;color:#94a3b8;text-align:center;line-height:1.8">
+          目標價（基本）：$70–85<br>
+          目標價（牛市）：$125–155<br>
+          長線止損：$58（MA200）<br>
+          建議進場：回調至 $85–90
+        </div>
+      </div>
     </div>
-    <div class="sig-footer">評分指南：8.0–10 強烈看漲 | 6.0–7.9 溫和看漲 | 4.0–5.9 中性 | 2.0–3.9 溫和看跌 | 0–1.9 強烈看跌</div>
   </div>
 
-  <div class="disclaimer" style="margin-top:20px">
-    ⚠️ <strong>免責聲明：</strong>本報告由 InvestSkill AI 分析框架自動生成，僅供教育與參考目的。所有分析基於公開可得資訊，不構成任何形式之投資建議。投資涉及風險，過去績效不代表未來表現。在做出任何投資決策前，請諮詢持牌投資顧問。
+  <!-- Final Signal -->
+  <div class="signal" style="margin-top:20px">
+    <div class="signal-head">★ 綜合投資信號</div>
+    <div class="signal-rows">
+      <div class="sr"><label>總體信號</label><span class="up">MODERATELY BULLISH</span></div>
+      <div class="sr"><label>信心水準</label><span>MEDIUM</span></div>
+      <div class="sr"><label>時間框架</label><span>LONG-TERM（1年以上）</span></div>
+      <div class="sr"><label>綜合評分</label><span class="up">7.1 / 10</span></div>
+      <div class="sr"><label>建議動作</label><span>HOLD / 回調 $85–90 買入</span></div>
+      <div class="sr"><label>長線止損</label><span class="dn">$58（跌破 MA200）</span></div>
+    </div>
+    <div class="signal-foot">8–10 強烈看漲 · 6–7.9 溫和看漲 · 4–5.9 中性 · 2–3.9 溫和看跌 · 0–1.9 強烈看跌</div>
+  </div>
+
+  <div class="note" style="margin-top:16px">
+    ⚠️ <strong>免責聲明：</strong>本報告由 InvestSkill AI 分析框架生成，僅供教育參考。不構成投資建議。投資涉及風險，請諮詢持牌投資顧問後自行判斷。
   </div>
 </div>
 
-<footer>
-  <p>InvestSkill v1.5.0 &nbsp;·&nbsp; 分析日期：2025-04-29 &nbsp;·&nbsp; 股票代號：NYSE: PLTR &nbsp;·&nbsp; 僅供教育參考，非投資建議</p>
-</footer>
+<footer>InvestSkill v1.6.0 &nbsp;·&nbsp; NYSE: PLTR &nbsp;·&nbsp; 分析日期 2025-04-29 &nbsp;·&nbsp; 僅供教育參考，非投資建議</footer>
 
-</div><!-- /page -->
+</div><!-- /inner -->
+</main>
+</div><!-- /layout -->
 
-<!-- ═══════════════ CHARTS ═══════════════ -->
+<!-- ═══════════════ CHARTS ═══════════════════════ -->
 <script>
-Chart.defaults.font.family = "'Noto Sans TC', 'Inter', sans-serif";
+Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Inter', sans-serif";
 Chart.defaults.font.size   = 11;
 Chart.defaults.color       = '#64748b';
+const G = '#059669', R = '#dc2626', B = '#2563eb', A = '#d97706', P = '#7c3aed', S = '#94a3b8';
+const MONTHS = ['5月','6月','7月','8月','9月','10月','11月','12月','1月','2月','3月','4月'];
 
-const BLUE   = '#3b82f6';
-const AMBER  = '#f59e0b';
-const RED    = '#ef4444';
-const GREEN  = '#10b981';
-const PURPLE = '#8b5cf6';
-const GRAY   = '#94a3b8';
-
-const MONTHS = ['2024/5','2024/6','2024/7','2024/8','2024/9','2024/10','2024/11','2024/12','2025/1','2025/2','2025/3','2025/4'];
-
-// ── 1. Revenue Chart ──
-new Chart(document.getElementById('revenueChart'), {
-  type: 'bar',
-  data: {
-    labels: ['2021','2022','2023','2024','2025E'],
-    datasets: [
-      { label: '總營收 ($億)', data: [15.4,19.1,22.3,28.7,37.5], backgroundColor: 'rgba(59,130,246,0.7)', order: 2 },
-      { label: 'GAAP 淨利 ($億)', data: [-5.2,-3.74,2.1,4.62,7.0], type:'line', borderColor: GREEN, borderWidth:2, pointRadius:4, yAxisID:'y1', order:1 }
-    ]
-  },
-  options: {
-    responsive:true,
-    plugins:{ title:{display:true,text:'營收與淨利趨勢（億美元）'}, legend:{position:'top'} },
-    scales:{
-      y:{ title:{display:true,text:'營收 ($億)'} },
-      y1:{ position:'right', title:{display:true,text:'淨利 ($億)'}, grid:{drawOnChartArea:false} }
-    }
-  }
+// Revenue
+new Chart(document.getElementById('cRevenue'), {
+  type:'bar', data:{ labels:['2021','2022','2023','2024','2025E'],
+    datasets:[
+      {label:'總營收 ($億)', data:[15.4,19.1,22.3,28.7,37.5], backgroundColor:'rgba(37,99,235,.7)', order:2},
+      {label:'GAAP淨利', data:[-5.2,-3.74,2.1,4.62,7.0], type:'line', borderColor:G, borderWidth:2, pointRadius:3, yAxisID:'y1', order:1}
+    ]},
+  options:{responsive:true, plugins:{title:{display:true,text:'營收與淨利（億美元）'},legend:{position:'top'}},
+    scales:{y:{title:{display:true,text:'營收'}}, y1:{position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'淨利'}}}}
 });
 
-// ── 2. Margin Chart ──
-new Chart(document.getElementById('marginChart'), {
-  type: 'line',
-  data: {
-    labels: ['2021','2022','2023','2024'],
-    datasets: [
-      { label: '毛利率 %', data:[78.4,78.2,80.1,81.3], borderColor:GREEN,  borderWidth:2, pointRadius:4 },
-      { label: '調整後營業利益率 %', data:[30,22.8,29.3,34.7], borderColor:BLUE, borderWidth:2, pointRadius:4 },
-      { label: 'FCF 利潤率 %', data:[21,18,33,38], borderColor:PURPLE, borderWidth:2, pointRadius:4, borderDash:[4,2] }
-    ]
-  },
-  options: {
-    responsive:true,
-    plugins:{ title:{display:true,text:'利潤率趨勢（%）'}, legend:{position:'top'} },
-    scales:{ y:{ title:{display:true,text:'利潤率 %'}, min:0, max:100 } }
-  }
+// Margin
+new Chart(document.getElementById('cMargin'), {
+  type:'line', data:{labels:['2021','2022','2023','2024'],
+    datasets:[
+      {label:'毛利率', data:[78.4,78.2,80.1,81.3], borderColor:G, borderWidth:2, pointRadius:3},
+      {label:'調整後營業利益率', data:[30,22.8,29.3,34.7], borderColor:B, borderWidth:2, pointRadius:3},
+      {label:'FCF 利潤率', data:[21,18,33,38], borderColor:P, borderWidth:2, pointRadius:3, borderDash:[4,2]}
+    ]},
+  options:{responsive:true, plugins:{title:{display:true,text:'利潤率趨勢（%）'},legend:{position:'top'}},
+    scales:{y:{min:0,max:100,title:{display:true,text:'%'}}}}
 });
 
-// ── 3. MA Chart ──
-const prices = [62,68,55,48,72,85,95,108,100,92,98,95];
-const ma50   = [null,null,null,null,null,null,72,80,85,89,92,94];
-const ma200  = [null,null,null,null,null,null,null,null,52,55,57,58];
-new Chart(document.getElementById('maChart'), {
-  type: 'line',
-  data: {
-    labels: MONTHS,
-    datasets: [
-      { label: '收盤價', data:prices, borderColor:BLUE, backgroundColor:'rgba(59,130,246,0.06)', borderWidth:2, pointRadius:2, fill:true },
-      { label: 'MA50',  data:ma50,   borderColor:AMBER, borderWidth:1.5, pointRadius:0, borderDash:[4,2] },
-      { label: 'MA200', data:ma200,  borderColor:RED,   borderWidth:1.5, pointRadius:0, borderDash:[6,3] }
-    ]
-  },
-  options: {
-    responsive:true,
-    plugins:{ title:{display:true,text:'PLTR 股價 vs MA50 / MA200'}, legend:{position:'top'} },
-    scales:{ y:{ title:{display:true,text:'股價 (USD)'} } }
-  }
+// MA
+const px=[62,68,55,48,72,85,95,108,100,92,98,95];
+new Chart(document.getElementById('cMA'), {
+  type:'line', data:{labels:MONTHS,
+    datasets:[
+      {label:'收盤價', data:px, borderColor:B, backgroundColor:'rgba(37,99,235,.05)', borderWidth:2, pointRadius:0, fill:true},
+      {label:'MA50', data:[null,null,null,null,null,null,72,80,85,89,92,94], borderColor:A, borderWidth:1.5, pointRadius:0, borderDash:[5,2]},
+      {label:'MA200', data:[null,null,null,null,null,null,null,null,52,55,57,58], borderColor:R, borderWidth:1.5, pointRadius:0, borderDash:[6,3]}
+    ]},
+  options:{responsive:true, plugins:{title:{display:true,text:'股價 vs MA50 / MA200'},legend:{position:'top'}},
+    scales:{y:{title:{display:true,text:'USD'}}}}
 });
 
-// ── 4. RSI Chart ──
-const rsiData = [48,52,65,38,72,68,75,71,62,55,70,72];
-new Chart(document.getElementById('rsiChart'), {
-  type: 'line',
-  data: {
-    labels: MONTHS,
-    datasets: [{ label:'RSI(14)', data:rsiData, borderColor:PURPLE, borderWidth:2, pointRadius:2 }]
-  },
-  options: {
-    responsive:true,
-    plugins:{ title:{display:true,text:'RSI (14)'}, legend:{display:false},
-      annotation:{ annotations:{
-        ob:{ type:'line', yMin:70, yMax:70, borderColor:'rgba(239,68,68,0.5)', borderWidth:1 },
-        os:{ type:'line', yMin:30, yMax:30, borderColor:'rgba(16,185,129,0.5)', borderWidth:1 }
-      }}
-    },
-    scales:{ y:{ min:0, max:100, title:{display:true,text:'RSI'}, ticks:{stepSize:10} } }
-  }
+// RSI
+const rsi=[48,52,65,38,72,68,75,71,62,55,70,72];
+new Chart(document.getElementById('cRSI'), {
+  type:'line', data:{labels:MONTHS, datasets:[{label:'RSI(14)', data:rsi, borderColor:P, borderWidth:2, pointRadius:2, fill:false}]},
+  options:{responsive:true, plugins:{title:{display:true,text:'RSI (14)'},legend:{display:false}},
+    scales:{y:{min:0,max:100,ticks:{stepSize:20},title:{display:true,text:'RSI'}}}}
 });
 
-// ── 5. MACD Chart ──
-const macdLine = [-1.8,-1.2,0.6,1.4,2.2,2.8,2.4,1.8,0.8,-0.4,-1.2,-0.6];
-const sigLine  = [-2.0,-1.6,-0.8,0.1,0.9,1.8,2.2,2.1,1.6,0.9,0.1,-0.4];
-const histData = macdLine.map((v,i)=>+(v-sigLine[i]).toFixed(2));
-new Chart(document.getElementById('macdChart'), {
-  type: 'bar',
-  data: {
-    labels: MONTHS,
-    datasets: [
-      { label:'Histogram', data:histData, backgroundColor:histData.map(v=>v>=0?'rgba(16,185,129,0.7)':'rgba(239,68,68,0.7)'), order:2 },
-      { label:'MACD',   data:macdLine, type:'line', borderColor:BLUE,  borderWidth:2, pointRadius:0, order:1 },
-      { label:'Signal', data:sigLine,  type:'line', borderColor:AMBER, borderWidth:1.5, pointRadius:0, borderDash:[4,2], order:1 }
-    ]
-  },
-  options: {
-    responsive:true,
-    plugins:{ title:{display:true,text:'MACD (12,26,9)'}, legend:{position:'top'} },
-    scales:{ y:{ title:{display:true,text:'MACD'} } }
-  }
+// MACD
+const ml=[-1.8,-1.2,0.6,1.4,2.2,2.8,2.4,1.8,0.8,-0.4,-1.2,-0.6];
+const sl=[-2,-1.6,-0.8,0.1,0.9,1.8,2.2,2.1,1.6,0.9,0.1,-0.4];
+const hd=ml.map((v,i)=>+(v-sl[i]).toFixed(2));
+new Chart(document.getElementById('cMACD'), {
+  type:'bar', data:{labels:MONTHS,
+    datasets:[
+      {label:'Histogram', data:hd, backgroundColor:hd.map(v=>v>=0?'rgba(5,150,105,.7)':'rgba(220,38,38,.7)'), order:2},
+      {label:'MACD', data:ml, type:'line', borderColor:B, borderWidth:2, pointRadius:0, order:1},
+      {label:'Signal', data:sl, type:'line', borderColor:A, borderWidth:1.5, pointRadius:0, borderDash:[4,2], order:1}
+    ]},
+  options:{responsive:true, plugins:{title:{display:true,text:'MACD (12,26,9)'},legend:{display:false}},
+    scales:{y:{title:{display:true,text:'MACD'}}}}
 });
 
-// ── 6. Volume Chart ──
-const vol    = [42,38,65,48,120,55,88,72,95,68,82,70];
-const pxChg  = [-1,1,1,-1,1,1,1,-1,1,-1,1,-1];
-new Chart(document.getElementById('volumeChart'), {
-  type: 'bar',
-  data: {
-    labels: MONTHS,
-    datasets: [{ label:'成交量（百萬股）', data:vol,
-      backgroundColor: pxChg.map(v=>v>0?'rgba(16,185,129,0.65)':'rgba(239,68,68,0.65)')
-    }]
-  },
-  options: {
-    responsive:true,
-    plugins:{ title:{display:true,text:'PLTR 月均成交量（百萬股）'}, legend:{display:false} },
-    scales:{ y:{ title:{display:true,text:'成交量 (M 股)'} } }
-  }
+// Volume
+const vol=[42,38,65,48,120,55,88,72,95,68,82,70];
+const pxUp=[0,1,1,0,1,1,1,0,1,0,1,0];
+new Chart(document.getElementById('cVol'), {
+  type:'bar', data:{labels:MONTHS,
+    datasets:[{label:'成交量（M股）', data:vol, backgroundColor:pxUp.map(v=>v?'rgba(5,150,105,.65)':'rgba(220,38,38,.65)')}]},
+  options:{responsive:true, plugins:{title:{display:true,text:'月均成交量（M股）'},legend:{display:false}},
+    scales:{y:{title:{display:true,text:'M股'}}}}
 });
 
-// ── 7. Valuation Peer Chart ──
-new Chart(document.getElementById('valuationPeerChart'), {
-  type: 'bar',
-  data: {
-    labels: ['PLTR','CRWD','SNOW','軟體平均'],
-    datasets: [
-      { label:'P/S 倍數', data:[33,20,15,9], backgroundColor:['rgba(59,130,246,0.8)','rgba(16,185,129,0.7)','rgba(245,158,11,0.7)','rgba(107,114,128,0.7)'] }
-    ]
-  },
-  options: {
-    responsive:true,
-    plugins:{ title:{display:true,text:'P/S 倍數同業比較'}, legend:{display:false} },
-    scales:{ y:{ title:{display:true,text:'P/S 倍數'} } }
-  }
+// Valuation Peers
+new Chart(document.getElementById('cValPeer'), {
+  type:'bar', data:{labels:['PLTR','CRWD','SNOW','軟體均'],
+    datasets:[{label:'P/S', data:[33,20,15,9], backgroundColor:['rgba(220,38,38,.75)','rgba(37,99,235,.7)','rgba(217,119,6,.7)','rgba(148,163,184,.6)']}]},
+  options:{responsive:true, plugins:{title:{display:true,text:'P/S 同業比較'},legend:{display:false}},
+    scales:{y:{title:{display:true,text:'P/S'}}}}
 });
 
-// ── 8. Competitor Chart ──
-new Chart(document.getElementById('competitorChart'), {
-  type: 'scatter',
-  data: {
-    datasets: [
-      { label:'PLTR',  data:[{x:29,y:81}], backgroundColor:RED,    pointRadius:14, pointStyle:'star' },
-      { label:'CRWD',  data:[{x:33,y:78}], backgroundColor:BLUE,   pointRadius:10 },
-      { label:'SNOW',  data:[{x:26,y:68}], backgroundColor:AMBER,  pointRadius:10 },
-      { label:'LDOS',  data:[{x:7, y:15}], backgroundColor:PURPLE, pointRadius:10 },
-      { label:'C3.ai', data:[{x:18,y:61}], backgroundColor:GRAY,   pointRadius:10 }
-    ]
-  },
-  options: {
-    responsive:true,
-    plugins:{ title:{display:true,text:'競爭對手比較：營收成長 vs 毛利率'}, legend:{position:'top'} },
-    scales:{
-      x:{ title:{display:true,text:'營收成長 % (YoY)'}, min:0, max:50 },
-      y:{ title:{display:true,text:'毛利率 %'}, min:0, max:100 }
-    }
-  }
+// Competitor Scatter
+new Chart(document.getElementById('cComp'), {
+  type:'scatter', data:{datasets:[
+    {label:'PLTR',  data:[{x:29,y:81}], backgroundColor:R, pointRadius:14, pointStyle:'star'},
+    {label:'CRWD',  data:[{x:33,y:78}], backgroundColor:B, pointRadius:9},
+    {label:'SNOW',  data:[{x:26,y:68}], backgroundColor:A, pointRadius:9},
+    {label:'BAH',   data:[{x:13,y:23}], backgroundColor:P, pointRadius:9},
+    {label:'C3.ai', data:[{x:18,y:61}], backgroundColor:S, pointRadius:9}
+  ]},
+  options:{responsive:true, plugins:{title:{display:true,text:'競爭對手：成長率 vs 毛利率'},legend:{position:'top'}},
+    scales:{x:{title:{display:true,text:'營收成長 %'},min:0,max:45},y:{title:{display:true,text:'毛利率 %'},min:0,max:100}}}
 });
 
-// ── 9. Sector Performance Chart ──
-new Chart(document.getElementById('sectorChart'), {
-  type: 'bar',
-  data: {
-    labels: ['PLTR','AI軟體','科技(XLK)','國防(ITA)','那斯達克','標普500'],
-    datasets: [{ label:'近12個月報酬率 %', data:[187,58,32,28,22,18],
-      backgroundColor:['rgba(239,68,68,0.8)','rgba(16,185,129,0.7)','rgba(59,130,246,0.7)','rgba(245,158,11,0.7)','rgba(107,114,128,0.6)','rgba(107,114,128,0.5)']
-    }]
-  },
-  options: {
-    responsive:true,
-    indexAxis:'y',
-    plugins:{ title:{display:true,text:'板塊相對報酬率比較（近12個月）'}, legend:{display:false} },
-    scales:{ x:{ title:{display:true,text:'報酬率 %'} } }
-  }
+// Sector
+new Chart(document.getElementById('cSector'), {
+  type:'bar', data:{labels:['PLTR','AI軟體','標普500','那斯達克','科技ETF','國防ETF'],
+    datasets:[{label:'近12月報酬 %', data:[187,58,18,22,32,28],
+      backgroundColor:['rgba(220,38,38,.8)','rgba(5,150,105,.75)','rgba(148,163,184,.6)','rgba(148,163,184,.6)','rgba(37,99,235,.7)','rgba(217,119,6,.7)']}]},
+  options:{responsive:true, indexAxis:'y',
+    plugins:{title:{display:true,text:'板塊相對報酬率（近12個月）'},legend:{display:false}},
+    scales:{x:{title:{display:true,text:'報酬率 %'}}}}
 });
 
-// ── 10. Macro Chart ──
-new Chart(document.getElementById('macroChart'), {
-  type: 'bar',
-  data: {
-    labels: ['AI基礎設施','政府AI採購','企業IT支出','國防預算','GDP成長','CPI通膨'],
-    datasets: [{ label:'成長率 % (YoY)', data:[45,52,12,3,2.1,3.4],
-      backgroundColor:['rgba(16,185,129,0.8)','rgba(16,185,129,0.8)','rgba(16,185,129,0.7)','rgba(59,130,246,0.7)','rgba(245,158,11,0.6)','rgba(239,68,68,0.5)']
-    }]
-  },
-  options: {
-    responsive:true,
-    plugins:{ title:{display:true,text:'關鍵總經指標年增率'}, legend:{display:false} },
-    scales:{ y:{ title:{display:true,text:'YoY 成長率 %'} } }
-  }
+// Macro
+new Chart(document.getElementById('cMacro'), {
+  type:'bar', data:{labels:['AI基礎設施','政府AI採購','企業IT','國防預算','GDP','CPI'],
+    datasets:[{label:'YoY %', data:[45,52,12,3,2.1,3.4],
+      backgroundColor:['rgba(5,150,105,.8)','rgba(5,150,105,.8)','rgba(5,150,105,.75)','rgba(37,99,235,.7)','rgba(217,119,6,.65)','rgba(220,38,38,.5)']}]},
+  options:{responsive:true, plugins:{title:{display:true,text:'關鍵總經指標 YoY 成長率'},legend:{display:false}},
+    scales:{y:{title:{display:true,text:'%'}}}}
 });
 
-// ── 11. Institution Pie Chart ──
-new Chart(document.getElementById('institutionPieChart'), {
-  type: 'doughnut',
-  data: {
-    labels: ['機構投資者','內部人士','散戶投資者'],
-    datasets: [{ data:[46,12,42], backgroundColor:[BLUE, AMBER, GRAY] }]
-  },
-  options: {
-    responsive:true,
-    plugins:{ title:{display:true,text:'PLTR 持股結構'}, legend:{position:'bottom'} }
-  }
+// Instit Pie
+new Chart(document.getElementById('cInstitPie'), {
+  type:'doughnut', data:{labels:['機構','內部人士','散戶'],
+    datasets:[{data:[46,12,42], backgroundColor:[B,A,S], borderWidth:2, borderColor:'#fff'}]},
+  options:{responsive:true, plugins:{title:{display:true,text:'PLTR 持股結構'},legend:{position:'bottom'}},
+    cutout:'60%'}
 });
 
-// ── 12. Return Histogram ──
-const bins   = ['-8%','-6%','-4%','-2%','-1%','0%','+1%','+2%','+4%','+6%','+8%'];
-const counts = [3, 5, 9, 22, 38, 42, 35, 20, 11, 6, 3];
-new Chart(document.getElementById('returnHistogram'), {
-  type: 'bar',
-  data: {
-    labels: bins,
-    datasets: [{ label:'頻率（天數）', data:counts,
-      backgroundColor: bins.map(b=>parseFloat(b)>=0?'rgba(16,185,129,0.72)':'rgba(239,68,68,0.72)')
-    }]
-  },
-  options: {
-    responsive:true,
-    plugins:{ title:{display:true,text:'PLTR 日報酬率分佈（近1年）'}, legend:{display:false} },
-    scales:{
-      x:{ title:{display:true,text:'日報酬率'} },
-      y:{ title:{display:true,text:'天數'} }
-    }
-  }
+// Histogram
+const bins=['-8%','-6%','-4%','-2%','-1%','0%','+1%','+2%','+4%','+6%','+8%'];
+const cnt=[3,5,9,22,38,42,35,20,11,6,3];
+new Chart(document.getElementById('cHistogram'), {
+  type:'bar', data:{labels:bins,
+    datasets:[{data:cnt, backgroundColor:bins.map(b=>parseFloat(b)>=0?'rgba(5,150,105,.72)':'rgba(220,38,38,.72)'), borderRadius:3}]},
+  options:{responsive:true, plugins:{title:{display:true,text:'日報酬率分佈（近1年）'},legend:{display:false}},
+    scales:{x:{title:{display:true,text:'日報酬率'}},y:{title:{display:true,text:'天數'}}}}
 });
 
-// ── 13. Signal Dashboard ──
-new Chart(document.getElementById('signalDashboard'), {
-  type: 'bar',
-  data: {
-    labels: ['基本面','技術面','估值','競爭優勢','宏觀環境','機構支持','成長動能'],
-    datasets: [{ label:'信號評分 (0–10)', data:[7.5,7.8,3.0,8.0,7.5,7.0,8.5],
-      backgroundColor:function(ctx){ const v=ctx.parsed.y; return v>=7?'rgba(16,185,129,0.75)':v>=5?'rgba(245,158,11,0.75)':'rgba(239,68,68,0.75)'; }
-    }]
-  },
-  options: {
-    responsive:true,
-    plugins:{ title:{display:true,text:'多因子信號儀表板'}, legend:{display:false} },
-    scales:{ y:{ min:0, max:10, title:{display:true,text:'評分'} } }
-  }
-});
-
-// ── 14. Summary Radar ──
-new Chart(document.getElementById('summaryRadar'), {
-  type: 'radar',
-  data: {
-    labels: ['基本面','技術面','估值','競爭護城河','宏觀環境','機構支持','財報品質','成長動能'],
-    datasets: [{
-      label: 'PLTR 評分',
-      data: [7.5, 7.8, 3.0, 8.0, 7.5, 7.0, 8.5, 8.5],
-      borderColor: BLUE, backgroundColor: 'rgba(59,130,246,0.15)', borderWidth:2, pointRadius:4
-    },{
-      label: '行業平均',
-      data: [6.0, 5.5, 5.5, 5.5, 6.0, 6.0, 6.0, 5.5],
-      borderColor: GRAY, backgroundColor: 'rgba(148,163,184,0.1)', borderWidth:1.5, pointRadius:3, borderDash:[4,2]
-    }]
-  },
-  options: {
-    responsive:true,
-    plugins:{ title:{display:true,text:'PLTR vs 行業平均 — 多維度評分雷達圖'}, legend:{position:'top'} },
-    scales:{ r:{ min:0, max:10, ticks:{stepSize:2} } }
-  }
+// Radar
+new Chart(document.getElementById('cRadar'), {
+  type:'radar',
+  data:{labels:['基本面','技術面','估值','護城河','宏觀','機構','財報','成長'],
+    datasets:[
+      {label:'PLTR', data:[7.5,7.8,3.0,8.0,7.5,7.0,8.5,8.5], borderColor:B, backgroundColor:'rgba(37,99,235,.12)', borderWidth:2, pointRadius:3},
+      {label:'行業均', data:[6,5.5,5.5,5.5,6,6,6,5.5], borderColor:S, backgroundColor:'rgba(148,163,184,.08)', borderWidth:1.5, pointRadius:2, borderDash:[4,2]}
+    ]},
+  options:{responsive:true, plugins:{title:{display:true,text:'多維度評分 vs 行業平均'},legend:{position:'top'}},
+    scales:{r:{min:0,max:10,ticks:{stepSize:2}}}}
 });
 </script>
 </body>
