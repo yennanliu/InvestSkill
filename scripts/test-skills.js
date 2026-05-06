@@ -108,7 +108,7 @@ if (marketplace) {
 }
 
 if (pluginJson) {
-  ['name', 'description', 'version', 'author', 'skills'].forEach(field => {
+  ['name', 'description', 'version', 'author'].forEach(field => {
     if (pluginJson[field] !== undefined) {
       pass(`plugin.json has field: "${field}"`);
     } else {
@@ -145,32 +145,37 @@ if (marketplace && pluginJson) {
 
 section('4. Skills Registry (plugin.json ↔ Directories)');
 
-const registeredSkills = (pluginJson && pluginJson.skills) ? pluginJson.skills : [];
+// Skills are auto-discovered from the skills/ directory (no skills[] in plugin.json)
 const actualSkillDirs = fs.existsSync(SKILLS_DIR)
   ? fs.readdirSync(SKILLS_DIR).filter(d =>
       fs.statSync(path.join(SKILLS_DIR, d)).isDirectory()
     )
   : [];
+const registeredSkills = actualSkillDirs;
 
-// Every registered skill must have a directory
-registeredSkills.forEach(skill => {
-  if (actualSkillDirs.includes(skill)) {
-    pass(`Registered skill "${skill}" has directory`);
+// Validate plugin.json does NOT have a bare-name skills[] (invalid schema)
+if (pluginJson && Array.isArray(pluginJson.skills)) {
+  const first = pluginJson.skills[0];
+  if (typeof first === 'string' && !first.startsWith('./')) {
+    fail('plugin.json has skills[] with bare names — must be omitted or use path strings (./...)');
   } else {
-    fail(`Registered skill "${skill}" has NO directory in skills/`);
+    pass('plugin.json skills field uses path format');
   }
-});
+} else {
+  pass('plugin.json skills field absent — auto-discovery from skills/ directory');
+}
 
-// Every directory must be registered
+// Every skill directory must have a SKILL.md
 actualSkillDirs.forEach(dir => {
-  if (registeredSkills.includes(dir)) {
-    pass(`Directory "${dir}" is registered in plugin.json`);
+  const skillFile = path.join(SKILLS_DIR, dir, 'SKILL.md');
+  if (fs.existsSync(skillFile)) {
+    pass(`"${dir}" — SKILL.md present`);
   } else {
-    fail(`Directory "${dir}" exists but is NOT registered in plugin.json skills[]`);
+    fail(`"${dir}" — directory exists but SKILL.md MISSING`);
   }
 });
 
-pass(`Total skills: ${registeredSkills.length} registered, ${actualSkillDirs.length} directories`);
+pass(`Total skills: ${actualSkillDirs.length} directories`);
 
 // ─── Test 5: SKILL.md Quality Checks ────────────────────────────────────────
 

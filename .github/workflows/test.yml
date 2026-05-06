@@ -185,13 +185,13 @@ jobs:
           echo "✅ plugin.json.$field = $val"
         done
 
-        # skills must be a non-empty array
-        skill_count=$(jq '.skills | length' "$PLUGIN_JSON")
+        # Skills are auto-discovered from skills/ directory (no skills[] array in manifest)
+        skill_count=$(ls plugins/us-stock-analysis/skills/ | wc -l | tr -d ' ')
         if [ "$skill_count" -lt 1 ]; then
-          echo "❌ plugin.json skills[] is empty"
+          echo "❌ No skill directories found in skills/"
           exit 1
         fi
-        echo "✅ plugin.json has $skill_count registered skills"
+        echo "✅ Found $skill_count skill directories"
 
         # Semver format check (major.minor.patch)
         version=$(jq -r '.version' "$PLUGIN_JSON")
@@ -292,44 +292,28 @@ jobs:
         fi
         echo "✅ All SKILL.md files valid"
 
-    - name: Verify skills registry integrity
+    - name: Verify skills directory integrity
       run: |
-        echo "── Skills registry: plugin.json ↔ directories ──"
+        echo "── Skills directory: each skill must have SKILL.md ──"
         ERRORS=0
-
-        # Get registered skills from plugin.json
-        mapfile -t REGISTERED < <(jq -r '.skills[]' plugins/us-stock-analysis/.claude-plugin/plugin.json)
-
-        # Get actual skill directories
         mapfile -t ACTUAL_DIRS < <(ls plugins/us-stock-analysis/skills/)
 
-        # Every registered skill must have a directory
-        for skill in "${REGISTERED[@]}"; do
-          if [ -d "plugins/us-stock-analysis/skills/$skill" ]; then
-            echo "✅ $skill — directory exists"
-          else
-            echo "❌ $skill — registered but directory MISSING"
-            ERRORS=$((ERRORS + 1))
-          fi
-        done
-
-        # Every directory must be registered
         for dir in "${ACTUAL_DIRS[@]}"; do
-          if printf '%s\n' "${REGISTERED[@]}" | grep -q "^${dir}$"; then
-            echo "✅ $dir — registered in plugin.json"
+          if [ -f "plugins/us-stock-analysis/skills/$dir/SKILL.md" ]; then
+            echo "✅ $dir — SKILL.md present"
           else
-            echo "❌ $dir — directory exists but NOT registered in plugin.json"
+            echo "❌ $dir — directory exists but SKILL.md MISSING"
             ERRORS=$((ERRORS + 1))
           fi
         done
 
         echo ""
-        echo "Registered: ${#REGISTERED[@]} | Directories: ${#ACTUAL_DIRS[@]}"
+        echo "Skill directories: ${#ACTUAL_DIRS[@]}"
         if [ "$ERRORS" -gt 0 ]; then
-          echo "❌ Registry mismatch: $ERRORS error(s)"
+          echo "❌ $ERRORS skill(s) missing SKILL.md"
           exit 1
         fi
-        echo "✅ Skills registry is consistent"
+        echo "✅ All skill directories have SKILL.md"
 
   # ─────────────────────────────────────────────────────────────────────────
   # Job 4: Cross-AI Compatibility Checks
@@ -449,9 +433,9 @@ jobs:
         ERRORS=0
         EXEMPT=("report-generator")
 
-        mapfile -t REGISTERED < <(jq -r '.skills[]' plugins/us-stock-analysis/.claude-plugin/plugin.json)
+        mapfile -t SKILL_DIRS < <(ls plugins/us-stock-analysis/skills/)
 
-        for skill in "${REGISTERED[@]}"; do
+        for skill in "${SKILL_DIRS[@]}"; do
           # Skip exempt skills
           if printf '%s\n' "${EXEMPT[@]}" | grep -q "^${skill}$"; then
             echo "✅ $skill — exempt from prompts sync"

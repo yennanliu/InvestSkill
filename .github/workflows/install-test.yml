@@ -1,0 +1,190 @@
+name: Install Test
+
+# Validates plugin installability for Claude Code and Gemini CLI.
+# Checks manifest format, directory structure, and prompt file validity
+# without requiring auth tokens.
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'plugins/**'
+      - 'prompts/**'
+      - 'GEMINI.md'
+      - '.github/copilot-instructions.md'
+      - '.cursor/rules/**'
+      - 'scripts/check-plugin-install.sh'
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  # ── Claude Code install validation ────────────────────────────────────────
+  claude-code-install:
+    name: Claude Code — Plugin Install Check
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Validate plugin manifest (plugin.json)
+      run: |
+        PLUGIN_JSON="plugins/us-stock-analysis/.claude-plugin/plugin.json"
+
+        echo "── Checking plugin.json ──"
+        jq empty "$PLUGIN_JSON" || { echo "❌ Invalid JSON"; exit 1; }
+        echo "✅ Valid JSON"
+
+        for field in name description version author; do
+          val=$(jq -r ".$field // empty" "$PLUGIN_JSON")
+          [ -n "$val" ] && echo "✅ $field: $val" || { echo "❌ Missing: $field"; exit 1; }
+        done
+
+        version=$(jq -r '.version' "$PLUGIN_JSON")
+        echo "$version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$' \
+          && echo "✅ Semver OK: $version" \
+          || { echo "❌ Invalid semver: $version"; exit 1; }
+
+        # skills field must NOT be an array of bare skill names (Claude Code schema)
+        if jq -e '.skills' "$PLUGIN_JSON" >/dev/null 2>&1; then
+          first=$(jq -r 'if .skills | type == "array" then .skills[0] else .skills end' "$PLUGIN_JSON")
+          if [[ "$first" != ./* ]]; then
+            echo "❌ plugin.json 'skills' field contains bare names ('$first')"
+            echo "   Must be a path string starting with './' or omitted entirely."
+            echo "   Skills are auto-discovered from the skills/ directory."
+            exit 1
+          fi
+          echo "✅ skills field uses path format"
+        else
+          echo "✅ skills field absent — auto-discovery from skills/ directory"
+        fi
+
+    - name: Validate skills directory structure
+      run: |
+        echo "── Checking skills/ directory ──"
+        SKILLS_DIR="plugins/us-stock-analysis/skills"
+        ERRORS=0
+
+        if [ ! -d "$SKILLS_DIR" ]; then
+          echo "❌ skills/ directory missing"
+          exit 1
+        fi
+
+        for skill_dir in "$SKILLS_DIR"/*/; do
+          skill=$(basename "$skill_dir")
+          if [ -f "$skill_dir/SKILL.md" ]; then
+            echo "✅ $skill — SKILL.md present"
+          else
+            echo "❌ $skill — SKILL.md missing"
+            ERRORS=$((ERRORS + 1))
+          fi
+        done
+
+        skill_count=$(ls "$SKILLS_DIR" | wc -l | tr -d ' ')
+        echo ""
+        echo "Total skills: $skill_count"
+        [ "$ERRORS" -eq 0 ] && echo "✅ All skills valid" || { echo "❌ $ERRORS error(s)"; exit 1; }
+
+    - name: Validate SKILL.md frontmatter
+      run: |
+        echo "── Checking SKILL.md frontmatter ──"
+        ERRORS=0
+
+        for skill_file in plugins/us-stock-analysis/skills/*/SKILL.md; do
+          skill=$(basename "$(dirname "$skill_file")")
+          first=$(head -1 "$skill_file")
+          if [ "$first" != "---" ]; then
+            echo "❌ $skill — missing YAML frontmatter"
+            ERRORS=$((ERRORS + 1))
+            continue
+          fi
+          desc=$(sed -n '/^---$/,/^---$/p' "$skill_file" | grep "^description:" | head -1)
+          [ -n "$desc" ] \
+            && echo "✅ $skill — $desc" \
+            || { echo "❌ $skill — missing description: in frontmatter"; ERRORS=$((ERRORS + 1)); }
+        done
+
+        [ "$ERRORS" -eq 0 ] || { echo "❌ $ERRORS SKILL.md error(s)"; exit 1; }
+        echo "✅ All SKILL.md files have valid frontmatter"
+
+    - name: Run install check script
+      run: bash scripts/check-plugin-install.sh
+
+  # ── Gemini CLI install validation ─────────────────────────────────────────
+  gemini-install:
+    name: Gemini CLI — Install Check
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Validate GEMINI.md
+      run: |
+        echo "── Checking GEMINI.md ──"
+
+        [ -f "GEMINI.md" ] && echo "✅ GEMINI.md exists" || { echo "❌ GEMINI.md missing"; exit 1; }
+
+        lines=$(wc -l < GEMINI.md)
+        echo "✅ GEMINI.md: $lines lines"
+
+        ERRORS=0
+        while IFS= read -r line; do
+          ref=$(echo "$line" | grep -oE 'prompts/[a-z-]+\.md' | head -1)
+          if [ -n "$ref" ]; then
+            [ -f "$ref" ] \
+              && echo "✅ $ref exists" \
+              || { echo "❌ $ref NOT FOUND"; ERRORS=$((ERRORS + 1)); }
+          fi
+        done < GEMINI.md
+
+        [ "$ERRORS" -eq 0 ] || { echo "❌ $ERRORS missing prompt reference(s)"; exit 1; }
+        echo "✅ All GEMINI.md prompt references valid"
+
+    - name: Validate universal prompts (AI-agnostic)
+      run: |
+        echo "── Checking prompts/ ──"
+        ERRORS=0
+
+        prompt_count=$(ls prompts/*.md 2>/dev/null | wc -l | tr -d ' ')
+        [ "$prompt_count" -gt 0 ] \
+          && echo "✅ $prompt_count prompt files found" \
+          || { echo "❌ No prompt files in prompts/"; exit 1; }
+
+        for f in prompts/*.md; do
+          name=$(basename "$f")
+          first=$(head -1 "$f")
+          if [ "$first" = "---" ]; then
+            echo "❌ $name has YAML frontmatter (not AI-agnostic)"
+            ERRORS=$((ERRORS + 1))
+          else
+            echo "✅ $name — no frontmatter (AI-agnostic)"
+          fi
+        done
+
+        [ "$ERRORS" -eq 0 ] || { echo "❌ $ERRORS prompt(s) not AI-agnostic"; exit 1; }
+        echo "✅ All prompts are AI-agnostic"
+
+  # ── Summary ───────────────────────────────────────────────────────────────
+  install-summary:
+    name: Install Test Summary
+    needs: [claude-code-install, gemini-install]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+    - name: Report
+      run: |
+        echo "════════════════════════════════════════"
+        echo "  Install Test Results"
+        echo "════════════════════════════════════════"
+        echo "  claude-code: ${{ needs.claude-code-install.result }}"
+        echo "  gemini:      ${{ needs.gemini-install.result }}"
+        echo "════════════════════════════════════════"
+
+    - name: Fail if any job failed
+      if: >
+        needs.claude-code-install.result == 'failure' ||
+        needs.gemini-install.result == 'failure'
+      run: exit 1

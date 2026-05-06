@@ -7,28 +7,5 @@
   },
   "homepage": "https://github.com/yennanliu/InvestSkill",
   "license": "MIT",
-  "keywords": ["stock", "investment", "analysis", "us-markets", "finance", "technical-analysis", "fundamental-analysis", "visualization", "reports", "insider-trading", "institutional-ownership", "earnings-calls", "dcf", "options", "dividends", "short-interest", "competitive-analysis", "moat", "research", "financial-reports", "10-k", "10-q", "valuation", "comparable-company"],
-  "skills": [
-    "stock-eval",
-    "fundamental-analysis",
-    "technical-analysis",
-    "economics-analysis",
-    "portfolio-review",
-    "sector-analysis",
-    "report-generator",
-    "earnings-call-analysis",
-    "insider-trading",
-    "institutional-ownership",
-    "dividend-analysis",
-    "short-interest",
-    "options-analysis",
-    "research-bundle",
-    "dcf-valuation",
-    "competitor-analysis",
-    "financial-report-analyst",
-    "stock-valuation",
-    "result-validator",
-    "chart-master",
-    "full-report"
-  ]
+  "keywords": ["stock", "investment", "analysis", "us-markets", "finance", "technical-analysis", "fundamental-analysis", "visualization", "reports", "insider-trading", "institutional-ownership", "earnings-calls", "dcf", "options", "dividends", "short-interest", "competitive-analysis", "moat", "research", "financial-reports", "10-k", "10-q", "valuation", "comparable-company"]
 }
