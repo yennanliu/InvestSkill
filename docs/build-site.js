@@ -39,7 +39,37 @@ const NAV_SECTIONS = [
   },
 ];
 
-const RAW_BASE = 'https://raw.githubusercontent.com/yennanliu/InvestSkill/main';
+const RAW_BASE    = 'https://raw.githubusercontent.com/yennanliu/InvestSkill/main';
+const GITHUB_BLOB = 'https://github.com/yennanliu/InvestSkill/blob/main';
+const SITE_BASE   = 'https://yennj12.js.org/InvestSkill';
+const OLD_SITE    = 'https://yennanliu.github.io/InvestSkill';
+
+// .md files that have dedicated HTML pages on the site
+const MD_TO_HTML = {
+  'README.md':          'index.html',
+  'README-zh-TW.md':    'zh-tw.html',
+  'COOKBOOK.md':        'cookbook.html',
+  'COOKBOOK-zh-TW.md':  'cookbook-zh-tw.html',
+  'CONTRIBUTING.md':    'contributing.html',
+  'CHANGELOG.md':       'changelog.html',
+};
+
+// Rewrite links in rendered HTML:
+//  - relative .md hrefs → HTML page or GitHub blob
+//  - old site domain   → new site domain
+function rewriteLinks(html) {
+  // Replace relative .md href="..." links
+  html = html.replace(/href="([^"#?]+\.md)([^"]*)"/g, (match, file, rest) => {
+    const basename = path.basename(file);
+    if (MD_TO_HTML[basename]) {
+      return `href="${MD_TO_HTML[basename]}${rest}"`;
+    }
+    return `href="${GITHUB_BLOB}/${basename}" target="_blank" rel="noopener noreferrer"`;
+  });
+  // Replace old GitHub Pages domain with new custom domain
+  html = html.replace(new RegExp(OLD_SITE.replace(/\./g, '\\.'), 'g'), SITE_BASE);
+  return html;
+}
 
 // ---------------------------------------------------------------------------
 // Page config: title, subtitle, source file, raw URL
@@ -230,7 +260,7 @@ for (const page of PAGES) {
     continue;
   }
   const raw     = fs.readFileSync(page.srcFile, 'utf8');
-  const content = md.render(raw);
+  const content = rewriteLinks(md.render(raw));
   const html    = htmlPage(page, content);
   fs.writeFileSync(path.join(outDir, page.outFile), html);
   console.log(`✓ ${page.outFile}`);
