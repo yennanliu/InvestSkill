@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cookbook - InvestSkill</title>
+  <meta name="description" content="Professional investment analysis and stock evaluation skills for AI assistants">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <button class="icon-btn" id="sidebar-toggle" aria-label="Toggle sidebar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+    <a class="logo" href="index.html">
+      <span class="logo-badge">IS</span>
+      <span class="logo-text">InvestSkill</span>
+    </a>
+    <div class="search-box">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <span class="search-placeholder">Search</span>
+      <span class="kbd-group"><kbd class="kbd">⌘</kbd><kbd class="kbd">K</kbd></span>
+    </div>
+    <div class="header-actions">
+      <a href="https://github.com/yennanliu/InvestSkill" target="_blank" class="icon-btn" aria-label="GitHub">
+        <svg width="19" height="19" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+            0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+            -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
+            .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+            -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27
+            .68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12
+            .51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48
+            0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8
+            c0-4.42-3.58-8-8-8z"/>
+        </svg>
+      </a>
+      <button class="icon-btn" id="theme-toggle" aria-label="Toggle theme" title="Toggle theme"></button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <aside class="sidebar" id="sidebar">
+    <nav>
+      <div class="nav-section">
+        <div class="nav-section-title">Introduction</div>
+        <a href="index.html" class="nav-link">Quick Start</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Guides</div>
+        <a href="cookbook.html" class="nav-link active">Cookbook</a>
+        <a href="contributing.html" class="nav-link">Contributing</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Reference</div>
+        <a href="changelog.html" class="nav-link">Changelog</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">中文</div>
+        <a href="zh-tw.html" class="nav-link">繁體中文</a>
+        <a href="cookbook-zh-tw.html" class="nav-link">操作手冊</a>
+      </div>
+    </nav>
+  </aside>
+
+  <main class="page-content">
+    <div class="page-hero">
+      <h1>Cookbook</h1>
+      <p class="page-desc">Practical examples and workflows</p>
+      <div class="page-actions">
+        <button class="btn" id="copy-md-btn" data-url="https://raw.githubusercontent.com/yennanliu/InvestSkill/main/COOKBOOK.md">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          Copy Markdown
+        </button>
+        <a class="btn" href="https://raw.githubusercontent.com/yennanliu/InvestSkill/main/COOKBOOK.md" target="_blank">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+          Open Raw
+        </a>
+      </div>
+    </div>
+    <article class="markdown-body">
+<h1 id="investskill-cookbook" tabindex="-1">InvestSkill Cookbook</h1>
+<p>Practical examples, setup guide, and core concepts for getting the most out of InvestSkill.</p>
+<blockquote>
+<p>📖 <a href="COOKBOOK.md">English</a> | <a href="COOKBOOK-zh-TW.md">繁體中文</a></p>
+</blockquote>
+<hr>
+<h2 id="table-of-contents" tabindex="-1">Table of Contents</h2>
+<ol>
+<li><a href="#1-setup-guide">Setup Guide</a></li>
+<li><a href="#2-core-concepts">Core Concepts</a></li>
+<li><a href="#3-demo-examples--sample-output">Demo Examples &amp; Sample Output</a>
+<ul>
+<li><a href="#31-stock-evaluation">Stock Evaluation</a></li>
+<li><a href="#32-dcf-valuation">DCF Valuation</a></li>
+<li><a href="#33-financial-report-analysis">Financial Report Analysis</a></li>
+<li><a href="#34-research-bundle">Research Bundle</a></li>
+<li><a href="#35-technical-analysis">Technical Analysis</a></li>
+</ul>
+</li>
+<li><a href="#4-cross-ai-usage">Cross-AI Usage</a></li>
+<li><a href="#5-tips--best-practices">Tips &amp; Best Practices</a></li>
+</ol>
+<hr>
+<h2 id="1.-setup-guide" tabindex="-1">1. Setup Guide</h2>
+<h3 id="prerequisites" tabindex="-1">Prerequisites</h3>
+<ul>
+<li><a href="https://code.claude.com">Claude Code</a> installed (<code>npm install -g @anthropic-ai/claude-code</code>)</li>
+<li>An active Anthropic API key</li>
+</ul>
+<h3 id="install-investskill-(2-minutes)" tabindex="-1">Install InvestSkill (2 minutes)</h3>
+<pre><code class="language-bash"># Step 1: Open Claude Code
+claude
+
+# Step 2: Add the marketplace
+/plugin marketplace add yennanliu/InvestSkill
+
+# Step 3: Install the plugin
+/plugin install us-stock-analysis@invest-skill
+
+# Step 4: Verify installation
+/plugin list
+</code></pre>
+<p>You should see <code>us-stock-analysis</code> in the list with 18 available skills.</p>
+<h3 id="quick-test" tabindex="-1">Quick Test</h3>
+<pre><code class="language-bash"># Test with a stock you know
+/us-stock-analysis:stock-eval AAPL
+</code></pre>
+<p>If you see analysis output with a BULLISH/NEUTRAL/BEARISH signal block, you’re ready to go.</p>
+<h3 id="local-development-setup" tabindex="-1">Local Development Setup</h3>
+<pre><code class="language-bash"># Clone the repository
+git clone https://github.com/yennanliu/InvestSkill.git
+cd InvestSkill
+
+# Open Claude Code in the project directory
+claude
+
+# Add local marketplace (use your actual path)
+/plugin marketplace add /path/to/InvestSkill
+
+# Install from local source
+/plugin install us-stock-analysis@invest-skill
+</code></pre>
+<h3 id="updating-to-the-latest-version" tabindex="-1">Updating to the Latest Version</h3>
+<pre><code class="language-bash"># Remove the existing installation
+/plugin uninstall us-stock-analysis
+
+# Re-add marketplace (refreshes to latest version)
+/plugin marketplace add yennanliu/InvestSkill
+
+# Re-install
+/plugin install us-stock-analysis@invest-skill
+</code></pre>
+<hr>
+<h2 id="2.-core-concepts" tabindex="-1">2. Core Concepts</h2>
+<h3 id="what-investskill-is" tabindex="-1">What InvestSkill Is</h3>
+<p>InvestSkill is a collection of <strong>structured analysis prompt frameworks</strong> packaged as a Claude Code plugin. Each skill is a detailed instruction set that tells Claude Code exactly how to analyze a stock, interpret financial data, and present findings in a consistent format.</p>
+<p>Think of each skill as a <strong>specialized analyst</strong> you can summon with a command:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/stock-eval AAPL</code></td>
+<td>Holistic evaluation: quality, valuation, moat, risk</td>
+</tr>
+<tr>
+<td><code>/dcf-valuation NVDA</code></td>
+<td>Rigorous intrinsic value model with 3 scenarios</td>
+</tr>
+<tr>
+<td><code>/stock-valuation MSFT</code></td>
+<td>Multi-method valuation: DCF + comps + EV multiples</td>
+</tr>
+<tr>
+<td><code>/financial-report-analyst GOOGL 10-K</code></td>
+<td>Deep-read an annual filing, find red flags</td>
+</tr>
+<tr>
+<td><code>/research-bundle TSLA</code></td>
+<td>Run all skills in sequence, synthesize into one thesis</td>
+</tr>
+</tbody>
+</table>
+<h3 id="how-skills-work" tabindex="-1">How Skills Work</h3>
+<p>Each skill is defined by a <code>SKILL.md</code> file containing:</p>
+<ol>
+<li><strong>Description</strong> (frontmatter): One-line summary used by the plugin system</li>
+<li><strong>Methodology</strong>: Step-by-step analysis framework with tables, scoring, and formulas</li>
+<li><strong>Output format</strong>: Standardized sections Claude Code follows</li>
+<li><strong>Signal block</strong>: Required at the end of every analysis</li>
+</ol>
+<pre><code>plugins/us-stock-analysis/skills/
+├── stock-eval/SKILL.md
+├── dcf-valuation/SKILL.md
+├── stock-valuation/SKILL.md        ← new v1.3.0
+├── financial-report-analyst/SKILL.md  ← new v1.3.0
+└── ... (18 skills total)
+</code></pre>
+<h3 id="the-signal-block" tabindex="-1">The Signal Block</h3>
+<p>Every InvestSkill analysis ends with a standardized signal block for quick decision-making:</p>
+<pre><code>╔══════════════════════════════════════════════╗
+║              INVESTMENT SIGNAL               ║
+╠══════════════════════════════════════════════╣
+║ Signal:      BULLISH / NEUTRAL / BEARISH     ║
+║ Confidence:  HIGH / MEDIUM / LOW             ║
+║ Horizon:     SHORT / MEDIUM / LONG-TERM      ║
+║ Score:       X.X / 10                        ║
+╠══════════════════════════════════════════════╣
+║ Action:      BUY / HOLD / SELL               ║
+║ Conviction:  STRONG / MODERATE / WEAK        ║
+╚══════════════════════════════════════════════╝
+</code></pre>
+<p><strong>Score guide:</strong></p>
+<ul>
+<li>8.0–10.0 → Strongly Bullish</li>
+<li>6.0–7.9  → Moderately Bullish</li>
+<li>4.0–5.9  → Neutral</li>
+<li>2.0–3.9  → Moderately Bearish</li>
+<li>0.0–1.9  → Strongly Bearish</li>
+</ul>
+<h3 id="universal-prompts-(cross-ai)" tabindex="-1">Universal Prompts (Cross-AI)</h3>
+<p>Every skill is also available as a standalone prompt file in the <code>prompts/</code> directory. These work with <strong>any AI assistant</strong> — not just Claude Code:</p>
+<pre><code>prompts/
+├── stock-eval.md
+├── dcf-valuation.md
+├── stock-valuation.md
+├── financial-report-analyst.md
+└── ... (17 files)
+</code></pre>
+<p>Use them by copying the file content into any AI chat as a system prompt.</p>
+<hr>
+<h2 id="3.-demo-examples-%26-sample-output" tabindex="-1">3. Demo Examples &amp; Sample Output</h2>
+<blockquote>
+<p><strong>Note</strong>: The outputs below are representative examples showing the format and depth of analysis. Actual outputs use real-time data and will differ.</p>
+</blockquote>
+<h3 id="3.1-stock-evaluation" tabindex="-1">3.1 Stock Evaluation</h3>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">/us-stock-analysis:stock-eval MSFT
+</code></pre>
+<p><strong>Sample Output:</strong></p>
+<pre><code># US Stock Evaluation — MSFT (Microsoft Corporation)
+
+## Company Overview
+Microsoft is a diversified technology company with three major segments:
+- Intelligent Cloud (Azure, server products): 43% of revenue, highest growth
+- Productivity &amp; Business Processes (Office 365, LinkedIn, Dynamics): 32%
+- More Personal Computing (Windows, Xbox, Surface): 25%
+
+Dominant moat: Azure platform lock-in, Office 365 subscription stickiness, enterprise
+relationships. Switching costs are extremely high across all segments.
+
+## Financial Health
+
+Revenue Growth (5-yr CAGR):  15.8%
+Gross Margin:                 70.1%  (expanding: +180 bps YoY)
+Operating Margin:             44.6%  (expanding: +120 bps YoY)
+FCF Margin:                   37.2%
+Net Cash Position:            $27.4B (net cash — fortress balance sheet)
+
+## Valuation Metrics
+
+| Metric       | Current | 1Y Ago | 5Y Avg | Sector Avg |
+|--------------|---------|--------|--------|------------|
+| P/E (FWD)    | 32.4x   | 28.1x  | 30.2x  | 26.8x      |
+| EV/EBITDA    | 24.1x   | 21.5x  | 22.8x  | 18.4x      |
+| EV/FCF       | 41.2x   | 37.8x  | 36.5x  | 28.1x      |
+| Price/Sales  | 12.8x   | 10.9x  | 11.6x  | 7.2x       |
+
+Premium to sector justified by: superior margin profile, cloud growth trajectory, AI optionality (Copilot, Azure OpenAI).
+
+## Quality Scoring
+
+Piotroski F-Score:    8/9   (Strong — failed only on DTC/shares outstanding)
+ROIC:                 28.4%
+WACC (estimated):     8.9%
+ROIC − WACC Spread:   +1,950 bps  (significant value creation)
+
+## DCF Quick Range
+
+Base Case IV:   $385–$420 per share
+Bear Case IV:   $295–$320 per share
+Bull Case IV:   $480–$530 per share
+Current Price:  $422.14
+Margin of Safety (Base): Fairly valued — modest premium to base
+
+## Risk Matrix
+
+| Risk Category     | Level | Key Concern                              |
+|-------------------|-------|------------------------------------------|
+| Valuation Risk    | MED   | Premium multiple requires continued execution |
+| Business/Comp     | LOW   | Durable moat; AWS and Google as cloud peers |
+| Financial/Leverage| LOW   | Net cash, investment-grade rating         |
+| Regulatory/Legal  | MED   | EU antitrust scrutiny, Activision integration |
+| Macro/Sector      | MED   | Enterprise IT spending sensitivity        |
+
+## Investment Thesis
+Microsoft's AI-driven product suite (Copilot, Azure OpenAI) positions it to capture
+disproportionate value from enterprise AI adoption. Cloud segment (Azure) growing 28%
+YoY with improving margins. Valuation is fair-to-slightly-premium, but justified by
+quality of business and multi-year AI tailwind.
+
+## Bear Case
+Multiple compression if Azure growth decelerates below 20%, or if AI monetization
+disappoints vs. current embedded expectations. EU regulatory risk on bundling practices.
+
+╔══════════════════════════════════════════════╗
+║              INVESTMENT SIGNAL               ║
+╠══════════════════════════════════════════════╣
+║ Signal:      BULLISH                         ║
+║ Confidence:  MEDIUM                          ║
+║ Horizon:     LONG-TERM                       ║
+║ Score:       7.2 / 10                        ║
+╠══════════════════════════════════════════════╣
+║ Action:      BUY                             ║
+║ Conviction:  MODERATE                        ║
+╚══════════════════════════════════════════════╝
+</code></pre>
+<hr>
+<h3 id="3.2-dcf-valuation" tabindex="-1">3.2 DCF Valuation</h3>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">/us-stock-analysis:dcf-valuation NVDA --scenarios
+</code></pre>
+<p><strong>Sample Output (condensed):</strong></p>
+<pre><code># DCF Valuation — NVDA (NVIDIA Corporation)
+
+## Base Metrics (TTM)
+Revenue:              $122.0B    FCF:         $60.8B
+FCF Margin:           49.8%      Net Cash:    $38.5B
+SBC (TTM):            $3.5B      True FCF*:   $57.3B
+Shares Outstanding:   24.4B      *SBC-adjusted
+
+## WACC Calculation
+Cost of Equity: Rf 4.4% + β 1.72 × ERP 5.5% = 13.9%
+Cost of Debt (after-tax): 1.6%
+Capital Structure: 99.2% equity / 0.8% debt
+WACC: 13.8%
+
+## Scenario Assumptions
+
+| Scenario | Probability | Rev CAGR Y1-5 | Rev CAGR Y6-10 | FCF Margin Y10 | Terminal g |
+|----------|-------------|---------------|----------------|----------------|------------|
+| Bull     | 20%         | 42%           | 18%            | 48%            | 3.0%       |
+| Base     | 60%         | 28%           | 10%            | 40%            | 2.5%       |
+| Bear     | 20%         | 12%           | 5%             | 28%            | 1.5%       |
+
+## Intrinsic Value Results
+
+| Scenario | IV per Share | vs. Current ($875) | MoS      |
+|----------|--------------|--------------------|----------|
+| Bull     | $1,240       | +41.7%             | Discount |
+| Base     | $785         | −10.3%             | Premium  |
+| Bear     | $320         | −63.4%             | Premium  |
+| Weighted | $768         | −12.2%             | Premium  |
+
+TV as % of EV (Base): 68% — within acceptable range
+
+## Sensitivity Table (Base Scenario, $ per share)
+
+              Terminal Growth Rate
+WACC     1.5%    2.0%    2.5%    3.0%    3.5%
+11.0%    $910    $960   $1,020  $1,090  $1,180
+12.0%    $830    $875    $920    $975   $1,040
+13.8%    $710    $745    $785    $825    $875  ← Base Case
+15.0%    $625    $655    $685    $720    $760
+16.0%    $570    $595    $620    $650    $685
+
+## Assessment
+At current price of $875, NVDA trades at a 12% premium to base-case IV.
+Bull case requires: AI capex cycle sustained for 5+ years, market share maintenance.
+Bear case risk: cloud customer digestion, competition from AMD MI300X, custom silicon.
+The weighted IV suggests modest overvaluation — position sizing discipline warranted.
+
+╔══════════════════════════════════════════════╗
+║              INVESTMENT SIGNAL               ║
+╠══════════════════════════════════════════════╣
+║ Signal:      NEUTRAL                         ║
+║ Confidence:  MEDIUM                          ║
+║ Horizon:     LONG-TERM                       ║
+║ Score:       5.8 / 10                        ║
+╠══════════════════════════════════════════════╣
+║ Action:      HOLD                            ║
+║ Conviction:  MODERATE                        ║
+╚══════════════════════════════════════════════╝
+</code></pre>
+<hr>
+<h3 id="3.3-financial-report-analysis" tabindex="-1">3.3 Financial Report Analysis</h3>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">/us-stock-analysis:financial-report-analyst AAPL 10-K --section md&amp;a
+</code></pre>
+<p><strong>Sample Output (condensed):</strong></p>
+<pre><code># Financial Report Analysis — AAPL 10-K (FY2024)
+
+## Document Orientation
+Filing Type:    10-K Annual Report (FY ended September 28, 2024)
+Auditor:        Ernst &amp; Young LLP — Unqualified Opinion
+Filed:          October 25, 2024 (on time)
+Restatements:   None
+
+## Financial Health Dashboard
+┌──────────────────────────┬──────────────────────────────────────┐
+│ Revenue Growth           │ +2.0% YoY ($391.0B)                  │
+│ Gross Margin             │ 46.2% (vs. prior 44.1%, +210 bps)    │
+│ Operating Margin         │ 31.5% (vs. prior 29.8%, +170 bps)    │
+│ FCF Margin               │ 27.8% (conversion: 108%)             │
+│ Net Cash                 │ $54.5B (Debt/EBITDA: 0.7x)           │
+│ DSO                      │ 26.1 days (vs. 27.8 days prior)      │
+│ Management Tone          │ Positive — confident on Services       │
+├──────────────────────────┼──────────────────────────────────────┤
+│ Filing Quality Score     │ 9.2 / 10                             │
+│ Earnings Quality Score   │ 8.8 / 10                             │
+│ Balance Sheet Score      │ 9.5 / 10                             │
+└──────────────────────────┴──────────────────────────────────────┘
+
+## Key Positives (Bullish Signals)
+• Services segment hit $96.2B (+13% YoY) — recurring, high-margin revenue stream growing
+  as % of total, structurally improving overall margins
+• Gross margin expanded 210 bps YoY — favorable product mix (iPhone Pro uptake, Services)
+• FCF conversion &gt;100% — high quality earnings with minimal working capital drag
+• DSO improved by 1.7 days — healthy receivables management
+• Apple Intelligence (AI) mentioned 47x in MD&amp;A — clear strategic priority with ecosystem lock-in
+
+## Key Negatives / Red Flags
+• China revenue declined 8% YoY ($66.9B) — geopolitical and local competition risk (RISK: HIGH)
+• iPad and Mac segments both down YoY — hardware upgrade cycle lengthening (RISK: MEDIUM)
+• EU Digital Markets Act compliance costs and forced App Store changes — structural margin risk (RISK: MEDIUM)
+• SBC at $11.7B (3.0% of revenue) — elevated but manageable (RISK: LOW)
+
+## Risk Factor Changes (vs. Prior 10-K)
+NEW Risks Added:
+  1. Artificial Intelligence regulation — EU AI Act compliance
+  2. Digital Markets Act — third-party app store access in EU
+
+ELEVATED Risks:
+  1. China competition — Huawei Mate series recovered significantly; language strengthened
+  2. App Store antitrust — new DOJ investigation language added
+
+## Accounting Quality Score
+| Criterion                   | Score | Notes                                         |
+|-----------------------------|-------|-----------------------------------------------|
+| Revenue recognition clarity | 3/3   | Clear, ASC 606 compliant, no changes          |
+| Non-GAAP reconciliation     | 3/3   | Minimal non-GAAP usage, clean reconciliation  |
+| FCF conversion rate         | 3/3   | 108% — excellent                              |
+| Working capital trends      | 3/3   | DSO improving, inventory lean                 |
+| Footnote transparency       | 2/3   | China exposure disclosure remains high-level  |
+| Auditor opinion             | 3/3   | Clean unqualified opinion                     |
+| Related party transactions  | 2/3   | Tim Cook real estate lease (minor)            |
+| Total                       | 19/21 | High quality filing                           |
+
+╔══════════════════════════════════════════════╗
+║              INVESTMENT SIGNAL               ║
+╠══════════════════════════════════════════════╣
+║ Signal:      BULLISH                         ║
+║ Confidence:  HIGH                            ║
+║ Horizon:     LONG-TERM                       ║
+║ Score:       7.8 / 10                        ║
+╠══════════════════════════════════════════════╣
+║ Action:      BUY                             ║
+║ Conviction:  MODERATE                        ║
+╚══════════════════════════════════════════════╝
+</code></pre>
+<hr>
+<h3 id="3.4-research-bundle" tabindex="-1">3.4 Research Bundle</h3>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">/us-stock-analysis:research-bundle AMZN
+</code></pre>
+<p><strong>Sample Output (condensed):</strong></p>
+<pre><code># Research Bundle — AMZN (Amazon.com, Inc.)
+
+## Phase 1: Business Quality Assessment
+Competitor Analysis: Economic moat = WIDE (score: 8.5/10)
+  - AWS: 31% cloud market share, 37% operating margin, high switching costs
+  - Prime ecosystem: 200M+ subscribers, flywheel creates structural advantages
+  - Advertising: $50B+ segment growing 20%+, highest margin business
+Fundamental Analysis: Financial Strength = 7.8/10
+  - Revenue: $590B | FCF: $54B (FCF margin: 9.1%, expanding rapidly)
+  - Net cash position of $47B provides strategic flexibility
+
+Business Quality Score: 8.1/10 → Excellent
+
+## Phase 2: Valuation Assessment
+DCF Base Case IV:    $208/share  |  Current: $224  |  Premium: 7.7%
+Stock-eval Comps:    P/E 37x (FWD), EV/EBITDA 21x — peer-aligned
+Price Target Range:  $195 (Bear) — $224 (Base) — $275 (Bull)
+Valuation Score:     6.2/10  → Fairly Valued with Slight Premium
+
+## Phase 3: Market Signals
+Insider:         CEO Andy Jassy: no open market purchases; routine 10b5-1 sales
+Institutional:   13F data shows Vanguard/BlackRock accumulating; net inflows Q3
+Earnings Call:   Management tone CONFIDENT; AWS acceleration emphasized;
+                 guidance specific with revenue +8-10% next quarter
+Market Signal Score: 7.5/10 → Positive
+
+## Phase 4: Technical Setup
+Price above 50-day and 200-day MA; recent breakout from consolidation
+RSI: 58 (neutral momentum, not overbought)
+Support: $205 | Resistance: $240
+Volume: Accumulation pattern visible
+Technical Setup: MODERATE → 6.0/10
+
+## Phase 5: Risk Assessment
+Short Float: 1.9% — negligible short interest
+Options: Implied Vol at 31% (near 1-year low — complacent market)
+Risk Profile: LOW → Score: 8.0/10
+
+## Composite Scorecard
+
+| Component       | Weight | Sub-Score | Contribution |
+|-----------------|--------|-----------|--------------|
+| Business Quality| 25%    | 8.1       | 2.03         |
+| Valuation       | 25%    | 6.2       | 1.55         |
+| Market Signals  | 20%    | 7.5       | 1.50         |
+| Technical Setup | 15%    | 6.0       | 0.90         |
+| Risk Profile    | 15%    | 8.0       | 1.20         |
+| COMPOSITE       | 100%   | 7.18/10   |              |
+
+**Interpretation: BUY (most signals positive, fair entry)**
+
+## Investment Thesis
+Amazon's AWS recovery (re-accelerating to 19% growth) combined with the highest-margin
+advertising business scaling to $50B+ creates a powerful earnings leverage story over
+the next 3 years. The retail segment, long a drag, is inflecting toward profitability
+as fulfillment optimization matures. AWS operating income alone covers the current
+enterprise value at a reasonable multiple.
+
+## Bull Case (3 reasons)
+1. AWS re-acceleration to 25%+ growth as AI workloads migrate to cloud
+2. Advertising reaching 15%+ operating margins, doubling EPS contribution
+3. International retail becoming cash-generative as localization matures
+
+## Bear Case (3 risks)
+1. AWS margin compression if AI compute costs outpace revenue growth
+2. FTC antitrust action forcing structural changes to Prime/marketplace model
+3. Consumer spending slowdown disproportionately hits discretionary ecommerce
+
+## Entry Strategy
+Ideal entry: $205–$215 (key support zone on pullback)
+Current entry ($224): Acceptable for long-term; wait for better setup if possible
+Position sizing: 3–5% of portfolio for high-conviction long-term hold
+
+## Exit Strategy
+Bull target: $275 (12-18 months, on AWS acceleration confirmation)
+Base target: $250 (12 months)
+Stop loss: $195 (below key support, thesis re-evaluation required)
+
+╔══════════════════════════════════════════════╗
+║              INVESTMENT SIGNAL               ║
+╠══════════════════════════════════════════════╣
+║ Signal:      BULLISH                         ║
+║ Confidence:  MEDIUM                          ║
+║ Horizon:     LONG-TERM                       ║
+║ Score:       7.2 / 10                        ║
+╠══════════════════════════════════════════════╣
+║ Action:      BUY                             ║
+║ Conviction:  MODERATE                        ║
+╚══════════════════════════════════════════════╝
+</code></pre>
+<hr>
+<h3 id="3.5-technical-analysis" tabindex="-1">3.5 Technical Analysis</h3>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">/us-stock-analysis:technical-analysis TSLA --chart
+</code></pre>
+<p><strong>Sample Output (condensed):</strong></p>
+<pre><code># Technical Analysis — TSLA (Tesla, Inc.)
+
+## Trend Analysis
+Primary Trend:    BEARISH (price below 200-day MA)
+Secondary Trend:  NEUTRAL (consolidating above 50-day MA)
+Short-Term:       BULLISH (price reclaimed 20-day MA, RSI recovering)
+MTF Alignment:    MIXED → proceed with caution
+
+## Key Levels
+Support 1:  $195 — Strong (tested 4x, accumulation zone)
+Support 2:  $175 — Very Strong (multi-year demand level)
+Resistance: $240 — Strong (prior breakdown point, now overhead)
+Resistance: $265 — Medium (50-week MA)
+52W Range:  $138.80 (Low) — $299.29 (High)
+
+## Indicator Signals
+
+| Indicator      | Value    | Signal    | Note                               |
+|----------------|----------|-----------|------------------------------------|
+| RSI (14)       | 48.2     | NEUTRAL   | Mid-range, recovering from oversold|
+| MACD           | −2.1     | NEUTRAL   | Crossover pending, histogram shrinking |
+| Bollinger Bands| Mid-band | NEUTRAL   | Price at mid, bandwidth contracting|
+| Volume         | Below avg| NEUTRAL   | Declining volume on bounce (weak)  |
+| OBV            | Declining| BEARISH   | Distribution pattern visible       |
+| Stochastic     | 42       | NEUTRAL   | Mid-range, no clear signal         |
+
+## Pattern Recognition
+Potential pattern: Descending triangle (bearish continuation)
+Neckline: $195 — break below = target ~$155
+Alternative: If $195 holds and $240 breaks, inverse H&amp;S forming (bullish)
+
+## Trade Setup
+Conservative entry: $197–$202 (near support on confirmed volume)
+Stop loss: $188 (below support — invalidates thesis)
+Target 1: $240 (resistance)   Risk/Reward: 1:3.5
+Target 2: $265 (extended)     Risk/Reward: 1:6.0
+Horizon: Swing trade (4–8 weeks)
+
+╔══════════════════════════════════════════════╗
+║              INVESTMENT SIGNAL               ║
+╠══════════════════════════════════════════════╣
+║ Signal:      NEUTRAL                         ║
+║ Confidence:  LOW                             ║
+║ Horizon:     SHORT-TERM                      ║
+║ Score:       4.5 / 10                        ║
+╠══════════════════════════════════════════════╣
+║ Action:      HOLD                            ║
+║ Conviction:  WEAK                            ║
+╚══════════════════════════════════════════════╝
+</code></pre>
+<hr>
+<h2 id="4.-cross-ai-usage" tabindex="-1">4. Cross-AI Usage</h2>
+<p>InvestSkill works with any AI assistant. The <code>prompts/</code> directory contains all 17 analysis frameworks as standalone files.</p>
+<h3 id="gemini-cli" tabindex="-1">Gemini CLI</h3>
+<pre><code class="language-bash"># GEMINI.md is automatically loaded by Gemini CLI
+cd /path/to/InvestSkill
+gemini
+
+# Reference a prompt directly
+&gt; @prompts/stock-valuation.md Analyze AAPL using all valuation methods
+
+# Paste a 10-K section for analysis
+&gt; @prompts/financial-report-analyst.md
+&gt; [paste your 10-K text here]
+</code></pre>
+<h3 id="github-copilot" tabindex="-1">GitHub Copilot</h3>
+<p>The <code>.github/copilot-instructions.md</code> file is automatically loaded as workspace context.</p>
+<pre><code># In Copilot Chat (VSCode or github.com)
+Analyze NVDA using the stock-valuation framework
+
+# Reference a specific prompt
+Use the framework in @workspace /prompts/dcf-valuation.md to value MSFT
+</code></pre>
+<h3 id="cursor" tabindex="-1">Cursor</h3>
+<p>The <code>.cursor/rules/invest-skill.mdc</code> file is auto-applied in Cursor.</p>
+<pre><code># Cursor AI Chat
+@prompts/fundamental-analysis.md Analyze GOOGL's financial statements
+
+# Or just ask naturally — Cursor knows the frameworks
+Run a DCF valuation of AMZN using the InvestSkill methodology
+</code></pre>
+<h3 id="any-ai-(chatgpt%2C-claude.ai%2C-etc.)" tabindex="-1">Any AI (ChatGPT, <a href="http://Claude.ai">Claude.ai</a>, etc.)</h3>
+<pre><code class="language-bash"># 1. Copy the content of any prompt file
+cat prompts/stock-eval.md | pbcopy   # macOS
+
+# 2. Paste into any AI chat as a system prompt or at conversation start
+
+# 3. Ask your question
+&quot;Analyze AAPL using this framework&quot;
+</code></pre>
+<hr>
+<h2 id="5.-tips-%26-best-practices" tabindex="-1">5. Tips &amp; Best Practices</h2>
+<h3 id="getting-better-results" tabindex="-1">Getting Better Results</h3>
+<p><strong>Be specific about the company and context:</strong></p>
+<pre><code class="language-bash"># Good
+/stock-eval NVDA                    # Clear ticker
+/dcf-valuation MSFT --scenarios     # With flag for richer output
+/research-bundle AAPL --visual      # Visual output for reports
+
+# Even better — add context
+/financial-report-analyst AAPL      # Then paste the actual 10-K text
+</code></pre>
+<p><strong>Use <code>--visual</code> for report generation:</strong></p>
+<pre><code class="language-bash">/fundamental-analysis NVDA --visual
+# Then pipe to report generator:
+/report-generator --type comprehensive
+</code></pre>
+<p><strong>Chain skills for deeper analysis:</strong></p>
+<pre><code class="language-bash"># Step 1: Get the fundamentals
+/fundamental-analysis MSFT
+
+# Step 2: Value the business
+/dcf-valuation MSFT --scenarios
+
+# Step 3: Check competitive position
+/competitor-analysis MSFT
+
+# Step 4: Or run everything at once
+/research-bundle MSFT
+</code></pre>
+<h3 id="choosing-the-right-skill" tabindex="-1">Choosing the Right Skill</h3>
+<table>
+<thead>
+<tr>
+<th>Your Question</th>
+<th>Best Skill</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>“Is this stock cheap or expensive?”</td>
+<td><code>/dcf-valuation</code> + <code>/stock-valuation</code></td>
+</tr>
+<tr>
+<td>“Is this a good business?”</td>
+<td><code>/stock-eval</code> + <code>/competitor-analysis</code></td>
+</tr>
+<tr>
+<td>“What’s in this earnings report?”</td>
+<td><code>/financial-report-analyst</code></td>
+</tr>
+<tr>
+<td>“What are insiders doing?”</td>
+<td><code>/insider-trading</code></td>
+</tr>
+<tr>
+<td>“Is this dividend safe?”</td>
+<td><code>/dividend-analysis</code></td>
+</tr>
+<tr>
+<td>“Where is the stock technically?”</td>
+<td><code>/technical-analysis</code></td>
+</tr>
+<tr>
+<td>“Full deep-dive before I invest”</td>
+<td><code>/research-bundle</code></td>
+</tr>
+<tr>
+<td>“Is this a squeeze candidate?”</td>
+<td><code>/short-interest</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="interpreting-signal-scores" tabindex="-1">Interpreting Signal Scores</h3>
+<p>The 0–10 score is a composite that should be used as <strong>one input</strong>, not a definitive answer:</p>
+<ul>
+<li><strong>Score 8+</strong>: Strong conviction. Multiple signals aligned. Still requires risk management.</li>
+<li><strong>Score 6–8</strong>: Moderate conviction. Mostly positive with some concerns. Appropriate for normal position sizing.</li>
+<li><strong>Score 4–6</strong>: Neutral. Mixed signals. Consider waiting for clarity or reducing position size.</li>
+<li><strong>Score 2–4</strong>: Bearish lean. More concerns than positives. Avoid new long positions.</li>
+<li><strong>Score &lt; 2</strong>: Strong bear case. Multiple red flags. Consider avoiding or hedging.</li>
+</ul>
+<h3 id="using-with-real-financial-data" tabindex="-1">Using with Real Financial Data</h3>
+<p>For best results, provide the AI with actual data:</p>
+<ol>
+<li><strong>Paste financial statements</strong> from the company’s IR page</li>
+<li><strong>Attach 10-K/10-Q PDFs</strong> when using the <code>financial-report-analyst</code> skill</li>
+<li><strong>Provide specific numbers</strong> (revenue, margins, share count) for DCF accuracy</li>
+<li><strong>Reference earnings call transcripts</strong> with the <code>earnings-call-analysis</code> skill</li>
+</ol>
+<hr>
+<h2 id="disclaimer" tabindex="-1">Disclaimer</h2>
+<p>InvestSkill provides educational analysis frameworks only. Nothing in this project constitutes financial advice. All outputs are AI-generated analyses based on the methodologies embedded in the skills — they are not guarantees of future performance. Always consult a qualified financial advisor before making investment decisions.</p>
+
+    </article>
+  </main>
+
+  <aside class="toc-sidebar" id="toc-sidebar">
+    <p class="toc-title">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="15" y2="12"/>
+        <line x1="3" y1="18" x2="18" y2="18"/>
+      </svg>
+      On this page
+    </p>
+    <ul class="toc-list" id="toc"></ul>
+  </aside>
+
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>
