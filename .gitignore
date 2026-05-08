@@ -9,6 +9,7 @@ dist/
 build/
 *.js
 !scripts/*.js
+!docs/*.js
 *.d.ts
 *.js.map
 
