@@ -54,18 +54,36 @@ const MD_TO_HTML = {
   'CHANGELOG.md':       'changelog.html',
 };
 
+// Assets we actually serve — any other relative link is sent to GitHub
+const SERVED = new Set(['index.html','cookbook.html','cookbook-zh-tw.html',
+  'contributing.html','changelog.html','zh-tw.html','style.css','main.js']);
+
 // Rewrite links in rendered HTML:
-//  - relative .md hrefs → HTML page or GitHub blob
-//  - old site domain   → new site domain
+//  - relative paths for served assets  → leave alone
+//  - .md paths with an HTML equivalent → local .html
+//  - everything else (LICENSE, *.md w/o page, …) → GitHub blob (new tab)
+//  - old site domain → new custom domain
 function rewriteLinks(html) {
-  // Replace relative .md href="..." links
-  html = html.replace(/href="([^"#?]+\.md)([^"]*)"/g, (match, file, rest) => {
-    const basename = path.basename(file);
+  html = html.replace(/href="([^"]+)"/g, (match, href) => {
+    // Leave absolute URLs and pure anchor links untouched
+    if (/^https?:\/\//.test(href) || href.startsWith('#')) return match;
+
+    const [filePart, anchor] = href.split('#');
+    const basename  = path.basename(filePart);
+    const anchorStr = anchor ? '#' + anchor : '';
+
+    // Assets we serve — leave as-is
+    if (SERVED.has(basename)) return match;
+
+    // .md → local HTML if we have a page for it
     if (MD_TO_HTML[basename]) {
-      return `href="${MD_TO_HTML[basename]}${rest}"`;
+      return `href="${MD_TO_HTML[basename]}${anchorStr}"`;
     }
+
+    // Everything else (LICENSE, unbuilt .md files, etc.) → GitHub blob
     return `href="${GITHUB_BLOB}/${basename}" target="_blank" rel="noopener noreferrer"`;
   });
+
   // Replace old GitHub Pages domain with new custom domain
   html = html.replace(new RegExp(OLD_SITE.replace(/\./g, '\\.'), 'g'), SITE_BASE);
   return html;
