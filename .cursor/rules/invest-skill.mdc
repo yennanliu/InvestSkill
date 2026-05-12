@@ -84,12 +84,13 @@ If the framework loads, setup is complete!
 |-----------|------|----------|
 | Research Bundle | `@prompts/research-bundle.md` | Complete multi-framework analysis |
 
-### Meta-Analysis & Visualization (2 frameworks)
+### Meta-Analysis & Visualization (3 frameworks)
 
 | Framework | File | Best For |
 |-----------|------|----------|
 | Result Validator | `@prompts/result-validator.md` | Validate any analysis + confidence score |
 | Chart Master | `@prompts/chart-master.md` | Generate Mermaid/ASCII/HTML charts |
+| Report Generator | `@prompts/report-generator.md` | Export analysis as a professional HTML/PDF report |
 
 ---
 
@@ -382,7 +383,10 @@ InvestSkill/
 │   ├── options-analysis.md
 │   ├── portfolio-review.md
 │   ├── sector-analysis.md
-│   └── research-bundle.md
+│   ├── research-bundle.md
+│   ├── result-validator.md
+│   ├── chart-master.md
+│   └── report-generator.md     # HTML/PDF report design system
 ├── plugins/
 │   └── us-stock-analysis/
 │       ├── .claude-plugin/

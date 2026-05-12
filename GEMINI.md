@@ -73,12 +73,13 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 | Research Bundle             | `@prompts/research-bundle.md`          | `Complete analysis on AAPL`                |
 | (All 20 skills combined)    | (chains multiple analyses)             | `Full thesis with all frameworks`          |
 
-### Meta-Analysis & Visualization (2 skills)
+### Meta-Analysis & Visualization (3 skills)
 
 | Analysis Type               | Prompt File                            | Usage Example                              |
 |-----------------------------|----------------------------------------|--------------------------------------------|
 | Result Validator            | `@prompts/result-validator.md`         | `[paste analysis] Score confidence`        |
 | Chart Master                | `@prompts/chart-master.md`             | `[paste data] Generate revenue chart`      |
+| Report Generator            | `@prompts/report-generator.md`         | `[paste analysis] Export as HTML report`   |
 
 ---
 
@@ -161,6 +162,24 @@ TSLA: 10%
 
 # Smart money tracking
 > @prompts/institutional-ownership.md Which institutional investors are buying tech stocks?
+```
+
+### Export as Professional HTML Report
+
+```
+# After any analysis, export to a styled HTML/PDF report
+> @prompts/report-generator.md
+[paste analysis output]
+Generate an HTML report for AAPL
+
+# Specify report type
+> @prompts/report-generator.md
+[paste fundamental-analysis output]
+Executive summary report, HTML format
+
+# Full research bundle → HTML report
+> @prompts/research-bundle.md Complete analysis on NVDA
+> @prompts/report-generator.md Convert the above into a professional HTML report
 ```
 
 ### Full Research Bundle (Most Complete)
@@ -288,7 +307,10 @@ InvestSkill/
 │   ├── options-analysis.md
 │   ├── portfolio-review.md
 │   ├── sector-analysis.md
-│   └── research-bundle.md
+│   ├── research-bundle.md
+│   ├── result-validator.md
+│   ├── chart-master.md
+│   └── report-generator.md     # HTML/PDF report design system
 ├── plugins/                    # Claude Code plugin (optional)
 │   └── us-stock-analysis/
 ├── GEMINI.md                   # This file

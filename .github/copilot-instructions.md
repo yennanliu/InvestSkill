@@ -79,12 +79,13 @@ If Copilot references the frameworks, setup is complete!
 | Research Bundle | `prompts/research-bundle.md` | Comprehensive multi-framework analysis |
 | (Combined) | (all frameworks) | Complete investment thesis |
 
-### Meta-Analysis & Visualization (2 frameworks)
+### Meta-Analysis & Visualization (3 frameworks)
 
 | Framework | File | Best For |
 |-----------|------|----------|
 | Result Validator | `prompts/result-validator.md` | Validate any analysis + confidence score (0–100) |
 | Chart Master | `prompts/chart-master.md` | Generate Mermaid/ASCII/HTML charts from financial data |
+| Report Generator | `prompts/report-generator.md` | Export analysis as a professional HTML/PDF report |
 
 ---
 
@@ -344,7 +345,10 @@ InvestSkill/
 │   ├── options-analysis.md
 │   ├── portfolio-review.md
 │   ├── sector-analysis.md
-│   └── research-bundle.md
+│   ├── research-bundle.md
+│   ├── result-validator.md
+│   ├── chart-master.md
+│   └── report-generator.md     # HTML/PDF report design system
 ├── plugins/                    # Claude Code plugin (optional)
 ├── .github/copilot-instructions.md  # This file (auto-loaded)
 ├── README.md
