@@ -1,6 +1,6 @@
 # InvestSkill — Gemini CLI Setup & Usage Guide
 
-This project contains professional investment analysis prompt frameworks for US stock markets. When you run Gemini CLI in this directory, all 18 analysis frameworks are automatically available.
+This project contains professional investment analysis prompt frameworks for US stock markets. When you run Gemini CLI in this directory, all 21 analysis frameworks are automatically available.
 
 ## Installation & Setup
 
@@ -14,7 +14,7 @@ cd /path/to/InvestSkill
 gemini
 ```
 
-**That's it!** Gemini CLI automatically loads `GEMINI.md` and gives you access to all 18 analysis frameworks in the `prompts/` directory.
+**That's it!** Gemini CLI automatically loads `GEMINI.md` and gives you access to all 21 analysis frameworks in the `prompts/` directory.
 
 ### Verify Setup
 
@@ -28,7 +28,7 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 
 ---
 
-## Available Analysis Prompts (20 Total)
+## Available Analysis Prompts (21 Total)
 
 ### Core Stock Analysis (6 skills)
 
@@ -66,12 +66,13 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 | Portfolio Review            | `@prompts/portfolio-review.md`         | `[paste holdings] Review my allocation`    |
 | Sector Analysis             | `@prompts/sector-analysis.md`          | `What sectors should rotate into?`         |
 
-### Full Research Bundle (2 skills)
+### Full Research Bundle (3 skills)
 
 | Analysis Type               | Prompt File                            | Usage Example                              |
 |-----------------------------|----------------------------------------|--------------------------------------------|
 | Research Bundle             | `@prompts/research-bundle.md`          | `Complete analysis on AAPL`                |
-| (All 20 skills combined)    | (chains multiple analyses)             | `Full thesis with all frameworks`          |
+| Full Report (HTML)          | `@prompts/full-report.md`              | `Generate full interactive report for NVDA`|
+| (All 21 skills combined)    | (chains multiple analyses)             | `Full thesis with all frameworks`          |
 
 ### Meta-Analysis & Visualization (3 skills)
 

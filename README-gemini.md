@@ -1,6 +1,6 @@
 # InvestSkill for Gemini CLI
 
-Professional investment analysis prompts for Gemini CLI. 18 universal frameworks for comprehensive stock market evaluation.
+Professional investment analysis prompts for Gemini CLI. 21 universal frameworks for comprehensive stock market evaluation.
 
 **For multi-platform setup**, see [README.md](README.md)
 
@@ -38,7 +38,7 @@ Or reference directly:
 
 ---
 
-## All 18 Frameworks
+## All 21 Frameworks
 
 ### Core Analysis (6)
 ```
@@ -72,9 +72,17 @@ Or reference directly:
 @prompts/sector-analysis.md             # Sector rotation opportunities
 ```
 
-### Comprehensive Research (2)
+### Comprehensive Research (3)
 ```
 @prompts/research-bundle.md             # All frameworks combined
+@prompts/full-report.md                 # Interactive HTML report generation
+```
+
+### Meta-Analysis (3)
+```
+@prompts/result-validator.md            # Analysis confidence scoring
+@prompts/chart-master.md                # Data visualization
+@prompts/report-generator.md            # HTML/PDF report export
 ```
 
 ---
