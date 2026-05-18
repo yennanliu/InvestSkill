@@ -229,7 +229,7 @@ registeredSkills.forEach(skill => {
   if (words >= MIN_SKILL_WORDS) {
     pass(`${skill}/SKILL.md — word count OK (${words} words)`);
   } else {
-    warn(`${skill}/SKILL.md — low word count (${words} words, min ${MIN_SKILL_WORDS})`);
+    fail(`${skill}/SKILL.md — low word count (${words} words, min ${MIN_SKILL_WORDS})`);
   }
 });
 

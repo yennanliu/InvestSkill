@@ -52,7 +52,7 @@ See `ADDING-NEW-SKILLS.md` for the full walkthrough. Key steps:
 
 1. Create `plugins/us-stock-analysis/skills/<name>/SKILL.md` with frontmatter
 2. Create `prompts/<name>.md` — same content, no frontmatter, no platform-specific syntax
-3. Add skill name to `skills` array in `plugins/us-stock-analysis/.claude-plugin/plugin.json`
+3. Skills are auto-discovered from the `skills/` directory — no changes needed in `plugin.json`
 4. Bump version in both `plugin.json` and `.claude-plugin/marketplace.json` (must match)
 5. Update `.cursor/rules/invest-skill.mdc`, `.github/copilot-instructions.md`, `GEMINI.md`
 6. Update `README.md` and platform-specific `README-*.md` files
@@ -69,7 +69,7 @@ Verify with: `jq '.version' plugins/us-stock-analysis/.claude-plugin/plugin.json
 
 ## Current State
 
-- **Version**: 1.4.0
-- **Skills**: 18 (listed in `plugin.json`)
-- **Prompts**: 17 universal files in `prompts/` (research-bundle is meta-only, has no standalone prompt)
+- **Version**: 1.6.0
+- **Skills**: 21 (listed in `plugin.json`)
+- **Prompts**: 21 universal files in `prompts/` (research-bundle is meta-only, has no standalone prompt)
 - **Node**: ≥18.0.0 required
