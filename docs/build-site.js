@@ -4,8 +4,17 @@ const path = require('path');
 const MarkdownIt = require('markdown-it');
 const markdownItAnchor = require('markdown-it-anchor');
 
+// GitHub-compatible heading slugs: lowercase, strip punctuation (keep letters,
+// numbers, spaces, hyphens — including Unicode), then map each space to a hyphen
+// 1:1 (no collapsing — "A & B" → "a--b", matching GitHub and the Cookbook TOC).
+function githubSlug(s) {
+  return String(s).trim().toLowerCase()
+    .replace(/[^\p{L}\p{N}\s-]/gu, '')
+    .replace(/\s/g, '-');
+}
+
 const md = new MarkdownIt({ html: true, linkify: true, typographer: true })
-  .use(markdownItAnchor, { permalink: false });
+  .use(markdownItAnchor, { permalink: false, slugify: githubSlug });
 
 // ---------------------------------------------------------------------------
 // Navigation structure
@@ -18,10 +27,26 @@ const NAV_SECTIONS = [
     ],
   },
   {
+    title: 'Learn',
+    links: [
+      { label: 'Concepts',        href: 'concepts.html',      page: 'concepts' },
+      { label: 'Glossary',        href: 'glossary.html',      page: 'glossary' },
+      { label: 'Choose a Skill',  href: 'choose-a-skill.html', page: 'choose-a-skill' },
+      { label: 'Use Cases',       href: 'use-cases.html',     page: 'use-cases' },
+    ],
+  },
+  {
     title: 'Guides',
     links: [
       { label: 'Cookbook',        href: 'cookbook.html',      page: 'cookbook' },
+      { label: 'Skill Reference', href: 'skills.html',        page: 'skills' },
       { label: 'Contributing',    href: 'contributing.html',  page: 'contributing' },
+    ],
+  },
+  {
+    title: 'Trust',
+    links: [
+      { label: 'Data & Accuracy', href: 'data-and-accuracy.html', page: 'data-and-accuracy' },
     ],
   },
   {
@@ -52,11 +77,19 @@ const MD_TO_HTML = {
   'COOKBOOK-zh-TW.md':  'cookbook-zh-tw.html',
   'CONTRIBUTING.md':    'contributing.html',
   'CHANGELOG.md':       'changelog.html',
+  'CONCEPTS.md':        'concepts.html',
+  'GLOSSARY.md':        'glossary.html',
+  'CHOOSE-A-SKILL.md':  'choose-a-skill.html',
+  'USE-CASES.md':       'use-cases.html',
+  'DATA-AND-ACCURACY.md': 'data-and-accuracy.html',
 };
 
-// Assets we actually serve — any other relative link is sent to GitHub
+// Assets we actually serve — any other relative link is sent to GitHub.
+// Per-skill pages (skill-<name>.html) are added dynamically further below.
 const SERVED = new Set(['index.html','cookbook.html','cookbook-zh-tw.html',
-  'contributing.html','changelog.html','zh-tw.html','style.css','main.js']);
+  'contributing.html','changelog.html','zh-tw.html','style.css','main.js',
+  'concepts.html','glossary.html','choose-a-skill.html','use-cases.html',
+  'data-and-accuracy.html','skills.html']);
 
 // Rewrite links in rendered HTML:
 //  - relative paths for served assets  → leave alone
@@ -99,6 +132,41 @@ const PAGES = [
     srcFile: 'README.md',
     title: 'Quick Start',
     subtitle: 'Getting Started with InvestSkill',
+  },
+  {
+    key: 'concepts',
+    outFile: 'concepts.html',
+    srcFile: 'CONCEPTS.md',
+    title: 'Concepts',
+    subtitle: 'The mental models behind the metrics',
+  },
+  {
+    key: 'glossary',
+    outFile: 'glossary.html',
+    srcFile: 'GLOSSARY.md',
+    title: 'Glossary',
+    subtitle: 'Plain-English definitions for every metric',
+  },
+  {
+    key: 'choose-a-skill',
+    outFile: 'choose-a-skill.html',
+    srcFile: 'CHOOSE-A-SKILL.md',
+    title: 'Choose a Skill',
+    subtitle: 'Map your goal to the right framework',
+  },
+  {
+    key: 'use-cases',
+    outFile: 'use-cases.html',
+    srcFile: 'USE-CASES.md',
+    title: 'Use Cases',
+    subtitle: 'End-to-end journeys by investor type',
+  },
+  {
+    key: 'data-and-accuracy',
+    outFile: 'data-and-accuracy.html',
+    srcFile: 'DATA-AND-ACCURACY.md',
+    title: 'Data & Accuracy',
+    subtitle: 'Where the numbers come from and how to trust them',
   },
   {
     key: 'cookbook',
@@ -283,6 +351,96 @@ for (const page of PAGES) {
   fs.writeFileSync(path.join(outDir, page.outFile), html);
   console.log(`✓ ${page.outFile}`);
 }
+
+// ---------------------------------------------------------------------------
+// Per-skill reference pages (generated from prompts/*.md) + Skill Reference index
+// ---------------------------------------------------------------------------
+
+// Display categories for the index, mirroring README. Any skill not listed
+// here falls into "Other" so new skills still appear without code changes.
+const SKILL_CATEGORIES = [
+  { title: 'Core Stock Analysis', skills: ['stock-eval','fundamental-analysis','technical-analysis','dcf-valuation','stock-valuation','economics-analysis'] },
+  { title: 'Financial Reports',   skills: ['financial-report-analyst','earnings-call-analysis'] },
+  { title: 'Market Monitoring',   skills: ['insider-trading','institutional-ownership','dividend-analysis','short-interest'] },
+  { title: 'Advanced Research',   skills: ['competitor-analysis','options-analysis','portfolio-review','sector-analysis'] },
+  { title: 'Meta & Output',       skills: ['research-bundle','full-report','report-generator','chart-master','result-validator'] },
+];
+
+const PROMPTS_DIR = path.join(__dirname, '..', 'prompts');
+const promptFiles = fs.existsSync(PROMPTS_DIR)
+  ? fs.readdirSync(PROMPTS_DIR).filter(f => f.endsWith('.md')).map(f => f.replace(/\.md$/, '')).sort()
+  : [];
+
+// Extract a page title and a one-line summary from a prompt's markdown.
+function describePrompt(raw) {
+  const lines = raw.split('\n');
+  const h1 = lines.find(l => /^#\s+/.test(l));
+  const title = h1 ? h1.replace(/^#\s+/, '').trim() : '';
+  // First non-empty, non-heading paragraph as the summary.
+  let summary = '';
+  for (let i = (h1 ? lines.indexOf(h1) + 1 : 0); i < lines.length; i++) {
+    const t = lines[i].trim();
+    if (!t || t.startsWith('#') || t.startsWith('>')) continue;
+    summary = t.replace(/\*\*/g, '').replace(/`/g, '');
+    break;
+  }
+  if (summary.length > 180) summary = summary.slice(0, 177).trimEnd() + '…';
+  return { title, summary };
+}
+
+// Register skill pages as served BEFORE rendering anything that links to them.
+const skillMeta = {};
+for (const name of promptFiles) {
+  SERVED.add(`skill-${name}.html`);
+  const raw = fs.readFileSync(path.join(PROMPTS_DIR, `${name}.md`), 'utf8');
+  skillMeta[name] = { raw, ...describePrompt(raw) };
+}
+
+// Generate one page per skill.
+for (const name of promptFiles) {
+  const { raw, title } = skillMeta[name];
+  // Drop the leading H1 — the page hero already shows the title.
+  const body = raw.replace(/^#\s+.*\n/, '');
+  const page = {
+    key:      'skills',
+    outFile:  `skill-${name}.html`,
+    srcFile:  `prompts/${name}.md`,
+    title:    title || name,
+    subtitle: `Framework reference · ${name}`,
+  };
+  const content = rewriteLinks(md.render(body));
+  fs.writeFileSync(path.join(outDir, page.outFile), htmlPage(page, content));
+}
+console.log(`✓ ${promptFiles.length} per-skill reference pages`);
+
+// Generate the Skill Reference index (skills.html).
+const categorized = new Set(SKILL_CATEGORIES.flatMap(c => c.skills));
+const otherSkills = promptFiles.filter(n => !categorized.has(n));
+const indexSections = [...SKILL_CATEGORIES];
+if (otherSkills.length) indexSections.push({ title: 'Other', skills: otherSkills });
+
+let skillsMd = `# Skill Reference\n\nEvery framework as a browsable page. New here? See [Choose a Skill](choose-a-skill.html) to find the right one for your goal, or [Concepts](concepts.html) for the ideas behind them.\n\n`;
+for (const section of indexSections) {
+  const present = section.skills.filter(n => skillMeta[n]);
+  if (!present.length) continue;
+  skillsMd += `## ${section.title}\n\n`;
+  for (const name of present) {
+    const { summary } = skillMeta[name];
+    skillsMd += `- [**${name}**](skill-${name}.html) — ${summary || 'Investment analysis framework.'}\n`;
+  }
+  skillsMd += `\n`;
+}
+skillsMd += `\n*Educational frameworks only. Not financial advice.*\n`;
+
+const skillsPage = {
+  key: 'skills', outFile: 'skills.html', srcFile: 'README.md',
+  title: 'Skill Reference', subtitle: 'All 21 frameworks, one page each',
+};
+fs.writeFileSync(
+  path.join(outDir, 'skills.html'),
+  htmlPage(skillsPage, rewriteLinks(md.render(skillsMd)))
+);
+console.log('✓ skills.html');
 
 // 404 page (minimal, shares stylesheet)
 const html404 = `<!DOCTYPE html>

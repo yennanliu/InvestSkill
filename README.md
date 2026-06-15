@@ -178,12 +178,27 @@ HTML reports render this as a styled dark panel with a score progress bar, ghost
 
 ---
 
+## Learn the Frameworks
+
+New to investing, or unsure which skill to reach for? Start here:
+
+| Guide | What it gives you |
+|-------|-------------------|
+| [Concepts](CONCEPTS.md) | The mental models behind the metrics — quality vs. value vs. growth, intrinsic value, moats, risk, and the signal block |
+| [Glossary](GLOSSARY.md) | Plain-English definitions, formulas, and good/bad ranges for every metric the skills emit |
+| [Choose a Skill](CHOOSE-A-SKILL.md) | Map your goal to the right framework, plus comparisons of the ones that overlap |
+| [Use Cases](USE-CASES.md) | End-to-end journeys by investor type — income, first-timer, earnings, macro, skeptic |
+| [Data & Accuracy](DATA-AND-ACCURACY.md) | Where the numbers come from, how to spot hallucinations, and how to validate output |
+
+---
+
 ## Documentation
 
 | Resource | Description |
 |----------|-------------|
 | [Live Docs Site](https://yennanliu.github.io/InvestSkill/) | Full documentation with dark-theme UI |
 | [Cookbook](https://yennanliu.github.io/InvestSkill/cookbook.html) | Walkthrough examples and use cases |
+| [Skill Reference](https://yennanliu.github.io/InvestSkill/skills.html) | All 21 frameworks, one browsable page each |
 | [Claude Code Guide](README-claude-code.md) | Plugin install + all slash commands |
 | [Cursor Guide](README-cursor.md) | Auto-loading rules + `@prompts/` usage |
 | [Gemini CLI Guide](README-gemini.md) | File references + multi-framework chains |

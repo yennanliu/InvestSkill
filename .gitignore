@@ -7,6 +7,7 @@ yarn-error.log*
 # Build outputs
 dist/
 build/
+_site/
 *.js
 !scripts/*.js
 !docs/*.js
