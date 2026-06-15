@@ -59,6 +59,11 @@ const NAV_SECTIONS = [
     title: '中文',
     links: [
       { label: '繁體中文',         href: 'zh-tw.html',         page: 'zh-tw' },
+      { label: '概念',             href: 'concepts-zh-tw.html', page: 'concepts-zh-tw' },
+      { label: '術語表',           href: 'glossary-zh-tw.html', page: 'glossary-zh-tw' },
+      { label: '選擇技能',         href: 'choose-a-skill-zh-tw.html', page: 'choose-a-skill-zh-tw' },
+      { label: '使用情境',         href: 'use-cases-zh-tw.html', page: 'use-cases-zh-tw' },
+      { label: '資料與準確性',     href: 'data-and-accuracy-zh-tw.html', page: 'data-and-accuracy-zh-tw' },
       { label: '操作手冊',         href: 'cookbook-zh-tw.html', page: 'cookbook-zh-tw' },
     ],
   },
@@ -82,6 +87,11 @@ const MD_TO_HTML = {
   'CHOOSE-A-SKILL.md':  'choose-a-skill.html',
   'USE-CASES.md':       'use-cases.html',
   'DATA-AND-ACCURACY.md': 'data-and-accuracy.html',
+  'CONCEPTS-zh-TW.md':       'concepts-zh-tw.html',
+  'GLOSSARY-zh-TW.md':       'glossary-zh-tw.html',
+  'CHOOSE-A-SKILL-zh-TW.md': 'choose-a-skill-zh-tw.html',
+  'USE-CASES-zh-TW.md':      'use-cases-zh-tw.html',
+  'DATA-AND-ACCURACY-zh-TW.md': 'data-and-accuracy-zh-tw.html',
 };
 
 // Assets we actually serve — any other relative link is sent to GitHub.
@@ -89,7 +99,9 @@ const MD_TO_HTML = {
 const SERVED = new Set(['index.html','cookbook.html','cookbook-zh-tw.html',
   'contributing.html','changelog.html','zh-tw.html','style.css','main.js',
   'concepts.html','glossary.html','choose-a-skill.html','use-cases.html',
-  'data-and-accuracy.html','skills.html']);
+  'data-and-accuracy.html','skills.html',
+  'concepts-zh-tw.html','glossary-zh-tw.html','choose-a-skill-zh-tw.html',
+  'use-cases-zh-tw.html','data-and-accuracy-zh-tw.html']);
 
 // Rewrite links in rendered HTML:
 //  - relative paths for served assets  → leave alone
@@ -202,6 +214,41 @@ const PAGES = [
     srcFile: 'README-zh-TW.md',
     title: '繁體中文',
     subtitle: 'Traditional Chinese documentation',
+  },
+  {
+    key: 'concepts-zh-tw',
+    outFile: 'concepts-zh-tw.html',
+    srcFile: 'CONCEPTS-zh-TW.md',
+    title: '概念與思維模型',
+    subtitle: '指標背後的思維模型',
+  },
+  {
+    key: 'glossary-zh-tw',
+    outFile: 'glossary-zh-tw.html',
+    srcFile: 'GLOSSARY-zh-TW.md',
+    title: '財務術語表',
+    subtitle: '每個指標的白話定義',
+  },
+  {
+    key: 'choose-a-skill-zh-tw',
+    outFile: 'choose-a-skill-zh-tw.html',
+    srcFile: 'CHOOSE-A-SKILL-zh-TW.md',
+    title: '選擇技能',
+    subtitle: '把你的目標對應到合適的框架',
+  },
+  {
+    key: 'use-cases-zh-tw',
+    outFile: 'use-cases-zh-tw.html',
+    srcFile: 'USE-CASES-zh-TW.md',
+    title: '使用情境與旅程',
+    subtitle: '依投資人類型的端到端旅程',
+  },
+  {
+    key: 'data-and-accuracy-zh-tw',
+    outFile: 'data-and-accuracy-zh-tw.html',
+    srcFile: 'DATA-AND-ACCURACY-zh-TW.md',
+    title: '資料與準確性',
+    subtitle: '數字從何而來，以及如何信任它們',
   },
 ];
 
