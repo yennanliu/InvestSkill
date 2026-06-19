@@ -81,6 +81,176 @@ Perform comprehensive stock evaluation combining fundamental analysis, valuation
 
 ---
 
+## Deep Financial Statement Analysis
+
+This section provides line-item rigor absorbed from dedicated fundamental analysis workflows. Use when a deeper statement-level breakdown is required.
+
+### Income Statement Line-Item Framework
+
+**Revenue Analysis**
+- Break revenue into organic growth vs. acquisition-driven growth vs. FX tailwind/headwind
+- Identify top revenue segments by size and growth rate; flag any segment growing faster or slower than the consolidated total
+- Assess revenue quality: recurring subscription/contract revenue vs. transactional/one-time revenue
+- Operating leverage test: does revenue growth outpace operating expense growth? Calculate incremental operating margin = ΔOperating Income / ΔRevenue
+
+**Cost Structure Decomposition**
+- COGS breakdown: raw materials, labor, overhead — track each as % of revenue over 5 years
+- SG&A as % of revenue: stable or creeping? Rising SG&A without revenue acceleration signals inefficiency
+- R&D intensity: absolute spend and % of revenue — context-dependent (biotech vs. consumer goods)
+- Non-recurring items to strip from normalized earnings: restructuring charges, asset write-downs, gain/loss on asset sales, one-time tax benefits, litigation settlements
+
+**Operating Leverage Analysis**
+- Fixed vs. variable cost split (estimate from historical margin behavior at different revenue levels)
+- Degree of Operating Leverage (DOL) = % Change in Operating Income / % Change in Revenue
+- High DOL (>3x) amplifies both upside and downside from revenue swings
+
+| Year | Revenue ($M) | Revenue Growth % | EBIT ($M) | EBIT Growth % | DOL |
+|------|-------------|-----------------|-----------|--------------|-----|
+| Y-4  |             |                 |           |              |     |
+| Y-3  |             |                 |           |              |     |
+| Y-2  |             |                 |           |              |     |
+| Y-1  |             |                 |           |              |     |
+| TTM  |             |                 |           |              |     |
+
+### Working Capital Cycle Analysis
+
+Working capital efficiency directly affects how much cash a business consumes or generates as it grows.
+
+**Key Working Capital Metrics**
+
+| Metric | Formula | Current | Y-1 | Y-2 | Trend |
+|--------|---------|---------|-----|-----|-------|
+| Days Sales Outstanding (DSO) | Accounts Receivable / (Revenue / 365) | | | | |
+| Days Inventory Outstanding (DIO) | Inventory / (COGS / 365) | | | | |
+| Days Payable Outstanding (DPO) | Accounts Payable / (COGS / 365) | | | | |
+| Cash Conversion Cycle (CCC) | DSO + DIO − DPO | | | | |
+| Net Working Capital ($M) | Current Assets − Current Liabilities | | | | |
+| NWC as % of Revenue | NWC / Revenue | | | | |
+
+**Cash Conversion Cycle Interpretation**
+- **CCC declining**: Company is collecting faster, holding less inventory, and/or extending payables — favorable working capital dynamics, cash generation improves as revenue grows
+- **CCC rising**: Working capital is consuming more cash as the business scales — a hidden drag on FCF growth
+- **Negative CCC** (e.g., large retailers, subscription businesses): Customers pay before the company pays suppliers — a structural cash flow advantage
+
+**Working Capital as a Growth Funding Check**
+- Incremental NWC per $1 of new revenue = ΔNWC / ΔRevenue
+- If this ratio exceeds ~15%, rapid revenue growth can strain liquidity even in a profitable business
+
+### DuPont Decomposition
+
+DuPont analysis decomposes ROE into its constituent drivers to identify whether profitability, efficiency, or leverage is the primary return engine — and whether returns are sustainable.
+
+**3-Factor DuPont**
+
+ROE = Net Profit Margin × Asset Turnover × Equity Multiplier
+
+| Component | Formula | Current | Y-1 | Y-2 |
+|-----------|---------|---------|-----|-----|
+| Net Profit Margin | Net Income / Revenue | | | |
+| Asset Turnover | Revenue / Average Total Assets | | | |
+| Equity Multiplier | Average Total Assets / Average Shareholders' Equity | | | |
+| **ROE** | Margin × Turnover × Multiplier | | | |
+
+**5-Factor DuPont (Extended)**
+
+ROE = Tax Burden × Interest Burden × EBIT Margin × Asset Turnover × Equity Multiplier
+
+| Component | Formula | Current | Y-1 | Y-2 |
+|-----------|---------|---------|-----|-----|
+| Tax Burden | Net Income / Pre-Tax Income | | | |
+| Interest Burden | Pre-Tax Income / EBIT | | | |
+| EBIT Margin | EBIT / Revenue | | | |
+| Asset Turnover | Revenue / Average Total Assets | | | |
+| Equity Multiplier | Average Total Assets / Average Equity | | | |
+| **ROE** | Product of all five | | | |
+
+**DuPont Interpretation**
+- ROE driven by high **margin** (e.g., luxury brands, software): High-quality, sustainable — least risky driver
+- ROE driven by high **asset turnover** (e.g., retailers, distributors): Efficient but thin — watch for margin erosion
+- ROE driven by high **leverage** (equity multiplier > 3x): Amplified returns but magnified downside — assess debt sustainability carefully
+- Declining ROE: diagnose which factor is deteriorating before drawing conclusions
+
+### Competitive Analysis — Porter's Five Forces
+
+| Force | Intensity (H/M/L) | Key Evidence |
+|-------|------------------|--------------|
+| Threat of New Entrants | | Capital requirements, brand moats, regulatory barriers |
+| Bargaining Power of Suppliers | | Supplier concentration, switching costs, input criticality |
+| Bargaining Power of Buyers | | Customer concentration, price sensitivity, alternatives |
+| Threat of Substitutes | | Technology disruption, cross-industry competition |
+| Competitive Rivalry | | Number of peers, market growth rate, differentiation |
+
+**Overall Moat Assessment**: Wide / Narrow / None
+- **Wide moat**: Durable competitive advantage expected to persist 20+ years
+- **Narrow moat**: Competitive advantage present but may erode within 10 years
+- **No moat**: Competing primarily on price or operational efficiency
+
+### Visualization Data Tables
+
+When a visual or report output is needed, populate these tables for chart generation (compatible with `/us-stock-analysis:report-generator`):
+
+**Revenue & Earnings Growth**
+```
+Year    Revenue ($M)    Revenue Growth %    Net Income ($M)    EPS ($)
+2020    [value]         [%]                 [value]            [value]
+2021    [value]         [%]                 [value]            [value]
+2022    [value]         [%]                 [value]            [value]
+2023    [value]         [%]                 [value]            [value]
+2024    [value]         [%]                 [value]            [value]
+```
+
+**Profit Margin Trends**
+```
+Year    Gross Margin %    Operating Margin %    Net Margin %    Industry Avg %
+2020    [%]              [%]                   [%]             [%]
+2021    [%]              [%]                   [%]             [%]
+2022    [%]              [%]                   [%]             [%]
+2023    [%]              [%]                   [%]             [%]
+2024    [%]              [%]                   [%]             [%]
+```
+
+**Balance Sheet Composition**
+```
+Year    Current Assets ($M)    Fixed Assets ($M)    Intangibles ($M)    Total Assets ($M)
+2020    [value]               [value]              [value]             [value]
+2021    [value]               [value]              [value]             [value]
+2022    [value]               [value]              [value]             [value]
+2023    [value]               [value]              [value]             [value]
+2024    [value]               [value]              [value]             [value]
+
+Year    Current Liab ($M)    Long-term Debt ($M)    Equity ($M)    Total L+E ($M)
+2020    [value]             [value]                [value]        [value]
+2021    [value]             [value]                [value]        [value]
+2022    [value]             [value]                [value]        [value]
+2023    [value]             [value]                [value]        [value]
+2024    [value]             [value]                [value]        [value]
+```
+
+**Cash Flow Waterfall**
+```
+Component                   Amount ($M)    Notes
+Operating Cash Flow         [value]        Core business generation
+Capital Expenditures        [value]        Investments in assets
+Free Cash Flow             [value]        Available for distribution
+Dividends                  [value]        Shareholder distribution
+Share Buybacks             [value]        Share repurchases
+M&A Activity               [value]        Acquisitions
+Debt Repayment             [value]        Debt reduction
+Net Cash Change            [value]        Bottom line impact
+```
+
+**Valuation Multiples Comparison**
+```
+Metric              Company    Industry Avg    5-Year Avg    Assessment
+P/E Ratio           [value]    [value]         [value]       [Over/Under/Fair]
+P/B Ratio           [value]    [value]         [value]       [Over/Under/Fair]
+P/S Ratio           [value]    [value]         [value]       [Over/Under/Fair]
+EV/EBITDA          [value]    [value]         [value]       [Over/Under/Fair]
+PEG Ratio          [value]    [value]         [value]       [Over/Under/Fair]
+```
+
+---
+
 ## Quality Scoring Framework
 
 ### Piotroski F-Score (0–9)
@@ -418,6 +588,26 @@ Provide clear, actionable insights structured as follows:
 All analysis concludes with this standardized block:
 
 ```
+## Thesis Invalidation
+
+After delivering the analysis signal, specify what would reverse it:
+
+**If signal is BULLISH — thesis breaks if:**
+- Price closes below the MA200 / key support level identified in this analysis on above-average volume
+- Piotroski F-Score drops below 3 OR ROIC falls below WACC for 2 quarters
+- Macro regime shift: Fed pivots hawkish unexpectedly, recession probability >60%
+
+**If signal is BEARISH — thesis breaks if:**
+- Price closes above key resistance / MA200 level with volume confirmation
+- F-Score improves to 7+ AND ROIC/WACC spread widens >300bps
+- Fundamental improvement: surprise earnings beat >20% with guidance raise
+
+**Re-run this analysis when:**
+- [ ] Next earnings release
+- [ ] Price moves ±15% from current level
+- [ ] 60 days have elapsed
+- [ ] Material news event (acquisition, leadership change, regulatory decision)
+
 ╔══════════════════════════════════════════════╗
 ║              INVESTMENT SIGNAL               ║
 ╠══════════════════════════════════════════════╣

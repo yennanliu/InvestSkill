@@ -581,6 +581,26 @@ When given financial data or an analysis to visualize:
 Always end with the standard signal block:
 
 ```
+## Thesis Invalidation
+
+After delivering the analysis signal, specify what would reverse it:
+
+**If signal is BULLISH — thesis breaks if:**
+- Price closes below the MA200 / key support level identified in this analysis on above-average volume
+- MA30 crosses below MA60 (death cross) AND RSI drops below 40 on rising volume
+- Macro regime shift: Fed pivots hawkish unexpectedly, recession probability >60%
+
+**If signal is BEARISH — thesis breaks if:**
+- Price closes above key resistance / MA200 level with volume confirmation
+- MA30 crosses above MA60 (golden cross) AND RSI rises above 60
+- Fundamental improvement: surprise earnings beat >20% with guidance raise
+
+**Re-run this analysis when:**
+- [ ] Next earnings release
+- [ ] Price moves ±15% from current level
+- [ ] 60 days have elapsed
+- [ ] Material news event (acquisition, leadership change, regulatory decision)
+
 ╔══════════════════════════════════════════════╗
 ║              INVESTMENT SIGNAL               ║
 ╠══════════════════════════════════════════════╣

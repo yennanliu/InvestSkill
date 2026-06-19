@@ -17,7 +17,7 @@
 
 ## What is InvestSkill?
 
-InvestSkill is a collection of **21 structured analysis frameworks** that turn any AI assistant into an institutional-quality investment analyst. There is no runtime — every skill is a prompt that works in Claude Code, Cursor, Gemini CLI, GitHub Copilot, ChatGPT, or any other LLM.
+InvestSkill is a collection of **23 structured analysis frameworks** that turn any AI assistant into an institutional-quality investment analyst. There is no runtime — every skill is a prompt that works in Claude Code, Cursor, Gemini CLI, GitHub Copilot, ChatGPT, or any other LLM.
 
 ```
 Ask your AI:  "Evaluate AAPL using the stock-eval framework"
@@ -57,7 +57,7 @@ cat prompts/stock-eval.md | pbcopy
 
 ---
 
-## The 21 Frameworks
+## The 23 Frameworks
 
 ### Core Stock Analysis
 
@@ -92,8 +92,10 @@ cat prompts/stock-eval.md | pbcopy
 |-------|-----------------|
 | `competitor-analysis` | Moat score, Porter's Five Forces, market share |
 | `options-analysis` | Greeks, IV rank, earnings play strategy selection |
-| `portfolio-review` | Allocation health, concentration risk, rebalancing plan |
-| `sector-analysis` | Sector rotation signals, relative strength |
+| `portfolio-review` | Allocation health, concentration risk scoring, correlation analysis, tax-loss harvesting, rebalancing plan |
+| `sector-analysis` | Sector rotation signals, valuation tables, seasonality calendar, momentum scoring |
+| `stock-screener` | Multi-ticker ranking across valuation, quality, momentum, sentiment, and growth; leaderboard + top picks + avoid list |
+| `catalyst-calendar` | Forward-looking 90-day event calendar: earnings, macro events, catalysts, impact scoring, event-driven strategies |
 
 ### Meta & Output
 
@@ -169,7 +171,7 @@ HTML reports render this as a styled dark panel with a score progress bar, ghost
 
 | Platform | Setup | How it works |
 |----------|-------|-------------|
-| **Claude Code** | Marketplace install | 21 native slash commands |
+| **Claude Code** | Marketplace install | 23 native slash commands |
 | **Cursor IDE** | Clone repo, open folder | Auto-loads `.cursor/rules/` |
 | **Gemini CLI** | Clone repo, `cd` into it | Auto-loads `GEMINI.md` |
 | **GitHub Copilot** | Clone repo, open in VS Code | Auto-loads `.github/copilot-instructions.md` |
@@ -198,7 +200,7 @@ New to investing, or unsure which skill to reach for? Start here:
 |----------|-------------|
 | [Live Docs Site](https://yennanliu.github.io/InvestSkill/) | Full documentation with dark-theme UI |
 | [Cookbook](https://yennanliu.github.io/InvestSkill/cookbook.html) | Walkthrough examples and use cases |
-| [Skill Reference](https://yennanliu.github.io/InvestSkill/skills.html) | All 21 frameworks, one browsable page each |
+| [Skill Reference](https://yennanliu.github.io/InvestSkill/skills.html) | All 23 frameworks, one browsable page each |
 | [Claude Code Guide](README-claude-code.md) | Plugin install + all slash commands |
 | [Cursor Guide](README-cursor.md) | Auto-loading rules + `@prompts/` usage |
 | [Gemini CLI Guide](README-gemini.md) | File references + multi-framework chains |
@@ -221,7 +223,7 @@ See [ADDING-NEW-SKILLS.md](ADDING-NEW-SKILLS.md) for the full process. The short
 
 ---
 
-**Version:** 1.7.0 · **Skills:** 21 · **Platforms:** 6 · **License:** MIT · **Tests:** 294+ passing
+**Version:** 1.8.0 · **Skills:** 23 · **Platforms:** 6 · **License:** MIT · **Tests:** 294+ passing
 
 ---
 

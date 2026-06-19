@@ -1,8 +1,8 @@
 ---
-description: Analyze dividend safety, growth, and income investing opportunities
+description: Comprehensive capital allocation analysis: dividends, buybacks, M&A, debt management, and FCF deployment
 ---
 
-# Dividend Analysis
+# Capital Allocation Analysis (Dividend, Buyback, M&A & FCF Deployment)
 
 ## ⚠️ Data Verification — Do This Before Any Analysis
 
@@ -19,7 +19,7 @@ Never silently substitute training-data estimates for current prices. When in do
 
 ---
 
-Comprehensive analysis of dividend safety, growth trajectory, yield sustainability, and income investing opportunities for US-listed stocks, REITs, and income-focused portfolios.
+Comprehensive capital allocation analysis covering dividend safety, growth trajectory, share buyback discipline, M&A track record, debt management, and FCF deployment quality for US-listed stocks, REITs, and income-focused portfolios.
 
 ## Analysis Framework
 
@@ -272,11 +272,213 @@ Benchmark the stock's dividend metrics against sector:
 - Compare P/E vs. yield to identify mispriced dividend payers
 - Best-in-class: highest Chowder Number, highest Safety Score, lowest payout ratio
 
-### 8. Data Sources
+---
+
+## Capital Allocation — Beyond Dividends
+
+### 8. Share Buyback Analysis
+
+Evaluate the quality, discipline, and shareholder value impact of the buyback program:
+
+**Buyback Authorization vs. Execution Rate**
+- Board-authorized repurchase program size ($B and % of market cap)
+- Actual shares repurchased over trailing 1, 3, and 5 years vs. authorization
+- Execution rate = Actual buybacks / Authorized amount. <50% execution signals authorization is more PR than commitment.
+- Open-ended vs. time-limited program structure
+
+**Buyback Yield**
+```
+Buyback Yield = Annual Buybacks ($) / Market Cap
+
+Interpretation:
+>5%     Very High — meaningful return of capital
+3-5%    High — material shareholder benefit
+1-3%    Moderate — supplementary to other returns
+<1%     Low — minimal buyback impact
+```
+
+**Price Discipline: Are They Buying Smart?**
+- Compare average buyback price (total buybacks / shares retired) to estimated intrinsic value
+- Cross-reference buyback timing with stock price history: did they buy at peaks or troughs?
+- Assess whether management references valuation discipline in earnings calls or 8-K filings
+- Red flag: heavy buybacks at peak multiples followed by equity issuance at lower prices (value destruction cycle)
+- Green flag: buybacks accelerate when stock trades below 52-week average and slow at all-time highs
+
+**EPS Accretion / Dilution Impact**
+- Shares outstanding trend (5-year): shrinking = accretive, flat = offset by stock comp, growing = dilutive
+- Net buyback rate = (Buybacks - Stock-based compensation issuance) / Beginning shares outstanding
+- Positive net buyback rate: genuine per-share value creation
+- Stock-based compensation as % of FCF: >15% indicates compensation is largely offsetting buyback benefits
+
+**Insider Ownership Change from Buybacks**
+- Management and insider ownership % before and after buyback program
+- Higher ownership % via buybacks (without insider sales) = alignment signal
+- Watch for executives simultaneously selling shares while company repurchases — misalignment flag
+
+### 9. M&A Capital Allocation
+
+Evaluate how management deploys capital in acquisitions:
+
+**Historical Acquisition Multiples Paid**
+- List of major acquisitions (last 10 years) with: deal size, EV/EBITDA paid, EV/Revenue paid
+- Compare deal multiples to prevailing sector averages at time of acquisition
+- Premium paid vs. 30-day pre-announcement trading price
+```
+Acquisition Multiple Assessment:
+EV/EBITDA paid     Assessment
+<8x                Disciplined — below sector norm
+8-12x              Fair — in line with sector
+12-18x             Premium — requires strong strategic rationale
+>18x               Rich — significant execution risk, high dilution risk
+```
+
+**Acquisition Integration Track Record**
+- For each major deal: post-acquisition revenue growth vs. original projections
+- Goodwill impairments taken (a direct admission of overpayment)
+- Post-deal margin trajectory: synergies realized vs. promised synergies?
+- Management tenure on acquired businesses: assets retained or subsequently divested?
+- Rule of thumb: companies that regularly impair goodwill are serial overpayers
+
+**Deal Discipline: Overpaying Risk Score**
+```
+Risk Factor                                    Points
+History of goodwill impairments                +2
+Average EV/EBITDA paid > sector median + 20%  +2
+Acquisitions during peak market periods        +1
+Frequent large deals (>3 major in 5 yrs)       +1
+Post-deal margin compression                   +1
+Management turnover post-acquisition           +1
+Overpaying Risk Score: 0 = Disciplined | 3+ = Caution | 5+ = Dealmaker Risk
+```
+
+**Organic vs. Inorganic Growth Split**
+- Revenue growth decomposed: organic growth % vs. acquisition contribution %
+- Companies growing primarily through acquisitions carry execution and integration risk
+- Preferred profile: >60% organic growth with acquisitions as bolt-ons, not growth substitutes
+- M&A dependency ratio: Acquired revenue in period / Total revenue growth in period
+
+### 10. Debt Management
+
+Evaluate how management structures and manages the balance sheet:
+
+**Debt Paydown Pace vs. Optimal Leverage**
+- Current net debt / EBITDA vs. management's stated target leverage
+- Annual debt reduction pace (last 3 years): de-levering or re-levering?
+- Post-acquisition leverage spike: how quickly did they return to target?
+- Optimal leverage range by sector:
+```
+Sector              Conservative    Moderate    Stretched
+Technology          0-0.5x          0.5-1.5x    >2.0x
+Consumer Staples    1.0-2.0x        2.0-3.0x    >3.5x
+Industrials         1.5-2.5x        2.5-3.5x    >4.0x
+Utilities           2.5-4.0x        4.0-5.0x    >6.0x
+REITs               4.0-6.0x        6.0-7.0x    >8.0x
+```
+
+**Refinancing Risk (Maturity Schedule)**
+- Debt maturity wall: total maturities due in the next 1, 2, 3, and 5 years
+- Maturity concentration: >30% of debt maturing in a single year = elevated refinancing risk
+- Current interest rate environment vs. existing fixed coupon: rising-rate risk on floating debt
+- Undrawn revolving credit facility as buffer against maturity pressure
+
+**Covenant Headroom**
+- Key financial covenants (Debt/EBITDA, Interest Coverage minimums) from credit agreement disclosures
+- Current ratio vs. covenant threshold: headroom percentage
+- Historical covenant compliance record
+- Waiver history: any covenant waivers obtained = yellow flag
+
+**Credit Rating Trend**
+- Current rating from Moody's, S&P, Fitch (note most recent action)
+- Rating trajectory (last 3 rating actions: upgrades, downgrades, outlook changes)
+- Investment-grade threshold: BBB-/Baa3 and above — critical for institutional ownership and dividend sustainability
+- Negative outlook or credit watch = potential near-term action risk
+- Spread on bonds vs. comparable investment-grade index: market's implied rating view
+
+### 11. FCF Deployment Scorecard
+
+Evaluate how every dollar of free cash flow is allocated across competing priorities:
+
+**Where Does Every $1 of FCF Go?**
+
+Break down actual FCF deployment over trailing 3 years (TTM and 3-year average):
+```
+FCF Deployment Breakdown:
+  Dividends paid:          XX%   ($X.Xb)
+  Share buybacks:          XX%   ($X.Xb)
+  Debt reduction:          XX%   ($X.Xb)
+  Capital expenditures:    XX%   (already deducted from FCF — note if gross capex used)
+  M&A and investments:     XX%   ($X.Xb)
+  Cash accumulation:        XX%   ($X.Xb)
+  Total:                  100%
+```
+- Note: if using levered FCF, capex is already deducted; use gross cash deployment including capex separately if unlevered FCF is the base
+- Trend: is FCF deployment mix shifting? (e.g., buybacks replacing dividends, or debt paydown replacing buybacks)
+
+**Capital Return Yield vs. Peers**
+```
+Capital Return Yield = Dividend Yield + Buyback Yield
+
+Stock         Div Yield   Buyback Yield   Total Return Yield   vs. Peer Median
+[Stock]         X.X%         X.X%              X.X%               +/- X.Xpp
+[Peer 1]        X.X%         X.X%              X.X%               Median
+[Peer 2]        X.X%         X.X%              X.X%               +/- X.Xpp
+[Peer 3]        X.X%         X.X%              X.X%               +/- X.Xpp
+```
+
+**Management Capital Allocation Grade**
+
+Score each dimension and assign an overall letter grade:
+
+| Dimension | Score | Grade | Key Evidence |
+|-----------|-------|-------|--------------|
+| Dividend safety & growth | X/10 | A-F | Payout ratio, streak, DGR |
+| Buyback discipline | X/10 | A-F | Price timing, net share reduction |
+| M&A track record | X/10 | A-F | Goodwill impairments, synergy delivery |
+| Debt management | X/10 | A-F | Leverage trajectory, maturity management |
+| FCF deployment efficiency | X/10 | A-F | Return yield vs. peers, cash hoarding |
+| **Overall Grade** | **X/10** | **A-F** | **Composite assessment** |
+
+```
+Grade Criteria:
+A (9-10): Consistent compounders — buyback below fair value, dividend aristocrat, M&A creates value, optimal leverage
+B (7-8):  Good stewards — solid on most dimensions, one area of weakness
+C (5-6):  Average — market-rate capital return, limited M&A track record
+D (3-4):  Poor — overpays for M&A, buybacks at peak, dividend growth stagnant
+F (0-2):  Value destroyers — goodwill impairments, dividend cuts, re-levering balance sheet
+```
+
+### 12. Capital Allocation Quality Score (Composite 0–10)
+
+Single composite score summarizing overall capital allocation quality:
+
+```
+Component                        Weight   Score (0-10)   Weighted Score
+Dividend Safety Score              20%      X.X            X.X
+Dividend Growth Quality            10%      X.X            X.X
+Buyback Discipline                 20%      X.X            X.X
+M&A Track Record                   20%      X.X            X.X
+Debt Management Quality            15%      X.X            X.X
+FCF Deployment Efficiency          15%      X.X            X.X
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Capital Allocation Quality Score   100%                    X.X / 10
+```
+
+```
+Score    Interpretation
+9-10     Exceptional stewardship — rare, compounding machines
+7-8      Strong allocators — above-average long-term value creation
+5-6      Average — market-rate capital allocation, no clear edge
+3-4      Below average — capital misallocation risk weighs on returns
+0-2      Poor stewardship — history of value destruction through M&A, buybacks at peaks, or dividend unsustainability
+```
+
+---
+
+## Data Sources
 
 **Primary Financials**
-- SEC filings (10-K / 10-Q): FCF, net income, dividends paid (cash flow statement)
-- Company investor relations pages: dividend history and declarations
+- SEC filings (10-K / 10-Q): FCF, net income, dividends paid (cash flow statement), share repurchase disclosures
+- Company investor relations pages: dividend history, buyback program announcements, earnings call transcripts
 
 **Dividend Research Platforms**
 - **Simply Safe Dividends**: Dividend Safety Scores, comprehensive dividend data (premium)
@@ -285,10 +487,16 @@ Benchmark the stock's dividend metrics against sector:
 - **Seeking Alpha Dividends**: Analyst commentary on dividend sustainability
 - **S&P Global**: Official Dividend Aristocrats and Kings lists
 
+**Capital Allocation Research**
+- **Compustat / FactSet**: Multi-year buyback and M&A data
+- **Bloomberg**: Credit ratings, bond spreads, covenant disclosures
+- **Morningstar**: Capital allocation ratings, M&A track record, stewardship grade
+- **GuruFocus**: FCF analysis, buyback history, insider ownership
+
 **Screening Tools**
-- Finviz screener: Filter by dividend yield, payout ratio
-- Morningstar: Dividend Fair Value, safety ratings
-- GuruFocus: Dividend history and FCF analysis
+- Finviz screener: Filter by dividend yield, payout ratio, buyback yield
+- Morningstar: Capital Allocation rating (Exemplary / Standard / Poor)
+- GuruFocus: Capital allocation and management quality scores
 
 ## Input Formats
 
@@ -296,35 +504,38 @@ Benchmark the stock's dividend metrics against sector:
 ```
 User: /dividend-analysis AAPL
 
-Claude analyzes AAPL dividend safety, growth, yield, and history
+Claude analyzes AAPL across all capital allocation dimensions
 ```
 
 ### Format 2: Portfolio Income Review
 ```
 User: /dividend-analysis --portfolio AAPL,JNJ,KO,PEP,XOM
 
-Claude provides comparative analysis across all tickers with portfolio-level income model
+Claude provides comparative analysis across all tickers with portfolio-level income model and capital return yields
 ```
 
 ### Format 3: Sector Screen
 ```
 User: /dividend-analysis --sector utilities
 
-Claude screens utilities sector for best dividend opportunities using safety, growth, and yield criteria
+Claude screens utilities sector for best capital allocation quality using safety, growth, buyback yield, and M&A discipline criteria
 ```
 
 ## Output
 
-Provide a comprehensive dividend analysis report with the following sections:
+Provide a comprehensive capital allocation analysis report with the following sections:
 
 ### 1. Executive Summary
+- **Capital Allocation Quality Score**: [0-10] with interpretation
 - **Dividend Safety Score**: [0-100] with letter grade (A+/A/B/C/D/F)
 - **Safety Assessment**: Very Safe / Safe / Borderline / Unsafe / Danger
 - **Current Yield**: X.X% trailing | X.X% forward
+- **Capital Return Yield**: X.X% (dividend + buyback yield)
 - **Chowder Number**: X.X (Pass/Fail)
+- **Management Allocation Grade**: A/B/C/D/F
 - **Key Finding**: 2-3 sentence summary of most important conclusion
 
-### 2. Safety Analysis
+### 2. Dividend Safety Analysis
 ```
 FCF Payout Ratio:       XX%     (Target <70%)
 FCF Coverage Ratio:     X.Xx    (Target >1.5x)
@@ -335,7 +546,7 @@ Stress Test (40% EPS):  PASS/FAIL
 Safety Score:           XX/100  Grade [X]
 ```
 
-### 3. Growth Metrics
+### 3. Dividend Growth Metrics
 ```
 1-Year DGR:             X.X%
 3-Year DGR (CAGR):      X.X%
@@ -346,16 +557,52 @@ Chowder Number:         X.X% (Pass/Fail at X% threshold)
 Payout Ratio Trend:     Expanding / Stable / Contracting
 ```
 
-### 4. Yield Trap Assessment
+### 4. Share Buyback Scorecard
+```
+Buyback Yield (TTM):    X.X%
+Net Share Reduction:    X.X% annualized (shares outstanding trend)
+Stock Comp Offset:      XX% of buybacks offset by SBC
+Price Discipline:       Buying below / at / above estimated intrinsic value
+EPS Accretion Impact:   +X.X% annual EPS lift from net share reduction
+Buyback Grade:          A / B / C / D / F
+```
+
+### 5. M&A Track Record
+- Summary table of major acquisitions with multiples paid and outcome
+- Goodwill impairment history
+- Organic vs. inorganic revenue growth split
+- Overpaying Risk Score: X/8 (Low / Moderate / High)
+- M&A Grade: A / B / C / D / F
+
+### 6. Debt Management Assessment
+```
+Net Debt / EBITDA:      X.Xx  (Target range: X.X-X.Xx)
+Management Target:      X.Xx  (stated in investor materials)
+Leverage Trend:         De-levering / Stable / Re-levering
+Nearest Maturity Wall:  $Xb due in [Year] (XX% of total debt)
+Credit Rating:          [Moody's] / [S&P] / Outlook
+Covenant Headroom:      XX% above nearest covenant threshold
+Debt Grade:             A / B / C / D / F
+```
+
+### 7. FCF Deployment Breakdown
+- Pie breakdown: dividends %, buybacks %, M&A %, debt paydown %, cash accumulation %
+- Capital return yield vs. 3-5 sector peers
+- Management Capital Allocation Grade table (all 5 dimensions)
+
+### 8. Capital Allocation Quality Score Summary
+Full scoring table with component weights and final 0-10 composite score
+
+### 9. Yield Trap Assessment
 - Is current yield elevated vs. historical? If yes, why?
 - FCF trend supporting or undermining yield?
 - Red flag checklist (5-7 criteria, checked or clear)
 - Verdict: Genuine Value / Yield Trap Risk / Monitoring Required
 
-### 5. Peer Comparison Table
-Full comparison table vs. 3-5 sector peers across key metrics
+### 10. Peer Comparison Table
+Full comparison table vs. 3-5 sector peers across key metrics (dividend yield, buyback yield, total return yield, FCF payout, DGR, capital allocation score)
 
-### 6. Income Projections
+### 11. Income Projections
 ```
 $10,000 Invested at Current Price:
   Annual income (Year 1):    $XXX
@@ -365,20 +612,41 @@ $10,000 Invested at Current Price:
   DRIP value (Year 10):      $XX,XXX
 ```
 
-### 7. Key Risks to Dividend Sustainability
-- Ranked list of top 3-5 risks to continued dividend payments
+### 12. Key Risks to Capital Allocation
+- Ranked list of top 3-5 risks (dividend cut, M&A misstep, leverage spike, buyback cessation)
 - Probability assessment (Low/Medium/High) for each risk
 
-### 8. Monitoring Triggers
-- Specific metrics and thresholds that would change the safety assessment
+### 13. Monitoring Triggers
+- Specific metrics and thresholds that would change the safety assessment or overall score
 - Next dividend declaration date / ex-div date
-- Upcoming earnings where FCF will be updated
+- Upcoming earnings where FCF and buyback data will be updated
+- Key M&A watch: is management signaling appetite for large deals?
 
 ## Standard Signal Output
 
 All analysis concludes with this standardized block:
 
 ```
+## Thesis Invalidation
+
+After delivering the analysis signal, specify what would reverse it:
+
+**If signal is BULLISH — thesis breaks if:**
+- Price closes below the MA200 / key support level identified in this analysis on above-average volume
+- dividend cut announced OR debt/EBITDA exceeds 4x
+- Macro regime shift: Fed pivots hawkish unexpectedly, recession probability >60%
+
+**If signal is BEARISH — thesis breaks if:**
+- Price closes above key resistance / MA200 level with volume confirmation
+- dividend raised AND FCF payout ratio improves below 50%
+- Fundamental improvement: surprise earnings beat >20% with guidance raise
+
+**Re-run this analysis when:**
+- [ ] Next earnings release
+- [ ] Price moves ±15% from current level
+- [ ] 60 days have elapsed
+- [ ] Material news event (acquisition, leadership change, regulatory decision)
+
 ╔══════════════════════════════════════════════╗
 ║              INVESTMENT SIGNAL               ║
 ╠══════════════════════════════════════════════╣

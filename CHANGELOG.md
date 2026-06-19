@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-06-19
+
+### Merged (reduced redundancy)
+- `dcf-valuation` merged into `stock-valuation` — stock-valuation is now the superset with deep DCF + multi-method valuation; dcf-valuation becomes a thin redirect
+- `fundamental-analysis` merged into `stock-eval` — stock-eval absorbs deep financial statement analysis; fundamental-analysis becomes a thin redirect
+- `research-bundle` unified into `full-report` — full-report now supports --depth quick/standard/comprehensive flags; research-bundle becomes a thin redirect
+
+### Enhanced
+- `sector-analysis` — expanded from 121 to 300+ lines: sector valuation tables, seasonality calendar, correlation matrix, momentum scoring, peer benchmarking, sector-specific risks
+- `portfolio-review` — expanded: concentration risk scoring, correlation/diversification analysis, tax-loss harvesting framework, factor exposure, rebalancing decision framework, drawdown/risk budget
+- `dividend-analysis` — expanded to Capital Allocation Analysis: buyback analysis, M&A capital allocation, debt management, FCF deployment scorecard, capital allocation quality score
+
+### New Skills
+- `stock-screener` — ranks/screens multiple tickers across valuation, quality, momentum, sentiment, and growth dimensions; outputs ranked leaderboard + top picks + avoid list
+- `catalyst-calendar` — forward-looking 90-day event calendar: earnings, macro events, company-specific catalysts, impact scoring, event-driven strategy suggestions
+
+### Added
+- Thesis Invalidation section added to all 16 single-ticker skills — specifies price levels and events that would reverse the signal, plus a re-analysis monitoring checklist
+
 ## [1.7.0] - 2026-06-19
 
 ### Enhanced
