@@ -7,8 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-06-19
+
 ### Enhanced
 - `technical-analysis` skill — added MA Chart Analysis section: mandatory 30/60/90/200/365-day SMA position table with ASCII trend chart, MA stack signal (BULLISH/BEARISH/MIXED), crossover event detection, and a structured MA-Based Trade Recommendation block (entry price / target / stop-loss / R:R ratio / horizon)
+
+### Added
+- Data verification gate added to all 16 single-ticker skills — every skill now opens with a mandatory `⚠️ Data Verification` section requiring live price lookup, explicit stale-data warning, and data-source citation before any analysis proceeds
+- `FULL-DEMO-PLTR.md` — complete all-15-skills demo for Palantir Technologies in English (275K chars), covering technical, fundamental, stock-eval, economics, sector, insider-trading, institutional-ownership, short-interest, earnings-call, chart-master, DCF, stock-valuation, options, dividend, competitor analysis + master synthesis
+- `FULL-DEMO-RKLB.md` — complete all-15-skills demo for Rocket Lab USA in Traditional Chinese (106K chars), fully verified against live market data ($107.24, 52-wk $27.84–$151, Q1 2026 EPS Beat +58%)
+- Project site: new **Demo** nav section with three pages — Demo Overview, PLTR Full Demo (English), RKLB 完整示範 (繁體中文)
 
 ## [1.6.0] - 2026-04-29
 

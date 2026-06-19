@@ -221,7 +221,7 @@ See [ADDING-NEW-SKILLS.md](ADDING-NEW-SKILLS.md) for the full process. The short
 
 ---
 
-**Version:** 1.6.0 · **Skills:** 21 · **Platforms:** 6 · **License:** MIT · **Tests:** 288+ passing
+**Version:** 1.7.0 · **Skills:** 21 · **Platforms:** 6 · **License:** MIT · **Tests:** 294+ passing
 
 ---
 
