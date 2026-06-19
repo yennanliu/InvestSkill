@@ -290,7 +290,7 @@ Adjust weeks and labels to match the actual look-ahead window and identified cat
 
 ```
 ╔══════════════════════════════════════════════╗
-║         CATALYST CALENDAR SIGNAL             ║
+║         INVESTMENT SIGNAL — CATALYST CALENDAR             ║
 ╠══════════════════════════════════════════════╣
 ║ Next Catalyst:   [EVENT] on [DATE]           ║
 ║ 30-Day Bias:     BULLISH / NEUTRAL / BEARISH ║

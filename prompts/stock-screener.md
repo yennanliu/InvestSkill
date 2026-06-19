@@ -179,7 +179,7 @@ End every screening session with this standardized block reflecting the overall 
 
 ```
 ╔══════════════════════════════════════════════╗
-║           SCREENING SIGNAL SUMMARY           ║
+║           INVESTMENT SIGNAL — SCREENING SUMMARY           ║
 ╠══════════════════════════════════════════════╣
 ║ Top Pick:    [TICKER] — Score X.X / 10       ║
 ║ Avg Score:   X.X / 10 (screened universe)    ║
