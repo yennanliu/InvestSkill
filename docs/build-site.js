@@ -46,7 +46,9 @@ const NAV_SECTIONS = [
   {
     title: 'Demo',
     links: [
-      { label: 'Full Demo',       href: 'full-demo.html',     page: 'full-demo' },
+      { label: 'Demo Overview',   href: 'full-demo.html',       page: 'full-demo' },
+      { label: 'PLTR (English)',  href: 'full-demo-pltr.html',  page: 'full-demo-pltr' },
+      { label: 'RKLB (繁體中文)', href: 'full-demo-rklb.html',  page: 'full-demo-rklb' },
     ],
   },
   {
@@ -94,6 +96,8 @@ const MD_TO_HTML = {
   'USE-CASES.md':       'use-cases.html',
   'DATA-AND-ACCURACY.md': 'data-and-accuracy.html',
   'FULL-DEMO.md':         'full-demo.html',
+  'FULL-DEMO-PLTR.md':   'full-demo-pltr.html',
+  'FULL-DEMO-RKLB.md':   'full-demo-rklb.html',
   'CONCEPTS-zh-TW.md':       'concepts-zh-tw.html',
   'GLOSSARY-zh-TW.md':       'glossary-zh-tw.html',
   'CHOOSE-A-SKILL-zh-TW.md': 'choose-a-skill-zh-tw.html',
@@ -106,7 +110,7 @@ const MD_TO_HTML = {
 const SERVED = new Set(['index.html','cookbook.html','cookbook-zh-tw.html',
   'contributing.html','changelog.html','zh-tw.html','style.css','main.js',
   'concepts.html','glossary.html','choose-a-skill.html','use-cases.html',
-  'data-and-accuracy.html','skills.html','full-demo.html',
+  'data-and-accuracy.html','skills.html','full-demo.html','full-demo-pltr.html','full-demo-rklb.html',
   'concepts-zh-tw.html','glossary-zh-tw.html','choose-a-skill-zh-tw.html',
   'use-cases-zh-tw.html','data-and-accuracy-zh-tw.html']);
 
@@ -191,8 +195,22 @@ const PAGES = [
     key: 'full-demo',
     outFile: 'full-demo.html',
     srcFile: 'FULL-DEMO.md',
-    title: 'Full Demo',
-    subtitle: 'Live technical analysis: PLTR (English) · RKLB (繁體中文)',
+    title: 'Demo Overview',
+    subtitle: 'All-skills analysis demos: PLTR (English) · RKLB (繁體中文)',
+  },
+  {
+    key: 'full-demo-pltr',
+    outFile: 'full-demo-pltr.html',
+    srcFile: 'FULL-DEMO-PLTR.md',
+    title: 'PLTR Full Demo',
+    subtitle: 'All 15 InvestSkill analyses — Palantir Technologies (English)',
+  },
+  {
+    key: 'full-demo-rklb',
+    outFile: 'full-demo-rklb.html',
+    srcFile: 'FULL-DEMO-RKLB.md',
+    title: 'RKLB 完整示範',
+    subtitle: 'Rocket Lab USA — 全部 15 項技能分析（繁體中文）',
   },
   {
     key: 'cookbook',
