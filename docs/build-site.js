@@ -44,6 +44,12 @@ const NAV_SECTIONS = [
     ],
   },
   {
+    title: 'Demo',
+    links: [
+      { label: 'Full Demo',       href: 'full-demo.html',     page: 'full-demo' },
+    ],
+  },
+  {
     title: 'Trust',
     links: [
       { label: 'Data & Accuracy', href: 'data-and-accuracy.html', page: 'data-and-accuracy' },
@@ -87,6 +93,7 @@ const MD_TO_HTML = {
   'CHOOSE-A-SKILL.md':  'choose-a-skill.html',
   'USE-CASES.md':       'use-cases.html',
   'DATA-AND-ACCURACY.md': 'data-and-accuracy.html',
+  'FULL-DEMO.md':         'full-demo.html',
   'CONCEPTS-zh-TW.md':       'concepts-zh-tw.html',
   'GLOSSARY-zh-TW.md':       'glossary-zh-tw.html',
   'CHOOSE-A-SKILL-zh-TW.md': 'choose-a-skill-zh-tw.html',
@@ -99,7 +106,7 @@ const MD_TO_HTML = {
 const SERVED = new Set(['index.html','cookbook.html','cookbook-zh-tw.html',
   'contributing.html','changelog.html','zh-tw.html','style.css','main.js',
   'concepts.html','glossary.html','choose-a-skill.html','use-cases.html',
-  'data-and-accuracy.html','skills.html',
+  'data-and-accuracy.html','skills.html','full-demo.html',
   'concepts-zh-tw.html','glossary-zh-tw.html','choose-a-skill-zh-tw.html',
   'use-cases-zh-tw.html','data-and-accuracy-zh-tw.html']);
 
@@ -179,6 +186,13 @@ const PAGES = [
     srcFile: 'DATA-AND-ACCURACY.md',
     title: 'Data & Accuracy',
     subtitle: 'Where the numbers come from and how to trust them',
+  },
+  {
+    key: 'full-demo',
+    outFile: 'full-demo.html',
+    srcFile: 'FULL-DEMO.md',
+    title: 'Full Demo',
+    subtitle: 'Live technical analysis: PLTR (English) · RKLB (繁體中文)',
   },
   {
     key: 'cookbook',
