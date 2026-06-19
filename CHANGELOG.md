@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Enhanced
+- `technical-analysis` skill — added MA Chart Analysis section: mandatory 30/60/90/200/365-day SMA position table with ASCII trend chart, MA stack signal (BULLISH/BEARISH/MIXED), crossover event detection, and a structured MA-Based Trade Recommendation block (entry price / target / stop-loss / R:R ratio / horizon)
+
 ## [1.6.0] - 2026-04-29
 
 ### Added

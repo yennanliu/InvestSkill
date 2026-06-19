@@ -65,7 +65,7 @@ cat prompts/stock-eval.md | pbcopy
 |-------|-----------------|
 | `stock-eval` | Piotroski F-Score, ROIC, quality rating, go/no-go signal |
 | `fundamental-analysis` | Income statement, balance sheet, cash flow deep dive |
-| `technical-analysis` | Chart patterns, MA/RSI/MACD, support & resistance levels |
+| `technical-analysis` | MA chart (30/60/90/200/365d) with trade entry/target/stop, chart patterns, RSI/MACD, MTF alignment, Ichimoku |
 | `dcf-valuation` | DCF intrinsic value, WACC sensitivity, bear/base/bull scenarios |
 | `stock-valuation` | P/E · P/S · EV/EBITDA · comparable company multiples |
 | `economics-analysis` | Macro indicators, recession probability, rate sensitivity |
