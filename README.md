@@ -75,6 +75,7 @@ cat prompts/stock-eval.md | pbcopy
 | Skill | What it produces |
 |-------|-----------------|
 | `financial-report-analyst` | 10-K / 10-Q key findings, red flags, accounting quality |
+| `10k-digest` | Structured markdown digest — abstract, section summaries, metrics table, refs (EN / 繁中) |
 | `earnings-call-analysis` | Management tone, guidance delta, hidden risks |
 
 ### Market Monitoring

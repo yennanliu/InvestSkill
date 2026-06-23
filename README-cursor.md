@@ -52,10 +52,11 @@ Analyze Apple stock using Piotroski F-Score
 | DCF Valuation | `@prompts/dcf-valuation.md GOOGL` |
 | Economics Analysis | `@prompts/economics-analysis.md` |
 
-### Financial Reports (2)
+### Financial Reports (3)
 | Framework | Usage |
 |-----------|-------|
 | Financial Report Analyst | `@prompts/financial-report-analyst.md` |
+| 10-K Report Digest | `@prompts/10k-digest.md AAPL FY2024 --lang zh-TW` |
 | Earnings Call Analysis | `@prompts/earnings-call-analysis.md AAPL` |
 
 ### Market Monitoring (4)

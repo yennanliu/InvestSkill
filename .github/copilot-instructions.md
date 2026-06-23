@@ -52,6 +52,7 @@ If Copilot references the frameworks, setup is complete!
 | Framework | File | Best For |
 |-----------|------|----------|
 | Financial Report Analyst | `prompts/financial-report-analyst.md` | 10-K/10-Q analysis |
+| 10-K Report Digest | `prompts/10k-digest.md` | Structured digest doc — abstract, summaries, metrics, refs (EN/繁中) |
 | Earnings Call Analysis | `prompts/earnings-call-analysis.md` | Management tone and guidance |
 
 ### Market Monitoring (4 frameworks)
@@ -131,6 +132,9 @@ Reference prompts/technical-analysis.md for Tesla chart patterns
 
 # Financial report analysis
 Use prompts/financial-report-analyst.md to analyze this 10-K filing: [paste text]
+
+# 10-K digest (structured markdown document, English or Traditional Chinese)
+Use prompts/10k-digest.md to generate a digest of AAPL FY2024 10-K --lang zh-TW
 
 # Earnings transcript analysis
 Apply prompts/earnings-call-analysis.md to this earnings call: [paste transcript]
@@ -336,6 +340,7 @@ InvestSkill/
 │   ├── dcf-valuation.md
 │   ├── economics-analysis.md
 │   ├── financial-report-analyst.md
+│   ├── 10k-digest.md
 │   ├── earnings-call-analysis.md
 │   ├── insider-trading.md
 │   ├── institutional-ownership.md

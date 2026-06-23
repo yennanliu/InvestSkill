@@ -58,6 +58,7 @@ If the framework loads, setup is complete!
 | Framework | File | Best For |
 |-----------|------|----------|
 | Financial Report Analyst | `@prompts/financial-report-analyst.md` | 10-K, 10-Q, annual reports |
+| 10-K Report Digest | `@prompts/10k-digest.md` | Structured digest doc — abstract, section summaries, metrics, refs (EN/繁中) |
 | Earnings Call Analysis | `@prompts/earnings-call-analysis.md` | Management tone, guidance, themes |
 
 ### Market Monitoring (4 frameworks)
@@ -137,6 +138,9 @@ Use `@prompts/` references for precise methodology:
 # Financial reports
 @prompts/financial-report-analyst.md Analyze this 10-K filing: [paste text]
 
+# 10-K digest (structured markdown doc, EN or 繁中)
+@prompts/10k-digest.md AAPL FY2024 --lang zh-TW
+
 # Earnings transcript
 @prompts/earnings-call-analysis.md What's the management tone here? [paste transcript]
 ```
@@ -148,9 +152,13 @@ Use `@prompts/` references for precise methodology:
 @prompts/fundamental-analysis.md
 [paste balance sheet, income statement, cash flow]
 
-# Paste SEC filing
+# Paste SEC filing for investment analysis
 @prompts/financial-report-analyst.md
 [paste 10-Q or annual report text]
+
+# Generate structured 10-K digest document
+@prompts/10k-digest.md
+[paste 10-K sections or specify ticker + fiscal year]
 
 # Paste earnings transcript
 @prompts/earnings-call-analysis.md
@@ -374,6 +382,7 @@ InvestSkill/
 │   ├── dcf-valuation.md
 │   ├── economics-analysis.md
 │   ├── financial-report-analyst.md
+│   ├── 10k-digest.md
 │   ├── earnings-call-analysis.md
 │   ├── insider-trading.md
 │   ├── institutional-ownership.md

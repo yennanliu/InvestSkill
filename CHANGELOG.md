@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.1] - 2026-06-23
+
+### Added
+- `10k-digest` — new skill: deep-read a 10-K annual report and output a structured markdown digest document. Includes abstract, section-by-section summaries (Items 1–13), key metrics table, notable disclosures, and full source references. Supports `--lang zh-TW` for Traditional Chinese output and `--output <file>.md` to save the digest as a markdown file.
+
 ## [1.8.0] - 2026-06-19
 
 ### Merged (reduced redundancy)

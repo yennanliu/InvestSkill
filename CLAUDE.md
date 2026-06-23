@@ -69,7 +69,7 @@ Verify with: `jq '.version' plugins/us-stock-analysis/.claude-plugin/plugin.json
 
 ## Current State
 
-- **Version**: 1.8.0
-- **Skills**: 23 (listed in `plugin.json`)
-- **Prompts**: 21 universal files in `prompts/` (research-bundle is meta-only, has no standalone prompt)
+- **Version**: 1.8.1
+- **Skills**: 24 (listed in `plugin.json`)
+- **Prompts**: 22 universal files in `prompts/` (research-bundle is meta-only, has no standalone prompt)
 - **Node**: ≥18.0.0 required

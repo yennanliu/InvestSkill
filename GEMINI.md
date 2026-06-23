@@ -46,6 +46,7 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 | Analysis Type               | Prompt File                            | Usage Example                              |
 |-----------------------------|----------------------------------------|--------------------------------------------|
 | Financial Report Analyst    | `@prompts/financial-report-analyst.md` | `[paste 10-K] Analyze this filing`        |
+| 10-K Report Digest          | `@prompts/10k-digest.md`               | `NVDA FY2024 --lang zh-TW` (EN or 繁中)   |
 | Earnings Call Analysis      | `@prompts/earnings-call-analysis.md`   | `[paste transcript] Analyze sentiment`     |
 
 ### Market Monitoring (4 skills)
@@ -105,10 +106,14 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 ### Financial Data & Filings
 
 ```
-# Paste and analyze a 10-K
+# Paste and analyze a 10-K for investment signals
 > @prompts/financial-report-analyst.md
 [paste 10-K text here]
 Extract key accounting red flags and management quality indicators
+
+# Generate a structured 10-K digest document (English or Traditional Chinese)
+> @prompts/10k-digest.md
+AAPL FY2024 --lang zh-TW --output aapl-10k-digest.md
 
 # Analyze earnings call transcript
 > @prompts/earnings-call-analysis.md
@@ -299,6 +304,7 @@ InvestSkill/
 │   ├── dcf-valuation.md
 │   ├── economics-analysis.md
 │   ├── financial-report-analyst.md
+│   ├── 10k-digest.md
 │   ├── earnings-call-analysis.md
 │   ├── insider-trading.md
 │   ├── institutional-ownership.md

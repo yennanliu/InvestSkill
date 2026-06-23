@@ -51,9 +51,10 @@ claude
 /us-stock-analysis:stock-valuation NVDA       # DCF + comps + EV multiples
 ```
 
-### Financial Reports (2)
+### Financial Reports (3)
 ```bash
 /us-stock-analysis:financial-report-analyst AAPL 10-K    # 10-K/10-Q analysis
+/us-stock-analysis:10k-digest NVDA FY2024 --lang zh-TW   # Structured digest doc (EN or 繁中)
 /us-stock-analysis:earnings-call-analysis AAPL           # Earnings transcript analysis
 ```
 
@@ -100,8 +101,11 @@ claude
 
 ### Financial Data Analysis
 ```bash
-# Analyze 10-K filing (paste or paste text)
+# Analyze 10-K filing for investment signals
 /us-stock-analysis:financial-report-analyst AAPL 10-K
+
+# Generate structured 10-K digest document (EN or Traditional Chinese)
+/us-stock-analysis:10k-digest AAPL FY2024 --lang zh-TW
 
 # Analyze earnings call transcript
 /us-stock-analysis:earnings-call-analysis AAPL

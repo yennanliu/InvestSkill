@@ -134,11 +134,14 @@ gemini
 | 類別 | 框架 | 用途 |
 |------|------|------|
 | **核心分析** (6) | stock-eval · fundamental-analysis · technical-analysis · economics-analysis · dcf-valuation · stock-valuation | 全方位股票評估 |
-| **財務報告** (2) | financial-report-analyst · earnings-call-analysis | 深度文件分析 |
+| **財務報告** (3) | financial-report-analyst · 10k-digest · earnings-call-analysis | 深度文件分析 |
 | **市場監控** (4) | insider-trading · institutional-ownership · dividend-analysis · short-interest | 活動與情緒追蹤 |
 | **進階分析** (6) | competitor-analysis · options-analysis · portfolio-review · sector-analysis · **stock-screener** · **catalyst-calendar** | 專項研究角度 |
 | **元技能** (3) | research-bundle · report-generator · full-report | 自動化與綜合輸出 |
 
+> **v1.8.1 新功能：**
+> - `10k-digest`（10-K 摘要）— 深度解析年報並輸出結構化 Markdown 文件，包含摘要、各節重點、關鍵指標表與來源引用，支援英文 / 繁體中文輸出
+>
 > **v1.8.0 新功能：**
 > - `stock-screener`（股票篩選器）— 跨估值、品質、動能、情緒、成長五個維度對多支股票進行排名篩選，輸出排行榜、精選名單與迴避名單
 > - `catalyst-calendar`（催化劑日曆）— 未來 90 天事件日曆：財報、總經事件、公司特定催化劑、影響力評分、事件驅動策略建議

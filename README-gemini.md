@@ -50,9 +50,10 @@ Or reference directly:
 @prompts/economics-analysis.md          # Macro indicators and recession risk
 ```
 
-### Financial Reports (2)
+### Financial Reports (3)
 ```
 @prompts/financial-report-analyst.md    # 10-K, 10-Q, annual report analysis
+@prompts/10k-digest.md                  # Structured digest doc (EN or 繁體中文)
 @prompts/earnings-call-analysis.md      # Earnings call sentiment and themes
 ```
 
