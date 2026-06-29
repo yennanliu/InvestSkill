@@ -26,38 +26,26 @@ function checkSkillsRegistry() {
 
   const pluginJsonPath = path.join(ROOT, 'plugins/us-stock-analysis/.claude-plugin/plugin.json');
   const pluginJson = JSON.parse(fs.readFileSync(pluginJsonPath, 'utf8'));
-  const registeredSkills = pluginJson.skills || [];
-
   const skillsDir = path.join(ROOT, 'plugins/us-stock-analysis/skills');
   const actualSkills = fs.readdirSync(skillsDir).filter(f => {
     return fs.statSync(path.join(skillsDir, f)).isDirectory();
   });
 
-  console.log(`   Registered: ${registeredSkills.length} skills`);
-  console.log(`   Actual: ${actualSkills.length} skills`);
-
-  // Check for missing registrations
-  actualSkills.forEach(skill => {
-    if (!registeredSkills.includes(skill)) {
-      console.log(`   ✗ MISSING: "${skill}" in plugin.json`);
+  // Skills are auto-discovered from the skills/ directory; plugin.json skills[] must be absent
+  // or use path strings (./skills/<name>). Bare names are invalid per Claude Code plugin spec.
+  if (Array.isArray(pluginJson.skills)) {
+    const first = pluginJson.skills[0];
+    if (typeof first === 'string' && !first.startsWith('./')) {
+      console.log('   ✗ plugin.json skills[] uses bare names — must be omitted or use path strings (./...)');
       errors++;
+    } else {
+      console.log(`   ✅ plugin.json skills[] uses path format (${pluginJson.skills.length} entries)`);
     }
-  });
-
-  // Check for orphaned registrations
-  registeredSkills.forEach(skill => {
-    if (!actualSkills.includes(skill)) {
-      console.log(`   ✗ ORPHANED: "${skill}" registered but directory missing`);
-      errors++;
-    }
-  });
-
-  if (actualSkills.length !== 18) {
-    console.log(`   ⚠️  WARNING: Expected 18 skills, found ${actualSkills.length}`);
-    warnings++;
   } else {
-    console.log('   ✅ All 18 skills registered correctly');
+    console.log(`   ✅ Skills auto-discovered from skills/ directory (${actualSkills.length} skills)`);
   }
+
+  console.log(`   Actual: ${actualSkills.length} skills`);
   console.log('');
 }
 
