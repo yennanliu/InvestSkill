@@ -1,5 +1,5 @@
 ---
-description: Comprehensive capital allocation analysis: dividends, buybacks, M&A, debt management, and FCF deployment
+description: "Comprehensive capital allocation analysis: dividends, buybacks, M&A, debt management, and FCF deployment"
 ---
 
 # Capital Allocation Analysis (Dividend, Buyback, M&A & FCF Deployment)
