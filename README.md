@@ -9,7 +9,7 @@
 [![Release](https://img.shields.io/github/v/release/yennanliu/InvestSkill?style=flat-square&color=22c55e)](https://github.com/yennanliu/InvestSkill/releases)
 [![Tests](https://img.shields.io/github/actions/workflow/status/yennanliu/InvestSkill/test.yml?style=flat-square&label=tests)](https://github.com/yennanliu/InvestSkill/actions)
 
-[Documentation](https://yennanliu.github.io/InvestSkill/) · [Cookbook](https://yennanliu.github.io/InvestSkill/cookbook.html) · [繁體中文](README-zh-TW.md)
+[Documentation](https://yennanliu.github.io/InvestSkill/) · [Learn Investing](https://yennanliu.github.io/InvestSkill/learning.html) · [Cookbook](https://yennanliu.github.io/InvestSkill/cookbook.html) · [繁體中文](README-zh-TW.md)
 
 </div>
 
@@ -23,6 +23,15 @@ InvestSkill is a collection of **23 structured analysis frameworks** that turn a
 Ask your AI:  "Evaluate AAPL using the stock-eval framework"
 Get back:     Piotroski score · ROIC · moat rating · buy/hold/sell signal
 ```
+
+<div class="home-card">
+  <span class="home-card-icon">🎓</span>
+  <div class="home-card-body">
+    <div class="home-card-title">New to investing? Start with the Learning guide</div>
+    <p>A six-lesson field guide to the concepts behind every skill — from reading a balance sheet to valuing a business to holding a portfolio — in plain English and Traditional Chinese. No finance degree required.</p>
+    <p><a class="home-card-cta" href="https://yennanliu.github.io/InvestSkill/learning.html">Start learning →</a></p>
+  </div>
+</div>
 
 ---
 

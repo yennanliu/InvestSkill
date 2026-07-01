@@ -446,6 +446,37 @@ kbd, code, pre, .logo-badge, .status-chip,
 }
 .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: #fff; }
 
+/* Home "Start learning" call-to-action card */
+.markdown-body .home-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin: 1.75rem 0;
+  padding: 1.15rem 1.35rem;
+  background: var(--accent-light);
+  border: 1px solid var(--border-strong);
+  border-left: 3px solid var(--accent);
+  border-radius: 12px;
+}
+.markdown-body .home-card-icon { font-size: 1.6rem; line-height: 1.3; flex-shrink: 0; }
+.markdown-body .home-card-body { min-width: 0; }
+.markdown-body .home-card-title { margin: 0 0 0.35rem; font-size: 1.075rem; font-weight: 700; color: var(--text); }
+.markdown-body .home-card p  { margin: 0 0 0.5rem; color: var(--text-muted); font-size: 0.92rem; }
+.markdown-body .home-card p:last-child { margin-bottom: 0; }
+.markdown-body .home-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.95rem;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.88rem;
+  border-radius: 999px;
+  text-decoration: none;
+}
+.markdown-body .home-card-cta:hover { background: var(--accent-hover); text-decoration: none; }
+
 /* =========================================================
    MARKDOWN BODY
    ========================================================= */

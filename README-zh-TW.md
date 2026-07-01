@@ -11,7 +11,7 @@
 [![GitHub Release](https://img.shields.io/github/v/release/yennanliu/InvestSkill?style=for-the-badge&color=green)](https://github.com/yennanliu/InvestSkill/releases)
 [![Test Suite](https://img.shields.io/github/actions/workflow/status/yennanliu/InvestSkill/test.yml?style=for-the-badge&label=Tests)](https://github.com/yennanliu/InvestSkill/actions)
 
-[🌐 線上文件](https://yennanliu.github.io/InvestSkill/) • [📚 操作手冊](https://yennanliu.github.io/InvestSkill/cookbook.html) • [🐛 回報問題](https://github.com/yennanliu/InvestSkill/issues) • [💬 社群討論](https://github.com/yennanliu/InvestSkill/discussions) • [🇺🇸 English](README.md)
+[🌐 線上文件](https://yennanliu.github.io/InvestSkill/) • [🎓 投資學習](https://yennanliu.github.io/InvestSkill/learning-zh-tw.html) • [📚 操作手冊](https://yennanliu.github.io/InvestSkill/cookbook.html) • [🐛 回報問題](https://github.com/yennanliu/InvestSkill/issues) • [💬 社群討論](https://github.com/yennanliu/InvestSkill/discussions) • [🇺🇸 English](README.md)
 
 </div>
 
@@ -22,6 +22,15 @@
 InvestSkill 是企業級投資分析工具包，為各 AI 平台帶來機構級分析框架。透過 18 個完整框架進行專業股票分析——無需金融執照，無需 API 費用。
 
 > **適合用於**：投資研究 · 盡職調查 · 投資組合管理 · 金融教育 · 股票評估
+
+<div class="home-card">
+  <span class="home-card-icon">🎓</span>
+  <div class="home-card-body">
+    <div class="home-card-title">投資新手？從學習指南開始</div>
+    <p>六堂課的實戰指南，用白話講清楚每一項技能背後的概念——從讀懂資產負債表、為一門生意估值，到持有一個投資組合。提供繁體中文與英文，不需財金背景。</p>
+    <p><a class="home-card-cta" href="https://yennanliu.github.io/InvestSkill/learning-zh-tw.html">開始學習 →</a></p>
+  </div>
+</div>
 
 <table>
   <tr>
