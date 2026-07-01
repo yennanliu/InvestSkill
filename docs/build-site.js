@@ -79,6 +79,14 @@ const NAV_SECTIONS = [
 
 const RAW_BASE    = 'https://raw.githubusercontent.com/yennanliu/InvestSkill/main';
 const GITHUB_BLOB = 'https://github.com/yennanliu/InvestSkill/blob/main';
+
+// Read the current plugin version for the header status chip.
+let SITE_VERSION = '';
+try {
+  const pj = JSON.parse(fs.readFileSync(
+    path.join(__dirname, '..', 'plugins', 'us-stock-analysis', '.claude-plugin', 'plugin.json'), 'utf8'));
+  SITE_VERSION = pj.version ? `v${pj.version}` : '';
+} catch { /* version chip is optional */ }
 const SITE_BASE   = 'https://yennj12.js.org/InvestSkill';
 const OLD_SITE    = 'https://yennanliu.github.io/InvestSkill';
 
@@ -287,11 +295,28 @@ const PAGES = [
 // ---------------------------------------------------------------------------
 // Template helpers
 // ---------------------------------------------------------------------------
+// Small feather-style icon per nav section (icon-led sidebar, CrewAI-style).
+const SECTION_ICONS = {
+  'Introduction': '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+  'Learn':        '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  'Guides':       '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88"/>',
+  'Demo':         '<circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>',
+  'Trust':        '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  'Reference':    '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  '中文':          '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/>',
+};
+
+function navIcon(sectionTitle) {
+  const paths = SECTION_ICONS[sectionTitle] || '<circle cx="12" cy="12" r="9"/>';
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
+}
+
 function buildNav(currentPage) {
   return NAV_SECTIONS.map(section => {
+    const icon = navIcon(section.title);
     const links = section.links.map(link => {
       const active = link.page === currentPage ? ' active' : '';
-      return `        <a href="${link.href}" class="nav-link${active}">${link.label}</a>`;
+      return `        <a href="${link.href}" class="nav-link${active}">${icon}<span>${link.label}</span></a>`;
     }).join('\n');
     return `      <div class="nav-section">
         <div class="nav-section-title">${section.title}</div>
@@ -300,17 +325,86 @@ ${links}
   }).join('\n');
 }
 
+// The nav section a page belongs to (skills pages live under Guides).
+function sectionOf(pageKey) {
+  if (pageKey === 'skills') return 'Guides';
+  for (const section of NAV_SECTIONS) {
+    if (section.links.some(l => l.page === pageKey)) return section.title;
+  }
+  return 'Introduction';
+}
+
+// Eyebrow label above the page title = the nav section the page lives in.
+function eyebrowFor(pageKey) {
+  if (pageKey === 'skills') return 'Skill Reference';
+  return sectionOf(pageKey);
+}
+
+// Horizontal sub-nav tabs (below the header). Each maps to a landing page for
+// a top-level area; the active tab tracks the current page's nav section.
+const TABS = [
+  { label: 'Home',       section: 'Introduction', href: 'index.html' },
+  { label: 'Learn',      section: 'Learn',        href: 'concepts.html' },
+  { label: 'Guides',     section: 'Guides',       href: 'cookbook.html' },
+  { label: 'Skills',     section: 'Guides',       href: 'skills.html' },
+  { label: 'Demos',      section: 'Demo',         href: 'full-demo.html' },
+  { label: 'Trust',      section: 'Trust',        href: 'data-and-accuracy.html' },
+  { label: 'Changelog',  section: 'Reference',    href: 'changelog.html' },
+  { label: '中文',        section: '中文',          href: 'zh-tw.html' },
+];
+
+const TAB_ICONS = {
+  'Home':      '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+  'Learn':     '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  'Guides':    '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88"/>',
+  'Skills':    '<path d="M14.7 6.3a4 4 0 0 0-5.6 5.6L3 18v3h3l6.1-6.1a4 4 0 0 0 5.6-5.6l-2.9 2.9-2-2z"/>',
+  'Demos':     '<circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>',
+  'Trust':     '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  'Changelog': '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  '中文':       '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/>',
+};
+
+function buildSubnav(currentPage) {
+  const activeSection = sectionOf(currentPage);
+  const tabs = TABS.map(tab => {
+    // "Skills" tab is active only on skill pages; "Guides" for other Guides pages.
+    let active = false;
+    if (tab.label === 'Skills')      active = currentPage === 'skills';
+    else if (tab.section === 'Guides') active = activeSection === 'Guides' && currentPage !== 'skills';
+    else                             active = tab.section === activeSection;
+    const icon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${TAB_ICONS[tab.label] || ''}</svg>`;
+    return `      <a href="${tab.href}" class="subnav-tab${active ? ' active' : ''}">${icon}<span>${tab.label}</span></a>`;
+  }).join('\n');
+  return `<nav class="subnav">
+    <div class="subnav-inner">
+${tabs}
+    </div>
+  </nav>`;
+}
+
 function htmlPage(page, content) {
   const nav = buildNav(page.key);
   const rawUrl = `${RAW_BASE}/${page.srcFile}`;
 
+  const eyebrow  = eyebrowFor(page.key);
+  const heroClass = page.key === 'home' ? ' home-hero' : '';
+  const subnav    = buildSubnav(page.key);
+  const landingCta = page.key === 'home'
+    ? `<a class="btn btn-primary" href="#quick-start">Get Started
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>\n        `
+    : '';
+
   return `<!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${page.title} - InvestSkill</title>
   <meta name="description" content="Professional investment analysis and stock evaluation skills for AI assistants">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,18..72,400;0,18..72,500;1,18..72,400;1,18..72,500&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -328,6 +422,7 @@ function htmlPage(page, content) {
       <span class="logo-badge">IS</span>
       <span class="logo-text">InvestSkill</span>
     </a>
+    ${SITE_VERSION ? `<span class="status-chip"><span class="dot"></span>${SITE_VERSION} · live</span>` : ''}
     <div class="search-box">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -354,6 +449,8 @@ function htmlPage(page, content) {
   </div>
 </header>
 
+${subnav}
+
 <div class="layout">
 
   <aside class="sidebar" id="sidebar">
@@ -363,11 +460,12 @@ ${nav}
   </aside>
 
   <main class="page-content">
-    <div class="page-hero">
+    <div class="page-hero${heroClass}">
+      <p class="page-eyebrow">${eyebrow}</p>
       <h1>${page.title}</h1>
       <p class="page-desc">${page.subtitle}</p>
       <div class="page-actions">
-        <button class="btn" id="copy-md-btn" data-url="${rawUrl}">
+        ${landingCta}<button class="btn" id="copy-md-btn" data-url="${rawUrl}">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="9" y="9" width="13" height="13" rx="2"/>
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
@@ -523,7 +621,7 @@ console.log('✓ skills.html');
 
 // 404 page (minimal, shares stylesheet)
 const html404 = `<!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">

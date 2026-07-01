@@ -2,6 +2,7 @@
 
 // ── Theme toggle ──────────────────────────────────────────────────────────────
 const ICONS = { dark: '☀', light: '☾' };
+const DEFAULT_THEME = 'light';
 
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
@@ -10,7 +11,7 @@ function applyTheme(theme) {
 }
 
 function setupTheme() {
-  const stored = localStorage.getItem('is-theme') || 'dark';
+  const stored = localStorage.getItem('is-theme') || DEFAULT_THEME;
   applyTheme(stored);
 
   const btn = document.getElementById('theme-toggle');
