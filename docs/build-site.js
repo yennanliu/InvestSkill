@@ -27,6 +27,18 @@ const NAV_SECTIONS = [
     ],
   },
   {
+    title: 'Learning',
+    links: [
+      { label: 'Learning Hub',              href: 'learning.html',             page: 'learning' },
+      { label: '1 · Investing Foundations', href: 'learning-foundations.html', page: 'learning-foundations' },
+      { label: '2 · Financial Statements',  href: 'learning-statements.html',  page: 'learning-statements' },
+      { label: '3 · Business Quality',      href: 'learning-quality.html',     page: 'learning-quality' },
+      { label: '4 · Valuation Essentials',  href: 'learning-valuation.html',   page: 'learning-valuation' },
+      { label: '5 · Reading the Market',    href: 'learning-market.html',      page: 'learning-market' },
+      { label: '6 · Portfolio & Risk',      href: 'learning-portfolio.html',   page: 'learning-portfolio' },
+    ],
+  },
+  {
     title: 'Learn',
     links: [
       { label: 'Concepts',        href: 'concepts.html',      page: 'concepts' },
@@ -67,6 +79,13 @@ const NAV_SECTIONS = [
     title: '中文',
     links: [
       { label: '繁體中文',         href: 'zh-tw.html',         page: 'zh-tw' },
+      { label: '學習中心',         href: 'learning-zh-tw.html', page: 'learning-zh-tw' },
+      { label: '　1 · 投資基礎',    href: 'learning-foundations-zh-tw.html', page: 'learning-foundations-zh-tw' },
+      { label: '　2 · 財務報表',    href: 'learning-statements-zh-tw.html',  page: 'learning-statements-zh-tw' },
+      { label: '　3 · 企業品質',    href: 'learning-quality-zh-tw.html',     page: 'learning-quality-zh-tw' },
+      { label: '　4 · 估值入門',    href: 'learning-valuation-zh-tw.html',   page: 'learning-valuation-zh-tw' },
+      { label: '　5 · 市場訊號',    href: 'learning-market-zh-tw.html',      page: 'learning-market-zh-tw' },
+      { label: '　6 · 投組與風險',  href: 'learning-portfolio-zh-tw.html',   page: 'learning-portfolio-zh-tw' },
       { label: '概念',             href: 'concepts-zh-tw.html', page: 'concepts-zh-tw' },
       { label: '術語表',           href: 'glossary-zh-tw.html', page: 'glossary-zh-tw' },
       { label: '選擇技能',         href: 'choose-a-skill-zh-tw.html', page: 'choose-a-skill-zh-tw' },
@@ -111,6 +130,20 @@ const MD_TO_HTML = {
   'CHOOSE-A-SKILL-zh-TW.md': 'choose-a-skill-zh-tw.html',
   'USE-CASES-zh-TW.md':      'use-cases-zh-tw.html',
   'DATA-AND-ACCURACY-zh-TW.md': 'data-and-accuracy-zh-tw.html',
+  'LEARNING.md':                'learning.html',
+  'LEARNING-FOUNDATIONS.md':    'learning-foundations.html',
+  'LEARNING-STATEMENTS.md':     'learning-statements.html',
+  'LEARNING-QUALITY.md':        'learning-quality.html',
+  'LEARNING-VALUATION.md':      'learning-valuation.html',
+  'LEARNING-MARKET.md':         'learning-market.html',
+  'LEARNING-PORTFOLIO.md':      'learning-portfolio.html',
+  'LEARNING-zh-TW.md':              'learning-zh-tw.html',
+  'LEARNING-FOUNDATIONS-zh-TW.md':  'learning-foundations-zh-tw.html',
+  'LEARNING-STATEMENTS-zh-TW.md':   'learning-statements-zh-tw.html',
+  'LEARNING-QUALITY-zh-TW.md':      'learning-quality-zh-tw.html',
+  'LEARNING-VALUATION-zh-TW.md':    'learning-valuation-zh-tw.html',
+  'LEARNING-MARKET-zh-TW.md':       'learning-market-zh-tw.html',
+  'LEARNING-PORTFOLIO-zh-TW.md':    'learning-portfolio-zh-tw.html',
 };
 
 // Assets we actually serve — any other relative link is sent to GitHub.
@@ -120,7 +153,12 @@ const SERVED = new Set(['index.html','cookbook.html','cookbook-zh-tw.html',
   'concepts.html','glossary.html','choose-a-skill.html','use-cases.html',
   'data-and-accuracy.html','skills.html','full-demo.html','full-demo-pltr.html','full-demo-rklb.html',
   'concepts-zh-tw.html','glossary-zh-tw.html','choose-a-skill-zh-tw.html',
-  'use-cases-zh-tw.html','data-and-accuracy-zh-tw.html']);
+  'use-cases-zh-tw.html','data-and-accuracy-zh-tw.html',
+  'learning.html','learning-foundations.html','learning-statements.html',
+  'learning-quality.html','learning-valuation.html','learning-market.html','learning-portfolio.html',
+  'learning-zh-tw.html','learning-foundations-zh-tw.html','learning-statements-zh-tw.html',
+  'learning-quality-zh-tw.html','learning-valuation-zh-tw.html','learning-market-zh-tw.html',
+  'learning-portfolio-zh-tw.html']);
 
 // Rewrite links in rendered HTML:
 //  - relative paths for served assets  → leave alone
@@ -163,6 +201,104 @@ const PAGES = [
     srcFile: 'README.md',
     title: 'Quick Start',
     subtitle: 'Getting Started with InvestSkill',
+  },
+  {
+    key: 'learning',
+    outFile: 'learning.html',
+    srcFile: 'LEARNING.md',
+    title: 'Learning',
+    subtitle: "An investor's field guide — from first principles to the metrics behind every skill",
+  },
+  {
+    key: 'learning-foundations',
+    outFile: 'learning-foundations.html',
+    srcFile: 'LEARNING-FOUNDATIONS.md',
+    title: 'Investing Foundations',
+    subtitle: 'Lesson 1 · Shares, markets, risk vs. return, and compounding',
+  },
+  {
+    key: 'learning-statements',
+    outFile: 'learning-statements.html',
+    srcFile: 'LEARNING-STATEMENTS.md',
+    title: 'Reading Financial Statements',
+    subtitle: 'Lesson 2 · Income statement, balance sheet, and cash flow',
+  },
+  {
+    key: 'learning-quality',
+    outFile: 'learning-quality.html',
+    srcFile: 'LEARNING-QUALITY.md',
+    title: 'Judging Business Quality',
+    subtitle: 'Lesson 3 · Returns on capital, margins, moats, and capital allocation',
+  },
+  {
+    key: 'learning-valuation',
+    outFile: 'learning-valuation.html',
+    srcFile: 'LEARNING-VALUATION.md',
+    title: 'Valuation Essentials',
+    subtitle: 'Lesson 4 · Price vs. value, DCF, multiples, and margin of safety',
+  },
+  {
+    key: 'learning-market',
+    outFile: 'learning-market.html',
+    srcFile: 'LEARNING-MARKET.md',
+    title: 'Reading the Market',
+    subtitle: 'Lesson 5 · Technicals, positioning signals, and the macro backdrop',
+  },
+  {
+    key: 'learning-portfolio',
+    outFile: 'learning-portfolio.html',
+    srcFile: 'LEARNING-PORTFOLIO.md',
+    title: 'Portfolio & Risk',
+    subtitle: 'Lesson 6 · Allocation, sizing, rebalancing, and behavioral pitfalls',
+  },
+  {
+    key: 'learning-zh-tw',
+    outFile: 'learning-zh-tw.html',
+    srcFile: 'LEARNING-zh-TW.md',
+    title: '學習中心',
+    subtitle: '投資人的實戰指南——從第一原理到每項技能背後的指標',
+  },
+  {
+    key: 'learning-foundations-zh-tw',
+    outFile: 'learning-foundations-zh-tw.html',
+    srcFile: 'LEARNING-FOUNDATIONS-zh-TW.md',
+    title: '投資基礎',
+    subtitle: '第 1 課 · 股票、市場、風險 vs. 報酬與複利',
+  },
+  {
+    key: 'learning-statements-zh-tw',
+    outFile: 'learning-statements-zh-tw.html',
+    srcFile: 'LEARNING-STATEMENTS-zh-TW.md',
+    title: '讀懂財務報表',
+    subtitle: '第 2 課 · 損益表、資產負債表與現金流量表',
+  },
+  {
+    key: 'learning-quality-zh-tw',
+    outFile: 'learning-quality-zh-tw.html',
+    srcFile: 'LEARNING-QUALITY-zh-TW.md',
+    title: '判斷企業品質',
+    subtitle: '第 3 課 · 資本報酬、利潤率、護城河與資本配置',
+  },
+  {
+    key: 'learning-valuation-zh-tw',
+    outFile: 'learning-valuation-zh-tw.html',
+    srcFile: 'LEARNING-VALUATION-zh-TW.md',
+    title: '估值入門',
+    subtitle: '第 4 課 · 價格 vs. 價值、DCF、乘數與安全邊際',
+  },
+  {
+    key: 'learning-market-zh-tw',
+    outFile: 'learning-market-zh-tw.html',
+    srcFile: 'LEARNING-MARKET-zh-TW.md',
+    title: '解讀市場訊號',
+    subtitle: '第 5 課 · 技術面、籌碼訊號與總經環境',
+  },
+  {
+    key: 'learning-portfolio-zh-tw',
+    outFile: 'learning-portfolio-zh-tw.html',
+    srcFile: 'LEARNING-PORTFOLIO-zh-TW.md',
+    title: '投資組合與風險',
+    subtitle: '第 6 課 · 資產配置、部位大小、再平衡與行為陷阱',
   },
   {
     key: 'concepts',
@@ -298,6 +434,7 @@ const PAGES = [
 // Small feather-style icon per nav section (icon-led sidebar, CrewAI-style).
 const SECTION_ICONS = {
   'Introduction': '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+  'Learning':     '<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 2 2.7 3 6 3s6-1 6-3v-5"/>',
   'Learn':        '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
   'Guides':       '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88"/>',
   'Demo':         '<circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>',
@@ -344,6 +481,7 @@ function eyebrowFor(pageKey) {
 // a top-level area; the active tab tracks the current page's nav section.
 const TABS = [
   { label: 'Home',       section: 'Introduction', href: 'index.html' },
+  { label: 'Learning',   section: 'Learning',     href: 'learning.html' },
   { label: 'Learn',      section: 'Learn',        href: 'concepts.html' },
   { label: 'Guides',     section: 'Guides',       href: 'cookbook.html' },
   { label: 'Skills',     section: 'Guides',       href: 'skills.html' },
@@ -355,6 +493,7 @@ const TABS = [
 
 const TAB_ICONS = {
   'Home':      '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+  'Learning':  '<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 2 2.7 3 6 3s6-1 6-3v-5"/>',
   'Learn':     '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
   'Guides':    '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88"/>',
   'Skills':    '<path d="M14.7 6.3a4 4 0 0 0-5.6 5.6L3 18v3h3l6.1-6.1a4 4 0 0 0 5.6-5.6l-2.9 2.9-2-2z"/>',
