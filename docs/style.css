@@ -248,6 +248,36 @@ kbd, code, pre, .logo-badge, .status-chip,
 }
 .icon-btn:hover { color: var(--text); background: var(--surface); }
 
+/* Language switcher (native <details> dropdown) */
+.lang-menu { position: relative; }
+.lang-menu > summary { list-style: none; cursor: pointer; }
+.lang-menu > summary::-webkit-details-marker { display: none; }
+.lang-menu > summary::marker { content: ""; }
+.lang-menu[open] > summary { color: var(--accent); background: var(--surface); }
+.lang-menu-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 168px;
+  padding: 0.375rem;
+  background: var(--bg-alt);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  box-shadow: var(--shadow-popover);
+  z-index: 300;
+}
+.lang-opt {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.lang-opt:hover { background: var(--surface); color: var(--text); }
+.lang-opt.active { color: var(--accent); background: var(--accent-light); font-weight: 600; }
+
 /* =========================================================
    SUB-NAV TAB ROW (below header)
    ========================================================= */

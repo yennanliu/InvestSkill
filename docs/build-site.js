@@ -19,82 +19,129 @@ const md = new MarkdownIt({ html: true, linkify: true, typographer: true })
 // ---------------------------------------------------------------------------
 // Navigation structure
 // ---------------------------------------------------------------------------
-const NAV_SECTIONS = [
-  {
-    title: 'Introduction',
-    links: [
-      { label: 'Quick Start',     href: 'index.html',    page: 'home' },
-    ],
-  },
-  {
-    title: 'Learning',
-    links: [
-      { label: 'Learning Hub',              href: 'learning.html',             page: 'learning' },
-      { label: '1 · Investing Foundations', href: 'learning-foundations.html', page: 'learning-foundations' },
-      { label: '2 · Financial Statements',  href: 'learning-statements.html',  page: 'learning-statements' },
-      { label: '3 · Business Quality',      href: 'learning-quality.html',     page: 'learning-quality' },
-      { label: '4 · Valuation Essentials',  href: 'learning-valuation.html',   page: 'learning-valuation' },
-      { label: '5 · Reading the Market',    href: 'learning-market.html',      page: 'learning-market' },
-      { label: '6 · Portfolio & Risk',      href: 'learning-portfolio.html',   page: 'learning-portfolio' },
-    ],
-  },
-  {
-    title: 'Learn',
-    links: [
-      { label: 'Concepts',        href: 'concepts.html',      page: 'concepts' },
-      { label: 'Glossary',        href: 'glossary.html',      page: 'glossary' },
-      { label: 'Choose a Skill',  href: 'choose-a-skill.html', page: 'choose-a-skill' },
-      { label: 'Use Cases',       href: 'use-cases.html',     page: 'use-cases' },
-    ],
-  },
-  {
-    title: 'Guides',
-    links: [
-      { label: 'Cookbook',        href: 'cookbook.html',      page: 'cookbook' },
-      { label: 'Skill Reference', href: 'skills.html',        page: 'skills' },
-      { label: 'Contributing',    href: 'contributing.html',  page: 'contributing' },
-    ],
-  },
-  {
-    title: 'Demo',
-    links: [
-      { label: 'Demo Overview',   href: 'full-demo.html',       page: 'full-demo' },
-      { label: 'PLTR (English)',  href: 'full-demo-pltr.html',  page: 'full-demo-pltr' },
-      { label: 'RKLB (繁體中文)', href: 'full-demo-rklb.html',  page: 'full-demo-rklb' },
-    ],
-  },
-  {
-    title: 'Trust',
-    links: [
-      { label: 'Data & Accuracy', href: 'data-and-accuracy.html', page: 'data-and-accuracy' },
-    ],
-  },
-  {
-    title: 'Reference',
-    links: [
-      { label: 'Changelog',       href: 'changelog.html', page: 'changelog' },
-    ],
-  },
-  {
-    title: '中文',
-    links: [
-      { label: '繁體中文',         href: 'zh-tw.html',         page: 'zh-tw' },
-      { label: '學習中心',         href: 'learning-zh-tw.html', page: 'learning-zh-tw' },
-      { label: '　1 · 投資基礎',    href: 'learning-foundations-zh-tw.html', page: 'learning-foundations-zh-tw' },
-      { label: '　2 · 財務報表',    href: 'learning-statements-zh-tw.html',  page: 'learning-statements-zh-tw' },
-      { label: '　3 · 企業品質',    href: 'learning-quality-zh-tw.html',     page: 'learning-quality-zh-tw' },
-      { label: '　4 · 估值入門',    href: 'learning-valuation-zh-tw.html',   page: 'learning-valuation-zh-tw' },
-      { label: '　5 · 市場訊號',    href: 'learning-market-zh-tw.html',      page: 'learning-market-zh-tw' },
-      { label: '　6 · 投組與風險',  href: 'learning-portfolio-zh-tw.html',   page: 'learning-portfolio-zh-tw' },
-      { label: '概念',             href: 'concepts-zh-tw.html', page: 'concepts-zh-tw' },
-      { label: '術語表',           href: 'glossary-zh-tw.html', page: 'glossary-zh-tw' },
-      { label: '選擇技能',         href: 'choose-a-skill-zh-tw.html', page: 'choose-a-skill-zh-tw' },
-      { label: '使用情境',         href: 'use-cases-zh-tw.html', page: 'use-cases-zh-tw' },
-      { label: '資料與準確性',     href: 'data-and-accuracy-zh-tw.html', page: 'data-and-accuracy-zh-tw' },
-      { label: '操作手冊',         href: 'cookbook-zh-tw.html', page: 'cookbook-zh-tw' },
-    ],
-  },
+// Language-aware navigation. English pages render the `en` sidebar/tabs;
+// Traditional Chinese pages render the `zh` ones. The header language
+// switcher moves between a page and its counterpart in the other language.
+const NAV = {
+  en: [
+    {
+      title: 'Introduction',
+      links: [
+        { label: 'Quick Start',     href: 'index.html',    page: 'home' },
+      ],
+    },
+    {
+      title: 'Learning',
+      links: [
+        { label: 'Learning Hub',              href: 'learning.html',             page: 'learning' },
+        { label: '1 · Investing Foundations', href: 'learning-foundations.html', page: 'learning-foundations' },
+        { label: '2 · Financial Statements',  href: 'learning-statements.html',  page: 'learning-statements' },
+        { label: '3 · Business Quality',      href: 'learning-quality.html',     page: 'learning-quality' },
+        { label: '4 · Valuation Essentials',  href: 'learning-valuation.html',   page: 'learning-valuation' },
+        { label: '5 · Reading the Market',    href: 'learning-market.html',      page: 'learning-market' },
+        { label: '6 · Portfolio & Risk',      href: 'learning-portfolio.html',   page: 'learning-portfolio' },
+      ],
+    },
+    {
+      title: 'Learn',
+      links: [
+        { label: 'Concepts',        href: 'concepts.html',      page: 'concepts' },
+        { label: 'Glossary',        href: 'glossary.html',      page: 'glossary' },
+        { label: 'Choose a Skill',  href: 'choose-a-skill.html', page: 'choose-a-skill' },
+        { label: 'Use Cases',       href: 'use-cases.html',     page: 'use-cases' },
+      ],
+    },
+    {
+      title: 'Guides',
+      links: [
+        { label: 'Cookbook',        href: 'cookbook.html',      page: 'cookbook' },
+        { label: 'Skill Reference', href: 'skills.html',        page: 'skills' },
+        { label: 'Contributing',    href: 'contributing.html',  page: 'contributing' },
+      ],
+    },
+    {
+      title: 'Demo',
+      links: [
+        { label: 'Demo Overview',   href: 'full-demo.html',       page: 'full-demo' },
+        { label: 'PLTR (English)',  href: 'full-demo-pltr.html',  page: 'full-demo-pltr' },
+        { label: 'RKLB (繁體中文)', href: 'full-demo-rklb.html',  page: 'full-demo-rklb' },
+      ],
+    },
+    {
+      title: 'Trust',
+      links: [
+        { label: 'Data & Accuracy', href: 'data-and-accuracy.html', page: 'data-and-accuracy' },
+      ],
+    },
+    {
+      title: 'Reference',
+      links: [
+        { label: 'Changelog',       href: 'changelog.html', page: 'changelog' },
+      ],
+    },
+  ],
+  zh: [
+    {
+      title: '介紹',
+      links: [
+        { label: '快速開始',        href: 'zh-tw.html',         page: 'zh-tw' },
+      ],
+    },
+    {
+      title: '學習',
+      links: [
+        { label: '學習中心',         href: 'learning-zh-tw.html',             page: 'learning-zh-tw' },
+        { label: '1 · 投資基礎',      href: 'learning-foundations-zh-tw.html', page: 'learning-foundations-zh-tw' },
+        { label: '2 · 讀懂財務報表',  href: 'learning-statements-zh-tw.html',  page: 'learning-statements-zh-tw' },
+        { label: '3 · 判斷企業品質',  href: 'learning-quality-zh-tw.html',     page: 'learning-quality-zh-tw' },
+        { label: '4 · 估值入門',      href: 'learning-valuation-zh-tw.html',   page: 'learning-valuation-zh-tw' },
+        { label: '5 · 解讀市場訊號',  href: 'learning-market-zh-tw.html',      page: 'learning-market-zh-tw' },
+        { label: '6 · 投資組合與風險', href: 'learning-portfolio-zh-tw.html',  page: 'learning-portfolio-zh-tw' },
+      ],
+    },
+    {
+      title: '學習資源',
+      links: [
+        { label: '概念',             href: 'concepts-zh-tw.html',      page: 'concepts-zh-tw' },
+        { label: '術語表',           href: 'glossary-zh-tw.html',      page: 'glossary-zh-tw' },
+        { label: '選擇技能',         href: 'choose-a-skill-zh-tw.html', page: 'choose-a-skill-zh-tw' },
+        { label: '使用情境',         href: 'use-cases-zh-tw.html',      page: 'use-cases-zh-tw' },
+      ],
+    },
+    {
+      title: '指南',
+      links: [
+        { label: '操作手冊',         href: 'cookbook-zh-tw.html',      page: 'cookbook-zh-tw' },
+      ],
+    },
+    {
+      title: '信任',
+      links: [
+        { label: '資料與準確性',     href: 'data-and-accuracy-zh-tw.html', page: 'data-and-accuracy-zh-tw' },
+      ],
+    },
+  ],
+};
+
+// Pairs of English ⇄ Traditional Chinese counterparts (by output filename).
+const LANG_PAIRS = [
+  ['index.html', 'zh-tw.html'],
+  ['learning.html', 'learning-zh-tw.html'],
+  ['learning-foundations.html', 'learning-foundations-zh-tw.html'],
+  ['learning-statements.html', 'learning-statements-zh-tw.html'],
+  ['learning-quality.html', 'learning-quality-zh-tw.html'],
+  ['learning-valuation.html', 'learning-valuation-zh-tw.html'],
+  ['learning-market.html', 'learning-market-zh-tw.html'],
+  ['learning-portfolio.html', 'learning-portfolio-zh-tw.html'],
+  ['concepts.html', 'concepts-zh-tw.html'],
+  ['glossary.html', 'glossary-zh-tw.html'],
+  ['choose-a-skill.html', 'choose-a-skill-zh-tw.html'],
+  ['use-cases.html', 'use-cases-zh-tw.html'],
+  ['data-and-accuracy.html', 'data-and-accuracy-zh-tw.html'],
+  ['cookbook.html', 'cookbook-zh-tw.html'],
 ];
+const EN_TO_ZH = Object.fromEntries(LANG_PAIRS);
+const ZH_TO_EN = Object.fromEntries(LANG_PAIRS.map(([en, zh]) => [zh, en]));
 
 const RAW_BASE    = 'https://raw.githubusercontent.com/yennanliu/InvestSkill/main';
 const GITHUB_BLOB = 'https://github.com/yennanliu/InvestSkill/blob/main';
@@ -440,7 +487,12 @@ const SECTION_ICONS = {
   'Demo':         '<circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>',
   'Trust':        '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
   'Reference':    '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
-  '中文':          '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/>',
+  // Traditional Chinese section titles
+  '介紹':          '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+  '學習':          '<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 2 2.7 3 6 3s6-1 6-3v-5"/>',
+  '學習資源':      '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  '指南':          '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88"/>',
+  '信任':          '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
 };
 
 function navIcon(sectionTitle) {
@@ -448,8 +500,13 @@ function navIcon(sectionTitle) {
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
 }
 
-function buildNav(currentPage) {
-  return NAV_SECTIONS.map(section => {
+// Language of a page, derived from its output filename.
+function langOf(outFile) {
+  return (outFile === 'zh-tw.html' || outFile.endsWith('-zh-tw.html')) ? 'zh' : 'en';
+}
+
+function buildNav(lang, currentPage) {
+  return NAV[lang].map(section => {
     const icon = navIcon(section.title);
     const links = section.links.map(link => {
       const active = link.page === currentPage ? ' active' : '';
@@ -462,34 +519,41 @@ ${links}
   }).join('\n');
 }
 
-// The nav section a page belongs to (skills pages live under Guides).
-function sectionOf(pageKey) {
+// The nav section a page belongs to (English skill pages live under Guides).
+function sectionOf(lang, pageKey) {
   if (pageKey === 'skills') return 'Guides';
-  for (const section of NAV_SECTIONS) {
+  for (const section of NAV[lang]) {
     if (section.links.some(l => l.page === pageKey)) return section.title;
   }
-  return 'Introduction';
+  return NAV[lang][0].title;
 }
 
 // Eyebrow label above the page title = the nav section the page lives in.
-function eyebrowFor(pageKey) {
+function eyebrowFor(lang, pageKey) {
   if (pageKey === 'skills') return 'Skill Reference';
-  return sectionOf(pageKey);
+  return sectionOf(lang, pageKey);
 }
 
-// Horizontal sub-nav tabs (below the header). Each maps to a landing page for
-// a top-level area; the active tab tracks the current page's nav section.
-const TABS = [
-  { label: 'Home',       section: 'Introduction', href: 'index.html' },
-  { label: 'Learning',   section: 'Learning',     href: 'learning.html' },
-  { label: 'Learn',      section: 'Learn',        href: 'concepts.html' },
-  { label: 'Guides',     section: 'Guides',       href: 'cookbook.html' },
-  { label: 'Skills',     section: 'Guides',       href: 'skills.html' },
-  { label: 'Demos',      section: 'Demo',         href: 'full-demo.html' },
-  { label: 'Trust',      section: 'Trust',        href: 'data-and-accuracy.html' },
-  { label: 'Changelog',  section: 'Reference',    href: 'changelog.html' },
-  { label: '中文',        section: '中文',          href: 'zh-tw.html' },
-];
+// Horizontal sub-nav tabs (below the header), per language.
+const TABS = {
+  en: [
+    { label: 'Home',       section: 'Introduction', href: 'index.html' },
+    { label: 'Learning',   section: 'Learning',     href: 'learning.html' },
+    { label: 'Learn',      section: 'Learn',        href: 'concepts.html' },
+    { label: 'Guides',     section: 'Guides',       href: 'cookbook.html' },
+    { label: 'Skills',     section: 'Guides',       href: 'skills.html' },
+    { label: 'Demos',      section: 'Demo',         href: 'full-demo.html' },
+    { label: 'Trust',      section: 'Trust',        href: 'data-and-accuracy.html' },
+    { label: 'Changelog',  section: 'Reference',    href: 'changelog.html' },
+  ],
+  zh: [
+    { label: '首頁',       section: '介紹',         href: 'zh-tw.html' },
+    { label: '學習',       section: '學習',         href: 'learning-zh-tw.html' },
+    { label: '學習資源',   section: '學習資源',     href: 'concepts-zh-tw.html' },
+    { label: '指南',       section: '指南',         href: 'cookbook-zh-tw.html' },
+    { label: '信任',       section: '信任',         href: 'data-and-accuracy-zh-tw.html' },
+  ],
+};
 
 const TAB_ICONS = {
   'Home':      '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
@@ -500,17 +564,21 @@ const TAB_ICONS = {
   'Demos':     '<circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>',
   'Trust':     '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
   'Changelog': '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
-  '中文':       '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/>',
+  '首頁':       '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+  '學習':       '<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 2 2.7 3 6 3s6-1 6-3v-5"/>',
+  '學習資源':   '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  '指南':       '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88"/>',
+  '信任':       '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
 };
 
-function buildSubnav(currentPage) {
-  const activeSection = sectionOf(currentPage);
-  const tabs = TABS.map(tab => {
+function buildSubnav(lang, currentPage) {
+  const activeSection = sectionOf(lang, currentPage);
+  const tabs = TABS[lang].map(tab => {
     // "Skills" tab is active only on skill pages; "Guides" for other Guides pages.
     let active = false;
-    if (tab.label === 'Skills')      active = currentPage === 'skills';
+    if (tab.label === 'Skills')        active = currentPage === 'skills';
     else if (tab.section === 'Guides') active = activeSection === 'Guides' && currentPage !== 'skills';
-    else                             active = tab.section === activeSection;
+    else                               active = tab.section === activeSection;
     const icon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${TAB_ICONS[tab.label] || ''}</svg>`;
     return `      <a href="${tab.href}" class="subnav-tab${active ? ' active' : ''}">${icon}<span>${tab.label}</span></a>`;
   }).join('\n');
@@ -521,13 +589,32 @@ ${tabs}
   </nav>`;
 }
 
+// Header language switcher: links to this page's counterpart in each language.
+function buildLangSwitch(lang, outFile) {
+  const enHref = lang === 'en' ? outFile : (ZH_TO_EN[outFile] || 'index.html');
+  const zhHref = lang === 'zh' ? outFile : (EN_TO_ZH[outFile] || 'zh-tw.html');
+  const opt = (href, label, code) =>
+    `<a href="${href}" class="lang-opt${lang === code ? ' active' : ''}">${label}</a>`;
+  return `<details class="lang-menu">
+      <summary class="icon-btn" aria-label="Language" title="Language">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
+      </summary>
+      <div class="lang-menu-panel">
+        ${opt(enHref, 'English', 'en')}
+        ${opt(zhHref, '繁體中文', 'zh')}
+      </div>
+    </details>`;
+}
+
 function htmlPage(page, content) {
-  const nav = buildNav(page.key);
+  const lang = langOf(page.outFile);
+  const nav = buildNav(lang, page.key);
   const rawUrl = `${RAW_BASE}/${page.srcFile}`;
 
-  const eyebrow  = eyebrowFor(page.key);
+  const eyebrow  = eyebrowFor(lang, page.key);
   const heroClass = page.key === 'home' ? ' home-hero' : '';
-  const subnav    = buildSubnav(page.key);
+  const subnav    = buildSubnav(lang, page.key);
+  const langSwitch = buildLangSwitch(lang, page.outFile);
   const landingCta = page.key === 'home'
     ? `<a class="btn btn-primary" href="#quick-start">Get Started
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -535,7 +622,7 @@ function htmlPage(page, content) {
     : '';
 
   return `<!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="${lang === 'zh' ? 'zh-Hant' : 'en'}" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -570,6 +657,7 @@ function htmlPage(page, content) {
       <span class="kbd-group"><kbd class="kbd">⌘</kbd><kbd class="kbd">K</kbd></span>
     </div>
     <div class="header-actions">
+      ${langSwitch}
       <a href="https://github.com/yennanliu/InvestSkill" target="_blank" class="icon-btn" aria-label="GitHub">
         <svg width="19" height="19" viewBox="0 0 16 16" fill="currentColor">
           <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
