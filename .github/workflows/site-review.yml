@@ -1,0 +1,52 @@
+name: Daily Site Review
+
+# Runs the automated site-review health check once per day and commits a
+# dated report to qa/site_review_YYYYMMDD.md. Also runnable on demand.
+on:
+  schedule:
+    - cron: '17 6 * * *'   # 06:17 UTC daily
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  site-review:
+    name: Site review & report
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install build dependencies
+      run: npm install --no-save markdown-it@^14.0.0 markdown-it-anchor@^8.6.7
+
+    - name: Run site review
+      id: review
+      continue-on-error: true
+      run: node scripts/site-review.js
+
+    - name: Commit report to qa/
+      if: always()
+      run: |
+        git config user.name  "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add qa/site_review_*.md
+        if git diff --cached --quiet; then
+          echo "No report changes to commit."
+        else
+          git commit -m "chore(qa): daily site review report $(date -u +%Y%m%d)"
+          git push
+        fi
+
+    - name: Reflect check status
+      if: steps.review.outcome == 'failure'
+      run: |
+        echo "::warning::Daily site review found failing checks — see the committed qa/ report."
+        exit 1

@@ -10,6 +10,7 @@
     "validate:prompts": "node scripts/validate-prompts.js",
     "build:site": "node docs/build-site.js",
     "check:links": "node docs/build-site.js && node scripts/check-links.js",
+    "review": "node scripts/site-review.js",
     "verify": "node scripts/setup-verify.js",
     "verify:setup": "node scripts/setup-verify.js",
     "pre-release-check": "node scripts/pre-release-check.js",
