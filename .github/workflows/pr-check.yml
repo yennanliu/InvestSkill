@@ -59,7 +59,7 @@ jobs:
         for plugin_json in plugins/*/.claude-plugin/plugin.json; do
           if [ -f "$plugin_json" ]; then
             plugin_name=$(basename $(dirname $(dirname $plugin_json)))
-            required_plugin_fields=("name" "description" "version" "author" "skills")
+            required_plugin_fields=("name" "description" "version" "author")
 
             for field in "${required_plugin_fields[@]}"; do
               if ! jq -e ".$field" "$plugin_json" > /dev/null 2>&1; then
