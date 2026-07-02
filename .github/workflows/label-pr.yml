@@ -7,6 +7,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  issues: write
 
 jobs:
   label:
@@ -19,6 +20,7 @@ jobs:
         fetch-depth: 0
 
     - name: Auto-label based on files changed
+      continue-on-error: true  # cosmetic labeling must never block a PR
       uses: actions/labeler@v5
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -26,6 +28,7 @@ jobs:
         sync-labels: true
 
     - name: Label based on PR size
+      continue-on-error: true  # cosmetic labeling must never block a PR
       run: |
         PR_NUMBER=${{ github.event.pull_request.number }}
         FILES_CHANGED=$(gh pr view $PR_NUMBER --json files --jq '.files | length')
@@ -33,11 +36,16 @@ jobs:
         echo "Files changed: $FILES_CHANGED"
 
         if [ "$FILES_CHANGED" -le 5 ]; then
-          gh pr edit $PR_NUMBER --add-label "size/small"
+          SIZE="size/small"
         elif [ "$FILES_CHANGED" -le 15 ]; then
-          gh pr edit $PR_NUMBER --add-label "size/medium"
+          SIZE="size/medium"
         else
-          gh pr edit $PR_NUMBER --add-label "size/large"
+          SIZE="size/large"
         fi
+
+        # gh --add-label errors on a label that doesn't exist yet, so
+        # create it first (idempotent via --force) before applying it.
+        gh label create "$SIZE" --color ededed --force >/dev/null 2>&1 || true
+        gh pr edit "$PR_NUMBER" --add-label "$SIZE" || true
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
