@@ -40,6 +40,7 @@ const NAV = {
         { label: '4 · Valuation Essentials',  href: 'learning-valuation.html',   page: 'learning-valuation' },
         { label: '5 · Reading the Market',    href: 'learning-market.html',      page: 'learning-market' },
         { label: '6 · Portfolio & Risk',      href: 'learning-portfolio.html',   page: 'learning-portfolio' },
+        { label: "7 · The Pro's Playbook",    href: 'learning-playbook.html',    page: 'learning-playbook' },
       ],
     },
     {
@@ -97,6 +98,7 @@ const NAV = {
         { label: '4 · 估值入門',      href: 'learning-valuation-zh-tw.html',   page: 'learning-valuation-zh-tw' },
         { label: '5 · 解讀市場訊號',  href: 'learning-market-zh-tw.html',      page: 'learning-market-zh-tw' },
         { label: '6 · 投資組合與風險', href: 'learning-portfolio-zh-tw.html',  page: 'learning-portfolio-zh-tw' },
+        { label: '7 · 實戰劇本',       href: 'learning-playbook-zh-tw.html',   page: 'learning-playbook-zh-tw' },
       ],
     },
     {
@@ -133,6 +135,7 @@ const LANG_PAIRS = [
   ['learning-valuation.html', 'learning-valuation-zh-tw.html'],
   ['learning-market.html', 'learning-market-zh-tw.html'],
   ['learning-portfolio.html', 'learning-portfolio-zh-tw.html'],
+  ['learning-playbook.html', 'learning-playbook-zh-tw.html'],
   ['concepts.html', 'concepts-zh-tw.html'],
   ['glossary.html', 'glossary-zh-tw.html'],
   ['choose-a-skill.html', 'choose-a-skill-zh-tw.html'],
@@ -184,6 +187,7 @@ const MD_TO_HTML = {
   'LEARNING-VALUATION.md':      'learning-valuation.html',
   'LEARNING-MARKET.md':         'learning-market.html',
   'LEARNING-PORTFOLIO.md':      'learning-portfolio.html',
+  'LEARNING-PLAYBOOK.md':       'learning-playbook.html',
   'LEARNING-zh-TW.md':              'learning-zh-tw.html',
   'LEARNING-FOUNDATIONS-zh-TW.md':  'learning-foundations-zh-tw.html',
   'LEARNING-STATEMENTS-zh-TW.md':   'learning-statements-zh-tw.html',
@@ -191,6 +195,7 @@ const MD_TO_HTML = {
   'LEARNING-VALUATION-zh-TW.md':    'learning-valuation-zh-tw.html',
   'LEARNING-MARKET-zh-TW.md':       'learning-market-zh-tw.html',
   'LEARNING-PORTFOLIO-zh-TW.md':    'learning-portfolio-zh-tw.html',
+  'LEARNING-PLAYBOOK-zh-TW.md':     'learning-playbook-zh-tw.html',
 };
 
 // Assets we actually serve — any other relative link is sent to GitHub.
@@ -203,9 +208,10 @@ const SERVED = new Set(['index.html','cookbook.html','cookbook-zh-tw.html',
   'use-cases-zh-tw.html','data-and-accuracy-zh-tw.html',
   'learning.html','learning-foundations.html','learning-statements.html',
   'learning-quality.html','learning-valuation.html','learning-market.html','learning-portfolio.html',
+  'learning-playbook.html',
   'learning-zh-tw.html','learning-foundations-zh-tw.html','learning-statements-zh-tw.html',
   'learning-quality-zh-tw.html','learning-valuation-zh-tw.html','learning-market-zh-tw.html',
-  'learning-portfolio-zh-tw.html']);
+  'learning-portfolio-zh-tw.html','learning-playbook-zh-tw.html']);
 
 // Rewrite links in rendered HTML:
 //  - relative paths for served assets  → leave alone
@@ -299,6 +305,13 @@ const PAGES = [
     subtitle: 'Lesson 6 · Allocation, sizing, rebalancing, and behavioral pitfalls',
   },
   {
+    key: 'learning-playbook',
+    outFile: 'learning-playbook.html',
+    srcFile: 'LEARNING-PLAYBOOK.md',
+    title: "The Professional's Playbook",
+    subtitle: 'Lesson 7 · A worked end-to-end case study — plan, analysis, trading plan, and tracking',
+  },
+  {
     key: 'learning-zh-tw',
     outFile: 'learning-zh-tw.html',
     srcFile: 'LEARNING-zh-TW.md',
@@ -346,6 +359,13 @@ const PAGES = [
     srcFile: 'LEARNING-PORTFOLIO-zh-TW.md',
     title: '投資組合與風險',
     subtitle: '第 6 課 · 資產配置、部位大小、再平衡與行為陷阱',
+  },
+  {
+    key: 'learning-playbook-zh-tw',
+    outFile: 'learning-playbook-zh-tw.html',
+    srcFile: 'LEARNING-PLAYBOOK-zh-TW.md',
+    title: '專業投資人的實戰劇本',
+    subtitle: '第 7 課 · 完整端到端案例——計畫、分析、交易計畫與追蹤',
   },
   {
     key: 'concepts',

@@ -182,6 +182,6 @@ Use it as an *input*, not an oracle. A single skill sees one slice of the pictur
 
 ---
 
-> **Next / Related:** Previous lesson — [Reading the Market](learning-market.html). You've finished the curriculum — head back to the [Learning hub](learning.html) to review, then [Choose a Skill](choose-a-skill.html) to put it all to work. See also the [Concepts](concepts.html) mental model and the [Glossary](glossary.html).
+> **Next / Related:** Previous lesson — [Reading the Market](learning-market.html). Next, see it all come together in the capstone: [**The Professional's Playbook**](learning-playbook.html) runs this whole process on a real stock. Or head back to the [Learning hub](learning.html), then [Choose a Skill](choose-a-skill.html) to put it to work. See also [Concepts](concepts.html) and the [Glossary](glossary.html).
 
 *Educational content only. Not financial advice.*
