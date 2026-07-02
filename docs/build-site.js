@@ -41,6 +41,7 @@ const NAV = {
         { label: '5 · Reading the Market',    href: 'learning-market.html',      page: 'learning-market' },
         { label: '6 · Portfolio & Risk',      href: 'learning-portfolio.html',   page: 'learning-portfolio' },
         { label: "7 · The Pro's Playbook",    href: 'learning-playbook.html',    page: 'learning-playbook' },
+        { label: '8 · Case Study: AMD',       href: 'learning-case-amd.html',    page: 'learning-case-amd' },
       ],
     },
     {
@@ -99,6 +100,7 @@ const NAV = {
         { label: '5 · 解讀市場訊號',  href: 'learning-market-zh-tw.html',      page: 'learning-market-zh-tw' },
         { label: '6 · 投資組合與風險', href: 'learning-portfolio-zh-tw.html',  page: 'learning-portfolio-zh-tw' },
         { label: '7 · 實戰劇本',       href: 'learning-playbook-zh-tw.html',   page: 'learning-playbook-zh-tw' },
+        { label: '8 · 案例研究：AMD',  href: 'learning-case-amd-zh-tw.html',   page: 'learning-case-amd-zh-tw' },
       ],
     },
     {
@@ -136,6 +138,7 @@ const LANG_PAIRS = [
   ['learning-market.html', 'learning-market-zh-tw.html'],
   ['learning-portfolio.html', 'learning-portfolio-zh-tw.html'],
   ['learning-playbook.html', 'learning-playbook-zh-tw.html'],
+  ['learning-case-amd.html', 'learning-case-amd-zh-tw.html'],
   ['concepts.html', 'concepts-zh-tw.html'],
   ['glossary.html', 'glossary-zh-tw.html'],
   ['choose-a-skill.html', 'choose-a-skill-zh-tw.html'],
@@ -188,6 +191,7 @@ const MD_TO_HTML = {
   'LEARNING-MARKET.md':         'learning-market.html',
   'LEARNING-PORTFOLIO.md':      'learning-portfolio.html',
   'LEARNING-PLAYBOOK.md':       'learning-playbook.html',
+  'LEARNING-CASE-AMD.md':       'learning-case-amd.html',
   'LEARNING-zh-TW.md':              'learning-zh-tw.html',
   'LEARNING-FOUNDATIONS-zh-TW.md':  'learning-foundations-zh-tw.html',
   'LEARNING-STATEMENTS-zh-TW.md':   'learning-statements-zh-tw.html',
@@ -196,6 +200,7 @@ const MD_TO_HTML = {
   'LEARNING-MARKET-zh-TW.md':       'learning-market-zh-tw.html',
   'LEARNING-PORTFOLIO-zh-TW.md':    'learning-portfolio-zh-tw.html',
   'LEARNING-PLAYBOOK-zh-TW.md':     'learning-playbook-zh-tw.html',
+  'LEARNING-CASE-AMD-zh-TW.md':     'learning-case-amd-zh-tw.html',
 };
 
 // Assets we actually serve — any other relative link is sent to GitHub.
@@ -208,10 +213,10 @@ const SERVED = new Set(['index.html','cookbook.html','cookbook-zh-tw.html',
   'use-cases-zh-tw.html','data-and-accuracy-zh-tw.html',
   'learning.html','learning-foundations.html','learning-statements.html',
   'learning-quality.html','learning-valuation.html','learning-market.html','learning-portfolio.html',
-  'learning-playbook.html',
+  'learning-playbook.html','learning-case-amd.html',
   'learning-zh-tw.html','learning-foundations-zh-tw.html','learning-statements-zh-tw.html',
   'learning-quality-zh-tw.html','learning-valuation-zh-tw.html','learning-market-zh-tw.html',
-  'learning-portfolio-zh-tw.html','learning-playbook-zh-tw.html']);
+  'learning-portfolio-zh-tw.html','learning-playbook-zh-tw.html','learning-case-amd-zh-tw.html']);
 
 // Rewrite links in rendered HTML:
 //  - relative paths for served assets  → leave alone
@@ -312,6 +317,13 @@ const PAGES = [
     subtitle: 'Lesson 7 · A worked end-to-end case study — plan, analysis, trading plan, and tracking',
   },
   {
+    key: 'learning-case-amd',
+    outFile: 'learning-case-amd.html',
+    srcFile: 'LEARNING-CASE-AMD.md',
+    title: 'Case Study: AMD',
+    subtitle: 'Lesson 8 · The playbook run end-to-end on AMD — a cyclical AI-semiconductor name',
+  },
+  {
     key: 'learning-zh-tw',
     outFile: 'learning-zh-tw.html',
     srcFile: 'LEARNING-zh-TW.md',
@@ -366,6 +378,13 @@ const PAGES = [
     srcFile: 'LEARNING-PLAYBOOK-zh-TW.md',
     title: '專業投資人的實戰劇本',
     subtitle: '第 7 課 · 完整端到端案例——計畫、分析、交易計畫與追蹤',
+  },
+  {
+    key: 'learning-case-amd-zh-tw',
+    outFile: 'learning-case-amd-zh-tw.html',
+    srcFile: 'LEARNING-CASE-AMD-zh-TW.md',
+    title: '案例研究：AMD',
+    subtitle: '第 8 課 · 把劇本完整跑在 AMD 上——一檔週期性 AI 半導體股',
   },
   {
     key: 'concepts',

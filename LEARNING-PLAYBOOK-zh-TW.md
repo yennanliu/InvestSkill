@@ -272,6 +272,6 @@ Q3 檢視 · AAPL
 
 ---
 
-> **下一步／延伸：** 回到[學習中心](learning-zh-tw.html) · 重溫[估值入門](learning-valuation-zh-tw.html)與[投資組合與風險](learning-portfolio-zh-tw.html) · 再到[選擇技能](choose-a-skill-zh-tw.html)在真實股票上實作，或看 [RKLB 完整示範](full-demo-rklb.html)。
+> **下一步／延伸：** 看同一循環套用在一檔截然不同的股票上——[**案例研究：AMD**](learning-case-amd-zh-tw.html)。或回到[學習中心](learning-zh-tw.html) · 重溫[估值入門](learning-valuation-zh-tw.html)與[投資組合與風險](learning-portfolio-zh-tw.html) · 再到[選擇技能](choose-a-skill-zh-tw.html)在真實股票上實作，或看 [RKLB 完整示範](full-demo-rklb.html)。
 
 *僅供教育用途，並非投資建議。所有數字皆為教學用的概略示意值——並非即時資料。*

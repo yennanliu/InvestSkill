@@ -272,6 +272,6 @@ The point: same disciplined loop, dialed to the risk. See a **real, full end-to-
 
 ---
 
-> **Next / Related:** back to the [Learning Hub](learning.html) · revisit [Valuation](learning-valuation.html) and [Portfolio & Risk](learning-portfolio.html) · then [Choose a Skill](choose-a-skill.html) to run this on a ticker, or watch a full run in the [Demo](full-demo.html).
+> **Next / Related:** see the loop applied to a very different stock in [**Case Study: AMD**](learning-case-amd.html). Or back to the [Learning Hub](learning.html) · revisit [Valuation](learning-valuation.html) and [Portfolio & Risk](learning-portfolio.html) · then [Choose a Skill](choose-a-skill.html) to run this on a ticker, or watch a full run in the [Demo](full-demo.html).
 
 *Educational content only. Not financial advice. All figures are illustrative and rounded for teaching — not current data.*

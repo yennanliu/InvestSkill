@@ -8,7 +8,7 @@
 
 ## The learning path
 
-Seven lessons, ordered so each builds on the last. The first six cover everything the plugin measures — from what a share is, to what a business is worth, to how to hold a portfolio without getting hurt — and the seventh puts it all together on a real stock.
+Eight lessons, ordered so each builds on the last. The first six cover everything the plugin measures — from what a share is, to what a business is worth, to how to hold a portfolio without getting hurt — and the last two put it all together on real stocks.
 
 | # | Lesson | What you'll learn | Related skills |
 |---|--------|-------------------|----------------|
@@ -19,6 +19,7 @@ Seven lessons, ordered so each builds on the last. The first six cover everythin
 | 5 | [**Reading the Market**](learning-market.html) | Technicals, insider & institutional signals, short interest, options, macro & sectors | `technical-analysis`, `insider-trading`, `institutional-ownership`, `short-interest`, `options-analysis`, `economics-analysis`, `sector-analysis` |
 | 6 | [**Portfolio & Risk**](learning-portfolio.html) | Allocation, position sizing, rebalancing, risk-adjusted return, behavioral pitfalls | `portfolio-review`, `stock-screener`, `result-validator` |
 | 7 | [**The Professional's Playbook**](learning-playbook.html) | A worked end-to-end case study on a real stock: plan, research, decision, **trading plan**, and tracking | *all of them* |
+| 8 | [**Case Study: AMD**](learning-case-amd.html) | The playbook run end-to-end on **AMD** — a cyclical AI-semiconductor name, and how the same loop yields a different plan | *all of them* |
 
 > **How to use this guide:** if you're brand new, start at Lesson 1 and go in order — later lessons assume the vocabulary from earlier ones. If you already invest, skim the table and jump to the gaps. Lesson 7 is the capstone: it runs the whole process on one company, so read it once you've met the ideas in 1–6. Each lesson ends with key takeaways and a link to the next.
 
@@ -26,7 +27,7 @@ Seven lessons, ordered so each builds on the last. The first six cover everythin
 
 ## The one-paragraph version
 
-A **stock** is part-ownership of a real business (Lesson 1). To judge that business you read its **financial statements** (Lesson 2), which tell you whether it's a **high-quality** operation earning more than its cost of capital (Lesson 3). Quality alone isn't enough — you also need to know what it's **worth** and to buy with a margin of safety (Lesson 4). The **market** adds timing and confirmation through price action, positioning, and the macro backdrop (Lesson 5). You hold your ideas inside a **portfolio** that's diversified, correctly sized, and protected from your own behavior (Lesson 6). And in the **capstone**, a professional runs all of it on a single real stock — thesis, research plan, valuation, a written trading plan, and ongoing tracking (Lesson 7).
+A **stock** is part-ownership of a real business (Lesson 1). To judge that business you read its **financial statements** (Lesson 2), which tell you whether it's a **high-quality** operation earning more than its cost of capital (Lesson 3). Quality alone isn't enough — you also need to know what it's **worth** and to buy with a margin of safety (Lesson 4). The **market** adds timing and confirmation through price action, positioning, and the macro backdrop (Lesson 5). You hold your ideas inside a **portfolio** that's diversified, correctly sized, and protected from your own behavior (Lesson 6). And in the **capstones**, a professional runs all of it on real stocks — thesis, research plan, valuation, a written trading plan, and ongoing tracking — first on a mature compounder (Lesson 7), then on a cyclical AI-semiconductor name, AMD (Lesson 8).
 
 ---
 
