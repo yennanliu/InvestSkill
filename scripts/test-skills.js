@@ -387,7 +387,7 @@ if (fileExists(cursorPath)) {
 
 section('9. Cookbook Files');
 
-const cookbookFiles = ['COOKBOOK.md', 'COOKBOOK-zh-TW.md'];
+const cookbookFiles = ['site/content/COOKBOOK.md', 'site/content/COOKBOOK-zh-TW.md'];
 cookbookFiles.forEach(file => {
   const filePath = path.join(ROOT, file);
   if (fileExists(filePath)) {
@@ -490,8 +490,8 @@ if (uniqueVersions.length === 1) {
 // (>= 10) stated next to "framework(s)" / "N 個 … 框架" must equal ADVERTISED.
 const COUNT_DOCS = [
   'README.md', 'README-zh-TW.md',
-  'CHOOSE-A-SKILL.md', 'CHOOSE-A-SKILL-zh-TW.md',
-  'COOKBOOK.md', 'COOKBOOK-zh-TW.md',
+  'site/content/CHOOSE-A-SKILL.md', 'site/content/CHOOSE-A-SKILL-zh-TW.md',
+  'site/content/COOKBOOK.md', 'site/content/COOKBOOK-zh-TW.md',
 ];
 const claimPatterns = [
   /\b(\d+)\s+(?:[A-Za-z-]+\s+){0,3}frameworks?\b/gi,   // "23 (structured analysis) frameworks"

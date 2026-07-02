@@ -74,8 +74,8 @@ This is enforced by the consistency checks in `npm test`.
 
 The **advertised framework count** = number of skills in `plugins/us-stock-analysis/skills/` **minus output-only tools** (`report-generator`). It is currently **23 analysis frameworks** (24 skill directories − 1 output tool).
 
-- Keep this number consistent across `README.md`, `README-zh-TW.md`, `CHOOSE-A-SKILL(-zh-TW).md`, `COOKBOOK(-zh-TW).md`, and `plugin.json`'s description.
-- `docs/build-site.js` derives it automatically (`FRAMEWORK_COUNT`) — never hardcode a count there.
+- Keep this number consistent across `README.md`, `README-zh-TW.md`, `site/content/CHOOSE-A-SKILL(-zh-TW).md`, `site/content/COOKBOOK(-zh-TW).md`, and `plugin.json`'s description.
+- `site/build/build-site.js` derives it automatically (`FRAMEWORK_COUNT`) — never hardcode a count there.
 - Enforced by the consistency checks in `npm test` (stale totals like 18/21 will fail).
 
 ## Current State

@@ -84,7 +84,7 @@ sha256sum -c checksums.txt
 
 - 📖 [Complete README](README.md) — All platforms setup guide
 - 📊 [Platform Compatibility](PLATFORM-COMPATIBILITY.md) — Feature comparison
-- 📚 [Cookbook](COOKBOOK.md) — Examples and walkthroughs
+- 📚 [Cookbook](site/content/COOKBOOK.md) — Examples and walkthroughs
 - 🔧 [CI/CD Guide](CI-CD-GUIDE.md) — Automated release pipeline
 - 💡 [16 Investment Frameworks](prompts/) — Universal prompt files
 

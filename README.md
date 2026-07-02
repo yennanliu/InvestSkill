@@ -196,11 +196,11 @@ New to investing, or unsure which skill to reach for? Start here:
 
 | Guide | What it gives you |
 |-------|-------------------|
-| [Concepts](CONCEPTS.md) | The mental models behind the metrics — quality vs. value vs. growth, intrinsic value, moats, risk, and the signal block |
-| [Glossary](GLOSSARY.md) | Plain-English definitions, formulas, and good/bad ranges for every metric the skills emit |
-| [Choose a Skill](CHOOSE-A-SKILL.md) | Map your goal to the right framework, plus comparisons of the ones that overlap |
-| [Use Cases](USE-CASES.md) | End-to-end journeys by investor type — income, first-timer, earnings, macro, skeptic |
-| [Data & Accuracy](DATA-AND-ACCURACY.md) | Where the numbers come from, how to spot hallucinations, and how to validate output |
+| [Concepts](site/content/CONCEPTS.md) | The mental models behind the metrics — quality vs. value vs. growth, intrinsic value, moats, risk, and the signal block |
+| [Glossary](site/content/GLOSSARY.md) | Plain-English definitions, formulas, and good/bad ranges for every metric the skills emit |
+| [Choose a Skill](site/content/CHOOSE-A-SKILL.md) | Map your goal to the right framework, plus comparisons of the ones that overlap |
+| [Use Cases](site/content/USE-CASES.md) | End-to-end journeys by investor type — income, first-timer, earnings, macro, skeptic |
+| [Data & Accuracy](site/content/DATA-AND-ACCURACY.md) | Where the numbers come from, how to spot hallucinations, and how to validate output |
 
 ---
 

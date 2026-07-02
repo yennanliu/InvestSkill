@@ -10,7 +10,7 @@ build/
 _site/
 *.js
 !scripts/*.js
-!docs/*.js
+!site/build/*.js
 *.d.ts
 *.js.map
 

@@ -414,7 +414,7 @@ In Cursor, you can explore:
 - [CI-CD-GUIDE.md](CI-CD-GUIDE.md) — Release automation
 
 ### Examples & Learning
-- [COOKBOOK.md](COOKBOOK.md) — Walkthroughs and examples
+- [COOKBOOK.md](site/content/COOKBOOK.md) — Walkthroughs and examples
 - [CHANGELOG.md](CHANGELOG.md) — Feature updates
 - `prompts/` — Individual framework files
 
