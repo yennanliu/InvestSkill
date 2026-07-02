@@ -385,7 +385,7 @@ Latest features:
 - [CI-CD-GUIDE.md](CI-CD-GUIDE.md) — Release automation
 
 ### Other Resources
-- [COOKBOOK.md](COOKBOOK.md) — Examples and walkthroughs
+- [COOKBOOK.md](site/content/COOKBOOK.md) — Examples and walkthroughs
 - [CHANGELOG.md](CHANGELOG.md) — What's new in each version
 - [LICENSE](LICENSE) — MIT License
 

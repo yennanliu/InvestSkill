@@ -74,8 +74,8 @@ jobs:
           'README-zh-TW.md':   '_site/zh-tw.html',
           'CONTRIBUTING.md':   '_site/contributing.html',
           'CHANGELOG.md':      '_site/changelog.html',
-          'COOKBOOK.md':       '_site/cookbook.html',
-          'COOKBOOK-zh-TW.md': '_site/cookbook-zh-tw.html',
+          'site/content/COOKBOOK.md':       '_site/cookbook.html',
+          'site/content/COOKBOOK-zh-TW.md': '_site/cookbook-zh-tw.html',
         };
 
         let built = 0;
@@ -157,7 +157,7 @@ jobs:
     - name: Build full site and check internal links
       run: |
         rm -rf _site
-        node docs/build-site.js
+        node site/build/build-site.js
         node scripts/check-links.js
 
   # ─────────────────────────────────────────────────────────────────────────

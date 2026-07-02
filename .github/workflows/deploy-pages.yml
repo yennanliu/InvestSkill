@@ -34,7 +34,7 @@ jobs:
       run: npm install markdown-it@^14.0.0 markdown-it-anchor@^8.6.7
 
     - name: Build site
-      run: node docs/build-site.js
+      run: node site/build/build-site.js
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3

@@ -5,7 +5,7 @@
  * points to a file that exists. Absolute URLs (http, /root-relative),
  * anchors, mailto:, and data: URIs are skipped.
  *
- * Run after building: node docs/build-site.js && node scripts/check-links.js
+ * Run after building: node site/build/build-site.js && node scripts/check-links.js
  */
 const fs = require('fs');
 const path = require('path');
@@ -13,7 +13,7 @@ const path = require('path');
 const SITE = path.join(__dirname, '..', '_site');
 
 if (!fs.existsSync(SITE)) {
-  console.error('✗ _site/ not found — run `node docs/build-site.js` first.');
+  console.error('✗ _site/ not found — run `node site/build/build-site.js` first.');
   process.exit(1);
 }
 

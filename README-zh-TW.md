@@ -215,11 +215,11 @@ gemini
 
 | 指南 | 提供什麼 |
 |------|---------|
-| [概念](CONCEPTS-zh-TW.md) | 指標背後的思維模型——品質 vs. 價值 vs. 成長、內在價值、護城河、風險與訊號區塊 |
-| [術語表](GLOSSARY-zh-TW.md) | 各技能所產出每個指標的白話定義、公式與好／壞區間 |
-| [選擇技能](CHOOSE-A-SKILL-zh-TW.md) | 把你的目標對應到合適的框架，並比較功能重疊的技能 |
-| [使用情境](USE-CASES-zh-TW.md) | 依投資人類型的端到端旅程——收息、新手、財報、總經、懷疑者 |
-| [資料與準確性](DATA-AND-ACCURACY-zh-TW.md) | 數字從何而來、如何辨識幻覺，以及如何驗證產出 |
+| [概念](site/content/CONCEPTS-zh-TW.md) | 指標背後的思維模型——品質 vs. 價值 vs. 成長、內在價值、護城河、風險與訊號區塊 |
+| [術語表](site/content/GLOSSARY-zh-TW.md) | 各技能所產出每個指標的白話定義、公式與好／壞區間 |
+| [選擇技能](site/content/CHOOSE-A-SKILL-zh-TW.md) | 把你的目標對應到合適的框架，並比較功能重疊的技能 |
+| [使用情境](site/content/USE-CASES-zh-TW.md) | 依投資人類型的端到端旅程——收息、新手、財報、總經、懷疑者 |
+| [資料與準確性](site/content/DATA-AND-ACCURACY-zh-TW.md) | 數字從何而來、如何辨識幻覺，以及如何驗證產出 |
 
 ---
 

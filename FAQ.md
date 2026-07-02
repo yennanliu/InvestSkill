@@ -496,7 +496,7 @@ response = client.messages.create(
 ## Still Need Help?
 
 - 📚 **[Documentation](README.md)** — Complete setup guides
-- 📖 **[Cookbook](COOKBOOK.md)** — Examples and walkthroughs
+- 📖 **[Cookbook](site/content/COOKBOOK.md)** — Examples and walkthroughs
 - 🎯 **[Platform Guides](README-claude-code.md)** — Platform-specific instructions
 - 💬 **[GitHub Discussions](https://github.com/yennanliu/InvestSkill/discussions)** — Ask questions
 - 🐛 **[GitHub Issues](https://github.com/yennanliu/InvestSkill/issues)** — Report problems

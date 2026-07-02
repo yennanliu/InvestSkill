@@ -266,7 +266,7 @@ function main() {
   body += '## Documentation & Resources\n\n';
   body += '- 📖 [Complete README](README.md) — All platforms setup guide\n';
   body += '- 📊 [Platform Compatibility](PLATFORM-COMPATIBILITY.md) — Feature comparison\n';
-  body += '- 📚 [Cookbook](COOKBOOK.md) — Examples and walkthroughs\n';
+  body += '- 📚 [Cookbook](site/content/COOKBOOK.md) — Examples and walkthroughs\n';
   body += '- 🔧 [CI/CD Guide](CI-CD-GUIDE.md) — Automated release pipeline\n';
   body += '- 🎯 [Adding Skills Guide](ADDING-NEW-SKILLS.md) — Contribute new frameworks\n';
   body += '- 💡 [17 Investment Frameworks](prompts/) — Universal prompt files\n\n';

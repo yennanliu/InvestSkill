@@ -54,7 +54,7 @@ const versionOk = new Set(versions.filter(Boolean)).size === 1;
 // ── Checks ────────────────────────────────────────────────────────────────────
 const checks = [];
 
-const build = run('node docs/build-site.js');
+const build = run('node site/build/build-site.js');
 checks.push({ name: 'Site build', ok: build.ok, detail: build.ok ? 'built _site/' : 'build FAILED' });
 
 const links = run('node scripts/check-links.js');
