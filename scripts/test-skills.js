@@ -449,6 +449,75 @@ if (marketplace && readmeContent) {
   }
 }
 
+// ─── Test 11: Consistency (counts & versions) ───────────────────────────────
+
+section('11. Consistency — Counts & Versions');
+
+// Skills ↔ prompts count parity (report-generator has a prompt too)
+const skillCount  = actualSkillDirs.length;
+const promptCount = fs.existsSync(PROMPTS_DIR)
+  ? fs.readdirSync(PROMPTS_DIR).filter(f => f.endsWith('.md')).length
+  : 0;
+if (skillCount === promptCount) {
+  pass(`Skill dirs (${skillCount}) === prompt files (${promptCount})`);
+} else {
+  fail(`Count mismatch: ${skillCount} skill dirs vs ${promptCount} prompt files`);
+}
+
+// Advertised framework count = skills − output-only tools (report-generator)
+const ADVERTISED = skillCount - PROMPTS_EXCLUDED.length;
+pass(`Advertised framework count = ${ADVERTISED} (${skillCount} skills − ${PROMPTS_EXCLUDED.length} output tool)`);
+
+// Version parity across package.json, plugin.json, marketplace (metadata + entry)
+const pkg = readJSON(path.join(ROOT, 'package.json'));
+const versions = {
+  'package.json': pkg && pkg.version,
+  'plugin.json': pluginJson && pluginJson.version,
+  'marketplace.metadata': marketplace && marketplace.metadata && marketplace.metadata.version,
+};
+const entry = marketplace && marketplace.plugins &&
+  marketplace.plugins.find(p => pluginJson && p.name === pluginJson.name);
+if (entry) versions['marketplace.plugin-entry'] = entry.version;
+const uniqueVersions = [...new Set(Object.values(versions).filter(Boolean))];
+if (uniqueVersions.length === 1) {
+  pass(`Versions match across all manifests: ${uniqueVersions[0]}`);
+} else {
+  fail(`Version drift: ${Object.entries(versions).map(([k, v]) => `${k}=${v}`).join(', ')}`);
+}
+
+// Framework-count claims in site-facing docs must all equal ADVERTISED.
+// Numbers < 10 are treated as category sub-counts and ignored; any total
+// (>= 10) stated next to "framework(s)" / "N 個 … 框架" must equal ADVERTISED.
+const COUNT_DOCS = [
+  'README.md', 'README-zh-TW.md',
+  'CHOOSE-A-SKILL.md', 'CHOOSE-A-SKILL-zh-TW.md',
+  'COOKBOOK.md', 'COOKBOOK-zh-TW.md',
+];
+const claimPatterns = [
+  /\b(\d+)\s+(?:[A-Za-z-]+\s+){0,3}frameworks?\b/gi,   // "23 (structured analysis) frameworks"
+  /(\d+)\s*個[^\n。，]{0,8}框架/g,                       // "23 個 … 框架"
+  /框架[：:]\s*(\d+)\s*個/g,                             // "技能框架：23 個"
+];
+let countDrift = 0;
+COUNT_DOCS.forEach(file => {
+  const content = readFile(path.join(ROOT, file));
+  if (!content) { warn(`${file} — not found for count check`); return; }
+  const bad = [];
+  claimPatterns.forEach(re => {
+    for (const m of content.matchAll(re)) {
+      const n = parseInt(m[1], 10);
+      if (n >= 10 && n !== ADVERTISED) bad.push(`"${m[0].trim()}" (${n})`);
+    }
+  });
+  if (bad.length) {
+    countDrift++;
+    fail(`${file} — stale framework count(s), expected ${ADVERTISED}: ${bad.join(', ')}`);
+  } else {
+    pass(`${file} — framework counts consistent (${ADVERTISED})`);
+  }
+});
+if (countDrift === 0) pass(`All site-facing docs advertise ${ADVERTISED} frameworks`);
+
 // ─── Final Summary ───────────────────────────────────────────────────────────
 
 process.stdout.write('\n' + '═'.repeat(60) + '\n');

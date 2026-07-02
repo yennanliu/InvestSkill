@@ -61,15 +61,27 @@ See `ADDING-NEW-SKILLS.md` for the full walkthrough. Key steps:
 
 ## Version Consistency Rule
 
-Both manifest files must have the same version at all times:
+All three version fields must match at all times:
 - `plugins/us-stock-analysis/.claude-plugin/plugin.json` → `"version"`
-- `.claude-plugin/marketplace.json` → `"metadata.version"`
+- `.claude-plugin/marketplace.json` → `"metadata.version"` (and the plugin entry's `version`)
+- `package.json` → `"version"`
 
-Verify with: `jq '.version' plugins/us-stock-analysis/.claude-plugin/plugin.json && jq '.metadata.version' .claude-plugin/marketplace.json`
+Verify with: `jq '.version' plugins/us-stock-analysis/.claude-plugin/plugin.json && jq '.metadata.version' .claude-plugin/marketplace.json && jq '.version' package.json`
+
+This is enforced by the consistency checks in `npm test`.
+
+## Framework Count Rule
+
+The **advertised framework count** = number of skills in `plugins/us-stock-analysis/skills/` **minus output-only tools** (`report-generator`). It is currently **23 analysis frameworks** (24 skill directories − 1 output tool).
+
+- Keep this number consistent across `README.md`, `README-zh-TW.md`, `CHOOSE-A-SKILL(-zh-TW).md`, `COOKBOOK(-zh-TW).md`, and `plugin.json`'s description.
+- `docs/build-site.js` derives it automatically (`FRAMEWORK_COUNT`) — never hardcode a count there.
+- Enforced by the consistency checks in `npm test` (stale totals like 18/21 will fail).
 
 ## Current State
 
-- **Version**: 1.8.1
-- **Skills**: 24 (listed in `plugin.json`)
-- **Prompts**: 22 universal files in `prompts/` (research-bundle is meta-only, has no standalone prompt)
+- **Version**: 1.8.1 (plugin.json = marketplace.json = package.json)
+- **Skills**: 24 directories in `plugins/us-stock-analysis/skills/` (auto-discovered)
+- **Advertised frameworks**: 23 analysis frameworks (24 − `report-generator`)
+- **Prompts**: 24 universal files in `prompts/` (one per skill, including `research-bundle` and `full-report`)
 - **Node**: ≥18.0.0 required

@@ -17,6 +17,29 @@
 
 ---
 
+## The Data & Sources Header
+
+Because output quality depends entirely on *where the numbers came from*, every analysis should declare its provenance up front. Ask for — and expect — a **Data & Sources** block like this at the top of any report:
+
+```
+Data & Sources
+  As of:      2026-07-02
+  Source:     SEC EDGAR 10-K (FY2025) · company IR · FRED
+  Retrieval:  pasted by user   (or: web/tool retrieval · model memory)
+  Confidence: HIGH — primary-source, current
+```
+
+| Field | What it tells you |
+|-------|-------------------|
+| **As of** | The date the figures represent — anything stale should be flagged |
+| **Source** | The primary document(s) behind the numbers |
+| **Retrieval** | How they reached the model: *pasted* (most reliable) → *web/tool* (verify) → *model memory* (least reliable, treat as approximate) |
+| **Confidence** | HIGH (primary-source, current) · MEDIUM (mixed/secondary) · LOW (memory or missing data) |
+
+> **Rule of thumb:** if the Retrieval line says "model memory," treat every number as a placeholder until you confirm it against a primary source. Composite reports (`full-report`, `research-bundle`) should always carry this header **and** end with a [`result-validator`](#validating-ai-output) pass.
+
+---
+
 ## Recommended Data Sources
 
 | Need | Primary source |

@@ -111,6 +111,96 @@ function setupSidebar() {
   });
 }
 
+// ── Search ──────────────────────────────────────────────────────────────────
+function setupSearch() {
+  const trigger = document.querySelector('.search-box');
+  if (!trigger) return;
+
+  let index = null;
+  let modal = null;
+
+  async function loadIndex() {
+    if (index) return index;
+    try {
+      const res = await fetch('search-index.json');
+      index = res.ok ? await res.json() : [];
+    } catch { index = []; }
+    return index;
+  }
+
+  function snippet(text, q) {
+    if (!text) return '';
+    const i = text.toLowerCase().indexOf(q);
+    if (i < 0) return text.slice(0, 120) + '…';
+    const start = Math.max(0, i - 40);
+    return (start > 0 ? '…' : '') + text.slice(start, start + 130).trim() + '…';
+  }
+
+  function search(q) {
+    const query = q.toLowerCase().trim();
+    if (!query) return [];
+    return (index || [])
+      .map(it => {
+        const title = (it.title || '').toLowerCase();
+        const text = (it.text || '').toLowerCase();
+        let score = 0;
+        if (title === query) score += 100;
+        if (title.includes(query)) score += 25;
+        if ((it.section || '').toLowerCase().includes(query)) score += 8;
+        if (text.includes(query)) score += 3;
+        return { it, score };
+      })
+      .filter(r => r.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 12);
+  }
+
+  function render(list, q, resultsEl) {
+    if (!q.trim()) { resultsEl.innerHTML = '<li class="search-hint">Type to search all pages…</li>'; return; }
+    if (!list.length) { resultsEl.innerHTML = '<li class="search-hint">No results</li>'; return; }
+    resultsEl.innerHTML = list.map(({ it }, idx) =>
+      `<li><a class="search-result${idx === 0 ? ' active' : ''}" href="${it.url}">
+        <span class="search-result-title">${it.title}</span>
+        <span class="search-result-section">${it.section || ''}</span>
+        <span class="search-result-snippet">${snippet(it.text, q.toLowerCase().trim())}</span>
+      </a></li>`).join('');
+  }
+
+  async function open() {
+    await loadIndex();
+    if (modal) return;
+    modal = document.createElement('div');
+    modal.className = 'search-modal';
+    modal.innerHTML = `
+      <div class="search-panel" role="dialog" aria-modal="true">
+        <input class="search-input" type="text" placeholder="Search InvestSkill…" autocomplete="off" spellcheck="false" aria-label="Search">
+        <ul class="search-results"></ul>
+      </div>`;
+    document.body.appendChild(modal);
+    const input = modal.querySelector('.search-input');
+    const resultsEl = modal.querySelector('.search-results');
+    render([], '', resultsEl);
+
+    input.addEventListener('input', () => render(search(input.value), input.value, resultsEl));
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const first = resultsEl.querySelector('.search-result');
+        if (first) window.location.href = first.getAttribute('href');
+      }
+    });
+    modal.addEventListener('click', e => { if (e.target === modal) close(); });
+    setTimeout(() => input.focus(), 0);
+  }
+
+  function close() { if (modal) { modal.remove(); modal = null; } }
+
+  trigger.addEventListener('click', open);
+  document.addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); open(); }
+    if (e.key === 'Escape') close();
+  });
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   setupTheme();
@@ -118,4 +208,5 @@ document.addEventListener('DOMContentLoaded', () => {
   setupScrollSpy();
   setupCopyButton();
   setupSidebar();
+  setupSearch();
 });

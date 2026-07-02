@@ -1,6 +1,8 @@
 # InvestSkill — Project Review & Improvement Ideas
 
-*Review date: 2026-07-02 · Reviewed at v1.8.1 · 24 skills / 24 prompts / 327 passing tests*
+*Review date: 2026-07-02 · Reviewed at v1.8.1 · 24 skills / 24 prompts*
+
+> **Status (2026-07-02):** ✅ **P0 and P1 complete.** A1–A3, B1 (P0) and A4, C1, D1, B2 (P1) are implemented — framework count standardized to 23 and enforced by a new consistency test, `package.json` version aligned, `Data & Sources` provenance header added, functional client-side search shipped, and a docs link-checker wired into CI. Test suite now 337 passing. P2/backlog items remain open.
 
 A structured review of the InvestSkill project with prioritized, actionable improvement ideas. Findings are grounded in the current codebase; each carries a rough effort/impact estimate and, where useful, file references.
 
@@ -94,13 +96,13 @@ Grouped by theme. Severity: 🔴 correctness/trust · 🟠 quality · 🟡 nice-
 
 ---
 
-## 5. Quick-wins checklist (P0)
+## 5. Quick-wins checklist (P0) — ✅ done
 
-- [ ] Pick the canonical framework count and its rule; interpolate it (don't hardcode) in README, README-zh-TW, `build-site.js` (`skills.html` subtitle), and the home card.
-- [ ] Bump `package.json` to `1.8.1`; add it to the version-consistency rule + `pre-release-check.js`.
-- [ ] Refresh `CLAUDE.md` "Current State" (24 prompts; clarify research-bundle/full-report).
-- [ ] Add a test: `skills === prompts === advertised count` across all surfaces.
-- [ ] Add a docs link-check step to CI.
+- [x] Canonical framework count = **23** (skills − output tools), documented in `CLAUDE.md`; `build-site.js` derives it (`FRAMEWORK_COUNT`), and README-zh-TW / CHOOSE-A-SKILL / COOKBOOK were corrected.
+- [x] `package.json` bumped to `1.8.1`; version parity across all three manifests now enforced by `npm test`.
+- [x] `CLAUDE.md` "Current State" refreshed (24 prompts; framework-count rule; research-bundle noted as deprecated → `full-report`).
+- [x] Consistency test added (Test 11): `skills === prompts`, version parity, and no stale framework totals in site-facing docs.
+- [x] Docs link-checker (`scripts/check-links.js`) added and wired into the `test.yml` build job.
 
 ---
 

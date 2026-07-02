@@ -782,6 +782,15 @@ fs.copyFileSync(path.join(__dirname, 'style.css'), path.join(outDir, 'style.css'
 fs.copyFileSync(path.join(__dirname, 'main.js'),   path.join(outDir, 'main.js'));
 console.log('✓ Copied style.css and main.js');
 
+// Client-side search index (built as pages render).
+const searchIndex = [];
+const toText = (html) => html
+  .replace(/<[^>]+>/g, ' ')
+  .replace(/&[a-z]+;/gi, ' ')
+  .replace(/\s+/g, ' ')
+  .trim()
+  .slice(0, 1600);
+
 // Generate pages
 for (const page of PAGES) {
   if (!fs.existsSync(page.srcFile)) {
@@ -792,6 +801,13 @@ for (const page of PAGES) {
   const content = rewriteLinks(md.render(raw));
   const html    = htmlPage(page, content);
   fs.writeFileSync(path.join(outDir, page.outFile), html);
+  searchIndex.push({
+    title: page.title,
+    url: page.outFile,
+    lang: langOf(page.outFile),
+    section: eyebrowFor(langOf(page.outFile), page.key),
+    text: toText(content),
+  });
   console.log(`✓ ${page.outFile}`);
 }
 
@@ -853,6 +869,13 @@ for (const name of promptFiles) {
   };
   const content = rewriteLinks(md.render(body));
   fs.writeFileSync(path.join(outDir, page.outFile), htmlPage(page, content));
+  searchIndex.push({
+    title: page.title,
+    url: page.outFile,
+    lang: 'en',
+    section: 'Skill Reference',
+    text: toText(content),
+  });
 }
 console.log(`✓ ${promptFiles.length} per-skill reference pages`);
 
@@ -875,9 +898,12 @@ for (const section of indexSections) {
 }
 skillsMd += `\n*Educational frameworks only. Not financial advice.*\n`;
 
+// Advertised framework count = analysis prompts (report-generator is an
+// output tool, not a framework). Derived so it can never drift.
+const FRAMEWORK_COUNT = promptFiles.filter(n => n !== 'report-generator').length;
 const skillsPage = {
   key: 'skills', outFile: 'skills.html', srcFile: 'README.md',
-  title: 'Skill Reference', subtitle: 'All 21 frameworks, one page each',
+  title: 'Skill Reference', subtitle: `All ${FRAMEWORK_COUNT} frameworks, one page each`,
 };
 fs.writeFileSync(
   path.join(outDir, 'skills.html'),
@@ -904,4 +930,8 @@ const html404 = `<!DOCTYPE html>
 </html>`;
 fs.writeFileSync(path.join(outDir, '404.html'), html404);
 console.log('✓ 404.html');
+
+// Write the client-side search index.
+fs.writeFileSync(path.join(outDir, 'search-index.json'), JSON.stringify(searchIndex));
+console.log(`✓ search-index.json (${searchIndex.length} pages)`);
 console.log('\nBuild complete.');

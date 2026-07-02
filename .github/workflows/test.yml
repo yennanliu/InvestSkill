@@ -154,6 +154,12 @@ jobs:
         console.log('✅ All HTML content checks passed');
         "
 
+    - name: Build full site and check internal links
+      run: |
+        rm -rf _site
+        node docs/build-site.js
+        node scripts/check-links.js
+
   # ─────────────────────────────────────────────────────────────────────────
   # Job 3: Skill Syntax Checks (Claude Code plugin format)
   # Tests: plugin.json schema, SKILL.md frontmatter, skills list integrity

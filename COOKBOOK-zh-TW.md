@@ -958,7 +958,7 @@ AAPL — 6 個月股價（八月至二月）
 
 ## 5. 跨 AI 工具使用
 
-InvestSkill 適用於任何 AI 助手。`prompts/` 目錄包含所有 21 個分析框架的獨立檔案。
+InvestSkill 適用於任何 AI 助手。`prompts/` 目錄包含所有 23 個分析框架的獨立檔案。
 
 ### Gemini CLI
 

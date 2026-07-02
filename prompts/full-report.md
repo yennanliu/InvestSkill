@@ -227,12 +227,25 @@ Example: `output/AAPL_report_2025-06-19.html`
 
 ## Data Verification
 
+**Open the report with a `Data & Sources` header** so provenance is explicit:
+
+```
+Data & Sources
+  As of:      <date the figures represent>
+  Source:     <primary docs — SEC EDGAR 10-K/10-Q, company IR, FRED, …>
+  Retrieval:  <pasted by user | web/tool retrieval | model memory>
+  Confidence: <HIGH | MEDIUM | LOW>
+```
+
 Before rendering the final report, verify:
+- The `Data & Sources` header is present and the Retrieval/Confidence are honest (flag "model memory" as LOW)
 - All executed modules returned scores (not blank)
 - Scores are within 0–10 range
 - Weighted composite arithmetic is correct (weights sum to 100%)
 - Missing modules for quick/standard depth are flagged as "not assessed"
 - No data older than 90 days used without explicit warning
+
+**Then run `result-validator`** on the composite result and include its confidence score in the report footer — a composite thesis should never ship without this validation pass.
 
 ---
 

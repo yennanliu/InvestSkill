@@ -1,5 +1,5 @@
 ---
-description: Comprehensive stock research by chaining multiple analysis skills into a unified investment thesis — now unified into full-report
+description: "Deprecated — use full-report instead. Chained multiple analysis skills into a unified investment thesis; superseded by full-report's configurable --depth and HTML output."
 ---
 
 # Research Bundle
