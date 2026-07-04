@@ -58,7 +58,7 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 | Dividend Analysis           | `@prompts/dividend-analysis.md`        | `Is JNJ dividend safe?`                    |
 | Short Interest              | `@prompts/short-interest.md`           | `What's the squeeze potential in GME?`     |
 
-### Advanced Analysis (4 skills)
+### Advanced Analysis (5 skills)
 
 | Analysis Type               | Prompt File                            | Usage Example                              |
 |-----------------------------|----------------------------------------|--------------------------------------------|
@@ -66,6 +66,7 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 | Options Analysis            | `@prompts/options-analysis.md`         | `Find earnings play setups in NVDA`        |
 | Portfolio Review            | `@prompts/portfolio-review.md`         | `[paste holdings] Review my allocation`    |
 | Sector Analysis             | `@prompts/sector-analysis.md`          | `What sectors should rotate into?`         |
+| Bear Case                   | `@prompts/bear-case.md`                | `Build the bear case against TSLA`         |
 
 ### Full Research Bundle (3 skills)
 
@@ -156,6 +157,9 @@ TSLA: 10%
 
 # Short squeeze potential
 > @prompts/short-interest.md Is GME a short squeeze candidate?
+
+# Bear case / counterevidence
+> @prompts/bear-case.md Argue why TSLA is a bad hold and give a downside target
 
 # Options strategy selection
 > @prompts/options-analysis.md Find bullish option setups for AAPL earnings
@@ -314,6 +318,7 @@ InvestSkill/
 │   ├── options-analysis.md
 │   ├── portfolio-review.md
 │   ├── sector-analysis.md
+│   ├── bear-case.md
 │   ├── research-bundle.md
 │   ├── result-validator.md
 │   ├── chart-master.md

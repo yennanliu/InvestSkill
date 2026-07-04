@@ -518,6 +518,54 @@ COUNT_DOCS.forEach(file => {
 });
 if (countDrift === 0) pass(`All site-facing docs advertise ${ADVERTISED} frameworks`);
 
+// ─── Test 12: bear-case Skill Contract ──────────────────────────────────────
+
+section('12. bear-case Skill Contract (intentional one-sided design)');
+
+// The bear-case skill is a deliberate red-team. These checks lock in the
+// design guarantees so future edits can't quietly turn it into a balanced call.
+const BEAR_SKILL = path.join(SKILLS_DIR, 'bear-case', 'SKILL.md');
+const BEAR_PROMPT = path.join(PROMPTS_DIR, 'bear-case.md');
+
+[
+  { label: 'bear-case SKILL.md', file: BEAR_SKILL },
+  { label: 'bear-case prompt', file: BEAR_PROMPT },
+].forEach(({ label, file }) => {
+  const content = readFile(file);
+  if (!content) {
+    fail(`${label} — file missing`);
+    return;
+  }
+
+  // Must declare its one-sided / red-team nature (so it's never read as balanced)
+  if (/one-sided/i.test(content)) {
+    pass(`${label} — declares it is intentionally one-sided`);
+  } else {
+    fail(`${label} — must state it is deliberately one-sided`);
+  }
+
+  // Must contain the mandatory intellectual-honesty escape hatch
+  if (/thesis-killers/i.test(content)) {
+    pass(`${label} — includes mandatory Thesis-Killers section`);
+  } else {
+    fail(`${label} — missing "Thesis-Killers" section (what would prove the bear wrong)`);
+  }
+
+  // Must produce a Bear Case Strength score
+  if (/bear case strength/i.test(content)) {
+    pass(`${label} — defines Bear Case Strength score`);
+  } else {
+    fail(`${label} — missing "Bear Case Strength" scoring`);
+  }
+
+  // Must direct the user to pair it with a balanced/bull view
+  if (/stock-eval|bull[- ]case|balanced/i.test(content)) {
+    pass(`${label} — points user to a balanced/bull counterpart`);
+  } else {
+    fail(`${label} — should tell the user to pair it with a balanced view`);
+  }
+});
+
 // ─── Final Summary ───────────────────────────────────────────────────────────
 
 process.stdout.write('\n' + '═'.repeat(60) + '\n');

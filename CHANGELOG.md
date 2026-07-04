@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-07-05
+
+### Added
+- `bear-case` — new skill: a deliberate short-seller red-team that constructs the strongest possible bear thesis for a stock (why NOT to hold). Covers valuation stretch, deteriorating fundamentals, accounting/earnings-quality red flags, competitive & secular threats, management & capital allocation, downside catalysts with timelines, a quantified bear price target, and a mandatory "Thesis-Killers" section listing what would prove the bear wrong. Produces a 0–10 Bear Case Strength Score and is intended to surface counterevidence for any bullish thesis (pair with `stock-eval` for a balanced view). Brings the advertised framework count to 24.
+
 ## [1.8.1] - 2026-06-23
 
 ### Added

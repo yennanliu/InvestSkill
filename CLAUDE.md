@@ -72,7 +72,7 @@ This is enforced by the consistency checks in `npm test`.
 
 ## Framework Count Rule
 
-The **advertised framework count** = number of skills in `plugins/us-stock-analysis/skills/` **minus output-only tools** (`report-generator`). It is currently **23 analysis frameworks** (24 skill directories − 1 output tool).
+The **advertised framework count** = number of skills in `plugins/us-stock-analysis/skills/` **minus output-only tools** (`report-generator`). It is currently **24 analysis frameworks** (25 skill directories − 1 output tool).
 
 - Keep this number consistent across `README.md`, `README-zh-TW.md`, `site/content/CHOOSE-A-SKILL(-zh-TW).md`, `site/content/COOKBOOK(-zh-TW).md`, and `plugin.json`'s description.
 - `site/build/build-site.js` derives it automatically (`FRAMEWORK_COUNT`) — never hardcode a count there.
@@ -80,8 +80,8 @@ The **advertised framework count** = number of skills in `plugins/us-stock-analy
 
 ## Current State
 
-- **Version**: 1.8.1 (plugin.json = marketplace.json = package.json)
-- **Skills**: 24 directories in `plugins/us-stock-analysis/skills/` (auto-discovered)
-- **Advertised frameworks**: 23 analysis frameworks (24 − `report-generator`)
-- **Prompts**: 24 universal files in `prompts/` (one per skill, including `research-bundle` and `full-report`)
+- **Version**: 1.9.0 (plugin.json = marketplace.json = package.json)
+- **Skills**: 25 directories in `plugins/us-stock-analysis/skills/` (auto-discovered)
+- **Advertised frameworks**: 24 analysis frameworks (25 − `report-generator`)
+- **Prompts**: 25 universal files in `prompts/` (one per skill, including `research-bundle` and `full-report`)
 - **Node**: ≥18.0.0 required

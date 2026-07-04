@@ -70,7 +70,7 @@ If the framework loads, setup is complete!
 | Dividend Analysis | `@prompts/dividend-analysis.md` | Dividend safety, yield trap detection |
 | Short Interest | `@prompts/short-interest.md` | Short squeeze scoring, thesis evaluation |
 
-### Advanced Analysis (4 frameworks)
+### Advanced Analysis (5 frameworks)
 
 | Framework | File | Best For |
 |-----------|------|----------|
@@ -78,6 +78,7 @@ If the framework loads, setup is complete!
 | Options Analysis | `@prompts/options-analysis.md` | Greeks, IV rank, strategy selection |
 | Portfolio Review | `@prompts/portfolio-review.md` | Allocation optimization, performance |
 | Sector Analysis | `@prompts/sector-analysis.md` | Sector rotation, opportunity identification |
+| Bear Case | `@prompts/bear-case.md` | One-sided short thesis, downside target, counterevidence to a bull thesis |
 
 ### Full Research Bundle (2 frameworks)
 
@@ -194,6 +195,9 @@ TSLA: 10%
 
 # Short squeeze potential
 @prompts/short-interest.md Evaluate short squeeze potential in GME
+
+# Bear case / counterevidence
+@prompts/bear-case.md Build the bear case against TSLA and give a downside target
 
 # Options strategy
 @prompts/options-analysis.md Find bullish options strategies for AAPL earnings
@@ -392,6 +396,7 @@ InvestSkill/
 │   ├── options-analysis.md
 │   ├── portfolio-review.md
 │   ├── sector-analysis.md
+│   ├── bear-case.md
 │   ├── research-bundle.md
 │   ├── result-validator.md
 │   ├── chart-master.md

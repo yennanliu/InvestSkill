@@ -64,7 +64,7 @@ If Copilot references the frameworks, setup is complete!
 | Dividend Analysis | `prompts/dividend-analysis.md` | Dividend safety and sustainability |
 | Short Interest | `prompts/short-interest.md` | Squeeze potential and bearish thesis |
 
-### Advanced Analysis (4 frameworks)
+### Advanced Analysis (5 frameworks)
 
 | Framework | File | Best For |
 |-----------|------|----------|
@@ -72,6 +72,7 @@ If Copilot references the frameworks, setup is complete!
 | Options Analysis | `prompts/options-analysis.md` | Greeks, strategy selection, earnings plays |
 | Portfolio Review | `prompts/portfolio-review.md` | Allocation optimization |
 | Sector Analysis | `prompts/sector-analysis.md` | Sector rotation opportunities |
+| Bear Case | `prompts/bear-case.md` | One-sided short thesis, downside target, counterevidence to a bull thesis |
 
 ### Full Research Bundle (2 frameworks)
 
@@ -185,6 +186,9 @@ Is the JNJ dividend safe? Use the dividend-analysis framework
 
 # Short squeeze
 What's the short squeeze potential in GME? Use the short-interest framework
+
+# Bear case / counterevidence
+Build the bear case against TSLA and give a downside target using the bear-case framework
 
 # Options strategy
 Find bullish option strategies for AAPL earnings using the options-analysis framework
@@ -350,6 +354,7 @@ InvestSkill/
 │   ├── options-analysis.md
 │   ├── portfolio-review.md
 │   ├── sector-analysis.md
+│   ├── bear-case.md
 │   ├── research-bundle.md
 │   ├── result-validator.md
 │   ├── chart-master.md
