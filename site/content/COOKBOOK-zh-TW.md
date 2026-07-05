@@ -51,7 +51,7 @@ claude
 /plugin list
 ```
 
-確認在清單中看到 `us-stock-analysis`，並顯示 21 個可用技能，即表示安裝成功。
+確認在清單中看到 `us-stock-analysis`，並顯示 25 個可用技能，即表示安裝成功。
 
 ### 快速測試
 
@@ -133,7 +133,7 @@ plugins/us-stock-analysis/skills/
 ├── financial-report-analyst/SKILL.md
 ├── chart-master/SKILL.md           ← v1.6.0 新增
 ├── full-report/SKILL.md            ← v1.6.0 新增
-└── ...（共 21 個技能）
+└── ...（共 25 個技能）
 ```
 
 ### 標準訊號區塊

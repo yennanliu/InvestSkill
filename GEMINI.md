@@ -1,6 +1,6 @@
 # InvestSkill — Gemini CLI Setup & Usage Guide
 
-This project contains professional investment analysis prompt frameworks for US stock markets. When you run Gemini CLI in this directory, all 21 analysis frameworks are automatically available.
+This project contains professional investment analysis prompt frameworks for US stock markets. When you run Gemini CLI in this directory, all 24 analysis frameworks are automatically available.
 
 ## Installation & Setup
 
@@ -28,7 +28,7 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 
 ---
 
-## Available Analysis Prompts (21 Total)
+## Available Analysis Prompts (24 frameworks + 1 output tool)
 
 ### Core Stock Analysis (6 skills)
 
@@ -41,7 +41,7 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 | DCF Valuation               | `@prompts/dcf-valuation.md`            | `Build DCF model for GOOGL`                |
 | Economics Analysis          | `@prompts/economics-analysis.md`       | `What's the current economic outlook?`     |
 
-### Financial Report Analysis (2 skills)
+### Financial Report Analysis (3 skills)
 
 | Analysis Type               | Prompt File                            | Usage Example                              |
 |-----------------------------|----------------------------------------|--------------------------------------------|
@@ -58,7 +58,7 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 | Dividend Analysis           | `@prompts/dividend-analysis.md`        | `Is JNJ dividend safe?`                    |
 | Short Interest              | `@prompts/short-interest.md`           | `What's the squeeze potential in GME?`     |
 
-### Advanced Analysis (5 skills)
+### Advanced Analysis (7 skills)
 
 | Analysis Type               | Prompt File                            | Usage Example                              |
 |-----------------------------|----------------------------------------|--------------------------------------------|
@@ -66,15 +66,16 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 | Options Analysis            | `@prompts/options-analysis.md`         | `Find earnings play setups in NVDA`        |
 | Portfolio Review            | `@prompts/portfolio-review.md`         | `[paste holdings] Review my allocation`    |
 | Sector Analysis             | `@prompts/sector-analysis.md`          | `What sectors should rotate into?`         |
+| Stock Screener              | `@prompts/stock-screener.md`           | `Rank NVDA, AMD, AVGO across all factors`  |
+| Catalyst Calendar           | `@prompts/catalyst-calendar.md`        | `What catalysts are coming for TSLA?`      |
 | Bear Case                   | `@prompts/bear-case.md`                | `Build the bear case against TSLA`         |
 
-### Full Research Bundle (3 skills)
+### Full Research Bundle (2 skills)
 
 | Analysis Type               | Prompt File                            | Usage Example                              |
 |-----------------------------|----------------------------------------|--------------------------------------------|
 | Research Bundle             | `@prompts/research-bundle.md`          | `Complete analysis on AAPL`                |
 | Full Report (HTML)          | `@prompts/full-report.md`              | `Generate full interactive report for NVDA`|
-| (All 21 skills combined)    | (chains multiple analyses)             | `Full thesis with all frameworks`          |
 
 ### Meta-Analysis & Visualization (3 skills)
 

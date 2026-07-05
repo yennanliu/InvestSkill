@@ -194,7 +194,7 @@ Edit `.claude-plugin/marketplace.json`:
 
 ### Step 6: Update .cursor/rules/invest-skill.mdc
 
-Add a reference to the new skill in the rules file. Find the section listing all 18 frameworks and add:
+Add a reference to the new skill in the rules file. Find the section listing all frameworks and add:
 
 ```
 @prompts/my-analysis.md for My Analysis Skill — [brief description]
@@ -224,7 +224,7 @@ Add to the appropriate section:
 1. Add to features list
 2. Add skill to appropriate section
 3. Add usage example
-4. Update skill count from 18 to 19
+4. Update the skill/framework count to the new total (in every header and intro that states it)
 
 ### Step 10: Update Platform-Specific README Files
 
@@ -258,7 +258,7 @@ git commit -m "feat: add my-analysis skill for [description]
 - Registered in all platforms: Claude Code, Cursor, Gemini, Copilot
 - Platform docs updated: README*.md
 
-Total skills: 18 → 19"
+Total skills: N → N+1"
 ```
 
 ---
@@ -559,6 +559,6 @@ Need help?
 
 ---
 
-**Last Updated**: 2026-04-11  
-**Total Skills**: 18 (example walkthrough would make it 19)  
+**Last Updated**: 2026-07-05  
+**Total Skills**: 25 skill directories (24 advertised frameworks + `report-generator` output tool)  
 **Next Review**: When adding new skill
