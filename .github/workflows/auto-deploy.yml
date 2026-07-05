@@ -30,7 +30,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0   # full history so we can inspect tags
 
@@ -62,12 +62,12 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v5
       with:
-        node-version: '20'
+        node-version: '22'
 
     - name: Validate JSON manifests
       run: |
@@ -80,7 +80,9 @@ jobs:
 
     - name: Verify skills registry
       run: |
-        REGISTERED=$(jq -r '.skills[]' plugins/us-stock-analysis/.claude-plugin/plugin.json)
+        # Skills are auto-discovered from the skills/ directory; plugin.json has
+        # no skills[] array, so tolerate its absence (jq '.skills[]?').
+        REGISTERED=$(jq -r '.skills[]? // empty' plugins/us-stock-analysis/.claude-plugin/plugin.json)
         ERRORS=0
         for skill in $REGISTERED; do
           if [ ! -d "plugins/us-stock-analysis/skills/$skill" ]; then
@@ -92,7 +94,7 @@ jobs:
           echo "❌ Skills registry mismatch — aborting deploy"
           exit 1
         fi
-        echo "✅ Skills registry valid"
+        echo "✅ Skills registry valid (auto-discovered from skills/ directory)"
 
   # ── Job 3: build release artifacts and publish ───────────────────────────
   deploy:
@@ -107,7 +109,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
         token: ${{ secrets.GITHUB_TOKEN }}
@@ -118,9 +120,9 @@ jobs:
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v5
       with:
-        node-version: '20'
+        node-version: '22'
 
     # ── 3a. Create release packages ──────────────────────────────────────────
     - name: Build release packages
@@ -193,7 +195,7 @@ jobs:
         DEPLOY_TIMESTAMP:  ${{ github.event.workflow_run.updated_at }}
         RELEASE_URL:       ${{ steps.github_release.outputs.url }}
         PLUGIN_VERSION:    ${{ needs.detect-version.outputs.plugin_version }}
-        SKILL_COUNT:       ${{ toJSON(18) }}
+        SKILL_COUNT:       ${{ toJSON(24) }}
         WORKFLOW_RUN_URL:  ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
     - name: Commit deployment record
@@ -274,7 +276,7 @@ jobs:
         echo "  📊 RELEASE INFO:"
         echo "       Version:  v${VERSION}"
         echo "       Commit:   ${SHA}"
-        echo "       Skills:   18 analysis frameworks"
+        echo "       Skills:   24 analysis frameworks"
         echo "       Release:  ${{ steps.github_release.outputs.url }}"
         echo ""
         echo "════════════════════════════════════════════════════════════"
