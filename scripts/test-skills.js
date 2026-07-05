@@ -566,6 +566,79 @@ const BEAR_PROMPT = path.join(PROMPTS_DIR, 'bear-case.md');
   }
 });
 
+// ─── Test 13: Cross-AI Config Completeness & Count Consistency ───────────────
+
+section('13. Cross-AI Config Completeness & Count Consistency');
+
+// These guards exist because the cross-AI config files (not covered by the
+// COUNT_DOCS check above) silently drifted: skills were missing from tables,
+// and intro/header framework counts went stale. They now fail loudly.
+const CROSS_AI_FILES = [
+  { label: 'GEMINI.md',                        file: 'GEMINI.md' },
+  { label: '.cursor/rules/invest-skill.mdc',   file: '.cursor/rules/invest-skill.mdc' },
+  { label: '.github/copilot-instructions.md',  file: '.github/copilot-instructions.md' },
+];
+
+// Every prompt file must be referenced in each cross-AI config, so a new skill
+// can't be added without wiring it into all platforms (catches the
+// stock-screener / catalyst-calendar / full-report omissions we just fixed).
+const allPromptNames = fs.existsSync(PROMPTS_DIR)
+  ? fs.readdirSync(PROMPTS_DIR).filter(f => f.endsWith('.md')).map(f => f.replace(/\.md$/, ''))
+  : [];
+
+// Reuse the framework-count claim pattern: any total (>=10) stated next to
+// "framework(s)" must equal the advertised count. Small numbers (section
+// sub-counts like "6 frameworks") are treated as sub-totals and ignored.
+const frameworkClaimRe = /\b(\d+)\s+(?:[A-Za-z-]+\s+){0,3}frameworks?\b/gi;
+
+CROSS_AI_FILES.forEach(({ label, file }) => {
+  const content = readFile(path.join(ROOT, file));
+  if (!content) { fail(`${label} — missing`); return; }
+
+  // 1) Completeness — all prompts referenced
+  const missingRefs = allPromptNames.filter(name => !content.includes(`prompts/${name}.md`));
+  if (missingRefs.length === 0) {
+    pass(`${label} — references all ${allPromptNames.length} prompts`);
+  } else {
+    fail(`${label} — missing prompt reference(s): ${missingRefs.join(', ')}`);
+  }
+
+  // 2) Framework-count claims consistent with ADVERTISED
+  const badCounts = [];
+  for (const m of content.matchAll(frameworkClaimRe)) {
+    const n = parseInt(m[1], 10);
+    if (n >= 10 && n !== ADVERTISED) badCounts.push(`"${m[0].trim()}" (${n})`);
+  }
+  if (badCounts.length === 0) {
+    pass(`${label} — framework counts consistent (${ADVERTISED})`);
+  } else {
+    fail(`${label} — stale framework count(s), expected ${ADVERTISED}: ${badCounts.join(', ')}`);
+  }
+});
+
+// COOKBOOK plugin-list skill counts ("N available skills" / "共 N 個技能")
+// must equal the actual number of skill directories.
+const SKILL_COUNT_DOCS = [
+  { file: 'site/content/COOKBOOK.md',       patterns: [/(\d+)\s+available skills/gi, /(\d+)\s+skills total/gi] },
+  { file: 'site/content/COOKBOOK-zh-TW.md', patterns: [/(\d+)\s*個可用技能/g, /共\s*(\d+)\s*個技能/g] },
+];
+SKILL_COUNT_DOCS.forEach(({ file, patterns }) => {
+  const content = readFile(path.join(ROOT, file));
+  if (!content) { warn(`${file} — not found for skill-count check`); return; }
+  const bad = [];
+  patterns.forEach(re => {
+    for (const m of content.matchAll(re)) {
+      const n = parseInt(m[1], 10);
+      if (n !== skillCount) bad.push(`"${m[0].trim()}" (${n})`);
+    }
+  });
+  if (bad.length === 0) {
+    pass(`${file} — plugin-list skill count consistent (${skillCount})`);
+  } else {
+    fail(`${file} — stale skill count(s), expected ${skillCount}: ${bad.join(', ')}`);
+  }
+});
+
 // ─── Final Summary ───────────────────────────────────────────────────────────
 
 process.stdout.write('\n' + '═'.repeat(60) + '\n');

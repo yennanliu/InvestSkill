@@ -381,7 +381,7 @@ InvestSkill/
 │       └── invest-skill.mdc      # This file (auto-loaded)
 ├── .github/
 │   └── copilot-instructions.md   # GitHub Copilot integration
-├── prompts/                       # 18 universal frameworks
+├── prompts/                       # 24 frameworks
 │   ├── stock-eval.md
 │   ├── stock-valuation.md
 │   ├── fundamental-analysis.md
@@ -536,7 +536,7 @@ Analyze AAPL with:
 - **README.md** — Full setup for Claude Code, Gemini, Copilot, Cursor
 - **GEMINI.md** — Detailed Gemini CLI guide
 - **.github/copilot-instructions.md** — GitHub Copilot integration guide
-- **prompts/** — All 18 framework files
+- **prompts/** — All 24 framework files
 - **GitHub Issues** — Report problems or request features
 
 ---

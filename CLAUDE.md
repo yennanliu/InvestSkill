@@ -105,7 +105,9 @@ The **advertised framework count** = number of skills in `plugins/us-stock-analy
 
 - Keep this number consistent across `README.md`, `README-zh-TW.md`, `site/content/CHOOSE-A-SKILL(-zh-TW).md`, `site/content/COOKBOOK(-zh-TW).md`, and `plugin.json`'s description.
 - `site/build/build-site.js` derives it automatically (`FRAMEWORK_COUNT`) — never hardcode a count there.
-- Enforced by the consistency checks in `npm test` (stale totals like 18/21 will fail).
+- Enforced by the consistency checks in `npm test` (stale totals like 18/21 will fail):
+  - **Test 11** checks the six site-facing `COUNT_DOCS` for "N frameworks" claims.
+  - **Test 13** checks the cross-AI configs (`GEMINI.md`, `.cursor/rules/invest-skill.mdc`, `.github/copilot-instructions.md`) — every prompt must be referenced (a new skill can't be silently omitted from a platform), and every "N frameworks" claim must equal the advertised count. It also checks the COOKBOOK plugin-list skill counts equal the skill-directory count.
 
 ## Current State
 

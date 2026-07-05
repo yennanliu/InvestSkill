@@ -14,7 +14,7 @@ cd /path/to/InvestSkill
 gemini
 ```
 
-**That's it!** Gemini CLI automatically loads `GEMINI.md` and gives you access to all 21 analysis frameworks in the `prompts/` directory.
+**That's it!** Gemini CLI automatically loads `GEMINI.md` and gives you access to all 24 analysis frameworks in the `prompts/` directory.
 
 ### Verify Setup
 
@@ -301,7 +301,7 @@ All analyses end with this format:
 
 ```
 InvestSkill/
-├── prompts/                    # 18 universal analysis frameworks
+├── prompts/                    # 24 analysis frameworks
 │   ├── stock-eval.md
 │   ├── stock-valuation.md
 │   ├── fundamental-analysis.md
@@ -370,7 +370,7 @@ gemini
 ## Additional Resources
 
 - **README.md** — Complete project overview and all platforms
-- **prompts/** directory — All 18 analysis frameworks
+- **prompts/** directory — All 24 analysis frameworks
 - **plugins/** — Claude Code plugin configuration (if using Claude Code)
 - **GitHub Issues** — Report bugs or suggest improvements
 

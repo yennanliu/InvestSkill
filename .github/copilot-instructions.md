@@ -338,7 +338,7 @@ What's the valuation in the:
 
 ```
 InvestSkill/
-├── prompts/                    # 18 universal analysis frameworks
+├── prompts/                    # 24 analysis frameworks
 │   ├── stock-eval.md
 │   ├── stock-valuation.md
 │   ├── fundamental-analysis.md
@@ -418,7 +418,7 @@ Use the stock-eval framework for MSFT, but format as:
 ## Additional Resources
 
 - **README.md** — Complete setup guide for all platforms (Claude Code, Gemini, Cursor)
-- **prompts/** — All 18 analysis framework files
+- **prompts/** — All 24 analysis framework files
 - **plugins/** — Claude Code plugin integration (optional)
 - **GitHub Issues** — Report problems or request features
 
