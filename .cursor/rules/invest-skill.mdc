@@ -6,7 +6,7 @@ alwaysApply: true
 
 # InvestSkill — Cursor Rules & Setup Guide
 
-This is the InvestSkill repository — a collection of 18 professional investment analysis frameworks for US stocks. These rules automatically apply when you work in this project.
+This is the InvestSkill repository — a collection of 24 professional investment analysis frameworks for US stocks. These rules automatically apply when you work in this project.
 
 ## Installation & Setup
 
@@ -27,7 +27,7 @@ Cursor automatically loads this file when you open the InvestSkill repository. *
 
 3. **Open AI Chat** (usually `Cmd+K`)
    - Cursor automatically loads the investment analysis rules
-   - All 18 frameworks are immediately available
+   - All 24 frameworks are immediately available
 
 ### Verify Setup
 
@@ -40,7 +40,7 @@ If the framework loads, setup is complete!
 
 ---
 
-## Available Analysis Frameworks (20 Total)
+## Available Analysis Frameworks (24 frameworks + 1 output tool)
 
 ### Core Stock Analysis (6 frameworks)
 
@@ -53,7 +53,7 @@ If the framework loads, setup is complete!
 | DCF Valuation | `@prompts/dcf-valuation.md` | Intrinsic value modeling |
 | Economics Analysis | `@prompts/economics-analysis.md` | Macro indicators, recession probability |
 
-### Financial Report Analysis (2 frameworks)
+### Financial Report Analysis (3 frameworks)
 
 | Framework | File | Best For |
 |-----------|------|----------|
@@ -70,7 +70,7 @@ If the framework loads, setup is complete!
 | Dividend Analysis | `@prompts/dividend-analysis.md` | Dividend safety, yield trap detection |
 | Short Interest | `@prompts/short-interest.md` | Short squeeze scoring, thesis evaluation |
 
-### Advanced Analysis (4 frameworks)
+### Advanced Analysis (7 frameworks)
 
 | Framework | File | Best For |
 |-----------|------|----------|
@@ -78,12 +78,16 @@ If the framework loads, setup is complete!
 | Options Analysis | `@prompts/options-analysis.md` | Greeks, IV rank, strategy selection |
 | Portfolio Review | `@prompts/portfolio-review.md` | Allocation optimization, performance |
 | Sector Analysis | `@prompts/sector-analysis.md` | Sector rotation, opportunity identification |
+| Stock Screener | `@prompts/stock-screener.md` | Multi-ticker ranking across valuation, quality, momentum, sentiment, growth |
+| Catalyst Calendar | `@prompts/catalyst-calendar.md` | Forward-looking 90-day event calendar, impact scoring |
+| Bear Case | `@prompts/bear-case.md` | One-sided short thesis, downside target, counterevidence to a bull thesis |
 
 ### Full Research Bundle (2 frameworks)
 
 | Framework | File | Best For |
 |-----------|------|----------|
 | Research Bundle | `@prompts/research-bundle.md` | Complete multi-framework analysis |
+| Full Report (HTML) | `@prompts/full-report.md` | Runs all modules and saves a standalone HTML report |
 
 ### Meta-Analysis & Visualization (3 frameworks)
 
@@ -194,6 +198,9 @@ TSLA: 10%
 
 # Short squeeze potential
 @prompts/short-interest.md Evaluate short squeeze potential in GME
+
+# Bear case / counterevidence
+@prompts/bear-case.md Build the bear case against TSLA and give a downside target
 
 # Options strategy
 @prompts/options-analysis.md Find bullish options strategies for AAPL earnings
@@ -374,7 +381,7 @@ InvestSkill/
 │       └── invest-skill.mdc      # This file (auto-loaded)
 ├── .github/
 │   └── copilot-instructions.md   # GitHub Copilot integration
-├── prompts/                       # 18 universal frameworks
+├── prompts/                       # 24 frameworks
 │   ├── stock-eval.md
 │   ├── stock-valuation.md
 │   ├── fundamental-analysis.md
@@ -392,6 +399,7 @@ InvestSkill/
 │   ├── options-analysis.md
 │   ├── portfolio-review.md
 │   ├── sector-analysis.md
+│   ├── bear-case.md
 │   ├── research-bundle.md
 │   ├── result-validator.md
 │   ├── chart-master.md
@@ -528,7 +536,7 @@ Analyze AAPL with:
 - **README.md** — Full setup for Claude Code, Gemini, Copilot, Cursor
 - **GEMINI.md** — Detailed Gemini CLI guide
 - **.github/copilot-instructions.md** — GitHub Copilot integration guide
-- **prompts/** — All 18 framework files
+- **prompts/** — All 24 framework files
 - **GitHub Issues** — Report problems or request features
 
 ---

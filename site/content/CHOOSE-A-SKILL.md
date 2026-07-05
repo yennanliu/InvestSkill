@@ -1,6 +1,6 @@
 # Choose a Skill
 
-> 23 frameworks is a lot. This page maps your *goal* to the right skill — and clears up the overlaps people ask about most. New here? Start with `stock-eval`; it touches quality, value, and risk in one pass.
+> 24 frameworks is a lot. This page maps your *goal* to the right skill — and clears up the overlaps people ask about most. New here? Start with `stock-eval`; it touches quality, value, and risk in one pass.
 
 ---
 
@@ -20,6 +20,7 @@
 | See where *smart money* is moving | `institutional-ownership` | `insider-trading` |
 | Track *insider* buying/selling | `insider-trading` | `short-interest` |
 | Gauge *short-squeeze* potential | `short-interest` | `technical-analysis` |
+| Stress-test a *bull thesis* (the downside case) | `bear-case` | `stock-eval` |
 | Pick an *options* strategy | `options-analysis` | `technical-analysis` |
 | Read the *macro* environment | `economics-analysis` | `sector-analysis` |
 | Find *sector rotation* opportunities | `sector-analysis` | `stock-eval` |

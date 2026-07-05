@@ -1,6 +1,6 @@
 # InvestSkill — GitHub Copilot Setup & Usage Guide
 
-This repository contains 18 professional investment analysis frameworks for US stock markets. When working in this workspace, Copilot automatically loads these analysis methodologies to provide institutional-quality investment analysis.
+This repository contains 24 professional investment analysis frameworks for US stock markets. When working in this workspace, Copilot automatically loads these analysis methodologies to provide institutional-quality investment analysis.
 
 ## Installation & Setup
 
@@ -21,7 +21,7 @@ GitHub Copilot automatically loads this file when you work in the InvestSkill re
 
 3. **Open Copilot Chat** (usually `Ctrl+K` or `Cmd+K`)
    - Copilot automatically loads `copilot-instructions.md`
-   - You now have access to all 18 analysis frameworks
+   - You now have access to all 24 analysis frameworks
 
 ### Verify Setup
 
@@ -34,7 +34,7 @@ If Copilot references the frameworks, setup is complete!
 
 ---
 
-## Available Analysis Frameworks (20 Total)
+## Available Analysis Frameworks (24 frameworks + 1 output tool)
 
 ### Core Stock Analysis (6 frameworks)
 
@@ -47,7 +47,7 @@ If Copilot references the frameworks, setup is complete!
 | DCF Valuation | `prompts/dcf-valuation.md` | Intrinsic value modeling |
 | Economics Analysis | `prompts/economics-analysis.md` | Macro outlook and recession risk |
 
-### Financial Report Analysis (2 frameworks)
+### Financial Report Analysis (3 frameworks)
 
 | Framework | File | Best For |
 |-----------|------|----------|
@@ -64,7 +64,7 @@ If Copilot references the frameworks, setup is complete!
 | Dividend Analysis | `prompts/dividend-analysis.md` | Dividend safety and sustainability |
 | Short Interest | `prompts/short-interest.md` | Squeeze potential and bearish thesis |
 
-### Advanced Analysis (4 frameworks)
+### Advanced Analysis (7 frameworks)
 
 | Framework | File | Best For |
 |-----------|------|----------|
@@ -72,13 +72,16 @@ If Copilot references the frameworks, setup is complete!
 | Options Analysis | `prompts/options-analysis.md` | Greeks, strategy selection, earnings plays |
 | Portfolio Review | `prompts/portfolio-review.md` | Allocation optimization |
 | Sector Analysis | `prompts/sector-analysis.md` | Sector rotation opportunities |
+| Stock Screener | `prompts/stock-screener.md` | Multi-ticker ranking across valuation, quality, momentum, sentiment, growth |
+| Catalyst Calendar | `prompts/catalyst-calendar.md` | Forward-looking 90-day event calendar, impact scoring |
+| Bear Case | `prompts/bear-case.md` | One-sided short thesis, downside target, counterevidence to a bull thesis |
 
 ### Full Research Bundle (2 frameworks)
 
 | Framework | File | Best For |
 |-----------|------|----------|
 | Research Bundle | `prompts/research-bundle.md` | Comprehensive multi-framework analysis |
-| (Combined) | (all frameworks) | Complete investment thesis |
+| Full Report (HTML) | `prompts/full-report.md` | Runs all modules and saves a standalone HTML report |
 
 ### Meta-Analysis & Visualization (3 frameworks)
 
@@ -185,6 +188,9 @@ Is the JNJ dividend safe? Use the dividend-analysis framework
 
 # Short squeeze
 What's the short squeeze potential in GME? Use the short-interest framework
+
+# Bear case / counterevidence
+Build the bear case against TSLA and give a downside target using the bear-case framework
 
 # Options strategy
 Find bullish option strategies for AAPL earnings using the options-analysis framework
@@ -332,7 +338,7 @@ What's the valuation in the:
 
 ```
 InvestSkill/
-├── prompts/                    # 18 universal analysis frameworks
+├── prompts/                    # 24 analysis frameworks
 │   ├── stock-eval.md
 │   ├── stock-valuation.md
 │   ├── fundamental-analysis.md
@@ -350,6 +356,7 @@ InvestSkill/
 │   ├── options-analysis.md
 │   ├── portfolio-review.md
 │   ├── sector-analysis.md
+│   ├── bear-case.md
 │   ├── research-bundle.md
 │   ├── result-validator.md
 │   ├── chart-master.md
@@ -400,7 +407,7 @@ Use the stock-eval framework for MSFT, but format as:
 
 ## Project Overview
 
-- **18 Institutional-Quality Frameworks** — all tested and validated
+- **24 Institutional-Quality Frameworks** — all tested and validated
 - **Works with Copilot Chat** — integrated into VS Code and JetBrains IDEs
 - **Universal Prompts** — also work with Gemini CLI, Cursor, and any AI tool
 - **Educational Focus** — for learning institutional analysis methods
@@ -411,7 +418,7 @@ Use the stock-eval framework for MSFT, but format as:
 ## Additional Resources
 
 - **README.md** — Complete setup guide for all platforms (Claude Code, Gemini, Cursor)
-- **prompts/** — All 18 analysis framework files
+- **prompts/** — All 24 analysis framework files
 - **plugins/** — Claude Code plugin integration (optional)
 - **GitHub Issues** — Report problems or request features
 
