@@ -20,6 +20,7 @@
 | 看*聰明錢*的動向 | `institutional-ownership` | `insider-trading` |
 | 追蹤*內部人*買賣 | `insider-trading` | `short-interest` |
 | 衡量*軋空*潛力 | `short-interest` | `technical-analysis` |
+| 壓力測試*多頭論點*（看下檔風險） | `bear-case` | `stock-eval` |
 | 挑選*選擇權*策略 | `options-analysis` | `technical-analysis` |
 | 判讀*總經*環境 | `economics-analysis` | `sector-analysis` |
 | 找*類股輪動*機會 | `sector-analysis` | `stock-eval` |

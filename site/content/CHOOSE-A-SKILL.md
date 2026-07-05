@@ -20,6 +20,7 @@
 | See where *smart money* is moving | `institutional-ownership` | `insider-trading` |
 | Track *insider* buying/selling | `insider-trading` | `short-interest` |
 | Gauge *short-squeeze* potential | `short-interest` | `technical-analysis` |
+| Stress-test a *bull thesis* (the downside case) | `bear-case` | `stock-eval` |
 | Pick an *options* strategy | `options-analysis` | `technical-analysis` |
 | Read the *macro* environment | `economics-analysis` | `sector-analysis` |
 | Find *sector rotation* opportunities | `sector-analysis` | `stock-eval` |
