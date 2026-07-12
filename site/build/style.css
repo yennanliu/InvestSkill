@@ -568,6 +568,181 @@ kbd, code, pre, .logo-badge, .status-chip,
 .markdown-body .home-card-cta:hover { background: var(--accent-hover); text-decoration: none; }
 
 /* =========================================================
+   LANDING HERO — modern marketing panel (home + zh homepage)
+   ========================================================= */
+/* The hero panel carries its own gradient, so drop the generic top wash
+   to avoid stacking two gradients on the homepage. */
+.page-content.home::before { display: none; }
+
+.page-hero.home-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  margin: 0 0 2.75rem;
+  padding: 2.5rem 2.5rem 2.25rem;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background:
+    radial-gradient(130% 130% at 6% 0%, var(--accent-light) 0%, transparent 52%),
+    radial-gradient(120% 120% at 100% 4%, var(--callout-info-bg) 0%, transparent 48%),
+    linear-gradient(180deg, var(--bg-alt) 0%, var(--bg) 100%);
+  box-shadow: 0 1px 2px rgba(26,28,34,.05), 0 26px 50px -34px rgba(232,102,78,.4);
+}
+/* faint dot grid fading out toward the bottom */
+.page-hero.home-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--border-strong) 1px, transparent 1px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(125% 92% at 50% -12%, #000 32%, transparent 74%);
+          mask-image: radial-gradient(125% 92% at 50% -12%, #000 32%, transparent 74%);
+  opacity: .35;
+  pointer-events: none;
+  z-index: -1;
+}
+/* soft floating color orbs behind the copy */
+.hero-orbs { position: absolute; inset: 0; pointer-events: none; z-index: -1; }
+.hero-orbs::before, .hero-orbs::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(46px);
+}
+.hero-orbs::before {
+  width: 260px; height: 260px;
+  top: -120px; right: -30px;
+  background: radial-gradient(circle at 30% 30%, var(--accent), transparent 70%);
+  opacity: .5;
+  animation: heroFloat 15s ease-in-out infinite;
+}
+.hero-orbs::after {
+  width: 220px; height: 220px;
+  bottom: -150px; left: 6%;
+  background: radial-gradient(circle at 50% 50%, var(--cat-2), transparent 70%);
+  opacity: .28;
+  animation: heroFloat 19s ease-in-out infinite reverse;
+}
+@keyframes heroFloat {
+  0%,100% { transform: translate(0,0) scale(1); }
+  50%     { transform: translate(-18px, 16px) scale(1.08); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-orbs::before, .hero-orbs::after { animation: none; }
+}
+
+/* badge pill above the eyebrow */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  margin-bottom: 1.1rem;
+  padding: .32rem .82rem .32rem .68rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: rgba(255,255,255,.6);
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: .74rem;
+  font-weight: 500;
+  letter-spacing: .01em;
+}
+[data-theme="dark"] .hero-badge { background: rgba(255,255,255,.05); }
+.hero-badge-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+
+/* gradient-tinted marketing headline */
+.page-hero.home-hero h1 {
+  background: linear-gradient(118deg, var(--text) 42%, var(--accent) 116%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* CTA buttons lift + glow inside the hero */
+.page-hero.home-hero .btn {
+  transition: transform .15s, box-shadow .15s, border-color .15s, background .15s, color .15s;
+}
+.page-hero.home-hero .btn:hover { transform: translateY(-1px); }
+.page-hero.home-hero .btn-primary { box-shadow: 0 8px 20px -8px rgba(232,102,78,.6); }
+.page-hero.home-hero .btn-primary:hover { box-shadow: 0 12px 26px -8px rgba(232,102,78,.72); }
+
+/* stat strip */
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  margin-top: 1.85rem;
+}
+.hero-stat {
+  flex: 1 1 140px;
+  min-width: 118px;
+  padding: .85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255,255,255,.55);
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+}
+[data-theme="dark"] .hero-stat { background: rgba(255,255,255,.03); }
+.hero-stat-num {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.9rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -.02em;
+  background: linear-gradient(120deg, var(--accent), var(--cat-5));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
+.hero-stat-label {
+  display: block;
+  margin-top: .35rem;
+  color: var(--text-muted);
+  font-size: .78rem;
+  font-weight: 500;
+}
+
+/* platform chips */
+.hero-platforms {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: 1.35rem;
+}
+.hero-plat-label {
+  color: var(--text-dim);
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  margin-right: .15rem;
+}
+.hero-chip {
+  padding: .28rem .72rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--bg-alt);
+  color: var(--text-muted);
+  font-size: .78rem;
+  font-weight: 550;
+  transition: color .15s, border-color .15s, transform .15s;
+}
+.hero-chip:hover { color: var(--accent); border-color: var(--accent); transform: translateY(-1px); }
+
+@media (max-width: 640px) {
+  .page-hero.home-hero { padding: 1.85rem 1.4rem; border-radius: 18px; }
+  .hero-stat-num { font-size: 1.6rem; }
+}
+
+/* =========================================================
    MARKDOWN BODY
    ========================================================= */
 .markdown-body { max-width: 800px; }

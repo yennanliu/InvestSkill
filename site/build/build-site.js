@@ -119,6 +119,14 @@ const NAV = {
       ],
     },
     {
+      title: '示範',
+      links: [
+        { label: 'RKLB 完整示範',    href: 'full-demo-rklb.html',  page: 'full-demo-rklb' },
+        { label: '示範總覽（英文）', href: 'full-demo.html',       page: 'full-demo' },
+        { label: 'PLTR（英文）',     href: 'full-demo-pltr.html',  page: 'full-demo-pltr' },
+      ],
+    },
+    {
       title: '信任',
       links: [
         { label: '資料與準確性',     href: 'data-and-accuracy-zh-tw.html', page: 'data-and-accuracy-zh-tw' },
@@ -145,6 +153,8 @@ const LANG_PAIRS = [
   ['use-cases.html', 'use-cases-zh-tw.html'],
   ['data-and-accuracy.html', 'data-and-accuracy-zh-tw.html'],
   ['cookbook.html', 'cookbook-zh-tw.html'],
+  // The demo overview (English) pairs with the RKLB full demo (Traditional Chinese).
+  ['full-demo.html', 'full-demo-rklb.html'],
 ];
 const EN_TO_ZH = Object.fromEntries(LANG_PAIRS);
 const ZH_TO_EN = Object.fromEntries(LANG_PAIRS.map(([en, zh]) => [zh, en]));
@@ -161,6 +171,15 @@ try {
 } catch { /* version chip is optional */ }
 const SITE_BASE   = 'https://yennj12.js.org/InvestSkill';
 const OLD_SITE    = 'https://yennanliu.github.io/InvestSkill';
+
+// Prompt inventory + advertised framework count, derived once so the landing
+// hero, the Skill Reference index, and everything else share a single source
+// of truth (report-generator is an output tool, not an analysis framework).
+const PROMPTS_DIR = path.join(__dirname, '..', '..', 'prompts');
+const promptFiles = fs.existsSync(PROMPTS_DIR)
+  ? fs.readdirSync(PROMPTS_DIR).filter(f => f.endsWith('.md')).map(f => f.replace(/\.md$/, '')).sort()
+  : [];
+const FRAMEWORK_COUNT = promptFiles.filter(n => n !== 'report-generator').length;
 
 // .md files that have dedicated HTML pages on the site
 const MD_TO_HTML = {
@@ -474,8 +493,8 @@ const PAGES = [
     key: 'zh-tw',
     outFile: 'zh-tw.html',
     srcFile: 'README-zh-TW.md',
-    title: '繁體中文',
-    subtitle: 'Traditional Chinese documentation',
+    title: '快速開始',
+    subtitle: 'InvestSkill 入門指南——讓任何 AI 成為你的美股分析師',
   },
   {
     key: 'concepts-zh-tw',
@@ -531,6 +550,7 @@ const SECTION_ICONS = {
   '學習':          '<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 2 2.7 3 6 3s6-1 6-3v-5"/>',
   '學習資源':      '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
   '指南':          '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88"/>',
+  '示範':          '<circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>',
   '信任':          '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
 };
 
@@ -540,7 +560,10 @@ function navIcon(sectionTitle) {
 }
 
 // Language of a page, derived from its output filename.
+// The RKLB demo is fully Traditional Chinese content, so it belongs to the
+// zh site even though its filename doesn't carry the -zh-tw suffix.
 function langOf(outFile) {
+  if (outFile === 'full-demo-rklb.html') return 'zh';
   return (outFile === 'zh-tw.html' || outFile.endsWith('-zh-tw.html')) ? 'zh' : 'en';
 }
 
@@ -590,6 +613,7 @@ const TABS = {
     { label: '學習',       section: '學習',         href: 'learning-zh-tw.html' },
     { label: '學習資源',   section: '學習資源',     href: 'concepts-zh-tw.html' },
     { label: '指南',       section: '指南',         href: 'cookbook-zh-tw.html' },
+    { label: '示範',       section: '示範',         href: 'full-demo-rklb.html' },
     { label: '信任',       section: '信任',         href: 'data-and-accuracy-zh-tw.html' },
   ],
 };
@@ -607,6 +631,7 @@ const TAB_ICONS = {
   '學習':       '<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 2 2.7 3 6 3s6-1 6-3v-5"/>',
   '學習資源':   '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
   '指南':       '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88"/>',
+  '示範':       '<circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>',
   '信任':       '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
 };
 
@@ -651,14 +676,49 @@ function htmlPage(page, content) {
   const rawUrl = `${RAW_BASE}/${page.srcFile}`;
 
   const eyebrow  = eyebrowFor(lang, page.key);
-  const heroClass = page.key === 'home' ? ' home-hero' : '';
   const subnav    = buildSubnav(lang, page.key);
   const langSwitch = buildLangSwitch(lang, page.outFile);
-  const landingCta = page.key === 'home'
-    ? `<a class="btn btn-primary" href="#quick-start">Get Started
+
+  // The two language homepages get the full marketing hero treatment.
+  const isHome    = page.key === 'home' || page.key === 'zh-tw';
+  const heroClass = isHome ? ' home-hero' : '';
+  const pageContentClass = isHome ? 'page-content home' : 'page-content';
+
+  const L = lang === 'zh'
+    ? {
+        badge:  `${FRAMEWORK_COUNT} 項分析框架`,
+        cta:    '開始使用', ctaHref: '#-快速開始30-秒',
+        stats:  [[String(FRAMEWORK_COUNT), '分析框架'], ['MIT', '開源免費'], ['0', '免安裝 · 純提示詞']],
+        platLabel: '支援平台',
+      }
+    : {
+        badge:  `${FRAMEWORK_COUNT} analysis frameworks`,
+        cta:    'Get Started', ctaHref: '#quick-start',
+        stats:  [[String(FRAMEWORK_COUNT), 'Analysis frameworks'], ['MIT', 'Open-source & free'], ['0', 'Runtime — just prompts']],
+        platLabel: 'Runs on',
+      };
+  const PLATFORMS = ['Claude Code', 'Cursor', 'Gemini CLI', 'Copilot', 'ChatGPT'];
+
+  const landingCta = isHome
+    ? `<a class="btn btn-primary" href="${L.ctaHref}">${L.cta}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </a>\n        `
     : '';
+
+  const heroBadge = isHome
+    ? `<span class="hero-badge"><span class="hero-badge-dot"></span>${SITE_VERSION ? SITE_VERSION + ' · ' : ''}${L.badge}</span>\n      `
+    : '';
+  const heroExtras = isHome
+    ? `
+      <div class="hero-stats">
+        ${L.stats.map(([n, lbl]) => `<div class="hero-stat"><span class="hero-stat-num">${n}</span><span class="hero-stat-label">${lbl}</span></div>`).join('\n        ')}
+      </div>
+      <div class="hero-platforms">
+        <span class="hero-plat-label">${L.platLabel}</span>
+        ${PLATFORMS.map(p => `<span class="hero-chip">${p}</span>`).join('\n        ')}
+      </div>`
+    : '';
+  const heroOrbs = isHome ? `<span class="hero-orbs" aria-hidden="true"></span>\n      ` : '';
 
   return `<!DOCTYPE html>
 <html lang="${lang === 'zh' ? 'zh-Hant' : 'en'}" data-theme="light">
@@ -725,9 +785,9 @@ ${nav}
     </nav>
   </aside>
 
-  <main class="page-content">
+  <main class="${pageContentClass}">
     <div class="page-hero${heroClass}">
-      <p class="page-eyebrow">${eyebrow}</p>
+      ${heroOrbs}${heroBadge}<p class="page-eyebrow">${eyebrow}</p>
       <h1>${page.title}</h1>
       <p class="page-desc">${page.subtitle}</p>
       <div class="page-actions">
@@ -745,7 +805,7 @@ ${nav}
           </svg>
           Open Raw
         </a>
-      </div>
+      </div>${heroExtras}
     </div>
     <article class="markdown-body">
 ${content}
@@ -825,10 +885,7 @@ const SKILL_CATEGORIES = [
   { title: 'Meta & Output',       skills: ['research-bundle','full-report','report-generator','chart-master','result-validator'] },
 ];
 
-const PROMPTS_DIR = path.join(__dirname, '..', '..', 'prompts');
-const promptFiles = fs.existsSync(PROMPTS_DIR)
-  ? fs.readdirSync(PROMPTS_DIR).filter(f => f.endsWith('.md')).map(f => f.replace(/\.md$/, '')).sort()
-  : [];
+// PROMPTS_DIR / promptFiles / FRAMEWORK_COUNT are computed once near the top.
 
 // Extract a page title and a one-line summary from a prompt's markdown.
 function describePrompt(raw) {
@@ -898,9 +955,7 @@ for (const section of indexSections) {
 }
 skillsMd += `\n*Educational frameworks only. Not financial advice.*\n`;
 
-// Advertised framework count = analysis prompts (report-generator is an
-// output tool, not a framework). Derived so it can never drift.
-const FRAMEWORK_COUNT = promptFiles.filter(n => n !== 'report-generator').length;
+// FRAMEWORK_COUNT (advertised count) is computed once near the top.
 const skillsPage = {
   key: 'skills', outFile: 'skills.html', srcFile: 'README.md',
   title: 'Skill Reference', subtitle: `All ${FRAMEWORK_COUNT} frameworks, one page each`,
