@@ -15,6 +15,14 @@ Complete, real-stock demonstrations of InvestSkill skills applied to live market
 Each full demo runs all 15 analysis skills:
 technical-analysis · fundamental-analysis · stock-eval · economics-analysis · sector-analysis · insider-trading · institutional-ownership · short-interest · earnings-call-analysis · chart-master · dcf-valuation · stock-valuation · options-analysis · dividend-analysis · competitor-analysis
 
+## Deep-Dive Filing Analysis (`financial-report-analyst`)
+
+| Demo | Company | Filing | Language | Focus |
+|------|---------|--------|----------|-------|
+| [NVDA 10-K Deep Dive](FULL-DEMO-NVDA.md) | NVIDIA Corporation | FY2026 Form 10-K | English | Segment revenue · margins · cash flow · balance sheet · risk factors · accounting quality · investor verdict |
+
+A focused demonstration of the `financial-report-analyst` skill applied end-to-end to a complete annual report — executive summary, financial health dashboard, clean tables, red-flag review, and a professional-investor verdict.
+
 ---
 
 ## Quick Preview — Technical Analysis Only

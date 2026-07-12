@@ -64,9 +64,10 @@ const NAV = {
     {
       title: 'Demo',
       links: [
-        { label: 'Demo Overview',   href: 'full-demo.html',       page: 'full-demo' },
-        { label: 'PLTR (English)',  href: 'full-demo-pltr.html',  page: 'full-demo-pltr' },
-        { label: 'RKLB (繁體中文)', href: 'full-demo-rklb.html',  page: 'full-demo-rklb' },
+        { label: 'Demo Overview',       href: 'full-demo.html',       page: 'full-demo' },
+        { label: 'NVDA 10-K Deep Dive', href: 'full-demo-nvda.html',  page: 'full-demo-nvda' },
+        { label: 'PLTR (English)',      href: 'full-demo-pltr.html',  page: 'full-demo-pltr' },
+        { label: 'RKLB (繁體中文)',     href: 'full-demo-rklb.html',  page: 'full-demo-rklb' },
       ],
     },
     {
@@ -121,9 +122,10 @@ const NAV = {
     {
       title: '示範',
       links: [
-        { label: 'RKLB 完整示範',    href: 'full-demo-rklb.html',  page: 'full-demo-rklb' },
-        { label: '示範總覽（英文）', href: 'full-demo.html',       page: 'full-demo' },
-        { label: 'PLTR（英文）',     href: 'full-demo-pltr.html',  page: 'full-demo-pltr' },
+        { label: 'RKLB 完整示範',      href: 'full-demo-rklb.html',  page: 'full-demo-rklb' },
+        { label: 'NVDA 10-K（英文）',  href: 'full-demo-nvda.html',  page: 'full-demo-nvda' },
+        { label: '示範總覽（英文）',   href: 'full-demo.html',       page: 'full-demo' },
+        { label: 'PLTR（英文）',       href: 'full-demo-pltr.html',  page: 'full-demo-pltr' },
       ],
     },
     {
@@ -197,6 +199,7 @@ const MD_TO_HTML = {
   'FULL-DEMO.md':         'full-demo.html',
   'FULL-DEMO-PLTR.md':   'full-demo-pltr.html',
   'FULL-DEMO-RKLB.md':   'full-demo-rklb.html',
+  'FULL-DEMO-NVDA.md':   'full-demo-nvda.html',
   'CONCEPTS-zh-TW.md':       'concepts-zh-tw.html',
   'GLOSSARY-zh-TW.md':       'glossary-zh-tw.html',
   'CHOOSE-A-SKILL-zh-TW.md': 'choose-a-skill-zh-tw.html',
@@ -227,7 +230,7 @@ const MD_TO_HTML = {
 const SERVED = new Set(['index.html','cookbook.html','cookbook-zh-tw.html',
   'contributing.html','changelog.html','zh-tw.html','style.css','main.js',
   'concepts.html','glossary.html','choose-a-skill.html','use-cases.html',
-  'data-and-accuracy.html','skills.html','full-demo.html','full-demo-pltr.html','full-demo-rklb.html',
+  'data-and-accuracy.html','skills.html','full-demo.html','full-demo-pltr.html','full-demo-rklb.html','full-demo-nvda.html',
   'concepts-zh-tw.html','glossary-zh-tw.html','choose-a-skill-zh-tw.html',
   'use-cases-zh-tw.html','data-and-accuracy-zh-tw.html',
   'learning.html','learning-foundations.html','learning-statements.html',
@@ -445,7 +448,14 @@ const PAGES = [
     outFile: 'full-demo.html',
     srcFile: 'site/content/FULL-DEMO.md',
     title: 'Demo Overview',
-    subtitle: 'All-skills analysis demos: PLTR (English) · RKLB (繁體中文)',
+    subtitle: 'All-skills analysis demos: NVDA 10-K deep dive · PLTR (English) · RKLB (繁體中文)',
+  },
+  {
+    key: 'full-demo-nvda',
+    outFile: 'full-demo-nvda.html',
+    srcFile: 'site/content/FULL-DEMO-NVDA.md',
+    title: 'NVDA 10-K Deep Dive',
+    subtitle: 'NVIDIA FY2026 annual report — a financial-report-analyst deep read (English)',
   },
   {
     key: 'full-demo-pltr',
