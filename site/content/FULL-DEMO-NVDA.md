@@ -11,21 +11,26 @@
 
 1. [Executive Summary](#executive-summary)
 2. [Financial Health Dashboard](#financial-health-dashboard)
-3. [Key Insights — Professional Investor Lens](#key-insights--professional-investor-lens)
-4. [Document Orientation](#document-orientation)
-5. [MD&A Deep Read — Revenue, Segments & Geography](#mda-deep-read--revenue-segments--geography)
-6. [Income Statement Analysis](#income-statement-analysis)
-7. [Balance Sheet Analysis](#balance-sheet-analysis)
-8. [Cash Flow & Capital Return](#cash-flow--capital-return)
-9. [Risk Factors — What Changed This Year](#risk-factors--what-changed-this-year)
-10. [Footnotes & Accounting Quality](#footnotes--accounting-quality)
-11. [Management Credibility & Tone](#management-credibility--tone)
-12. [Key Positives](#key-positives)
-13. [Key Negatives / Red Flags](#key-negatives--red-flags)
-14. [Accounting Quality Score](#accounting-quality-score)
-15. [Illustrative Valuation Context](#illustrative-valuation-context)
-16. [Final Suggestions — Professional Investor View](#final-suggestions--professional-investor-view)
-17. [Thesis Invalidation & Investment Signal](#thesis-invalidation--investment-signal)
+3. [Visual Dashboard — Charts](#visual-dashboard--charts)
+4. [Key Insights — Professional Investor Lens](#key-insights--professional-investor-lens)
+5. [Document Orientation](#document-orientation)
+6. [MD&A Deep Read — Revenue, Segments & Geography](#mda-deep-read--revenue-segments--geography)
+7. [Income Statement Analysis](#income-statement-analysis)
+8. [Balance Sheet Analysis](#balance-sheet-analysis)
+9. [Cash Flow & Capital Return](#cash-flow--capital-return)
+10. [Deeper Analysis — Growth, Margins & Returns](#deeper-analysis--growth-margins--returns)
+11. [Scenario Analysis — FY2027 (illustrative)](#scenario-analysis--fy2027-illustrative)
+12. [Competitive Context](#competitive-context)
+13. [Risk Factors — What Changed This Year](#risk-factors--what-changed-this-year)
+14. [Footnotes & Accounting Quality](#footnotes--accounting-quality)
+15. [Management Credibility & Tone](#management-credibility--tone)
+16. [Leading Indicators to Monitor](#leading-indicators-to-monitor)
+17. [Key Positives](#key-positives)
+18. [Key Negatives / Red Flags](#key-negatives--red-flags)
+19. [Accounting Quality Score](#accounting-quality-score)
+20. [Illustrative Valuation Context](#illustrative-valuation-context)
+21. [Final Suggestions — Professional Investor View](#final-suggestions--professional-investor-view)
+22. [Thesis Invalidation & Investment Signal](#thesis-invalidation--investment-signal)
 
 ---
 
@@ -39,13 +44,100 @@ NVIDIA delivered one of the largest single-year absolute earnings expansions in 
 
 ```
 Revenue Growth:    +65.5% YoY   (FY26 $215.9B vs FY25 $130.5B; substantially all organic)
-Gross Margin:      71.1%        (vs 75.0% prior, Δ −390 bps; ex-$4.5B H20 charge ≈ 73.7%)
+Gross Margin:      71.1%        (vs 75.0% prior, Δ −390 bps; mostly Blackwell mix — ex-provisions ≈ 73.7%)
 Operating Margin:  60.4%        (vs 62.4% prior, Δ −200 bps)
 Net Margin:        55.6%        (vs 55.8% prior, Δ −20 bps)
 FCF Margin:        44.8%        ($96.7B FCF; conversion 80.5% of net income, ~86% ex-investment gains)
 Net Cash:          +$54.1B      (cash & securities $62.6B − total debt $8.5B; Debt/EBITDA ≈ 0.06x)
 SBC / Revenue:     3.0%         ($6.4B — below the 5% watch line)
 Management Tone:   CONFIDENT / POSITIVE  (with explicit, repeated China-export hedging)
+```
+
+---
+
+## Visual Dashboard — Charts
+
+### Revenue trajectory — the largest three-year ramp in tech history
+
+```
+REVENUE ($B, fiscal year)                            each █ ≈ $10B
+FY2024   $60.9   ██████
+FY2025  $130.5   █████████████                        +114% YoY
+FY2026  $215.9   ██████████████████████               +65% YoY
+```
+
+### Net income & diluted EPS
+
+```
+NET INCOME ($B)                                      each █ ≈ $5B
+FY2024   $29.8   ██████            EPS $1.19
+FY2025   $72.9   ███████████████   EPS $2.94
+FY2026  $120.1   ████████████████████████  EPS $4.90  (+67%)
+```
+
+### Revenue mix by end market (FY2026) — a Data Center company
+
+```
+Data Center  89.7%  ███████████████████████████████████████████  $193.7B
+Gaming        7.4%  ███▌                                          $16.0B
+Pro Viz       1.5%  ▊                                             $3.2B
+Automotive    1.1%  ▌                                             $2.3B
+OEM & Other   0.3%  ▏                                             $0.6B
+                    (each █ ≈ 2% of revenue)
+```
+
+### Margin trend — record scale, first margin give-back
+
+```
+%  (scale starts at 45% to show the moves)
+75 ┤            ╭── 75.0 ─╮
+   │            │          ╰─ 71.1   ← Gross margin
+70 ┤            │
+   │       ╭─ 62.4 ─────── 60.4      ← Operating margin
+60 ┤       │
+55 ┤       │    ╭─ 55.8 ── 55.6      ← Net margin
+   │  ╭ 54.1
+50 ┤  │ 48.8
+45 ┼──┴────┬──────────┬─────────
+     FY2024        FY2025      FY2026
+```
+
+### Operating vs free cash flow
+
+```
+CASH FLOW ($B)                                       each █ ≈ $5B
+        OCF                          FCF
+FY2024  $28.1  ██████               $27.0  █████▌
+FY2025  $64.1  █████████████        $60.9  ████████████▏
+FY2026 $102.7  █████████████████████ $96.7 ███████████████████▍
+```
+
+### Geographic revenue mix (customer-HQ basis) — China halved
+
+```
+                 FY2025      FY2026     Shift
+United States    59.4%   →   69.3%      ▲ +9.9 pts
+Taiwan           18.1%   →   19.6%      ▲ +1.5 pts
+China (incl HK)  19.2%   →    9.1%      ▼▼ −10.1 pts   (revenue −21% YoY)
+Other             3.3%   →    2.0%      ▼ −1.3 pts
+```
+
+### Segment scorecard (FY2026)
+
+```
+SEGMENT                Revenue   YoY    Op. margin   Op. income
+Compute & Networking   $193.5B   +67%   67.3%  █████████████████  $130.1B
+Graphics                $22.5B   +57%   40.8%  ██████████         $9.2B
+```
+
+### Capital returned to shareholders
+
+```
+CAPITAL RETURN ($B)                                  each █ ≈ $4B
+FY2024  Buybacks  $9.5  ██▍          Dividends $0.4
+FY2025  Buybacks $33.7  ████████▍    Dividends $0.8
+FY2026  Buybacks $40.4  ██████████   Dividends $1.0
+        → $60B new authorization (Aug 2025); $58.5B still remaining
 ```
 
 ---
@@ -58,7 +150,7 @@ Management Tone:   CONFIDENT / POSITIVE  (with explicit, repeated China-export h
 
 3. **China is now a *subtracted* market, not a growth market.** China (incl. HK) revenue fell −21% to $19.7B, and management states outright it is "effectively foreclosed from competing in China's data center… market" (p10). The $4.5B H20 write-down is the accounting expression of that policy shift. Upside from any China re-opening is optionality, not a base-case.
 
-4. **Margin normalization is mostly mix/transition, not competitive erosion.** Ex the H20 charge, gross margin was ~73.7%. The decline reflects the shift from selling Hopper *boards* to full Blackwell *rack-scale systems* (more third-party content passed through). Watch whether Blackwell/Rubin margins recover toward the mid-70s as the ramp matures — management guided to that intent.
+4. **Margin normalization is mostly mix/transition, not competitive erosion.** Ex inventory/purchase provisions, gross margin was ~73.7% (vs ~77.3% prior) — a ~360 bps decline that is overwhelmingly the shift from selling Hopper *boards* to full Blackwell *rack-scale systems* (more third-party content passed through), **not** the H20 charge (provisions worsened only ~30 bps YoY) and not price competition. Watch whether Blackwell/Rubin margins recover toward the mid-70s as the ramp matures — management guided to that intent.
 
 5. **Capital-return firepower is enormous.** $40.4B of buybacks in FY2026 plus a fresh **$60B authorization ($58.5B remaining)**, against a token $0.04 dividend. This is a buyback story, and at ~24.3B shares the repurchases are already shrinking the count.
 
@@ -202,6 +294,102 @@ Management Tone:   CONFIDENT / POSITIVE  (with explicit, repeated China-export h
 
 ---
 
+## Deeper Analysis — Growth, Margins & Returns
+
+### Growth decomposition — where the $85B came from
+
+Of the **+$85.4B** of incremental revenue in FY2026, Data Center supplied **$78.6B (92%)**. Within Data Center, Compute added $60.2B and **Networking added $18.4B (+142%)** — the fastest-growing line in the company and the clearest evidence of a diversifying second engine.
+
+```
+INCREMENTAL REVENUE FY2025 → FY2026 (+$85.4B total)      each █ ≈ $4B
+Data Center — Compute     +$60.2B  ███████████████
+Data Center — Networking  +$18.4B  █████
+Gaming                     +$4.7B  █▏
+Pro Viz / Auto / OEM       +$2.1B  ▌
+```
+
+**Quality of growth:** organic (no material acquired revenue), volume/ASP-driven, and cash-backed (OCF $102.7B vs net income $120.1B). This is the highest-quality growth signature a filing can show.
+
+### Gross-margin bridge (FY2025 → FY2026)
+
+```
+GROSS MARGIN BRIDGE
+FY2025 reported                     75.0%
+  Blackwell rack-scale mix shift    −3.6 pts   Hopper boards → full systems (pass-through content)
+  Inventory / purchase provisions   −0.3 pts   2.6% drag vs 2.3% prior (incl. the $4.5B H20 charge)
+FY2026 reported                     71.1%
+  Memo — ex-provisions level:      ~73.7%   (vs ~77.3% prior)
+```
+
+The decline is a *business-model* story, not a pricing story: selling full liquid-cooled racks passes more third-party content (memory, networking, integration) through revenue at a lower percentage margin, even as gross-profit *dollars* rose +57% to $153B.
+
+### Returns on capital — best-in-class
+
+```
+DuPont ROE (FY2026, on average equity $118.3B)
+  Net margin        55.6%
+  × Asset turnover   1.36x
+  × Equity multiplier 1.35x
+  = ROE             ~102%
+ROIC (NOPAT $110.7B / invested capital ~$103B)  ≈ 107%
+```
+
+Returns this high are not sustainable indefinitely (they invite competition and mean-reversion), but they finance the R&D and buybacks internally with zero net leverage.
+
+### Working capital & cash conversion cycle
+
+```
+CASH CONVERSION CYCLE (days)         FY2025   FY2026     Δ
+Days sales outstanding (DSO)          64.5     65.0     +0.5   clean — in line w/ revenue
+Days inventory outstanding (DIO)     112.7    125.0    +12.3   pre-build for Blackwell/Rubin
+Days payable outstanding (DPO)        70.6     57.3    −13.3   paying suppliers faster
+Cash conversion cycle (CCC)          106.6    132.7    +26.1
+```
+
+CCC lengthened ~26 days — NVIDIA is tying up more cash in inventory ahead of the ramp *and* paying suppliers faster (securing scarce TSMC/CoWoS capacity). This is a growth investment, not distress, but it is the working-capital face of the obsolescence risk PwC flagged.
+
+### Efficiency — Rule of 40 (and then some)
+
+```
+Revenue growth  65.5%
++ FCF margin    44.8%
+= 110.3   (threshold for "healthy" scale-up is 40)
+```
+
+R&D intensity is 8.6% of revenue ($18.5B) — heavy absolute spend, modest as a percentage, and self-funded.
+
+---
+
+## Scenario Analysis — FY2027 (illustrative)
+
+> Not guidance and not in the filing — an illustrative framework for how a professional would bracket the next year, anchored on FY2026 revenue of $215.9B.
+
+```
+FY2027 REVENUE SCENARIOS (illustrative)               vs FY2026 $215.9B
+Bear   +15%   ~$248B   China stays closed; hyperscaler capex digestion; Rubin slips
+Base   +35%   ~$291B   Blackwell/Ultra ramp + networking strength; Rubin on time (2H)
+Bull   +55%   ~$335B   Rubin cycle + sovereign-AI demand + partial China re-open
+```
+
+| Scenario | FY27 revenue | Key swing factors |
+|---|--:|---|
+| **Bull** | ~$335B | Rubin 10× cost/token pulls forward demand; sovereign AI; any China relief is pure upside |
+| **Base** | ~$291B | Data Center compounds; Networking keeps +40–60%; margins stabilize low-70s |
+| **Bear** | ~$248B | Customer-concentration shock (a top-2 hyperscaler pauses), or in-house ASIC substitution accelerates |
+
+The spread is wide because ~90% revenue concentration in one end-market makes NVIDIA a high-beta expression of the AI-capex cycle. Position sizing should reflect that the *bear* case is a plateau at record levels — not a collapse.
+
+---
+
+## Competitive Context
+
+- **The moat is the software, not just the silicon.** CUDA + CUDA-X + the installed base is the switching-cost barrier; competitors can match FLOPs faster than they can match the developer ecosystem (a point management makes explicitly re: China foreclosure aiding rivals' ecosystems, p10).
+- **Merchant-GPU competition:** AMD (Instinct MI-series) is the closest merchant alternative; Intel is a distant third in AI accelerators.
+- **The real structural threat is custom silicon:** hyperscaler in-house ASICs (Google TPU, Amazon Trainium/Inferentia, Microsoft Maia, plus Broadcom/Marvell design wins). This is why Networking (NVLink/InfiniBand/Ethernet) and full rack-scale systems matter — NVIDIA is selling the *whole computer*, which is harder to displace than a chip.
+- **Bottom line:** NVIDIA is the clear leader with a widening software moat, but the ~$4T+ valuation already prices leadership; the competitive question is margin durability, not market-share loss, over the next 1–2 years.
+
+---
+
 ## Risk Factors — What Changed This Year
 
 The biggest signal in any 10-K is *what's new or newly emphasized.* This year that is unambiguously **China / export controls**.
@@ -237,6 +425,22 @@ The biggest signal in any 10-K is *what's new or newly emphasized.* This year th
 - **Capital-allocation signaling:** A fresh $60B buyback authorization *during* a period of record valuation signals management confidence in forward cash generation. Rising capex guidance signals conviction in the Rubin cycle.
 
 **Assessment: HIGH credibility.** The tone is confident where the data supports it and cautious precisely where the exogenous (political) risk lives.
+
+---
+
+## Leading Indicators to Monitor
+
+The metrics that will confirm or break the thesis *before* they show up in headline EPS:
+
+| Indicator | Current (FY2026) | What to watch for | Signal if it turns |
+|---|--:|---|---|
+| Gross margin trajectory | 71.1% | Recovery toward mid-70s as Blackwell/Rubin scale | 2nd year of decline = pricing pressure (BEARISH) |
+| Data Center YoY growth | +68% | Deceleration vs hyperscaler capex commentary | Sub-20% = cycle digestion (CAUTION) |
+| Customer concentration | Top-2 = 36% | Any new >10% customer (diversification) or a top-2 pause | Concentration ↑ = fragility ↑ |
+| Inventory + purchase commitments | $21.4B / $95.2B | Rising *provisions* (not just balances) | Provision build = demand wobble (early warning) |
+| Networking growth | +142% | Sustained >40% (second engine durability) | Stall = single-product dependence |
+| China export status | ~0% DC revenue | License/tariff changes either direction | Re-open = upside optionality |
+| FCF conversion | 80.5% (~86% adj.) | Stays >70% ex-working-capital | Sustained <70% = quality erosion |
 
 ---
 

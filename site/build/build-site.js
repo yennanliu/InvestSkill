@@ -66,6 +66,7 @@ const NAV = {
       links: [
         { label: 'Demo Overview',       href: 'full-demo.html',       page: 'full-demo' },
         { label: 'NVDA 10-K Deep Dive', href: 'full-demo-nvda.html',  page: 'full-demo-nvda' },
+        { label: 'AMD 10-K (繁體中文)', href: 'full-demo-amd.html',   page: 'full-demo-amd' },
         { label: 'PLTR (English)',      href: 'full-demo-pltr.html',  page: 'full-demo-pltr' },
         { label: 'RKLB (繁體中文)',     href: 'full-demo-rklb.html',  page: 'full-demo-rklb' },
       ],
@@ -122,6 +123,7 @@ const NAV = {
     {
       title: '示範',
       links: [
+        { label: 'AMD 10-K 深度解析',  href: 'full-demo-amd.html',   page: 'full-demo-amd' },
         { label: 'RKLB 完整示範',      href: 'full-demo-rklb.html',  page: 'full-demo-rklb' },
         { label: 'NVDA 10-K（英文）',  href: 'full-demo-nvda.html',  page: 'full-demo-nvda' },
         { label: '示範總覽（英文）',   href: 'full-demo.html',       page: 'full-demo' },
@@ -157,6 +159,8 @@ const LANG_PAIRS = [
   ['cookbook.html', 'cookbook-zh-tw.html'],
   // The demo overview (English) pairs with the RKLB full demo (Traditional Chinese).
   ['full-demo.html', 'full-demo-rklb.html'],
+  // The two 10-K deep dives pair across languages: NVDA (English) ⇄ AMD (Traditional Chinese).
+  ['full-demo-nvda.html', 'full-demo-amd.html'],
 ];
 const EN_TO_ZH = Object.fromEntries(LANG_PAIRS);
 const ZH_TO_EN = Object.fromEntries(LANG_PAIRS.map(([en, zh]) => [zh, en]));
@@ -200,6 +204,7 @@ const MD_TO_HTML = {
   'FULL-DEMO-PLTR.md':   'full-demo-pltr.html',
   'FULL-DEMO-RKLB.md':   'full-demo-rklb.html',
   'FULL-DEMO-NVDA.md':   'full-demo-nvda.html',
+  'FULL-DEMO-AMD.md':    'full-demo-amd.html',
   'CONCEPTS-zh-TW.md':       'concepts-zh-tw.html',
   'GLOSSARY-zh-TW.md':       'glossary-zh-tw.html',
   'CHOOSE-A-SKILL-zh-TW.md': 'choose-a-skill-zh-tw.html',
@@ -230,7 +235,7 @@ const MD_TO_HTML = {
 const SERVED = new Set(['index.html','cookbook.html','cookbook-zh-tw.html',
   'contributing.html','changelog.html','zh-tw.html','style.css','main.js',
   'concepts.html','glossary.html','choose-a-skill.html','use-cases.html',
-  'data-and-accuracy.html','skills.html','full-demo.html','full-demo-pltr.html','full-demo-rklb.html','full-demo-nvda.html',
+  'data-and-accuracy.html','skills.html','full-demo.html','full-demo-pltr.html','full-demo-rklb.html','full-demo-nvda.html','full-demo-amd.html',
   'concepts-zh-tw.html','glossary-zh-tw.html','choose-a-skill-zh-tw.html',
   'use-cases-zh-tw.html','data-and-accuracy-zh-tw.html',
   'learning.html','learning-foundations.html','learning-statements.html',
@@ -458,6 +463,13 @@ const PAGES = [
     subtitle: 'NVIDIA FY2026 annual report — a financial-report-analyst deep read (English)',
   },
   {
+    key: 'full-demo-amd',
+    outFile: 'full-demo-amd.html',
+    srcFile: 'site/content/FULL-DEMO-AMD.md',
+    title: 'AMD 10-K 深度解析',
+    subtitle: 'Advanced Micro Devices FY2025 年報 — financial-report-analyst 深度解讀（繁體中文）',
+  },
+  {
     key: 'full-demo-pltr',
     outFile: 'full-demo-pltr.html',
     srcFile: 'site/content/FULL-DEMO-PLTR.md',
@@ -570,10 +582,11 @@ function navIcon(sectionTitle) {
 }
 
 // Language of a page, derived from its output filename.
-// The RKLB demo is fully Traditional Chinese content, so it belongs to the
-// zh site even though its filename doesn't carry the -zh-tw suffix.
+// These demos are fully Traditional Chinese content, so they belong to the
+// zh site even though their filenames don't carry the -zh-tw suffix.
+const ZH_CONTENT_DEMOS = new Set(['full-demo-rklb.html', 'full-demo-amd.html']);
 function langOf(outFile) {
-  if (outFile === 'full-demo-rklb.html') return 'zh';
+  if (ZH_CONTENT_DEMOS.has(outFile)) return 'zh';
   return (outFile === 'zh-tw.html' || outFile.endsWith('-zh-tw.html')) ? 'zh' : 'en';
 }
 

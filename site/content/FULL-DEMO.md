@@ -20,8 +20,9 @@ technical-analysis · fundamental-analysis · stock-eval · economics-analysis �
 | Demo | Company | Filing | Language | Focus |
 |------|---------|--------|----------|-------|
 | [NVDA 10-K Deep Dive](FULL-DEMO-NVDA.md) | NVIDIA Corporation | FY2026 Form 10-K | English | Segment revenue · margins · cash flow · balance sheet · risk factors · accounting quality · investor verdict |
+| [AMD 10-K 深度解析](FULL-DEMO-AMD.md) | Advanced Micro Devices | FY2025 Form 10-K | 繁體中文 | 部門營收 · 利潤 · 現金流 · 資產負債表 · 風險因素 · 會計品質 · 投資結論 |
 
-A focused demonstration of the `financial-report-analyst` skill applied end-to-end to a complete annual report — executive summary, financial health dashboard, clean tables, red-flag review, and a professional-investor verdict.
+A focused demonstration of the `financial-report-analyst` skill applied end-to-end to a complete annual report — executive summary, financial health dashboard, ASCII charts, clean tables, red-flag review, and a professional-investor verdict. The NVDA (English) and AMD (Traditional Chinese) deep dives are language counterparts of the same framework.
 
 ---
 
