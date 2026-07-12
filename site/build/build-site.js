@@ -891,7 +891,7 @@ const SKILL_CATEGORIES = [
   { title: 'Core Stock Analysis', skills: ['stock-eval','fundamental-analysis','technical-analysis','dcf-valuation','stock-valuation','economics-analysis'] },
   { title: 'Financial Reports',   skills: ['financial-report-analyst','10k-digest','earnings-call-analysis'] },
   { title: 'Market Monitoring',   skills: ['insider-trading','institutional-ownership','dividend-analysis','short-interest'] },
-  { title: 'Advanced Research',   skills: ['competitor-analysis','options-analysis','portfolio-review','sector-analysis','stock-screener','catalyst-calendar','bear-case'] },
+  { title: 'Advanced Research',   skills: ['competitor-analysis','industry-map','options-analysis','portfolio-review','sector-analysis','stock-screener','catalyst-calendar','bear-case'] },
   { title: 'Meta & Output',       skills: ['research-bundle','full-report','report-generator','chart-master','result-validator'] },
 ];
 

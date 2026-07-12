@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.0] - 2026-07-12
+
+### Added
+- `industry-map` — new skill: map an industry's supply / value chain as a directed graph, from raw inputs upstream down to the end user. Provides a bird's-eye view of a business: builds the chain as a Mermaid flowchart (with ASCII fallback) plus a chain-map table, locates a given ticker's position (upstream / midstream / downstream) and its up/downstream dependencies, scores each layer for bottleneck/chokepoint power (the durable "toll collectors"), maps where the profit pool sits today and where it is likely to migrate next, flags concentration & supply-chain risk, and generates second-order investment ideas per layer (core / picks-and-shovels / avoid). Complements `competitor-analysis` (one company's moat, horizontal) and `sector-analysis` (GICS rotation) by mapping a theme vertically, across sectors. Brings the advertised framework count to 25.
+
 ## [1.9.0] - 2026-07-05
 
 ### Added

@@ -1,6 +1,6 @@
 # 選擇技能
 
-> 24 個框架不算少。本頁將你的*目標*對應到合適的技能——並釐清大家最常問的重疊之處。第一次來？先從 `stock-eval` 開始；它一次就觸及品質、價值與風險。
+> 25 個框架不算少。本頁將你的*目標*對應到合適的技能——並釐清大家最常問的重疊之處。第一次來？先從 `stock-eval` 開始；它一次就觸及品質、價值與風險。
 
 ---
 
@@ -17,6 +17,7 @@
 | 檢查*股利是否安全* | `dividend-analysis` | `portfolio-review` |
 | *抓進出場時機* | `technical-analysis` | `chart-master` |
 | 評估*競爭護城河* | `competitor-analysis` | `fundamental-analysis` |
+| 繪製*產業供應鏈*（上游→下游） | `industry-map` | `competitor-analysis` |
 | 看*聰明錢*的動向 | `institutional-ownership` | `insider-trading` |
 | 追蹤*內部人*買賣 | `insider-trading` | `short-interest` |
 | 衡量*軋空*潛力 | `short-interest` | `technical-analysis` |
