@@ -1,6 +1,6 @@
 # InvestSkill — Gemini CLI Setup & Usage Guide
 
-This project contains professional investment analysis prompt frameworks for US stock markets. When you run Gemini CLI in this directory, all 24 analysis frameworks are automatically available.
+This project contains professional investment analysis prompt frameworks for US stock markets. When you run Gemini CLI in this directory, all 25 analysis frameworks are automatically available.
 
 ## Installation & Setup
 
@@ -14,7 +14,7 @@ cd /path/to/InvestSkill
 gemini
 ```
 
-**That's it!** Gemini CLI automatically loads `GEMINI.md` and gives you access to all 24 analysis frameworks in the `prompts/` directory.
+**That's it!** Gemini CLI automatically loads `GEMINI.md` and gives you access to all 25 analysis frameworks in the `prompts/` directory.
 
 ### Verify Setup
 
@@ -28,7 +28,7 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 
 ---
 
-## Available Analysis Prompts (24 frameworks + 1 output tool)
+## Available Analysis Prompts (25 frameworks + 1 output tool)
 
 ### Core Stock Analysis (6 skills)
 
@@ -58,11 +58,12 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 | Dividend Analysis           | `@prompts/dividend-analysis.md`        | `Is JNJ dividend safe?`                    |
 | Short Interest              | `@prompts/short-interest.md`           | `What's the squeeze potential in GME?`     |
 
-### Advanced Analysis (7 skills)
+### Advanced Analysis (8 skills)
 
 | Analysis Type               | Prompt File                            | Usage Example                              |
 |-----------------------------|----------------------------------------|--------------------------------------------|
 | Competitor Analysis         | `@prompts/competitor-analysis.md`      | `Analyze AAPL's competitive moat`          |
+| Industry Map                | `@prompts/industry-map.md`             | `Map the AI compute supply chain`          |
 | Options Analysis            | `@prompts/options-analysis.md`         | `Find earnings play setups in NVDA`        |
 | Portfolio Review            | `@prompts/portfolio-review.md`         | `[paste holdings] Review my allocation`    |
 | Sector Analysis             | `@prompts/sector-analysis.md`          | `What sectors should rotate into?`         |
@@ -301,7 +302,7 @@ All analyses end with this format:
 
 ```
 InvestSkill/
-├── prompts/                    # 24 analysis frameworks
+├── prompts/                    # 25 analysis frameworks
 │   ├── stock-eval.md
 │   ├── stock-valuation.md
 │   ├── fundamental-analysis.md
@@ -370,7 +371,7 @@ gemini
 ## Additional Resources
 
 - **README.md** — Complete project overview and all platforms
-- **prompts/** directory — All 24 analysis frameworks
+- **prompts/** directory — All 25 analysis frameworks
 - **plugins/** — Claude Code plugin configuration (if using Claude Code)
 - **GitHub Issues** — Report bugs or suggest improvements
 

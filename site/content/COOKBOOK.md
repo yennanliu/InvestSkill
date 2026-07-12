@@ -51,7 +51,7 @@ claude
 /plugin list
 ```
 
-You should see `us-stock-analysis` in the list with 25 available skills.
+You should see `us-stock-analysis` in the list with 26 available skills.
 
 ### Quick Test
 
@@ -133,7 +133,7 @@ plugins/us-stock-analysis/skills/
 ├── financial-report-analyst/SKILL.md
 ├── chart-master/SKILL.md           ← v1.6.0
 ├── full-report/SKILL.md            ← v1.6.0
-└── ... (25 skills total)
+└── ... (26 skills total)
 ```
 
 ### The Signal Block
@@ -1034,7 +1034,7 @@ Real-world investor scenarios showing how to combine multiple skills.
 
 ## 5. Cross-AI Usage
 
-InvestSkill works with any AI assistant. The `prompts/` directory contains all 24 analysis frameworks as standalone files.
+InvestSkill works with any AI assistant. The `prompts/` directory contains all 25 analysis frameworks as standalone files.
 
 ### Gemini CLI
 
@@ -1139,6 +1139,7 @@ cat prompts/stock-eval.md | pbcopy   # macOS
 |---------------|-----------|
 | "Is this stock cheap or expensive?" | `/dcf-valuation` + `/stock-valuation` |
 | "Is this a good business?" | `/stock-eval` + `/competitor-analysis` |
+| "How does this whole industry work, and who profits?" | `/industry-map` |
 | "What's in this earnings report?" | `/financial-report-analyst` |
 | "What did management say on the call?" | `/earnings-call-analysis` |
 | "What are insiders doing?" | `/insider-trading` |

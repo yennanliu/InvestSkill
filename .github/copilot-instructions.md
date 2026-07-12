@@ -1,6 +1,6 @@
 # InvestSkill — GitHub Copilot Setup & Usage Guide
 
-This repository contains 24 professional investment analysis frameworks for US stock markets. When working in this workspace, Copilot automatically loads these analysis methodologies to provide institutional-quality investment analysis.
+This repository contains 25 professional investment analysis frameworks for US stock markets. When working in this workspace, Copilot automatically loads these analysis methodologies to provide institutional-quality investment analysis.
 
 ## Installation & Setup
 
@@ -21,7 +21,7 @@ GitHub Copilot automatically loads this file when you work in the InvestSkill re
 
 3. **Open Copilot Chat** (usually `Ctrl+K` or `Cmd+K`)
    - Copilot automatically loads `copilot-instructions.md`
-   - You now have access to all 24 analysis frameworks
+   - You now have access to all 25 analysis frameworks
 
 ### Verify Setup
 
@@ -34,7 +34,7 @@ If Copilot references the frameworks, setup is complete!
 
 ---
 
-## Available Analysis Frameworks (24 frameworks + 1 output tool)
+## Available Analysis Frameworks (25 frameworks + 1 output tool)
 
 ### Core Stock Analysis (6 frameworks)
 
@@ -64,11 +64,12 @@ If Copilot references the frameworks, setup is complete!
 | Dividend Analysis | `prompts/dividend-analysis.md` | Dividend safety and sustainability |
 | Short Interest | `prompts/short-interest.md` | Squeeze potential and bearish thesis |
 
-### Advanced Analysis (7 frameworks)
+### Advanced Analysis (8 frameworks)
 
 | Framework | File | Best For |
 |-----------|------|----------|
 | Competitor Analysis | `prompts/competitor-analysis.md` | Moat and competitive positioning |
+| Industry Map | `prompts/industry-map.md` | Supply/value-chain graph, chokepoints, value-pool migration |
 | Options Analysis | `prompts/options-analysis.md` | Greeks, strategy selection, earnings plays |
 | Portfolio Review | `prompts/portfolio-review.md` | Allocation optimization |
 | Sector Analysis | `prompts/sector-analysis.md` | Sector rotation opportunities |
@@ -338,7 +339,7 @@ What's the valuation in the:
 
 ```
 InvestSkill/
-├── prompts/                    # 24 analysis frameworks
+├── prompts/                    # 25 analysis frameworks
 │   ├── stock-eval.md
 │   ├── stock-valuation.md
 │   ├── fundamental-analysis.md
@@ -407,7 +408,7 @@ Use the stock-eval framework for MSFT, but format as:
 
 ## Project Overview
 
-- **24 Institutional-Quality Frameworks** — all tested and validated
+- **25 Institutional-Quality Frameworks** — all tested and validated
 - **Works with Copilot Chat** — integrated into VS Code and JetBrains IDEs
 - **Universal Prompts** — also work with Gemini CLI, Cursor, and any AI tool
 - **Educational Focus** — for learning institutional analysis methods
@@ -418,7 +419,7 @@ Use the stock-eval framework for MSFT, but format as:
 ## Additional Resources
 
 - **README.md** — Complete setup guide for all platforms (Claude Code, Gemini, Cursor)
-- **prompts/** — All 24 analysis framework files
+- **prompts/** — All 25 analysis framework files
 - **plugins/** — Claude Code plugin integration (optional)
 - **GitHub Issues** — Report problems or request features
 

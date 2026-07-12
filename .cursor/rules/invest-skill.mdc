@@ -6,7 +6,7 @@ alwaysApply: true
 
 # InvestSkill — Cursor Rules & Setup Guide
 
-This is the InvestSkill repository — a collection of 24 professional investment analysis frameworks for US stocks. These rules automatically apply when you work in this project.
+This is the InvestSkill repository — a collection of 25 professional investment analysis frameworks for US stocks. These rules automatically apply when you work in this project.
 
 ## Installation & Setup
 
@@ -27,7 +27,7 @@ Cursor automatically loads this file when you open the InvestSkill repository. *
 
 3. **Open AI Chat** (usually `Cmd+K`)
    - Cursor automatically loads the investment analysis rules
-   - All 24 frameworks are immediately available
+   - All 25 frameworks are immediately available
 
 ### Verify Setup
 
@@ -40,7 +40,7 @@ If the framework loads, setup is complete!
 
 ---
 
-## Available Analysis Frameworks (24 frameworks + 1 output tool)
+## Available Analysis Frameworks (25 frameworks + 1 output tool)
 
 ### Core Stock Analysis (6 frameworks)
 
@@ -70,11 +70,12 @@ If the framework loads, setup is complete!
 | Dividend Analysis | `@prompts/dividend-analysis.md` | Dividend safety, yield trap detection |
 | Short Interest | `@prompts/short-interest.md` | Short squeeze scoring, thesis evaluation |
 
-### Advanced Analysis (7 frameworks)
+### Advanced Analysis (8 frameworks)
 
 | Framework | File | Best For |
 |-----------|------|----------|
 | Competitor Analysis | `@prompts/competitor-analysis.md` | Moat scoring, Porter's Five Forces |
+| Industry Map | `@prompts/industry-map.md` | Supply/value-chain graph, chokepoints, value-pool migration |
 | Options Analysis | `@prompts/options-analysis.md` | Greeks, IV rank, strategy selection |
 | Portfolio Review | `@prompts/portfolio-review.md` | Allocation optimization, performance |
 | Sector Analysis | `@prompts/sector-analysis.md` | Sector rotation, opportunity identification |
@@ -381,7 +382,7 @@ InvestSkill/
 │       └── invest-skill.mdc      # This file (auto-loaded)
 ├── .github/
 │   └── copilot-instructions.md   # GitHub Copilot integration
-├── prompts/                       # 24 frameworks
+├── prompts/                       # 25 frameworks
 │   ├── stock-eval.md
 │   ├── stock-valuation.md
 │   ├── fundamental-analysis.md
@@ -536,7 +537,7 @@ Analyze AAPL with:
 - **README.md** — Full setup for Claude Code, Gemini, Copilot, Cursor
 - **GEMINI.md** — Detailed Gemini CLI guide
 - **.github/copilot-instructions.md** — GitHub Copilot integration guide
-- **prompts/** — All 24 framework files
+- **prompts/** — All 25 framework files
 - **GitHub Issues** — Report problems or request features
 
 ---

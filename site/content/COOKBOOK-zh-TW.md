@@ -51,7 +51,7 @@ claude
 /plugin list
 ```
 
-確認在清單中看到 `us-stock-analysis`，並顯示 25 個可用技能，即表示安裝成功。
+確認在清單中看到 `us-stock-analysis`，並顯示 26 個可用技能，即表示安裝成功。
 
 ### 快速測試
 
@@ -133,7 +133,7 @@ plugins/us-stock-analysis/skills/
 ├── financial-report-analyst/SKILL.md
 ├── chart-master/SKILL.md           ← v1.6.0 新增
 ├── full-report/SKILL.md            ← v1.6.0 新增
-└── ...（共 25 個技能）
+└── ...（共 26 個技能）
 ```
 
 ### 標準訊號區塊
@@ -958,7 +958,7 @@ AAPL — 6 個月股價（八月至二月）
 
 ## 5. 跨 AI 工具使用
 
-InvestSkill 適用於任何 AI 助手。`prompts/` 目錄包含所有 24 個分析框架的獨立檔案。
+InvestSkill 適用於任何 AI 助手。`prompts/` 目錄包含所有 25 個分析框架的獨立檔案。
 
 ### Gemini CLI
 
@@ -1063,6 +1063,7 @@ cat prompts/stock-eval.md | pbcopy   # macOS
 |---------|------------|
 | 「這支股票便宜還是貴？」 | `/dcf-valuation` + `/stock-valuation` |
 | 「這是好的企業嗎？」 | `/stock-eval` + `/competitor-analysis` |
+| 「整個產業如何運作，誰賺走利潤？」 | `/industry-map` |
 | 「這份財報裡有什麼？」 | `/financial-report-analyst` |
 | 「管理層在電話會議說了什麼？」 | `/earnings-call-analysis` |
 | 「內部人士在做什麼？」 | `/insider-trading` |
