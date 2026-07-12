@@ -71,7 +71,7 @@ Clarify what is being mapped. The input is usually one of three things:
 |---|---|---|
 | **A theme / product** | "AI compute", "electric vehicles", "GLP-1 drugs" | The full chain end-to-end |
 | **A single ticker** | NVDA | The chain around it, then locate it |
-| **A layer** | "memory", "foundry" | That layer + its immediate up/downstream neighbours |
+| **A layer** | "memory", "foundry" | That layer + its immediate up/downstream neighbors |
 
 Confirm the boundaries: where does the chain start (how far upstream — mined ore? refined wafer?) and where does it end (the paying end user)? State the scope explicitly at the top of the output so the graph is bounded and legible.
 
@@ -87,7 +87,7 @@ Produce the directed graph. **Default to a Mermaid `flowchart`** (renders in Cla
 flowchart LR
     MAT["Materials & Substrates<br/>(silicon, rare earths)"] --> EQ["Fab Equipment<br/>ASML · LRCX · AMAT"]
     EQ --> FAB["Foundry / Fab<br/>TSMC · INTC · Samsung"]
-    FAB --> MEM["Memory<br/>MU · SNDK · Hynix"]
+    FAB --> MEM["Memory<br/>MU · Hynix · Samsung"]
     FAB --> GPU["GPU / Accelerators<br/>NVDA · AMD"]
     MEM --> GPU
     GPU --> NET["Networking / Interconnect<br/>AVGO · ANET"]
@@ -101,7 +101,7 @@ flowchart LR
 
 ```
 Materials ─► Fab Equipment ─► Foundry ─┬─► Memory ──┐
-(ASML,LRCX,AMAT)         (TSMC,INTC)   │            ▼
+             (ASML,LRCX,AMAT) (TSMC,INTC)   │            ▼
                                        └─► GPU/Accel (NVDA,AMD) ─► Networking (AVGO,ANET)
                                                                         │
    End Users ◄─ AI Software ◄─ Model Labs ◄─ Cloud/CSP (AMZN,MSFT) ◄────┘
@@ -114,10 +114,10 @@ Materials ─► Fab Equipment ─► Foundry ─┬─► Memory ──┐
 ```
 Layer                 Position    Key Tickers          Concentration     Value Capture (now)
 ──────────────────────────────────────────────────────────────────────────────────────────
-Materials/Substrates  Upstream    [tickers]            Fragmented        Low
+Materials/Substrates  Upstream    SHECY, SUMCF         Fragmented        Low
 Fab Equipment         Upstream    ASML, LRCX, AMAT     Oligopoly/Monopoly High  ◄ chokepoint
 Foundry               Midstream   TSMC, INTC           Oligopoly         High
-Memory                Midstream   MU, SNDK             Oligopoly         Cyclical
+Memory                Midstream   MU, Hynix, Samsung   Oligopoly         Cyclical
 GPU / Accelerators    Midstream   NVDA, AMD            Near-monopoly     Very High ◄ chokepoint
 Networking            Midstream   AVGO, ANET           Oligopoly         High
 Cloud / CSP           Downstream  AMZN, MSFT, GOOGL    Oligopoly         Medium (capex heavy)
@@ -137,7 +137,7 @@ If the user supplied a ticker, pin it precisely:
 - **Its downstream customers**: who buys from it, how concentrated are they, and can they build it in-house or switch?
 - **Direction of pricing power**: does value flow *toward* this node (it can raise prices) or *away* (it is squeezed between a strong supplier and a strong buyer)?
 
-State the one-line takeaway: *"[Ticker] sits [upstream/mid/down] at the [layer] node; it depends on [supplier layer] and sells into [customer layer]; pricing power currently favours [node]."*
+State the one-line takeaway: *"[Ticker] sits [upstream/mid/down] at the [layer] node; it depends on [supplier layer] and sells into [customer layer]; pricing power currently favors [node]."*
 
 ---
 
@@ -146,11 +146,11 @@ State the one-line takeaway: *"[Ticker] sits [upstream/mid/down] at the [layer] 
 This is where the alpha usually is. Walk the chain and score each layer for **bottleneck power** — the ability to hold up the entire chain:
 
 ```
-Bottleneck Score (per layer, 0–10):
-Supplier scarcity      (fewer credible suppliers = higher)   ×
-Substitutability       (no viable alternative = higher)      ×
-Switching cost / lead  (years to qualify a new supplier)     ×
-Demand inelasticity    (chain cannot proceed without it)
+Bottleneck Score (per layer, 0–10) = average of these four factors, each scored 0–10:
+- Supplier scarcity      (fewer credible suppliers = higher)
+- Substitutability       (no viable alternative = higher)
+- Switching cost / lead  (longer to qualify a new supplier = higher)
+- Demand inelasticity    (chain cannot proceed without it = higher)
 ```
 
 Layers scoring high are **toll collectors**: they capture value regardless of who wins downstream. Classic examples to reason by analogy from: ASML (sole EUV supplier), TSMC (leading-edge foundry), NVDA + CUDA (accelerator + software lock-in). Explicitly flag:
@@ -199,7 +199,7 @@ Squeezed         [tickers]               Caught between strong up/down      Avoi
 Optionality      [tickers]               Cheap exposure if value migrates   Speculative
 ```
 
-Flag the **non-obvious** node — the second-order supplier the market under-covers because it isn't a pure-play on the theme. Hand the shortlist to a screener to rank, to competitor analysis to check each name's moat, or to a bear-case pass to stress-test the consensus winner.
+Flag the **non-obvious** node — the second-order supplier the market under-covers because it isn't a pure-play on the theme. Hand the shortlist to `stock-screener` to rank, to `competitor-analysis` to check each name's moat, or to `bear-case` to stress-test the consensus winner.
 
 ---
 
@@ -219,7 +219,7 @@ Provide a theme, a ticker, or a layer, and (optionally) a focus:
 
 - **Map a full theme end-to-end** — "Map the AI compute supply chain."
 - **Map the chain around a ticker, then locate it** — "Where does NVDA sit in its value chain, upstream to downstream?"
-- **Focus on one layer + its neighbours** — "Map the semiconductor chain, focused on the memory layer."
+- **Focus on one layer + its neighbors** — "Map the semiconductor chain, focused on the memory layer."
 - **Emphasize where value migrates next** — "Map the EV value chain and tell me where the profit pool moves next."
 - **Emit a chart-ready graph spec** — "Map the GLP-1 drug supply chain and give me a diagram for a report."
 
@@ -259,7 +259,7 @@ Provide an industry-map report with:
 - Value-Pool & Margin Migration (now → next, with the confirming trigger)
 - Concentration & Supply-Chain Risk
 - Investment Ideas by layer (core / 2nd-order / avoid)
-- Investment Implications and how this feeds competitor analysis / screening / bear-case work
+- Investment Implications and how this feeds `competitor-analysis` / `stock-screener` / `bear-case` work
 
 ## Standard Signal Output
 
