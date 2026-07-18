@@ -62,7 +62,7 @@ gemini
 cat prompts/stock-eval.md | pbcopy
 ```
 
-> Full platform guides: [Claude Code](README-claude-code.md) · [Cursor](README-cursor.md) · [Gemini CLI](README-gemini.md)
+> Full platform guides: [Claude Code](README-claude-code.md) · [Cursor](README-cursor.md) · [Gemini CLI](README-gemini.md) · [Ollama](README-ollama.md)
 
 ---
 
@@ -187,6 +187,7 @@ HTML reports render this as a styled dark panel with a score progress bar, ghost
 | **Cursor IDE** | Clone repo, open folder | Auto-loads `.cursor/rules/` |
 | **Gemini CLI** | Clone repo, `cd` into it | Auto-loads `GEMINI.md` |
 | **GitHub Copilot** | Clone repo, open in VS Code | Auto-loads `.github/copilot-instructions.md` |
+| **Ollama (local models)** | Clone repo, run a local model | Offline open-source models, no API key — [guide](README-ollama.md) |
 | **ChatGPT / Claude.ai** | Paste any `prompts/*.md` file | Works in any chat interface |
 | **Any other LLM** | Reference or paste prompt files | Platform-agnostic markdown |
 
@@ -216,6 +217,7 @@ New to investing, or unsure which skill to reach for? Start here:
 | [Claude Code Guide](README-claude-code.md) | Plugin install + all slash commands |
 | [Cursor Guide](README-cursor.md) | Auto-loading rules + `@prompts/` usage |
 | [Gemini CLI Guide](README-gemini.md) | File references + multi-framework chains |
+| [Ollama Guide](README-ollama.md) | Local open-source models, offline & no API key |
 | [Adding Skills](ADDING-NEW-SKILLS.md) | 12-step contributor walkthrough |
 | [FAQ](FAQ.md) | 50+ answers covering all platforms |
 | [Changelog](CHANGELOG.md) | Version history |
@@ -235,7 +237,7 @@ See [ADDING-NEW-SKILLS.md](ADDING-NEW-SKILLS.md) for the full process. The short
 
 ---
 
-**Version:** 1.10.0 · **Skills:** 25 · **Platforms:** 6 · **License:** MIT · **Tests:** 294+ passing
+**Version:** 1.10.0 · **Skills:** 25 · **Platforms:** 7 · **License:** MIT · **Tests:** 294+ passing
 
 ---
 
