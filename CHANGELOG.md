@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.1] - 2026-07-22
+
+### Enhanced
+- `10k-digest` — added four interpretation sections to the digest output: **Highlights & Concerns** (dedicated positives/negatives lists), **Management Outlook & Forward Guidance** (forward-looking commitments table), **Prior-Year Promise Tracker** (accountability audit scoring last year's 10-K guidance against this year's actuals, with a management-credibility read), and **Bull vs. Bear Synthesis** (lightweight filing-sourced face-off). Added suggested Traditional Chinese headings for the new sections. No new skill — framework count unchanged at 25.
+
 ## [1.10.0] - 2026-07-12
 
 ### Added

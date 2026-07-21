@@ -148,7 +148,65 @@ Note below the table: data source (filing section and page number if available).
 
 ---
 
-### 5. Notable Disclosures
+### 5. Highlights & Concerns
+
+Two short lists that give the reader the "so what" without leaving the digest. Draw every item directly from the filing and cite the source Item.
+
+**Highlights** — up to 5 of the strongest positives disclosed this year (e.g., record revenue, margin expansion, new products/segments, strong FCF conversion, new buyback authorization, market-share gains). Format: `- **[Headline]** — [one sentence] *(Item X)*`
+
+**Concerns** — up to 5 of the most material negatives or warning signs (e.g., decelerating growth, margin compression, rising leverage, customer/supplier concentration, new risk factors, active litigation, going-concern language). Format: `- **[Headline]** — [one sentence] *(Item X)*`
+
+---
+
+### 6. Management Outlook & Forward Guidance
+
+Capture every forward-looking commitment made in the filing. Present as a table.
+
+```
+| Guidance Item              | What Management Said                | Time Horizon | Source     |
+|----------------------------|-------------------------------------|--------------|------------|
+| Revenue growth             | [target / range / directional]      | [FY / multi] | Item 7     |
+| Margin target              | [gross / operating target]          | [horizon]    | Item 7     |
+| Capex / capacity           | [planned spend or expansion]        | [horizon]    | Item 7     |
+| Capital allocation         | [dividend / buyback / debt / M&A]   | [horizon]    | Item 7/8   |
+| Strategic priorities       | [product roadmap, new markets]      | [horizon]    | Item 1/7   |
+```
+
+Only include rows the filing actually addresses. If the 10-K gives no explicit guidance (common — 10-Ks are backward-looking), state that and summarize any qualitative forward statements instead.
+
+---
+
+### 7. Prior-Year Promise Tracker
+
+An accountability audit: take the forward-looking statements, targets, and stated priorities from **last year's** 10-K (Item 7 MD&A) and score whether they materialized in this year's results. This is the single most differentiating part of the digest — it measures management credibility over time.
+
+```
+| Prior-Year Commitment (FY[N-1] 10-K)   | FY[N] Actual Result          | Verdict     | Notes            |
+|-----------------------------------------|------------------------------|-------------|------------------|
+| [what management said they would do]    | [what actually happened]     | ✅ Delivered | [brief context]  |
+| [e.g., "expand operating margin"]       | [e.g., "margin +120 bps"]    | 🟡 Partial  | [brief context]  |
+| [e.g., "launch product X in H2"]        | [e.g., "slipped to next FY"] | ❌ Missed    | [brief context]  |
+```
+
+Verdict legend: ✅ Delivered · 🟡 Partial · ❌ Missed · ⏳ Too early to judge.
+
+Close with a one-line **Management Credibility read**: e.g., "4/5 prior commitments delivered — high follow-through." If the prior-year 10-K is unavailable, state `N/A — prior filing not retrieved` and skip the table.
+
+---
+
+### 8. Bull vs. Bear Synthesis
+
+A lightweight face-off built strictly from evidence in this filing — not a full valuation call (defer to `bear-case`, `stock-eval`, and `stock-valuation` for that).
+
+**Bull case** — 3–4 strongest points from this filing supporting the stock.
+
+**Bear case** — 3–4 strongest points from this filing arguing against it.
+
+**Net read** — one sentence weighing the two, consistent with the Investment Signal below.
+
+---
+
+### 9. Notable Disclosures
 
 Bullet list of up to 8 items that are worth investor attention but don't fit neatly into section summaries:
 - New segment or business unit disclosures
@@ -162,7 +220,7 @@ Bullet list of up to 8 items that are worth investor attention but don't fit nea
 
 ---
 
-### 6. Source References
+### 10. Source References
 
 List all sources cited in this digest. Format:
 
@@ -194,6 +252,8 @@ When `--lang zh-TW` is specified, output the **entire document** in Traditional 
 - All tables with Chinese column headers
 - Cover block language field: `語言：繁體中文`
 - Keep ticker symbols, financial figures, and SEC item numbers in their original form
+
+Suggested Traditional Chinese headings for the interpretation sections: 亮點與隱憂 (Highlights & Concerns), 管理層展望 (Management Outlook & Forward Guidance), 上年度承諾兌現 (Prior-Year Promise Tracker), 多空對決 (Bull vs. Bear Synthesis).
 
 English mode is the default when no `--lang` flag is given.
 
