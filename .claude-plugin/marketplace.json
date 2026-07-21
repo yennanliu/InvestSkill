@@ -6,19 +6,30 @@
   },
   "metadata": {
     "description": "Professional investment analysis and stock evaluation skills for US markets — 25 skills covering fundamental, technical, valuation, financial report analysis, industry supply-chain mapping, bear-case red-teaming, result validation, charting, and full comprehensive reports",
-    "version": "1.10.0"
+    "version": "1.10.1"
   },
   "plugins": [
     {
       "name": "us-stock-analysis",
       "source": "./plugins/us-stock-analysis",
       "description": "Comprehensive US stock evaluation: fundamental, technical, economic, DCF, multi-method valuation, financial report analysis, options, dividends, insider trading, institutional ownership, bear-case red-teaming, and more",
-      "version": "1.10.0",
+      "version": "1.10.1",
       "author": {
         "name": "yennanliu"
       },
       "category": "finance",
-      "keywords": ["stock", "investment", "analysis", "us-markets", "finance", "dcf", "valuation", "10-k", "10-q", "financial-reports"]
+      "keywords": [
+        "stock",
+        "investment",
+        "analysis",
+        "us-markets",
+        "finance",
+        "dcf",
+        "valuation",
+        "10-k",
+        "10-q",
+        "financial-reports"
+      ]
     }
   ]
 }

@@ -1,11 +1,36 @@
 {
   "name": "us-stock-analysis",
   "description": "Comprehensive US stock evaluation with fundamental, technical, economic, valuation, and financial report analysis",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "author": {
     "name": "yennanliu"
   },
   "homepage": "https://github.com/yennanliu/InvestSkill",
   "license": "MIT",
-  "keywords": ["stock", "investment", "analysis", "us-markets", "finance", "technical-analysis", "fundamental-analysis", "visualization", "reports", "insider-trading", "institutional-ownership", "earnings-calls", "dcf", "options", "dividends", "short-interest", "competitive-analysis", "moat", "research", "financial-reports", "10-k", "10-q", "valuation", "comparable-company"]
+  "keywords": [
+    "stock",
+    "investment",
+    "analysis",
+    "us-markets",
+    "finance",
+    "technical-analysis",
+    "fundamental-analysis",
+    "visualization",
+    "reports",
+    "insider-trading",
+    "institutional-ownership",
+    "earnings-calls",
+    "dcf",
+    "options",
+    "dividends",
+    "short-interest",
+    "competitive-analysis",
+    "moat",
+    "research",
+    "financial-reports",
+    "10-k",
+    "10-q",
+    "valuation",
+    "comparable-company"
+  ]
 }
