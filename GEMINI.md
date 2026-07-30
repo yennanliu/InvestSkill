@@ -1,6 +1,6 @@
 # InvestSkill — Gemini CLI Setup & Usage Guide
 
-This project contains professional investment analysis prompt frameworks for US stock markets. When you run Gemini CLI in this directory, all 26 analysis frameworks are automatically available.
+This project contains professional investment analysis prompt frameworks for US stock markets. When you run Gemini CLI in this directory, all 27 analysis frameworks are automatically available.
 
 ## Installation & Setup
 
@@ -14,7 +14,7 @@ cd /path/to/InvestSkill
 gemini
 ```
 
-**That's it!** Gemini CLI automatically loads `GEMINI.md` and gives you access to all 26 analysis frameworks in the `prompts/` directory.
+**That's it!** Gemini CLI automatically loads `GEMINI.md` and gives you access to all 27 analysis frameworks in the `prompts/` directory.
 
 ### Verify Setup
 
@@ -28,7 +28,7 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 
 ---
 
-## Available Analysis Prompts (26 frameworks + 1 output tool)
+## Available Analysis Prompts (27 frameworks + 1 output tool)
 
 ### Core Stock Analysis (6 skills)
 
@@ -58,7 +58,7 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 | Dividend Analysis           | `@prompts/dividend-analysis.md`        | `Is JNJ dividend safe?`                    |
 | Short Interest              | `@prompts/short-interest.md`           | `What's the squeeze potential in GME?`     |
 
-### Advanced Analysis (9 skills)
+### Advanced Analysis (10 skills)
 
 | Analysis Type               | Prompt File                            | Usage Example                              |
 |-----------------------------|----------------------------------------|--------------------------------------------|
@@ -71,6 +71,7 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 | Catalyst Calendar           | `@prompts/catalyst-calendar.md`        | `What catalysts are coming for TSLA?`      |
 | Bear Case                   | `@prompts/bear-case.md`                | `Build the bear case against TSLA`         |
 | Position Ladder             | `@prompts/position-ladder.md`          | `I hold 20 AVGO at $128, now $122 — plan`  |
+| Trade Setup                 | `@prompts/trade-setup.md`              | `AAPL — entry suitability, swing or position?` |
 
 ### Full Research Bundle (2 skills)
 
@@ -166,6 +167,8 @@ TSLA: 10%
 
 # Position plan for an existing holding
 > @prompts/position-ladder.md I hold 20 AVGO at $128, now $122 — build a 60–100 share ladder plan
+
+> @prompts/trade-setup.md MU — is there a trade now? Prefer swing or position?
 
 # Options strategy selection
 > @prompts/options-analysis.md Find bullish option setups for AAPL earnings
@@ -306,7 +309,7 @@ All analyses end with this format:
 
 ```
 InvestSkill/
-├── prompts/                    # 26 analysis frameworks
+├── prompts/                    # 27 analysis frameworks
 │   ├── stock-eval.md
 │   ├── stock-valuation.md
 │   ├── fundamental-analysis.md
@@ -326,6 +329,7 @@ InvestSkill/
 │   ├── sector-analysis.md
 │   ├── bear-case.md
 │   ├── position-ladder.md
+│   ├── trade-setup.md
 │   ├── research-bundle.md
 │   ├── result-validator.md
 │   ├── chart-master.md
@@ -376,7 +380,7 @@ gemini
 ## Additional Resources
 
 - **README.md** — Complete project overview and all platforms
-- **prompts/** directory — All 26 analysis frameworks
+- **prompts/** directory — All 27 analysis frameworks
 - **plugins/** — Claude Code plugin configuration (if using Claude Code)
 - **GitHub Issues** — Report bugs or suggest improvements
 
