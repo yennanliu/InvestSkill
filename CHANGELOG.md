@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `scripts/site-review.js` — daily QA reports in `qa/` are now capped at a 5-day retention window (`RETENTION_DAYS`); older `site_review_YYYYMMDD.md` files are pruned on each run. `PROJECT-REVIEW.md` is untouched.
 - `.github/workflows/site-review.yml` — stages `qa/` with `git add -A` so pruned reports are committed as deletions alongside the new report. Pruned the existing 19-report backlog down to the last 5 days.
 
+## [1.12.0] - 2026-07-31
+
+### Added
+- `trade-setup` — new skill: **ticker-only trade setup pipeline**. Runs fundamentals lite → fixed TA stack (MA/MACD/RSI14/KDJ/Bollinger/ATR/ADX) → recent-window candlesticks → trend-strength regime → hard entry gates + soft score → strategy **or** explicit NO_TRADE. Horizon is **derived from the analysis** (SWING 波段 vs POSITION 中長線 vs BOTH / NONE), not pre-selected by the user. Complements `technical-analysis` (deep TA narrative) and `position-ladder` (post-ownership rungs). Brings the advertised framework count to 27.
+
 ## [1.11.0] - 2026-07-27
 
 ### Added

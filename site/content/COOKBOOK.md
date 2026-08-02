@@ -58,7 +58,7 @@ claude
 /plugin list
 ```
 
-You should see `us-stock-analysis` in the list with 27 available skills.
+You should see `us-stock-analysis` in the list with 28 available skills.
 
 ### Quick Test
 
@@ -140,7 +140,7 @@ plugins/us-stock-analysis/skills/
 ├── financial-report-analyst/SKILL.md
 ├── chart-master/SKILL.md           ← v1.6.0
 ├── full-report/SKILL.md            ← v1.6.0
-└── ... (27 skills total)
+└── ... (28 skills total)
 ```
 
 ### The Signal Block
@@ -2043,6 +2043,11 @@ Real-world investor scenarios showing how to combine multiple skills.
 
 # Step 4: Build the plan
 /us-stock-analysis:position-ladder AVGO — hold 20 @ $128, now $122, target 60-100 shares
+
+```bash
+/us-stock-analysis:trade-setup AAPL
+# ticker-only: entry gates + recommends SWING vs POSITION
+```
 # Returns: rung table, capital at full fill, trim/re-add cycle, wash-sale flags,
 #          and the total-return-vs-buy-and-hold check
 ```
@@ -2055,7 +2060,7 @@ plan says so in dollars.
 
 ## 5. Cross-AI Usage
 
-InvestSkill works with any AI assistant. The `prompts/` directory contains all 26 analysis frameworks as standalone files.
+InvestSkill works with any AI assistant. The `prompts/` directory contains all 27 analysis frameworks as standalone files.
 
 ### Gemini CLI
 
