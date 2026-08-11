@@ -71,7 +71,7 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 | Catalyst Calendar           | `@prompts/catalyst-calendar.md`        | `What catalysts are coming for TSLA?`      |
 | Bear Case                   | `@prompts/bear-case.md`                | `Build the bear case against TSLA`         |
 | Position Ladder             | `@prompts/position-ladder.md`          | `I hold 20 AVGO at $128, now $122 — plan`  |
-| Trade Setup                 | `@prompts/trade-setup.md`              | `AAPL — entry suitability, swing or position?` |
+| Trade Setup                 | `@prompts/trade-setup.md`              | `AAPL — entry + chart structures; swing or position?` |
 
 ### Full Research Bundle (2 skills)
 

@@ -16,7 +16,7 @@
 | Judge an earnings call | `earnings-call-analysis` | `options-analysis` |
 | Check if a *dividend is safe* | `dividend-analysis` | `portfolio-review` |
 | *Time an entry / exit* | `technical-analysis` | `chart-master` |
-| Decide *whether to enter now* (and swing vs position) | `trade-setup` | `technical-analysis` / `position-ladder` |
+| Decide *whether to enter now* (incl. capital flow + swing vs position) | `trade-setup` | `technical-analysis` / `position-ladder` |
 | Assess the *competitive moat* | `competitor-analysis` | `fundamental-analysis` |
 | Map an *industry's supply chain* (upstream→downstream) | `industry-map` | `competitor-analysis` |
 | See where *smart money* is moving | `institutional-ownership` | `insider-trading` |

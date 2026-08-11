@@ -23,7 +23,7 @@
 | 衡量*軋空*潛力 | `short-interest` | `technical-analysis` |
 | 壓力測試*多頭論點*（看下檔風險） | `bear-case` | `stock-eval` |
 | 規劃*如何分批建倉*（或管理已套牢的持股） | `position-ladder` | `technical-analysis` |
-| 決定*現在適不適合進場*（波段或中長線） | `trade-setup` | `technical-analysis` / `position-ladder` |
+| 決定*現在適不適合進場*（含資金流 + 波段或中長線） | `trade-setup` | `technical-analysis` / `position-ladder` |
 | 挑選*選擇權*策略 | `options-analysis` | `technical-analysis` |
 | 判讀*總經*環境 | `economics-analysis` | `sector-analysis` |
 | 找*類股輪動*機會 | `sector-analysis` | `stock-eval` |

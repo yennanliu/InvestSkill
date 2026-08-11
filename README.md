@@ -132,7 +132,7 @@ InvestSkill is **completely free to use** — there is nothing to buy, register,
 | `catalyst-calendar` | Forward-looking 90-day event calendar: earnings, macro events, catalysts, impact scoring, event-driven strategies |
 | `bear-case` | Deliberate short-seller red-team: bear thesis, accounting red flags, downside target, thesis-killers (counterevidence for any bull thesis) |
 | `position-ladder` | Staged entry ladder + trim/re-add cycle for a single holding: share-count floor/ceiling, blended cost basis, wash-sale flags, total-return-vs-buy-and-hold check, thesis-break gate |
-| `trade-setup` | Ticker-only entry pipeline: fundamentals lite + fixed TA + candlesticks + trend regime + hard/soft entry gates; recommends SWING vs POSITION from the analysis |
+| `trade-setup` | Ticker-only entry pipeline: fundamentals lite + fixed TA + candlesticks + chart structures (H&S / double top-bottom / triangle / flag) + trend regime + capital-flow review (A/B/C/D) + hard/soft entry gates; recommends SWING vs POSITION from the analysis |
 
 ### Meta & Output
 
