@@ -1,7 +1,7 @@
 {
   "name": "us-stock-analysis",
-  "description": "Comprehensive US stock evaluation with fundamental, technical, economic, valuation, financial report, and position-management analysis — 26 analysis frameworks",
-  "version": "1.11.0",
+  "description": "Comprehensive US stock evaluation with fundamental, technical, economic, valuation, financial report, and position-management analysis — 27 analysis frameworks",
+  "version": "1.12.0",
   "author": {
     "name": "yennanliu"
   },
@@ -33,6 +33,7 @@
     "valuation",
     "comparable-company",
     "position-sizing",
-    "cost-basis"
+    "cost-basis",
+    "trade-setup"
   ]
 }
