@@ -1,6 +1,6 @@
 # Choose a Skill
 
-> 26 frameworks is a lot. This page maps your *goal* to the right skill — and clears up the overlaps people ask about most. New here? Start with `stock-eval`; it touches quality, value, and risk in one pass.
+> 27 frameworks is a lot. This page maps your *goal* to the right skill — and clears up the overlaps people ask about most. New here? Start with `stock-eval`; it touches quality, value, and risk in one pass.
 
 ---
 
@@ -16,6 +16,7 @@
 | Judge an earnings call | `earnings-call-analysis` | `options-analysis` |
 | Check if a *dividend is safe* | `dividend-analysis` | `portfolio-review` |
 | *Time an entry / exit* | `technical-analysis` | `chart-master` |
+| Decide *whether to enter now* (incl. capital flow + swing vs position) | `trade-setup` | `technical-analysis` / `position-ladder` |
 | Assess the *competitive moat* | `competitor-analysis` | `fundamental-analysis` |
 | Map an *industry's supply chain* (upstream→downstream) | `industry-map` | `competitor-analysis` |
 | See where *smart money* is moving | `institutional-ownership` | `insider-trading` |
@@ -58,7 +59,8 @@ What's your starting point?
 │     └─ dividend-analysis ──► portfolio-review
 │
 ├─ "I'm trading a setup"
-│     └─ short-interest ──► technical-analysis ──► options-analysis ──► chart-master
+│     └─ trade-setup (go/no-go + swing vs position) ──► technical-analysis ──► options-analysis
+│           └─ (if owning) position-ladder
 │
 ├─ "I already own it — how do I build / manage the position?"
 │     └─ stock-eval (thesis still good?) ──► technical-analysis (support levels)

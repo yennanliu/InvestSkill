@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Enhanced
+- `trade-setup` — **Phase 3b chart structures** (separate from candlesticks): double top/bottom, head & shoulders / inverse, ascending/descending/symmetrical triangles, bull/bear flags. Report via `chart_patterns_recent` with `forming`/`confirmed` + neckline; soft dimension `structure` (~5–6% weight, confirmed preferred, forming half-weighted). Never fold into the candle score. Soft-score weights adjusted (trending/range) to make room for `structure`.
+- `trade-setup` — **readability & accuracy pass (10 items)**: per-dimension **contribution breakdown** (score × weight) with top-3 positive/negative drivers; new **volume trend** soft dimension (up-day vs down-day volume ratio + last-bar volume vs 20D average) with re-balanced weights; candlestick window **hard-capped at the last 20 bars** by bar index; **key levels** table (support/resistance clusters with distance % from close and composition); **watch conditions carry concrete price levels** from the run's data (e.g. "reclaim SMA20 ≈ 82.50") instead of boilerplate; capital-flow **unit ambiguity now shows both readings** (raw currency vs 萬) side by side; rolling per-symbol **capital-flow history** (last 10 runs) with a 3–5 day main-net trend note; signal-block **Confidence derived** from data completeness + |soft| + LB/Futu conflict + gates (with `confidence_detail`); new **`plot_setup.py` chart script** (daily candles + SMA20/50/200 + key levels + necklines + entry/stop/T1/T2 + volume pane); report template gains a **legend footer** (flow modes, score mapping, entry-label thresholds, forming vs confirmed).
+
 ### Added
 - **`install.sh` — one-command install for any AI agent.** `curl -fsSL https://raw.githubusercontent.com/yennanliu/InvestSkill/main/install.sh | bash -s -- -a <agent>` copies every framework into `.investskill/prompts/` and wires up that agent's own entry point: `claude` → `.claude/skills/<skill>/SKILL.md` (slash commands), `cursor` → `.cursor/rules/investskill.mdc`, `copilot` → `.github/copilot-instructions.md`, `gemini` → `GEMINI.md`, `codex` / `opencode` → `AGENTS.md`, and `any` → the prompts alone for ChatGPT, Claude.ai, or a local model. Existing instruction files are **appended to inside a marked block, never overwritten**, and a second run is a no-op. Flags: `-a` agent, `-d DIR` target directory, `-g` user-level install (`$HOME`), `-r REF` branch/tag, `-l` list targets, `-h` help. No runtime and no dependencies beyond `curl` and `tar`.
 
@@ -27,6 +31,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `scripts/site-review.js` — daily QA reports in `qa/` are now capped at a 5-day retention window (`RETENTION_DAYS`); older `site_review_YYYYMMDD.md` files are pruned on each run. `PROJECT-REVIEW.md` is untouched.
 - `install.sh` — the framework count is now computed with a glob instead of `ls | grep` (shellcheck SC2010); output is unchanged.
 - `.github/workflows/site-review.yml` — stages `qa/` with `git add -A` so pruned reports are committed as deletions alongside the new report. Pruned the existing 19-report backlog down to the last 5 days.
+
+## [1.12.0] - 2026-07-31
+
+### Added
+- `trade-setup` — new skill: **ticker-only trade setup pipeline**. Runs fundamentals lite → fixed TA stack (MA/MACD/RSI14/KDJ/Bollinger/ATR/ADX) → recent-window candlesticks → trend-strength regime → **capital-flow review (modes A/B/C/D)** → hard entry gates + soft score → strategy **or** explicit NO_TRADE. Horizon is **derived from the analysis** (SWING 波段 vs POSITION 中長線 vs BOTH / NONE), not pre-selected by the user. Complements `technical-analysis` (deep TA narrative) and `position-ladder` (post-ownership rungs). Brings the advertised framework count to 27.
+
+### Enhanced
+- `trade-setup` — capital-flow review is a **required report section** (main-force vs price modes A/B/C/D, distribution skew, anomaly note); missing feed → `缺數` without score punishment; modes B/D add a 資金面警告 on entry/strategy language. **Longbridge is primary**; optional **Futu capital-anomaly** (~7d) appends as section 5b when OpenD is available and is skipped otherwise — Futu must not override Longbridge mode/score.
+- `trade-setup` — scoring polish: label capital **units** (`萬` vs quote currency) vs turnover %; fill fund YoY from `financial-report --latest`; 縮量 candles at half weight; entry batches always sum to **100%** (POSITION/BOTH 30/40/30); LB/Futu conflict auto-softens conviction/size only; Futu `--json` keeps stdout pure JSON (SDK logs → stderr).
+- `trade-setup` — Futu「大小單分歧」no longer auto-flags LB↔Futu conflict when Futu 特大單／主力 direction still aligns with LB modes A/C/IN; only true directional clashes soften. `score_setup` also reads `quote.symbol` and parses Futu JSON with `strict=False`.
 
 ## [1.11.0] - 2026-07-27
 

@@ -70,7 +70,7 @@ claude
 /plugin list
 ```
 
-確認在清單中看到 `us-stock-analysis`，並顯示 27 個可用技能，即表示安裝成功。
+確認在清單中看到 `us-stock-analysis`，並顯示 28 個可用技能，即表示安裝成功。
 
 ### 快速測試
 
@@ -152,7 +152,7 @@ plugins/us-stock-analysis/skills/
 ├── financial-report-analyst/SKILL.md
 ├── chart-master/SKILL.md           ← v1.6.0 新增
 ├── full-report/SKILL.md            ← v1.6.0 新增
-└── ...（共 27 個技能）
+└── ...（共 28 個技能）
 ```
 
 ### 標準訊號區塊
@@ -1956,6 +1956,11 @@ Samsung / Apple 設計案報導，取自 stockanalysis.com 新聞頁，2026/07/2
 
 # 步驟 4：產出計畫
 /us-stock-analysis:position-ladder AVGO — 持有 20 股成本 $128，現價 $122，目標 60-100 股
+
+```bash
+/us-stock-analysis:trade-setup AAPL
+# 只輸入代碼：進場閘門 + 由結果建議波段或中長線
+```
 # 輸出：階梯表、滿倉所需資金、賣高成本／低於均價買回的循環、洗售規則警示，
 #       以及總報酬 vs. 買進持有的對照
 ```
@@ -1967,7 +1972,7 @@ Samsung / Apple 設計案報導，取自 stockanalysis.com 新聞頁，2026/07/2
 
 ## 5. 跨 AI 工具使用
 
-InvestSkill 適用於任何 AI 助手。`prompts/` 目錄包含所有 26 個分析框架的獨立檔案。
+InvestSkill 適用於任何 AI 助手。`prompts/` 目錄包含所有 27 個分析框架的獨立檔案。
 
 ### Gemini CLI
 

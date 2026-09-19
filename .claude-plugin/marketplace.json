@@ -5,15 +5,15 @@
     "email": "yennanliu@users.noreply.github.com"
   },
   "metadata": {
-    "description": "Professional investment analysis and stock evaluation skills for US markets — 26 skills covering fundamental, technical, valuation, financial report analysis, industry supply-chain mapping, bear-case red-teaming, staged position laddering and cost-basis management, result validation, charting, and full comprehensive reports",
-    "version": "1.11.0"
+    "description": "Professional investment analysis and stock evaluation skills for US markets — 27 skills covering fundamental, technical, valuation, financial report analysis, industry supply-chain mapping, bear-case red-teaming, staged position laddering and cost-basis management, ticker-only trade-setup (entry gates + swing/position horizon), result validation, charting, and full comprehensive reports",
+    "version": "1.12.0"
   },
   "plugins": [
     {
       "name": "us-stock-analysis",
       "source": "./plugins/us-stock-analysis",
-      "description": "Comprehensive US stock evaluation: fundamental, technical, economic, DCF, multi-method valuation, financial report analysis, options, dividends, insider trading, institutional ownership, bear-case red-teaming, position laddering, and more",
-      "version": "1.11.0",
+      "description": "Comprehensive US stock evaluation: fundamental, technical, economic, DCF, multi-method valuation, financial report analysis, options, dividends, insider trading, institutional ownership, bear-case red-teaming, position laddering, trade-setup, and more",
+      "version": "1.12.0",
       "author": {
         "name": "yennanliu"
       },
@@ -28,7 +28,8 @@
         "valuation",
         "10-k",
         "10-q",
-        "financial-reports"
+        "financial-reports",
+        "trade-setup"
       ]
     }
   ]

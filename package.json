@@ -1,7 +1,7 @@
 {
   "name": "investskill",
-  "version": "1.11.0",
-  "description": "Professional investment analysis frameworks for US stock markets — works with Claude Code, Cursor, Gemini CLI, GitHub Copilot, and any AI assistant",
+  "version": "1.12.0",
+  "description": "Professional investment analysis frameworks for US stock markets ??works with Claude Code, Cursor, Gemini CLI, GitHub Copilot, and any AI assistant",
   "main": "scripts/test-skills.js",
   "scripts": {
     "test": "node scripts/test-skills.js && node scripts/test-install.js",
@@ -52,5 +52,9 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "markdown-it": "^15.0.0",
+    "markdown-it-anchor": "^9.2.1"
   }
 }
