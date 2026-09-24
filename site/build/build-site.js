@@ -283,6 +283,117 @@ function rewriteLinks(html) {
 }
 
 // ---------------------------------------------------------------------------
+// Skill categories + per-skill metadata (used by the landing page, the Skill
+// Reference grid, and the per-skill pages)
+// ---------------------------------------------------------------------------
+// Display categories for the index, mirroring README. Any skill not listed
+// here falls into "Other" so new skills still appear without code changes.
+const SKILL_CATEGORIES = [
+  { title: 'Core Stock Analysis', skills: ['stock-eval','technical-analysis','stock-valuation','economics-analysis'] },
+  { title: 'Financial Reports',   skills: ['financial-report-analyst','10k-digest','earnings-call-analysis'] },
+  { title: 'Market Monitoring',   skills: ['insider-trading','institutional-ownership','dividend-analysis','short-interest'] },
+  { title: 'Advanced Research',   skills: ['competitor-analysis','industry-map','options-analysis','portfolio-review','sector-analysis','stock-screener','catalyst-calendar','bear-case','position-ladder','thesis-tracker','etf-analysis','earnings-preview','tax-lens','risk-stress-test'] },
+  { title: 'Meta & Output',       skills: ['full-report','report-generator','chart-master','result-validator','learning-coach','fact-check'] },
+  // Redirect stubs kept for backwards compatibility — installed, but not counted as frameworks.
+  { title: 'Aliases (redirects)', skills: ['fundamental-analysis','dcf-valuation','research-bundle'] },
+];
+
+// Extract a page title and a one-line summary from a prompt's markdown.
+function describePrompt(raw, name) {
+  const lines = raw.split('\n');
+  const h1 = lines.find(l => /^#\s+/.test(l));
+  const title = h1 ? h1.replace(/^#\s+/, '').trim() : '';
+  // Prefer the SKILL.md frontmatter description — it is the one-line summary
+  // the author wrote. Fall back to the first prose paragraph of the prompt,
+  // skipping the contract boilerplate (Data Verification / Data & Sources),
+  // tables, lists, fences, and blockquotes.
+  let summary = '';
+  if (name) {
+    const skillFile = path.join(__dirname, '..', '..', 'plugins', 'us-stock-analysis', 'skills', name, 'SKILL.md');
+    if (fs.existsSync(skillFile)) {
+      const m = fs.readFileSync(skillFile, 'utf8').match(/^---\n[\s\S]*?^description:\s*(.+)$[\s\S]*?^---/m);
+      if (m) summary = m[1].trim().replace(/^(["'])(.*)\1$/, '$2');
+    }
+    // Aliases: the redirect note ("This skill has been merged into …") says it best.
+    if (skillRegistry.ALIAS_SKILLS.includes(name)) {
+      const q = lines.find(l => /^>\s*\*\*This skill has been/.test(l));
+      if (q) summary = q.replace(/^>\s*/, '');
+    }
+  }
+  if (!summary) {
+    let inFence = false;
+    for (let i = (h1 ? lines.indexOf(h1) + 1 : 0); i < lines.length; i++) {
+      const t = lines[i].trim();
+      if (t.startsWith('```')) { inFence = !inFence; continue; }
+      if (inFence || !t || /^[#>|\-*\d]/.test(t) || /^(Before running any analysis|The first thing in the output|Never silently)/.test(t)) continue;
+      summary = t;
+      break;
+    }
+  }
+  summary = summary.replace(/\*\*/g, '').replace(/`/g, '');
+  if (summary.length > 180) summary = summary.slice(0, 177).trimEnd() + '…';
+  return { title, summary };
+}
+
+// Register skill pages as served BEFORE rendering anything that links to them.
+const skillMeta = {};
+for (const name of promptFiles) {
+  SERVED.add(`skill-${name}.html`);
+  const raw = fs.readFileSync(path.join(PROMPTS_DIR, `${name}.md`), 'utf8');
+  skillMeta[name] = { raw, ...describePrompt(raw, name) };
+}
+
+
+// Presentation metadata per category (icon, accent slot, blurbs). Kept apart
+// from SKILL_CATEGORIES so that array stays a plain title + skills list
+// (scripts/new-skill.js and test-skills.js parse it by shape).
+const CATEGORY_META = {
+  'Core Stock Analysis': {
+    slug: 'core-stock-analysis', color: 1,
+    icon: '<path d="M3 3v18h18"/><path d="m7 15 4-6 4 3 5-8"/>',
+    zh: '核心股票分析',
+    blurb: { en: 'Fundamentals, technicals, valuation and macro — the four pillars behind any stock call.',
+             zh: '基本面、技術面、估值與總經——任何一檔股票判斷背後的四大支柱。' },
+  },
+  'Financial Reports': {
+    slug: 'financial-reports', color: 2,
+    icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/>',
+    zh: '財務報告',
+    blurb: { en: 'Deep-read 10-Ks, 10-Qs and earnings calls — structured digests with sourced references.',
+             zh: '深度閱讀 10-K、10-Q 與法說會——附來源引用的結構化摘要。' },
+  },
+  'Market Monitoring': {
+    slug: 'market-monitoring', color: 3,
+    icon: '<circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/>',
+    zh: '市場監控',
+    blurb: { en: 'Follow the smart money — insider Form 4s, 13F holdings, short interest and capital returns.',
+             zh: '跟蹤聰明錢——內部人 Form 4、13F 持股、空單餘額與資本回饋。' },
+  },
+  'Advanced Research': {
+    slug: 'advanced-research', color: 4,
+    icon: '<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/>',
+    zh: '進階研究',
+    blurb: { en: 'Moats, industry maps, options, screening, risk, tax, position sizing and thesis tracking.',
+             zh: '護城河、產業鏈、選擇權、篩選、風險、稅務、部位規劃與論點追蹤。' },
+  },
+  'Meta & Output': {
+    slug: 'meta--output', color: 5,
+    icon: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h5"/>',
+    zh: '整合與輸出',
+    blurb: { en: 'Chain skills into a full report, chart it, validate it, fact-check it, and learn from it.',
+             zh: '把多個技能串成完整報告、繪圖、驗證、事實查核，並從中學習。' },
+  },
+  'Aliases (redirects)': {
+    slug: 'aliases-redirects', color: 6, hidden: true,
+    icon: '<polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
+    zh: '別名（轉向）',
+    blurb: { en: 'Kept for backwards compatibility — each redirects to the skill that absorbed it.',
+             zh: '為了向後相容而保留——每個都轉向吸收它的技能。' },
+  },
+};
+const categoryOf = (name) => (SKILL_CATEGORIES.find(c => c.skills.includes(name)) || { title: 'Other' }).title;
+
+// ---------------------------------------------------------------------------
 // Page config: title, subtitle, source file, raw URL
 // ---------------------------------------------------------------------------
 const PAGES = [
@@ -819,97 +930,519 @@ function buildInstaller(lang) {
 `;
 }
 
+// ---------------------------------------------------------------------------
+// Shared UI strings
+// ---------------------------------------------------------------------------
+const UI = {
+  en: {
+    onThisPage: 'On this page', copyMd: 'Copy Markdown', openRaw: 'Open Raw',
+    prev: 'Previous', next: 'Next', backTop: 'Back to top',
+    footerTag: 'Structured investment-analysis frameworks for any AI assistant. Just markdown — no API keys, no runtime.',
+    footerCols: [
+      { title: 'Learn',   links: [['Learning Hub','learning.html'],['Concepts','concepts.html'],['Glossary','glossary.html'],['Choose a Skill','choose-a-skill.html'],['Use Cases','use-cases.html']] },
+      { title: 'Guides',  links: [['Quick Start','index.html'],['Cookbook','cookbook.html'],['Skill Reference','skills.html'],['Demos','full-demo.html'],['Data & Accuracy','data-and-accuracy.html']] },
+      { title: 'Project', links: [['GitHub','https://github.com/yennanliu/InvestSkill'],['Changelog','changelog.html'],['Contributing','contributing.html'],['Issues','https://github.com/yennanliu/InvestSkill/issues'],['MIT License','https://github.com/yennanliu/InvestSkill/blob/main/LICENSE']] },
+    ],
+    disclaimer: 'Educational frameworks only — not financial advice.',
+    readme: 'From the README',
+    runTitle: 'Run this skill', runIn: 'Claude Code', runOther: 'Cursor / Gemini CLI', runAny: 'Any LLM',
+    related: 'More in',
+    filterPlaceholder: 'Filter frameworks — try valuation, 13F, tax…', filterAll: 'All', noMatch: 'No framework matches that filter.',
+  },
+  zh: {
+    onThisPage: '本頁內容', copyMd: '複製 Markdown', openRaw: '開啟原始檔',
+    prev: '上一頁', next: '下一頁', backTop: '回到頂部',
+    footerTag: '給任何 AI 助理的結構化投資分析框架。純 markdown——沒有 API 金鑰、沒有執行環境。',
+    footerCols: [
+      { title: '學習',   links: [['學習中心','learning-zh-tw.html'],['概念','concepts-zh-tw.html'],['術語表','glossary-zh-tw.html'],['選擇技能','choose-a-skill-zh-tw.html'],['使用情境','use-cases-zh-tw.html']] },
+      { title: '指南',   links: [['快速開始','zh-tw.html'],['操作手冊','cookbook-zh-tw.html'],['技能參考（英文）','skills.html'],['示範','full-demo-rklb.html'],['資料與準確性','data-and-accuracy-zh-tw.html']] },
+      { title: '專案',   links: [['GitHub','https://github.com/yennanliu/InvestSkill'],['更新紀錄（英文）','changelog.html'],['參與貢獻（英文）','contributing.html'],['回報問題','https://github.com/yennanliu/InvestSkill/issues'],['MIT 授權','https://github.com/yennanliu/InvestSkill/blob/main/LICENSE']] },
+    ],
+    disclaimer: '僅供教育用途的框架——不構成投資建議。',
+    readme: '完整說明（README）',
+    runTitle: '執行這個技能', runIn: 'Claude Code', runOther: 'Cursor / Gemini CLI', runAny: '任何 LLM',
+    related: '同類技能',
+    filterPlaceholder: '篩選框架', filterAll: '全部', noMatch: '沒有符合的框架。',
+  },
+};
+
+const svg = (paths, size = 16) =>
+  `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+const ARROW_R = '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>';
+const ARROW_L = '<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>';
+const escapeHtml = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+// Wrap tables so wide ones scroll horizontally instead of breaking the layout.
+function wrapTables(html) {
+  return html.replace(/<table>/g, '<div class="table-wrap"><table>').replace(/<\/table>/g, '</table></div>');
+}
+
+// Landing pages render the README body below the marketing sections; the
+// centred badge header at the top of the README duplicates the hero, so drop it.
+function stripReadmeHeader(raw) {
+  return raw.replace(/^<div align="center">[\s\S]*?<\/div>\s*\n(?:---\s*\n)?/, '');
+}
+
+// ---------------------------------------------------------------------------
+// Landing page sections (home + zh homepage)
+// ---------------------------------------------------------------------------
+const LANDING = {
+  en: {
+    headline: 'Turn any AI into your <em>stock analyst</em>.',
+    lead: `${FRAMEWORK_COUNT} structured analysis frameworks — fundamentals, valuation, filings, positioning, risk — that any AI assistant can run. Just markdown. No API keys, no fees, no runtime.`,
+    ctaPrimary: 'Get started', ctaSecondary: 'Browse frameworks', ctaLearn: 'Start learning',
+    stats: [[String(FRAMEWORK_COUNT), 'Analysis frameworks'], ['$0', 'No API keys · no fees'], ['MIT', 'Open source'], ['2', 'Languages · EN / 繁中']],
+    platLabel: 'Runs on',
+    howEyebrow: 'How it works', howTitle: 'Three steps to a signal',
+    steps: [
+      { t: 'Install', d: 'One curl command drops every framework into your project and wires up your agent’s own config file.', c: 'curl -fsSL …/install.sh | bash -s -- -a claude' },
+      { t: 'Ask', d: 'Name a ticker and a framework in plain language, or use the slash command in Claude Code.', c: '/stock-eval AAPL' },
+      { t: 'Read the signal', d: 'Every framework closes with the same INVESTMENT SIGNAL block — score 0–10, confidence, horizon, action.', c: 'Score 7.8 / 10 · BUY · HIGH' },
+    ],
+    catEyebrow: `${FRAMEWORK_COUNT} frameworks`, catTitle: 'Every angle of a stock, one skill each', catLink: 'Browse the full reference',
+    learnEyebrow: 'Learn', learnTitle: 'New to investing? Start here.',
+    learnLead: 'An eight-lesson field guide to the ideas behind every skill — from reading a balance sheet to holding a portfolio. Plain English, no finance degree required.',
+    learnCta: 'Open the Learning Hub', lesson: 'Lesson',
+    demoEyebrow: 'Demos', demoTitle: 'See real output before you install', demoLink: 'All demos',
+    trustEyebrow: 'Trust', trustTitle: 'Built to be checked, not believed',
+    trust: [
+      { t: 'No API keys, no telemetry', d: 'Nothing runs on your machine and nothing phones home. InvestSkill never sees your tickers or holdings.' },
+      { t: 'Sources on every number', d: 'Each analysis opens with a Data & Sources header, and fact-check re-verifies every claim against a primary source.' },
+      { t: 'Educational, not advice', d: 'Frameworks teach a repeatable process. Read Data & Accuracy for where the numbers come from and how far to trust them.' },
+    ],
+    trustLink: 'Read Data & Accuracy',
+    termTitle: 'claude · ~/portfolio',
+  },
+  zh: {
+    headline: '讓任何 AI 成為你的<em>美股分析師</em>。',
+    lead: `${FRAMEWORK_COUNT} 個結構化分析框架——基本面、估值、財報、籌碼、風險——任何 AI 助理都能執行。純 markdown，沒有 API 金鑰、沒有費用、沒有執行環境。`,
+    ctaPrimary: '開始使用', ctaSecondary: '瀏覽框架', ctaLearn: '開始學習',
+    stats: [[String(FRAMEWORK_COUNT), '分析框架'], ['$0', '零 API 金鑰 · 零費用'], ['MIT', '開源授權'], ['2', '語言 · 英文 / 繁中']],
+    platLabel: '支援平台',
+    howEyebrow: '運作方式', howTitle: '三步得到一個訊號',
+    steps: [
+      { t: '安裝', d: '一行 curl 指令把全部框架放進專案，並接上你 AI 工具自己的設定檔。', c: 'curl -fsSL …/install.sh | bash -s -- -a claude' },
+      { t: '提問', d: '用自然語言說出股票代號與框架名稱，或在 Claude Code 使用斜線指令。', c: '/stock-eval AAPL' },
+      { t: '讀訊號', d: '每個框架都以相同的 INVESTMENT SIGNAL 區塊收尾——0–10 分、信心度、期間、行動。', c: 'Score 7.8 / 10 · BUY · HIGH' },
+    ],
+    catEyebrow: `${FRAMEWORK_COUNT} 個框架`, catTitle: '一檔股票的每個切面，各由一個技能負責', catLink: '瀏覽完整技能參考',
+    learnEyebrow: '學習', learnTitle: '投資新手？從這裡開始。',
+    learnLead: '八堂課的實戰指南，講解每個技能背後的觀念——從讀懂資產負債表到管理投資組合。白話解說，不需要金融背景。',
+    learnCta: '前往學習中心', lesson: '第',
+    demoEyebrow: '示範', demoTitle: '安裝前先看真實輸出', demoLink: '全部示範',
+    trustEyebrow: '信任', trustTitle: '設計來被驗證，而不是被相信',
+    trust: [
+      { t: '沒有 API 金鑰、沒有遙測', d: '你的機器上不執行任何程式，也不會回傳任何資料。InvestSkill 永遠看不到你的股票或持倉。' },
+      { t: '每個數字都有來源', d: '每份分析都以「資料與來源」標頭開場，fact-check 技能會把每項主張對照第一手來源重新驗證。' },
+      { t: '教育用途，不是投資建議', d: '框架教的是可重複的流程。請閱讀「資料與準確性」了解數字從何而來、能信到什麼程度。' },
+    ],
+    trustLink: '閱讀資料與準確性',
+    termTitle: 'claude · ~/portfolio',
+  },
+};
+
+const PLATFORMS = ['Claude Code', 'Cursor', 'Gemini CLI', 'Copilot', 'Codex', 'ChatGPT', 'Ollama'];
+
+// Box-drawn INVESTMENT SIGNAL block with computed padding (mirrors the skills'
+// closing block). Values are wrapped in <b> after padding so widths stay exact.
+function signalBox(rows, width = 38) {
+  const line = (l, r) => `║ ${l}${r}${' '.repeat(Math.max(0, width - 2 - l.length - r.length))} ║`;
+  const out = ['╔' + '═'.repeat(width) + '╗', '║' + 'INVESTMENT SIGNAL'.padStart((width + 17) / 2).padEnd(width) + '║', '╠' + '═'.repeat(width) + '╣'];
+  for (const row of rows) {
+    if (!row) { out.push('╠' + '═'.repeat(width) + '╣'); continue; }
+    const [k, v] = row;
+    out.push(line(k.padEnd(13), v).replace(v + ' ', '<b>' + v + '</b> '));
+  }
+  out.push('╚' + '═'.repeat(width) + '╝');
+  return out.join('\n');
+}
+
+// Animated terminal mock in the hero — each line fades in with a stagger.
+function buildTerminal(lang) {
+  const T = LANDING[lang];
+  const lines = [
+    ['cmd',  '/stock-eval AAPL'],
+    ['dim',  lang === 'zh' ? '→ 讀取 10-K · 8 季財務 · Form 4 申報 …' : '→ Reading 10-K · 8 quarters · Form 4 filings …'],
+    ['kv',   'Piotroski F-Score   <b>7 / 9</b>'],
+    ['kv',   'ROIC (TTM)          <b>56.4%</b>'],
+    ['kv',   'Moat                <b>Wide</b>  <i>brand · ecosystem lock-in</i>'],
+    ['kv',   'DCF fair value      <b>$212</b>  <i>vs. $189 spot</i>'],
+    ['box',  signalBox([
+      ['Signal:', 'BULLISH'], ['Confidence:', 'HIGH'], ['Horizon:', 'LONG-TERM'], ['Score:', '7.8 / 10'],
+      null, ['Action:', 'BUY'], ['Conviction:', 'STRONG'],
+    ])],
+  ];
+  const body = lines.map(([kind, text], i) => {
+    const prompt = kind === 'cmd' ? '<span class="term-prompt">❯</span> ' : '';
+    return `<span class="term-line term-${kind}" style="--i:${i}">${prompt}${text}</span>`;
+  }).join('\n');
+  return `<div class="term" aria-hidden="true">
+        <div class="term-bar"><span></span><span></span><span></span><span class="term-title">${T.termTitle}</span></div>
+        <pre class="term-body">${body}</pre>
+      </div>`;
+}
+
+function buildLandingHero(lang) {
+  const T = LANDING[lang];
+  const badge = `${SITE_VERSION ? SITE_VERSION + ' · ' : ''}${lang === 'zh' ? `${FRAMEWORK_COUNT} 項分析框架` : `${FRAMEWORK_COUNT} analysis frameworks`}`;
+  return `
+    <section class="landing-hero" id="top">
+      <span class="hero-orbs" aria-hidden="true"></span>
+      <div class="landing-hero-copy">
+        <span class="hero-badge"><span class="hero-badge-dot"></span>${badge}</span>
+        <h1>${T.headline}</h1>
+        <p class="hero-lead">${T.lead}</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary btn-lg" href="#install">${T.ctaPrimary} ${svg(ARROW_R, 15)}</a>
+          <a class="btn btn-lg" href="skills.html">${T.ctaSecondary}</a>
+          <a class="btn btn-ghost btn-lg" href="${lang === 'zh' ? 'learning-zh-tw.html' : 'learning.html'}">${T.ctaLearn}</a>
+        </div>
+        <div class="hero-platforms">
+          <span class="hero-plat-label">${T.platLabel}</span>
+          ${PLATFORMS.map(p => `<span class="hero-chip">${p}</span>`).join('\n          ')}
+        </div>
+      </div>
+      <div class="landing-hero-visual">
+        ${buildTerminal(lang)}
+      </div>
+      <div class="hero-stats">
+        ${T.stats.map(([n, lbl]) => `<div class="hero-stat"><span class="hero-stat-num">${n}</span><span class="hero-stat-label">${lbl}</span></div>`).join('\n        ')}
+      </div>
+    </section>`;
+}
+
+function sectionHead(eyebrow, title, link) {
+  return `<div class="section-head">
+        <div><p class="section-eyebrow">${eyebrow}</p><h2>${title}</h2></div>
+        ${link ? `<a class="section-link" href="${link.href}">${link.label} ${svg(ARROW_R, 14)}</a>` : ''}
+      </div>`;
+}
+
+function buildLandingSections(lang) {
+  const T = LANDING[lang];
+  const zh = lang === 'zh';
+
+  const steps = T.steps.map((s, i) => `<li class="step reveal">
+          <span class="step-num">${i + 1}</span>
+          <h3>${s.t}</h3>
+          <p>${s.d}</p>
+          <code class="step-code">${escapeHtml(s.c)}</code>
+        </li>`).join('\n        ');
+  const how = `
+    <section class="landing-section" id="how-it-works">
+      ${sectionHead(T.howEyebrow, T.howTitle)}
+      <ol class="steps">
+        ${steps}
+      </ol>
+    </section>`;
+
+  const cards = SKILL_CATEGORIES.filter(c => !(CATEGORY_META[c.title] || {}).hidden).map(c => {
+    const m = CATEGORY_META[c.title] || { slug: githubSlug(c.title), color: 6, icon: '<circle cx="12" cy="12" r="9"/>', blurb: {} };
+    const present = c.skills.filter(n => skillMeta[n]);
+    const shown = present.slice(0, 5);
+    const more = present.length - shown.length;
+    return `<div class="cat-card reveal" style="--c: var(--cat-${m.color})">
+          <div class="cat-card-head">
+            <span class="cat-icon">${svg(m.icon, 20)}</span>
+            <span class="cat-count">${present.length}</span>
+          </div>
+          <h3><a href="skills.html#${m.slug}">${zh && m.zh ? m.zh : c.title}</a></h3>
+          <p>${m.blurb[lang] || ''}</p>
+          <div class="cat-chips">
+            ${shown.map(n => `<a class="chip" href="skill-${n}.html">${n}</a>`).join('\n            ')}
+            ${more > 0 ? `<a class="chip chip-more" href="skills.html#${m.slug}">+${more}</a>` : ''}
+          </div>
+        </div>`;
+  }).join('\n        ');
+  const cats = `
+    <section class="landing-section" id="frameworks">
+      ${sectionHead(T.catEyebrow, T.catTitle, { href: 'skills.html', label: T.catLink })}
+      <div class="cat-grid">
+        ${cards}
+      </div>
+    </section>`;
+
+  const learnSection = NAV[lang].find(s => s.title === (zh ? '學習' : 'Learning'));
+  const lessons = learnSection.links.slice(1);
+  const lessonCards = lessons.map((l, i) => {
+    const label = l.label.replace(/^\d+\s*·\s*/, '');
+    return `<a class="lesson-card reveal" href="${l.href}" style="--i:${i}">
+          <span class="lesson-num">${zh ? `${T.lesson} ${i + 1} 課` : `${T.lesson} ${i + 1}`}</span>
+          <span class="lesson-title">${label}</span>
+          ${svg(ARROW_R, 14)}
+        </a>`;
+  }).join('\n        ');
+  const learn = `
+    <section class="landing-section" id="learn">
+      ${sectionHead(T.learnEyebrow, T.learnTitle, { href: learnSection.links[0].href, label: T.learnCta })}
+      <p class="section-lead">${T.learnLead}</p>
+      <div class="lesson-track">
+        ${lessonCards}
+      </div>
+    </section>`;
+
+  const demoSection = NAV[lang].find(s => s.title === (zh ? '示範' : 'Demo'));
+  const demoLinks = demoSection.links.filter(l => l.page !== 'full-demo');
+  const demoCards = demoLinks.map(l => {
+    const p = PAGES.find(pg => pg.key === l.page) || {};
+    const ticker = (l.label.match(/\b[A-Z]{3,5}\b/) || [''])[0];
+    return `<a class="demo-card reveal" href="${l.href}">
+          <span class="demo-ticker">${ticker}</span>
+          <span class="demo-title">${l.label}</span>
+          <span class="demo-sub">${p.subtitle || ''}</span>
+        </a>`;
+  }).join('\n        ');
+  const demos = `
+    <section class="landing-section" id="demos">
+      ${sectionHead(T.demoEyebrow, T.demoTitle, { href: 'full-demo.html', label: T.demoLink })}
+      <div class="demo-grid">
+        ${demoCards}
+      </div>
+    </section>`;
+
+  const trustIcons = [
+    '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    '<path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/>',
+    '<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 2 2.7 3 6 3s6-1 6-3v-5"/>',
+  ];
+  const trustCards = T.trust.map((t, i) => `<div class="trust-card reveal">
+          <span class="trust-icon">${svg(trustIcons[i], 18)}</span>
+          <h3>${t.t}</h3><p>${t.d}</p>
+        </div>`).join('\n        ');
+  const trust = `
+    <section class="landing-section" id="trust">
+      ${sectionHead(T.trustEyebrow, T.trustTitle, { href: zh ? 'data-and-accuracy-zh-tw.html' : 'data-and-accuracy.html', label: T.trustLink })}
+      <div class="trust-grid">
+        ${trustCards}
+      </div>
+    </section>`;
+
+  return how + buildInstaller(lang) + cats + learn + demos + trust;
+}
+
+// ---------------------------------------------------------------------------
+// Footer, pager, per-skill extras
+// ---------------------------------------------------------------------------
+function buildFooter(lang) {
+  const U = UI[lang];
+  const cols = U.footerCols.map(c => `<div class="footer-col">
+        <p class="footer-col-title">${c.title}</p>
+        ${c.links.map(([label, href]) => {
+          const ext = /^https?:/.test(href) ? ' target="_blank" rel="noopener noreferrer"' : '';
+          return `<a href="${href}"${ext}>${label}</a>`;
+        }).join('\n        ')}
+      </div>`).join('\n      ');
+  return `
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="logo" href="${lang === 'zh' ? 'zh-tw.html' : 'index.html'}"><span class="logo-badge">IS</span><span class="logo-text">InvestSkill</span></a>
+          <p>${U.footerTag}</p>
+          ${SITE_VERSION ? `<span class="status-chip"><span class="dot"></span>${SITE_VERSION}</span>` : ''}
+        </div>
+        ${cols}
+      </div>
+      <div class="footer-bottom">
+        <span>© ${new Date().getUTCFullYear()} InvestSkill · MIT</span>
+        <span>${U.disclaimer}</span>
+        <span class="footer-langs"><a href="index.html">English</a> · <a href="zh-tw.html">繁體中文</a></span>
+      </div>
+    </footer>`;
+}
+
+// Flattened nav order per language, for previous / next links.
+const NAV_FLAT = { en: NAV.en.flatMap(s => s.links), zh: NAV.zh.flatMap(s => s.links) };
+function buildPager(lang, items, currentHref) {
+  const U = UI[lang];
+  const i = items.findIndex(l => l.href === currentHref);
+  if (i < 0) return '';
+  const prev = items[i - 1], next = items[i + 1];
+  if (!prev && !next) return '';
+  const cell = (item, dir) => item
+    ? `<a class="pager-link pager-${dir}" href="${item.href}">
+          <span class="pager-dir">${dir === 'prev' ? svg(ARROW_L, 14) + ' ' + U.prev : U.next + ' ' + svg(ARROW_R, 14)}</span>
+          <span class="pager-title">${item.label}</span>
+        </a>`
+    : '<span></span>';
+  return `
+    <nav class="pager" aria-label="Pagination">
+        ${cell(prev, 'prev')}
+        ${cell(next, 'next')}
+    </nav>`;
+}
+
+// Ordered skill list (category order) used for skill-page prev/next.
+const SKILL_ORDER = SKILL_CATEGORIES.flatMap(c => c.skills).filter(n => skillMeta[n])
+  .concat(promptFiles.filter(n => !SKILL_CATEGORIES.some(c => c.skills.includes(n))));
+
+function buildSkillExtras(name) {
+  const U = UI.en;
+  const cat = categoryOf(name);
+  const m = CATEGORY_META[cat] || { slug: githubSlug(cat), color: 6 };
+  const isAlias = skillRegistry.ALIAS_SKILLS.includes(name);
+  const siblings = (SKILL_CATEGORIES.find(c => c.title === cat) || { skills: [] }).skills
+    .filter(n => n !== name && skillMeta[n]).slice(0, 8);
+  const run = isAlias ? '' : `
+    <div class="run-box" style="--c: var(--cat-${m.color})">
+      <p class="run-title">${svg('<polygon points="5 3 19 12 5 21 5 3"/>', 14)} ${U.runTitle}</p>
+      <div class="run-row"><span class="run-label">${U.runIn}</span><code class="copyable">/us-stock-analysis:${name} AAPL</code></div>
+      <div class="run-row"><span class="run-label">${U.runOther}</span><code class="copyable">@prompts/${name}.md Evaluate AAPL</code></div>
+      <div class="run-row"><span class="run-label">${U.runAny}</span><code class="copyable">Evaluate AAPL using the ${name} framework</code></div>
+    </div>`;
+  const related = siblings.length ? `
+    <div class="related">
+      <span class="related-label">${U.related} <a href="skills.html#${m.slug}">${cat}</a></span>
+      ${siblings.map(n => `<a class="chip" href="skill-${n}.html">${n}</a>`).join('\n      ')}
+    </div>` : '';
+  return run + related;
+}
+
+// ---------------------------------------------------------------------------
+// Skill Reference index — filterable card grid
+// ---------------------------------------------------------------------------
+function buildSkillsIndex() {
+  const U = UI.en;
+  const categorized = new Set(SKILL_CATEGORIES.flatMap(c => c.skills));
+  const otherSkills = promptFiles.filter(n => !categorized.has(n));
+  const sections = [...SKILL_CATEGORIES];
+  if (otherSkills.length) sections.push({ title: 'Other', skills: otherSkills });
+
+  const present = sections.map(s => ({ ...s, skills: s.skills.filter(n => skillMeta[n]) })).filter(s => s.skills.length);
+  const total = present.reduce((n, s) => n + s.skills.length, 0);
+
+  const chips = [`<button type="button" class="filter-chip active" data-cat="all">${U.filterAll} <span>${total}</span></button>`]
+    .concat(present.map(s => {
+      const m = CATEGORY_META[s.title] || { slug: githubSlug(s.title), color: 6 };
+      return `<button type="button" class="filter-chip" data-cat="${m.slug}" style="--c: var(--cat-${m.color})">${s.title} <span>${s.skills.length}</span></button>`;
+    })).join('\n        ');
+
+  const groups = present.map(s => {
+    const m = CATEGORY_META[s.title] || { slug: githubSlug(s.title), color: 6, blurb: {} };
+    const cards = s.skills.map(n => {
+      const { title, summary } = skillMeta[n];
+      const isAlias = skillRegistry.ALIAS_SKILLS.includes(n);
+      const haystack = `${n} ${title} ${summary}`.toLowerCase();
+      return `<a class="skill-card${isAlias ? ' is-alias' : ''}" href="skill-${n}.html" data-cat="${m.slug}" data-text="${escapeHtml(haystack)}" style="--c: var(--cat-${m.color})">
+            <span class="skill-card-name">${n}</span>
+            <span class="skill-card-title">${escapeHtml(title || n)}</span>
+            <span class="skill-card-desc">${escapeHtml(summary || 'Investment analysis framework.')}</span>
+            <span class="skill-card-foot">${isAlias ? 'redirect' : `/${n} AAPL`} ${svg(ARROW_R, 13)}</span>
+          </a>`;
+    }).join('\n          ');
+    return `<section class="skill-group" data-cat="${m.slug}">
+        <h2 id="${m.slug}">${s.title} <span class="group-count">${s.skills.length}</span></h2>
+        ${m.blurb && m.blurb.en ? `<p class="group-blurb">${m.blurb.en}</p>` : ''}
+        <div class="skill-grid">
+          ${cards}
+        </div>
+      </section>`;
+  }).join('\n      ');
+
+  const html = `
+      <p class="lead">Every framework as a browsable page — ${FRAMEWORK_COUNT} analysis frameworks, plus ${ALIAS_COUNT} aliases that redirect to the skill that absorbed them. New here? See <a href="choose-a-skill.html">Choose a Skill</a> to find the right one for your goal, or <a href="concepts.html">Concepts</a> for the ideas behind them.</p>
+      <div class="skill-filter" role="search">
+        <label class="skill-search-wrap">
+          ${svg('<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>', 15)}
+          <input type="search" class="skill-search" placeholder="${escapeHtml(U.filterPlaceholder)}" aria-label="Filter frameworks">
+        </label>
+        <div class="filter-chips">
+        ${chips}
+        </div>
+      </div>
+      ${groups}
+      <p class="skill-empty" hidden>${U.noMatch}</p>
+      <p class="fineprint"><em>Educational frameworks only. Not financial advice.</em></p>`;
+  const text = present.flatMap(s => s.skills.map(n => `${n} ${skillMeta[n].summary}`)).join(' ');
+  return { html, text };
+}
+
 function htmlPage(page, content) {
   const lang = langOf(page.outFile);
+  const U = UI[lang];
   const nav = buildNav(lang, page.key);
   const rawUrl = `${RAW_BASE}/${page.srcFile}`;
 
-  const eyebrow  = eyebrowFor(lang, page.key);
-  const subnav    = buildSubnav(lang, page.key);
+  const eyebrow    = page.eyebrow || eyebrowFor(lang, page.key);
+  const subnav     = buildSubnav(lang, page.key);
   const langSwitch = buildLangSwitch(lang, page.outFile);
 
-  // The two language homepages get the full marketing hero treatment.
-  const isHome    = page.key === 'home' || page.key === 'zh-tw';
-  const heroClass = isHome ? ' home-hero' : '';
+  // The two language homepages get the full landing treatment.
+  const isHome = page.key === 'home' || page.key === 'zh-tw';
   const pageContentClass = isHome ? 'page-content home' : 'page-content';
+  const isSkill = page.outFile.startsWith('skill-');
 
-  const L = lang === 'zh'
-    ? {
-        badge:  `${FRAMEWORK_COUNT} 項分析框架`,
-        cta:    '開始使用', ctaHref: '#install',
-        stats:  [[String(FRAMEWORK_COUNT), '分析框架'], ['$0', '零 API 金鑰 · 零費用'], ['MIT', '開源授權'], ['0', '免安裝 · 純提示詞']],
-        platLabel: '支援平台',
-      }
-    : {
-        badge:  `${FRAMEWORK_COUNT} analysis frameworks`,
-        cta:    'Get Started', ctaHref: '#install',
-        stats:  [[String(FRAMEWORK_COUNT), 'Analysis frameworks'], ['$0', 'No API keys · no fees'], ['MIT', 'Open-source license'], ['0', 'Runtime — just prompts']],
-        platLabel: 'Runs on',
-      };
-  const PLATFORMS = ['Claude Code', 'Cursor', 'Gemini CLI', 'Copilot', 'ChatGPT'];
+  const docTitle = isHome
+    ? (lang === 'zh' ? 'InvestSkill — 讓任何 AI 成為你的美股分析師' : 'InvestSkill — Turn any AI into your stock analyst')
+    : `${page.title} · InvestSkill`;
+  const description = isHome ? LANDING[lang].lead.replace(/<[^>]+>/g, '') : (page.subtitle || 'Professional investment analysis frameworks for AI assistants');
 
-  const landingCta = isHome
-    ? `<a class="btn btn-primary" href="${L.ctaHref}">${L.cta}
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </a>\n        `
-    : '';
-
-  const heroBadge = isHome
-    ? `<span class="hero-badge"><span class="hero-badge-dot"></span>${SITE_VERSION ? SITE_VERSION + ' · ' : ''}${L.badge}</span>\n      `
-    : '';
-  const heroExtras = isHome
-    ? `
-      <div class="hero-stats">
-        ${L.stats.map(([n, lbl]) => `<div class="hero-stat"><span class="hero-stat-num">${n}</span><span class="hero-stat-label">${lbl}</span></div>`).join('\n        ')}
+  const pageHero = isHome ? buildLandingHero(lang) : `
+    <div class="page-hero${isSkill ? ' skill-hero' : ''}">
+      <p class="page-eyebrow">${eyebrow}</p>
+      <h1>${page.title}</h1>
+      <p class="page-desc">${page.subtitle}</p>
+      <div class="page-actions">
+        <button class="btn" id="copy-md-btn" data-url="${rawUrl}">
+          ${svg('<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>', 13)}
+          ${U.copyMd}
+        </button>
+        <a class="btn" href="${rawUrl}" target="_blank" rel="noopener noreferrer">
+          ${svg('<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>', 13)}
+          ${U.openRaw}
+        </a>
       </div>
-      <div class="hero-platforms">
-        <span class="hero-plat-label">${L.platLabel}</span>
-        ${PLATFORMS.map(p => `<span class="hero-chip">${p}</span>`).join('\n        ')}
-      </div>`
-    : '';
-  const heroOrbs = isHome ? `<span class="hero-orbs" aria-hidden="true"></span>\n      ` : '';
-  // Landing pages get the curl install picker directly under the hero.
-  const installer = isHome ? buildInstaller(lang) : '';
+    </div>`;
+
+  const landing    = isHome ? buildLandingSections(lang) : '';
+  const extras     = page.extras || '';
+  const readmeHead = isHome ? `<div class="readme-divider" id="readme"><span>${U.readme}</span></div>` : '';
+  const pager      = page.pager !== undefined ? page.pager : buildPager(lang, NAV_FLAT[lang], page.outFile);
+  const footer     = buildFooter(lang);
 
   return `<!DOCTYPE html>
 <html lang="${lang === 'zh' ? 'zh-Hant' : 'en'}" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${page.title} - InvestSkill</title>
-  <meta name="description" content="Professional investment analysis and stock evaluation skills for AI assistants">
+  <title>${escapeHtml(docTitle)}</title>
+  <meta name="description" content="${escapeHtml(description)}">
+  <meta name="theme-color" content="#fbfaf9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b0e14" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="InvestSkill">
+  <meta property="og:title" content="${escapeHtml(docTitle)}">
+  <meta property="og:description" content="${escapeHtml(description)}">
+  <meta property="og:url" content="${SITE_BASE}/${page.outFile}">
+  <link rel="canonical" href="${SITE_BASE}/${page.outFile}">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23e8664e'/%3E%3Cpath d='M8 22l5-7 4 4 7-10' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <script>(function(){try{var t=localStorage.getItem('is-theme');if(!t&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)t='dark';if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,18..72,400;0,18..72,500;1,18..72,400;1,18..72,500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,18..72,400;0,18..72,500;0,18..72,600;1,18..72,400;1,18..72,500&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="progress" id="progress" aria-hidden="true"></div>
 
 <header class="site-header">
   <div class="header-inner">
-    <button class="icon-btn" id="sidebar-toggle" aria-label="Toggle sidebar">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="3" y1="6" x2="21" y2="6"/>
-        <line x1="3" y1="12" x2="21" y2="12"/>
-        <line x1="3" y1="18" x2="21" y2="18"/>
-      </svg>
+    <button class="icon-btn" id="sidebar-toggle" aria-label="Toggle sidebar" aria-expanded="false">
+      ${svg('<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>', 18)}
     </button>
-    <a class="logo" href="index.html">
+    <a class="logo" href="${lang === 'zh' ? 'zh-tw.html' : 'index.html'}">
       <span class="logo-badge">IS</span>
       <span class="logo-text">InvestSkill</span>
     </a>
-    ${SITE_VERSION ? `<span class="status-chip"><span class="dot"></span>${SITE_VERSION} · live</span>` : ''}
-    <div class="search-box">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg>
-      <span class="search-placeholder">Search</span>
+    ${SITE_VERSION ? `<a class="status-chip" href="changelog.html"><span class="dot"></span>${SITE_VERSION}</a>` : ''}
+    <button class="search-box" type="button" aria-label="Search">
+      ${svg('<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>', 15)}
+      <span class="search-placeholder">${lang === 'zh' ? '搜尋文件…' : 'Search docs…'}</span>
       <span class="kbd-group"><kbd class="kbd">⌘</kbd><kbd class="kbd">K</kbd></span>
-    </div>
+    </button>
     <div class="header-actions">
       ${langSwitch}
-      <a href="https://github.com/yennanliu/InvestSkill" target="_blank" class="icon-btn" aria-label="GitHub">
-        <svg width="19" height="19" viewBox="0 0 16 16" fill="currentColor">
+      <a href="https://github.com/yennanliu/InvestSkill" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="GitHub">
+        <svg width="19" height="19" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
           <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
             0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
             -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
@@ -921,7 +1454,10 @@ function htmlPage(page, content) {
             c0-4.42-3.58-8-8-8z"/>
         </svg>
       </a>
-      <button class="icon-btn" id="theme-toggle" aria-label="Toggle theme" title="Toggle theme"></button>
+      <button class="icon-btn" id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
     </div>
   </div>
 </header>
@@ -930,6 +1466,7 @@ ${subnav}
 
 <div class="layout">
 
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
   <aside class="sidebar" id="sidebar">
     <nav>
 ${nav}
@@ -937,46 +1474,27 @@ ${nav}
   </aside>
 
   <main class="${pageContentClass}">
-    <div class="page-hero${heroClass}">
-      ${heroOrbs}${heroBadge}<p class="page-eyebrow">${eyebrow}</p>
-      <h1>${page.title}</h1>
-      <p class="page-desc">${page.subtitle}</p>
-      <div class="page-actions">
-        ${landingCta}<button class="btn" id="copy-md-btn" data-url="${rawUrl}">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2"/>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-          </svg>
-          Copy Markdown
-        </button>
-        <a class="btn" href="${rawUrl}" target="_blank">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-            <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
-          </svg>
-          Open Raw
-        </a>
-      </div>${heroExtras}
-    </div>
-${installer}
+${pageHero}
+${landing}${extras}
+${readmeHead}
     <article class="markdown-body">
 ${content}
     </article>
+${pager}
+${footer}
   </main>
 
   <aside class="toc-sidebar" id="toc-sidebar">
     <p class="toc-title">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="3" y1="6" x2="21" y2="6"/>
-        <line x1="3" y1="12" x2="15" y2="12"/>
-        <line x1="3" y1="18" x2="18" y2="18"/>
-      </svg>
-      On this page
+      ${svg('<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/>', 13)}
+      ${U.onThisPage}
     </p>
     <ul class="toc-list" id="toc"></ul>
   </aside>
 
 </div>
+
+<button class="back-top" id="back-top" aria-label="${U.backTop}" hidden>${svg('<polyline points="18 15 12 9 6 15"/>', 16)}</button>
 
 <script src="main.js"></script>
 </body>
@@ -1009,8 +1527,9 @@ for (const page of PAGES) {
     console.log(`  skip ${page.srcFile} (not found)`);
     continue;
   }
-  const raw     = fs.readFileSync(page.srcFile, 'utf8');
-  const content = rewriteLinks(md.render(raw));
+  let raw = fs.readFileSync(page.srcFile, 'utf8');
+  if (page.key === 'home' || page.key === 'zh-tw') raw = stripReadmeHeader(raw);
+  const content = wrapTables(rewriteLinks(md.render(raw)));
   const html    = htmlPage(page, content);
   fs.writeFileSync(path.join(outDir, page.outFile), html);
   searchIndex.push({
@@ -1027,78 +1546,26 @@ for (const page of PAGES) {
 // Per-skill reference pages (generated from prompts/*.md) + Skill Reference index
 // ---------------------------------------------------------------------------
 
-// Display categories for the index, mirroring README. Any skill not listed
-// here falls into "Other" so new skills still appear without code changes.
-const SKILL_CATEGORIES = [
-  { title: 'Core Stock Analysis', skills: ['stock-eval','technical-analysis','stock-valuation','economics-analysis'] },
-  { title: 'Financial Reports',   skills: ['financial-report-analyst','10k-digest','earnings-call-analysis'] },
-  { title: 'Market Monitoring',   skills: ['insider-trading','institutional-ownership','dividend-analysis','short-interest'] },
-  { title: 'Advanced Research',   skills: ['competitor-analysis','industry-map','options-analysis','portfolio-review','sector-analysis','stock-screener','catalyst-calendar','bear-case','position-ladder','thesis-tracker','etf-analysis','earnings-preview','tax-lens','risk-stress-test'] },
-  { title: 'Meta & Output',       skills: ['full-report','report-generator','chart-master','result-validator','learning-coach','fact-check'] },
-  // Redirect stubs kept for backwards compatibility — installed, but not counted as frameworks.
-  { title: 'Aliases (redirects)', skills: ['fundamental-analysis','dcf-valuation','research-bundle'] },
-];
-
-// PROMPTS_DIR / promptFiles / FRAMEWORK_COUNT are computed once near the top.
-
-// Extract a page title and a one-line summary from a prompt's markdown.
-function describePrompt(raw, name) {
-  const lines = raw.split('\n');
-  const h1 = lines.find(l => /^#\s+/.test(l));
-  const title = h1 ? h1.replace(/^#\s+/, '').trim() : '';
-  // Prefer the SKILL.md frontmatter description — it is the one-line summary
-  // the author wrote. Fall back to the first prose paragraph of the prompt,
-  // skipping the contract boilerplate (Data Verification / Data & Sources),
-  // tables, lists, fences, and blockquotes.
-  let summary = '';
-  if (name) {
-    const skillFile = path.join(__dirname, '..', '..', 'plugins', 'us-stock-analysis', 'skills', name, 'SKILL.md');
-    if (fs.existsSync(skillFile)) {
-      const m = fs.readFileSync(skillFile, 'utf8').match(/^---\n[\s\S]*?^description:\s*(.+)$[\s\S]*?^---/m);
-      if (m) summary = m[1].trim().replace(/^(["'])(.*)\1$/, '$2');
-    }
-    // Aliases: the redirect note ("This skill has been merged into …") says it best.
-    if (skillRegistry.ALIAS_SKILLS.includes(name)) {
-      const q = lines.find(l => /^>\s*\*\*This skill has been/.test(l));
-      if (q) summary = q.replace(/^>\s*/, '');
-    }
-  }
-  if (!summary) {
-    let inFence = false;
-    for (let i = (h1 ? lines.indexOf(h1) + 1 : 0); i < lines.length; i++) {
-      const t = lines[i].trim();
-      if (t.startsWith('```')) { inFence = !inFence; continue; }
-      if (inFence || !t || /^[#>|\-*\d]/.test(t) || /^(Before running any analysis|The first thing in the output|Never silently)/.test(t)) continue;
-      summary = t;
-      break;
-    }
-  }
-  summary = summary.replace(/\*\*/g, '').replace(/`/g, '');
-  if (summary.length > 180) summary = summary.slice(0, 177).trimEnd() + '…';
-  return { title, summary };
-}
-
-// Register skill pages as served BEFORE rendering anything that links to them.
-const skillMeta = {};
-for (const name of promptFiles) {
-  SERVED.add(`skill-${name}.html`);
-  const raw = fs.readFileSync(path.join(PROMPTS_DIR, `${name}.md`), 'utf8');
-  skillMeta[name] = { raw, ...describePrompt(raw, name) };
-}
-
 // Generate one page per skill.
 for (const name of promptFiles) {
-  const { raw, title } = skillMeta[name];
+  const { raw, title, summary } = skillMeta[name];
   // Drop the leading H1 — the page hero already shows the title.
   const body = raw.replace(/^#\s+.*\n/, '');
+  const cat = categoryOf(name);
+  const idx = SKILL_ORDER.indexOf(name);
+  const asLink = n => n ? { href: `skill-${n}.html`, label: skillMeta[n].title || n } : null;
+  const pagerItems = [asLink(SKILL_ORDER[idx - 1]), { href: `skill-${name}.html`, label: title || name }, asLink(SKILL_ORDER[idx + 1])].filter(Boolean);
   const page = {
     key:      'skills',
     outFile:  `skill-${name}.html`,
     srcFile:  `prompts/${name}.md`,
     title:    title || name,
-    subtitle: `Framework reference · ${name}`,
+    subtitle: summary || `Framework reference · ${name}`,
+    eyebrow:  `Skill Reference · ${cat}`,
+    extras:   buildSkillExtras(name),
+    pager:    buildPager('en', pagerItems, `skill-${name}.html`),
   };
-  const content = rewriteLinks(md.render(body));
+  const content = wrapTables(rewriteLinks(md.render(body)));
   fs.writeFileSync(path.join(outDir, page.outFile), htmlPage(page, content));
   searchIndex.push({
     title: page.title,
@@ -1110,34 +1577,14 @@ for (const name of promptFiles) {
 }
 console.log(`✓ ${promptFiles.length} per-skill reference pages`);
 
-// Generate the Skill Reference index (skills.html).
-const categorized = new Set(SKILL_CATEGORIES.flatMap(c => c.skills));
-const otherSkills = promptFiles.filter(n => !categorized.has(n));
-const indexSections = [...SKILL_CATEGORIES];
-if (otherSkills.length) indexSections.push({ title: 'Other', skills: otherSkills });
-
-let skillsMd = `# Skill Reference\n\nEvery framework as a browsable page — ${FRAMEWORK_COUNT} analysis frameworks, plus ${ALIAS_COUNT} aliases that redirect to the skill that absorbed them. New here? See [Choose a Skill](choose-a-skill.html) to find the right one for your goal, or [Concepts](concepts.html) for the ideas behind them.\n\n`;
-for (const section of indexSections) {
-  const present = section.skills.filter(n => skillMeta[n]);
-  if (!present.length) continue;
-  skillsMd += `## ${section.title}\n\n`;
-  for (const name of present) {
-    const { summary } = skillMeta[name];
-    skillsMd += `- [**${name}**](skill-${name}.html) — ${summary || 'Investment analysis framework.'}\n`;
-  }
-  skillsMd += `\n`;
-}
-skillsMd += `\n*Educational frameworks only. Not financial advice.*\n`;
-
-// FRAMEWORK_COUNT (advertised count) is computed once near the top.
+// Generate the Skill Reference index (skills.html) — a filterable card grid.
+const skillsIndex = buildSkillsIndex();
 const skillsPage = {
   key: 'skills', outFile: 'skills.html', srcFile: 'README.md',
   title: 'Skill Reference', subtitle: `All ${FRAMEWORK_COUNT} frameworks (+ ${ALIAS_COUNT} aliases), one page each`,
 };
-fs.writeFileSync(
-  path.join(outDir, 'skills.html'),
-  htmlPage(skillsPage, rewriteLinks(md.render(skillsMd)))
-);
+fs.writeFileSync(path.join(outDir, 'skills.html'), htmlPage(skillsPage, skillsIndex.html));
+searchIndex.push({ title: 'Skill Reference', url: 'skills.html', lang: 'en', section: 'Skill Reference', text: skillsIndex.text.slice(0, 1600) });
 console.log('✓ skills.html');
 
 // 404 page (minimal, shares stylesheet)
@@ -1146,14 +1593,15 @@ const html404 = `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404 - InvestSkill</title>
+  <title>404 · InvestSkill</title>
+  <script>(function(){try{var t=localStorage.getItem('is-theme');if(!t&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)t='dark';if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
   <link rel="stylesheet" href="/InvestSkill/style.css">
 </head>
-<body style="display:flex;align-items:center;justify-content:center;min-height:100vh;">
-  <div style="text-align:center;padding:2rem;">
-    <p style="font-size:4rem;font-weight:700;color:var(--accent)">404</p>
-    <p style="color:var(--text-muted);margin:1rem 0 2rem">Page not found</p>
-    <a class="btn" href="/InvestSkill/" style="display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1.25rem;border:1px solid var(--border);background:var(--code-bg);color:var(--text);border-radius:6px;text-decoration:none;">Go home</a>
+<body class="page-404">
+  <div class="card-404">
+    <p class="num-404">404</p>
+    <p>That page doesn't exist — but the frameworks do.</p>
+    <div class="page-actions"><a class="btn btn-primary" href="/InvestSkill/">Go home</a><a class="btn" href="/InvestSkill/skills.html">Skill Reference</a></div>
   </div>
 </body>
 </html>`;
