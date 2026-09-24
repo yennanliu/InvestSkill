@@ -12,6 +12,7 @@ _site/
 !scripts/*.js
 !scripts/lib/*.js
 !site/build/*.js
+!site/build/*.css
 *.d.ts
 *.js.map
 
