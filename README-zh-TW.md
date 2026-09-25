@@ -201,7 +201,9 @@ gemini
 | **元技能與輸出** (5 + 1 輸出工具) | full-report · chart-master · result-validator · **fact-check** · **learning-coach** · report-generator（輸出工具，不計入框架） | 自動化與綜合輸出 |
 | **別名** (3，不計入框架) | fundamental-analysis → stock-eval · dcf-valuation → stock-valuation · research-bundle → full-report | 舊名稱仍可用，會轉址到吸收它的技能 |
 
-> **Unreleased（下一版）新功能：**
+> **v1.12.0 新功能：**
+> - **無金鑰的 SEC EDGAR 取檔路徑** — `10k-digest`、`financial-report-analyst`、`fact-check` 內建具工具能力的助理可自行照做的取檔步驟（代號 → CIK → 申報索引 → 文件本體 → XBRL 數據）；助理無法上網時，兩支可選、零相依的腳本 `scripts/fetch-edgar.js`（申報文件存成純文字）與 `scripts/fetch-fundamentals.js`（由 XBRL 產生已對帳的財報資料包）替你抓第一手來源供貼上。不屬於外掛本體、離線測試涵蓋
+> - `install.sh` — 一行 `curl` 指令把全部框架安裝到任何 AI 代理（Claude Code、Cursor、Copilot、Gemini CLI、Codex、OpenCode 或任何 LLM）；文件網站全面改版；學習專區新增第二部（第 9–13 課與「答案是不」案例）
 > - `fact-check`（事實查核）— 對任何報告做**逐條陳述層級**的查核：抽出每個數字與事實陳述、逐一對照第一手來源（SEC 申報、IR 新聞稿、FRED、發行商資料或你貼上的文件）、重算衍生數字，標示 ✅ 已查核／⚠️ 不符／❓ 無法查核／🕒 過時，並重新產出**附行內引用與參考文獻章節**的修正版報告；查核分數 0–10 供 `result-validator` 的資料品質維度使用。絕不捏造來源
 > - `etf-analysis`（ETF 分析）— ETF／指數基金盡職調查：費用率 vs. 同類、追蹤差異、流動性、持股集中度與傾斜、與你其他持股的重疊 %、配息與資本利得分配紀錄、結構警示（槓桿／反向／合成／ETN），以及「買 ETF vs. 直接買前五大成分股」比較；產出 ETF 適配分數 0–10
 > - `earnings-preview`（財報前瞻）— 財報**前**的技能：共識 vs. 耳語、過去 8 季超預期比率與財報後漲跌、選擇權隱含波動 vs. 實際波動、目前股價已反映什麼、要看的 KPI，以及三情境矩陣（超預期且上修／超預期但下修／未達預期）與每個情境的部位規則
@@ -409,7 +411,7 @@ Copilot 會自動載入 `.github/copilot-instructions.md`
 
 ## 📊 專案狀態
 
-**目前版本：** 1.11.0
+**目前版本：** 1.12.0
 **技能框架：** 30 個（另有 3 個別名、1 個輸出工具）
 **通用提示詞：** 34 個
 **支援平台：** 6 個

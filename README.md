@@ -299,7 +299,7 @@ See [ADDING-NEW-SKILLS.md](ADDING-NEW-SKILLS.md) for the full process. The short
 
 ---
 
-**Version:** 1.11.0 · **Frameworks:** 30 analysis frameworks (+ 3 aliases, 1 output tool) · **Skills:** 34 · **Platforms:** 7 · **License:** MIT · **Tests:** all passing
+**Version:** 1.12.0 · **Frameworks:** 30 analysis frameworks (+ 3 aliases, 1 output tool) · **Skills:** 34 · **Platforms:** 7 · **License:** MIT · **Tests:** all passing
 
 ---
 

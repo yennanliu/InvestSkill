@@ -141,7 +141,7 @@ The **advertised framework count** = number of skills in `plugins/us-stock-analy
 
 ## Current State
 
-- **Version**: 1.11.0 (plugin.json = marketplace.json = package.json)
+- **Version**: 1.12.0 (plugin.json = marketplace.json = package.json)
 - **Skills**: 34 directories in `plugins/us-stock-analysis/skills/` (auto-discovered)
 - **Advertised frameworks**: 30 analysis frameworks (34 − `report-generator` − 3 aliases)
 - **Prompts**: 34 universal files in `prompts/` — **generated** from SKILL.md by `scripts/sync-prompts.js` (never hand-edit them; `--check` runs in `npm test`)
