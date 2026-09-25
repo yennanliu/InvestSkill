@@ -240,7 +240,7 @@ Static client-side JavaScript keeps the "nothing runs, nothing phones home" prom
 | 6.5 | `scripts/check-glossary-coverage.js` | Extract metric terms from skills (a curated regex list); every term must have an entry in both `GLOSSARY.md` and `GLOSSARY-zh-TW.md` | S | ⬜ |
 | 6.6 | `scripts/check-zh-parity.js` | Every `site/content/X.md` has `X-zh-TW.md`; heading counts within tolerance; warn when EN was modified after zh (git log) | S | ⬜ |
 | 6.7 | `scripts/check-demo-freshness.js` | Parse as-of dates in demos and Cookbook live runs; warn past 90 days; feed the §5.5 banner | S | ⬜ |
-| 6.8 | `scripts/fetch-edgar.js <TICKER> [10-K\|10-Q\|8-K\|DEF14A\|4]` | Keyless helper: resolve CIK, download the latest filing into `data/`, honouring SEC's User-Agent and rate rules. Optional, outside the plugin — a concrete "bring your own data" path | M | ✅ Shipped as `fetch-edgar.js` (HTML + stripped text + `.json` header fields, not PDFs) plus `fetch-fundamentals.js` (XBRL companyfacts → `data/fixtures/<TICKER>.md` data pack) on `scripts/lib/edgar.js`; outside `npm test`; outputs ignored by git |
+| 6.8 | `scripts/fetch-edgar.js <TICKER> [10-K\|10-Q\|8-K\|DEF14A\|4]` | Keyless helper: resolve CIK, download the latest filing into `data/`, honouring SEC's User-Agent and rate rules. Optional, outside the plugin — a concrete "bring your own data" path | M | ✅ Shipped as `fetch-edgar.js` (HTML + stripped text + `.json` header fields, not PDFs) plus `fetch-fundamentals.js` (XBRL companyfacts → `data/fixtures/<TICKER>.md` data pack) on `scripts/lib/edgar.js`; the helpers themselves are optional commands never run by `npm test`, while their offline suite `scripts/test-edgar.js` is; outputs ignored by git |
 | 6.9 | Extend `COUNT_DOCS` | Add `FAQ.md`, `PLATFORM-COMPATIBILITY.md`, `CONTRIBUTING.md`, and the README test-count lines — or archive the stale docs (§7) | S | ✅ PR #26 |
 | 6.10 | `scripts/build-cheatsheet.js` | Render the printable cheat sheet from the Glossary and signal-score bands so it never drifts | S | ⬜ |
 | 6.11 | `scripts/lib/signal-block.js` | One shared parser for the signal block / JSON footer used by 6.3, 6.4, `site-review.js`, and the site checker | S | ✅ PR #26 |
@@ -274,7 +274,7 @@ All verified against the working tree at v1.11.0. **All rows below were fixed in
 | **P0 — this week** | Credibility | §7 fixes · extend `COUNT_DOCS` (6.9) · reclassify redirects (§4.2 option b) · `check-skill-contract.js` (6.3) | 1.11.1 |
 | **P1 — this month** | Contract & tooling | Data & Sources + gates + `--lang` on all skills (§4.1) · `full-report` all modules (§4.3) · `sync-prompts.js` (6.1) · `new-skill.js` (6.2) · zh Skill Reference (§5.6) | 1.11.2 or fold into 1.12.0 |
 | **P2 — next quarter** | Investor workflow | `etf-analysis` + Lesson 9 · `earnings-preview` + Lesson 11 · `thesis-tracker` · `tax-lens` + Lesson 10 + Non-US Investor Guide · `learning-coach` · glossary +25 · losing/pass case study | 1.12.0 – 1.14.0 |
-| **P3 — after** | Depth | `risk-stress-test` · `forensic-accounting` · `proxy-governance` · `trade-postmortem` · `investment-policy` · calculators & prompt builder · `eval-skills.js` (6.4) · `fetch-edgar.js` (6.8) | 1.15.0+ |
+| **P3 — after** | Depth | `risk-stress-test` · `forensic-accounting` · `proxy-governance` · `trade-postmortem` · `investment-policy` · calculators & prompt builder · `eval-skills.js` (6.4) | 1.15.0+ |
 | **Backlog** | | `ipo-analysis` · `pair-trade` · Lessons 12–14 · quizzes & cheat sheet | as demand shows |
 
 ---

@@ -238,7 +238,7 @@ KPI         | 指標 | 門檻 | 最新值 | 日期 | ✓/✗
 | 6.5 | `scripts/check-glossary-coverage.js` | 從技能擷取指標術語（精選的正規表達式清單）；每個術語都必須在 `GLOSSARY.md` 與 `GLOSSARY-zh-TW.md` 中有條目 | S | ⬜ |
 | 6.6 | `scripts/check-zh-parity.js` | 每個 `site/content/X.md` 都有 `X-zh-TW.md`；標題數量在容許範圍內；英文在繁中之後被修改時警告（git log） | S | ⬜ |
 | 6.7 | `scripts/check-demo-freshness.js` | 解析示範與操作手冊實際執行中的資料日期；超過 90 天警告；供 §5.5 的橫幅使用 | S | ⬜ |
-| 6.8 | `scripts/fetch-edgar.js <TICKER> [10-K\|10-Q\|8-K\|DEF14A\|4]` | 無金鑰的輔助工具：解析 CIK、把最新申報文件下載到 `data/`，遵守 SEC 的 User-Agent 與頻率規則。可選、位於外掛之外 — 一條具體的「自備資料」路徑 | M | ✅ 以 `fetch-edgar.js`（HTML + 純文字 + 含標頭欄位的 `.json`，而非 PDF）與 `fetch-fundamentals.js`（XBRL companyfacts → `data/fixtures/<TICKER>.md` 資料包）出貨，共用 `scripts/lib/edgar.js`；不在 `npm test` 內；輸出不納入版本控制 |
+| 6.8 | `scripts/fetch-edgar.js <TICKER> [10-K\|10-Q\|8-K\|DEF14A\|4]` | 無金鑰的輔助工具：解析 CIK、把最新申報文件下載到 `data/`，遵守 SEC 的 User-Agent 與頻率規則。可選、位於外掛之外 — 一條具體的「自備資料」路徑 | M | ✅ 以 `fetch-edgar.js`（HTML + 純文字 + 含標頭欄位的 `.json`，而非 PDF）與 `fetch-fundamentals.js`（XBRL companyfacts → `data/fixtures/<TICKER>.md` 資料包）出貨，共用 `scripts/lib/edgar.js`；腳本本身是可選指令、`npm test` 不會執行它們，但其離線測試 `scripts/test-edgar.js` 會納入 `npm test`；輸出不納入版本控制 |
 | 6.9 | 擴充 `COUNT_DOCS` | 加入 `FAQ.md`、`PLATFORM-COMPATIBILITY.md`、`CONTRIBUTING.md` 與 README 的測試數量行 — 或歸檔過時文件（§7） | S | ✅ PR #26 |
 | 6.10 | `scripts/build-cheatsheet.js` | 由術語表與訊號分數區間產生可列印速查表，使其永不漂移 | S | ⬜ |
 | 6.11 | `scripts/lib/signal-block.js` | 供 6.3、6.4、`site-review.js` 與網站檢查器共用的訊號區塊 / JSON 頁尾解析器 | S | ✅ PR #26 |
@@ -272,7 +272,7 @@ KPI         | 指標 | 門檻 | 最新值 | 日期 | ✓/✗
 | **P0 — 本週** | 可信度 | §7 修正 · 擴充 `COUNT_DOCS`（6.9）· 重新分類轉址技能（§4.2 選項 b）· `check-skill-contract.js`（6.3） | 1.11.1 |
 | **P1 — 本月** | 契約與工具 | 所有技能加上 Data & Sources + 關卡 + `--lang`（§4.1）· `full-report` 全模組（§4.3）· `sync-prompts.js`（6.1）· `new-skill.js`（6.2）· 繁中技能參考（§5.6） | 1.11.2 或併入 1.12.0 |
 | **P2 — 下一季** | 投資人工作流程 | `etf-analysis` + 第 9 課 · `earnings-preview` + 第 11 課 · `thesis-tracker` · `tax-lens` + 第 10 課 + 非美國投資人指南 · `learning-coach` · 術語表 +25 · 虧損/放棄案例 | 1.12.0 – 1.14.0 |
-| **P3 — 之後** | 深度 | `risk-stress-test` · `forensic-accounting` · `proxy-governance` · `trade-postmortem` · `investment-policy` · 計算器與提示詞產生器 · `eval-skills.js`（6.4）· `fetch-edgar.js`（6.8） | 1.15.0+ |
+| **P3 — 之後** | 深度 | `risk-stress-test` · `forensic-accounting` · `proxy-governance` · `trade-postmortem` · `investment-policy` · 計算器與提示詞產生器 · `eval-skills.js`（6.4） | 1.15.0+ |
 | **待辦** | | `ipo-analysis` · `pair-trade` · 第 12–14 課 · 測驗與速查表 | 視需求而定 |
 
 ---

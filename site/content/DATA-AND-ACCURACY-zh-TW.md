@@ -67,7 +67,8 @@ Data & Sources
 | 步驟 | URL | 取得什麼 |
 |------|-----|---------|
 | 股票代號 → CIK | `https://www.sec.gov/files/company_tickers.json` | 找到 `ticker` 相符的項目（`BRK.B` 要寫成 `BRK-B`）；把 `cik_str` 補零到 10 位 |
-| 申報文件索引 | `https://data.sec.gov/submissions/CIK##########.json` | `filings.recent.form`、`filingDate`、`reportDate`、`accessionNumber`、`primaryDocument` 五個陣列以索引對齊——取最新一筆 `10-K`／`10-Q`／`8-K`／`DEF 14A`／`4`／`13F-HR` |
+| 申報文件索引 | `https://data.sec.gov/submissions/CIK##########.json` | `filings.recent.form`、`filingDate`、`reportDate`、`accessionNumber`、`primaryDocument` 五個陣列以索引對齊——取最新一筆 `10-K`／`10-Q`／`8-K`／`DEF 14A`／`4`（Form 4 也會登錄在發行公司的 CIK 之下） |
+| 機構持股 | 用*基金經理人*的 CIK，而非公司的——或全文檢索 `https://www.sec.gov/edgar/search/#/q=%22<公司名或 CUSIP>%22&forms=13F-HR` | `13F-HR` 是由投資經理人申報的，因此絕不會出現在標的公司的 CIK 之下；請在經理人的持股明細表中以標的的 CUSIP 核對部位 |
 | 文件本體 | `https://www.sec.gov/Archives/edgar/data/<CIK>/<去掉連字號的 accession>/<primaryDocument>` | 完整申報文件（HTML）；同一資料夾下的 `<accession>-index.htm` 列出所有附件 |
 | 財報標籤數據 | `https://data.sec.gov/api/xbrl/companyfacts/CIK##########.json` | 公司標記過的每一個 US-GAAP 數字，依概念與期間排列——交叉核對 Item 8 最快的方法 |
 | 全文檢索 | `https://www.sec.gov/edgar/search/#/q=%22<片語>%22&forms=10-K` | 沒有股票代號時，以片語定位文件 |
@@ -96,7 +97,7 @@ node scripts/fetch-fundamentals.js AAPL                 # → data/fixtures/AAPL
 
 公司 IR 網站上的 10-K PDF、券商對帳單、試算表匯出檔：貼上所需段落，或在助理支援的情況下上傳檔案。標示為 `Retrieval: pasted by user`；技能會把它視為第一級的*使用者提供*來源，驗證止於你的文件。
 
-> **這些都不改變的事：** InvestSkill 仍然沒有執行環境，也永遠看不到你的資料。這份步驤與腳本只是縮短了第一手來源到提示詞之間的距離。
+> **這些都不改變的事：** InvestSkill 仍然沒有執行環境，也永遠看不到你的資料。這份說明與腳本只是縮短了第一手來源到提示詞之間的距離。
 
 ---
 

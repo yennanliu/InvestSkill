@@ -239,7 +239,30 @@ async function main() {
   // Event-driven form keyed by filing date, form name sanitised, quoted form with a space
   r = run(FETCH_EDGAR, edgarArgs(['AAPL', '--form', 'DEF 14A']));
   eq(r.status, 0, 'fetch-edgar --form "DEF 14A": exit 0');
-  check(fs.existsSync(path.join(OUT, 'AAPL', 'AAPL_2025-01-10_DEF14A.txt')), 'fetch-edgar DEF 14A: keyed by filing date, form sanitised in the filename');
+  check(fs.existsSync(path.join(OUT, 'AAPL', 'AAPL_2025-01-10_000005_DEF14A.txt')), 'fetch-edgar DEF 14A: keyed by filing date + accession sequence, form sanitised in the filename');
+
+  // Two 8-Ks filed on the same day must both land on disk (review finding: date-only keys collided)
+  r = run(FETCH_EDGAR, edgarArgs(['AAPL', '--form', '8-K', '--limit', '2']));
+  eq(r.status, 0, 'fetch-edgar two same-day 8-Ks: exit 0');
+  check(fs.existsSync(path.join(OUT, 'AAPL', 'AAPL_2025-07-31_000055_8-K.txt')), 'fetch-edgar same-day 8-Ks: first saved');
+  check(fs.existsSync(path.join(OUT, 'AAPL', 'AAPL_2025-07-31_000056_8-K.txt')), 'fetch-edgar same-day 8-Ks: second saved under its own accession — no collision');
+  includes(r.stdout, 'Done: 2/2', 'fetch-edgar same-day 8-Ks: both reported');
+  excludes(r.stdout, '⊘', 'fetch-edgar same-day 8-Ks: neither was silently skipped as "exists"');
+
+  // --limit validation (review finding: NaN disabled the cap)
+  for (const bad of ['abc', '0', '-1', '1.5', '1abc']) {
+    r = run(FETCH_EDGAR, edgarArgs(['AAPL', '--limit', bad, '--list']));
+    check(r.status === 1 && /positive integer/.test(r.stderr), `fetch-edgar --limit ${bad}: rejected before any request`, r.stderr.trim());
+    eq(r.requests.length, 0, `fetch-edgar --limit ${bad}: no network call made`);
+  }
+  // --limit is honoured together with --fy (review finding: the cap was dropped when filtering)
+  r = run(FETCH_EDGAR, edgarArgs(['AAPL', '--form', '10-Q', '--fy', '2025', '--limit', '2', '--list']));
+  eq(r.status, 0, 'fetch-edgar --fy + --limit: exit 0');
+  includes(r.stdout, '2025-08-01', 'fetch-edgar --fy 2025 --limit 2: newest 2025 10-Q listed');
+  includes(r.stdout, '2025-05-02', 'fetch-edgar --fy 2025 --limit 2: second 2025 10-Q listed');
+  excludes(r.stdout, '2025-01-31', 'fetch-edgar --fy 2025 --limit 2: third 2025 10-Q cut by the limit');
+  r = run(FETCH_EDGAR, edgarArgs(['AAPL', '--form', '10-Q', '--fy', '2025', '--limit', '3', '--list']));
+  includes(r.stdout, '2025-01-31', 'fetch-edgar --fy 2025 --limit 3: all three 2025 10-Qs listed');
 
   // --period
   r = run(FETCH_EDGAR, edgarArgs(['AAPL', '--form', '10-Q', '--period', '2024-06-29']));
@@ -256,10 +279,11 @@ async function main() {
   check(!r.requests.some(x => x.url.includes('/Archives/')), 'fetch-edgar --list: downloads nothing');
 
   // --text-only
+  for (const ext of ['txt', 'htm', 'json']) fs.rmSync(path.join(OUT, 'AAPL', `AAPL_2025-07-31_000055_8-K.${ext}`), { force: true });
   r = run(FETCH_EDGAR, edgarArgs(['AAPL', '--form', '8-K', '--text-only']));
   eq(r.status, 0, 'fetch-edgar --text-only: exit 0');
-  check(fs.existsSync(path.join(OUT, 'AAPL', 'AAPL_2025-07-31_8-K.txt')), 'fetch-edgar --text-only: .txt saved');
-  check(!fs.existsSync(path.join(OUT, 'AAPL', 'AAPL_2025-07-31_8-K.htm')), 'fetch-edgar --text-only: no .htm');
+  check(fs.existsSync(path.join(OUT, 'AAPL', 'AAPL_2025-07-31_000055_8-K.txt')), 'fetch-edgar --text-only: .txt saved');
+  check(!fs.existsSync(path.join(OUT, 'AAPL', 'AAPL_2025-07-31_000055_8-K.htm')), 'fetch-edgar --text-only: no .htm');
 
   // Foreign private issuer fallback
   r = run(FETCH_EDGAR, edgarArgs(['TSM']));
@@ -340,7 +364,9 @@ async function main() {
   // --fy: older year via the older revenue tag, no prior year available
   r = run(FETCH_FUND, fundArgs(['AAPL', '--fy', '2023', '--stdout']));
   eq(r.status, 0, 'fetch-fundamentals --fy 2023 --stdout: exit 0');
-  const fx23 = parseFixture(r.stdout.slice(r.stdout.indexOf('---\n')));
+  check(r.stdout.startsWith('---\n'), 'fetch-fundamentals --stdout: stdout is ONLY the pack (progress goes to stderr), so `--stdout > file` parses', r.stdout.slice(0, 60));
+  includes(r.stderr, 'Looking up', 'fetch-fundamentals --stdout: progress lines are on stderr');
+  const fx23 = parseFixture(r.stdout);
   eq(fx23 && fx23.meta.as_of, '2023-09-30', 'pack --fy 2023: selects that fiscal year');
   eq(fx23 && fx23.meta.revenue_m, 383285, 'pack --fy 2023: revenue found under the older "Revenues" tag (concept chain)');
   check(fx23 && fx23.meta.revenue_prior_m === undefined, 'pack --fy 2023: no prior-year key when none is tagged');
@@ -356,6 +382,16 @@ async function main() {
   const raw = fs.existsSync(jf) ? JSON.parse(fs.readFileSync(jf, 'utf8')) : {};
   eq(raw.current && raw.current.revenue, 416161e6, 'fetch-fundamentals --json: current.revenue in dollars');
   eq(raw.prior && raw.prior.net_income, 93736e6, 'fetch-fundamentals --json: prior.net_income as first reported');
+
+  // LongTermDebt already includes current maturities (review finding: it was added to LongTermDebtCurrent → double count)
+  r = run(FETCH_FUND, fundArgs(['LTD']));
+  eq(r.status, 0, 'fetch-fundamentals LTD: exit 0');
+  const ltd = parseFixture(fs.readFileSync(path.join(FIX, 'LTD.md'), 'utf8'));
+  eq(ltd && ltd.meta.total_debt_m, 1000, 'pack LTD: total_debt_m = LongTermDebt as tagged (1,000), current portion NOT added again');
+  eq(ltd && ltd.meta.net_debt_m, 900, 'pack LTD: net_debt_m = 1,000 − 100 cash');
+  includes(ltd && ltd.body, 'already includes current maturities', 'pack LTD: the note explains which debt tag was used');
+  const aaplNote = body.match(/Total debt = ([^;]+);/);
+  check(aaplNote && /current \+ non-current/.test(aaplNote[1]), 'pack AAPL: with the Noncurrent tag, total debt = current + non-current', aaplNote && aaplNote[1]);
 
   // Non-GAAP filers and 404s are clean no-ops
   r = run(FETCH_FUND, fundArgs(['TSM']));

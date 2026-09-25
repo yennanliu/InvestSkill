@@ -21,6 +21,9 @@
  *   NOFACTS (CIK 999)     — has filings, but companyfacts returns 404
  *   FLAKY   (CIK 500)     — submissions 503 on the first call, then 200; its
  *                          10-K document is a 404
+ *   LTD     (CIK 777)     — tags LongTermDebt (includes current maturities) +
+ *                          LongTermDebtCurrent, no Noncurrent tag: the
+ *                          double-counting trap for total debt
  * The numbers for AAPL are the FY2025 figures as reported, so a reader can
  * sanity-check the pack the generator produces against the real 10-K.
  */
@@ -64,6 +67,8 @@ const AAPL = {
     { form: '10-K', filed: '2025-10-31', period: '2025-09-27', accn: '0000320193-25-000079', doc: 'aapl-20250927.htm' },
     { form: '10-Q', filed: '2025-08-01', period: '2025-06-28', accn: '0000320193-25-000057', doc: 'aapl-20250628.htm' },
     { form: '8-K', filed: '2025-07-31', period: '2025-07-31', accn: '0000320193-25-000055', doc: 'aapl-20250731.htm' },
+    // A second 8-K on the same day (earnings release + a separate Item 5.02): the two must not collide on disk.
+    { form: '8-K', filed: '2025-07-31', period: '2025-07-31', accn: '0000320193-25-000056', doc: 'aapl-20250731-2.htm' },
     { form: '10-Q', filed: '2025-05-02', period: '2025-03-29', accn: '0000320193-25-000031', doc: 'aapl-20250329.htm' },
     { form: '10-Q', filed: '2025-01-31', period: '2024-12-28', accn: '0000320193-25-000008', doc: 'aapl-20241228.htm' },
     { form: 'DEF 14A', filed: '2025-01-10', period: '2025-02-25', accn: '0000320193-25-000005', doc: 'aapl-def14a.htm' },
@@ -150,6 +155,24 @@ const TSM_FACTS = { cik: 1046179, entityName: TSM.name, facts: { dei: {}, 'ifrs-
 const BRKB = { cik: '0001067983', name: 'BERKSHIRE HATHAWAY INC', recent: [{ form: '10-K', filed: '2026-02-23', period: '2025-12-31', accn: '0001067983-26-000010', doc: 'brka-20251231.htm' }] };
 const NOFACTS = { cik: '0000000999', name: 'NO FACTS CORP', recent: [{ form: '10-K', filed: '2026-03-02', period: '2025-12-31', accn: '0000000999-26-000001', doc: 'nofacts-20251231.htm' }] };
 const FLAKY = { cik: '0000000500', name: 'FLAKY HOLDINGS', recent: [{ form: '10-K', filed: '2026-03-02', period: '2025-12-31', accn: '0000000500-26-000001', doc: 'missing.htm' }] };
+// LTD tags us-gaap:LongTermDebt (which already includes current maturities) plus
+// LongTermDebtCurrent, and no LongTermDebtNoncurrent — the case where naively
+// adding current + long-term double-counts the current portion.
+const LTD = { cik: '0000000777', name: 'LEVERAGED TEST CORP', recent: [{ form: '10-K', filed: '2026-02-20', period: '2025-12-31', accn: '0000000777-26-000004', doc: 'ltd-20251231.htm' }] };
+const LTD_K = ['10-K', '2026-02-20', '0000000777-26-000004', 2025];
+const LTD_FACTS = {
+  cik: 777, entityName: 'Leveraged Test Corp',
+  facts: {
+    dei: { EntityCommonStockSharesOutstanding: { units: { shares: [{ end: '2026-02-10', val: 50_000_000, form: '10-K', filed: '2026-02-20', accn: '0000000777-26-000004', fy: 2025, fp: 'FY' }] } } },
+    'us-gaap': {
+      Revenues: usd([dur('2025-01-01', '2025-12-31', M(5000), ...LTD_K)]),
+      NetIncomeLoss: usd([dur('2025-01-01', '2025-12-31', M(400), ...LTD_K)]),
+      LongTermDebt: usd([inst('2025-12-31', M(1000), ...LTD_K)]),
+      LongTermDebtCurrent: usd([inst('2025-12-31', M(200), ...LTD_K)]),
+      CashAndCashEquivalentsAtCarryingValue: usd([inst('2025-12-31', M(100), ...LTD_K)]),
+    },
+  },
+};
 
 const TICKERS = {
   0: { cik_str: 320193, ticker: 'AAPL', title: 'Apple Inc.' },
@@ -157,6 +180,7 @@ const TICKERS = {
   2: { cik_str: 1046179, ticker: 'TSM', title: 'TAIWAN SEMICONDUCTOR MANUFACTURING CO LTD' },
   3: { cik_str: 999, ticker: 'NOFACTS', title: 'NO FACTS CORP' },
   4: { cik_str: 500, ticker: 'FLAKY', title: 'FLAKY HOLDINGS' },
+  5: { cik_str: 777, ticker: 'LTD', title: 'LEVERAGED TEST CORP' },
 };
 
 /** A `data.sec.gov/submissions/CIK...json` payload for a synthetic company. */
@@ -206,7 +230,9 @@ function route(url) {
     return state.flakyCalls === 1 ? response(503, 'Service Unavailable', 'text') : response(200, submissions(FLAKY));
   }
 
+  if (url === `${DATA}/submissions/CIK0000000777.json`) return response(200, submissions(LTD));
   if (url === `${DATA}/api/xbrl/companyfacts/CIK0000320193.json`) return response(200, AAPL_FACTS);
+  if (url === `${DATA}/api/xbrl/companyfacts/CIK0000000777.json`) return response(200, LTD_FACTS);
   if (url === `${DATA}/api/xbrl/companyfacts/CIK0001046179.json`) return response(200, TSM_FACTS);
   if (url === `${DATA}/api/xbrl/companyfacts/CIK0000000999.json`) return response(404, 'Not Found', 'text');
 

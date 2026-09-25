@@ -69,7 +69,8 @@ Data & Sources
 | Step | URL | What you get |
 |------|-----|--------------|
 | Ticker → CIK | `https://www.sec.gov/files/company_tickers.json` | the entry whose `ticker` matches (`BRK-B` for `BRK.B`); zero-pad `cik_str` to 10 digits |
-| Filings index | `https://data.sec.gov/submissions/CIK##########.json` | `filings.recent.form` · `filingDate` · `reportDate` · `accessionNumber` · `primaryDocument`, aligned by index — take the newest `10-K` / `10-Q` / `8-K` / `DEF 14A` / `4` / `13F-HR` |
+| Filings index | `https://data.sec.gov/submissions/CIK##########.json` | `filings.recent.form` · `filingDate` · `reportDate` · `accessionNumber` · `primaryDocument`, aligned by index — take the newest `10-K` / `10-Q` / `8-K` / `DEF 14A` / `4` (Form 4s are filed under the issuer's CIK too) |
+| Institutional holdings | the *manager's* CIK, not the company's — or `https://www.sec.gov/edgar/search/#/q=%22<company or CUSIP>%22&forms=13F-HR` | `13F-HR` is filed by the investment manager, so it never appears under the target company; verify a position in the manager's information table by the target's CUSIP |
 | The document | `https://www.sec.gov/Archives/edgar/data/<CIK>/<accession without dashes>/<primaryDocument>` | the full filing as HTML; the same folder's `<accession>-index.htm` lists every exhibit |
 | Statement facts | `https://data.sec.gov/api/xbrl/companyfacts/CIK##########.json` | every US-GAAP figure the company has tagged, by concept and period — the fastest way to cross-check Item 8 |
 | Full-text search | `https://www.sec.gov/edgar/search/#/q=%22<phrase>%22&forms=10-K` | locate a filing by phrase when you don't have the ticker |

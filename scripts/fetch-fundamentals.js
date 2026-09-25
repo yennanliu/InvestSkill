@@ -39,6 +39,11 @@ const flag = (k, d) => { const i = argv.indexOf(`--${k}`); return i >= 0 && argv
 /** True when the boolean flag `--<k>` is present. */
 const has = k => argv.includes(`--${k}`);
 const VALUE_FLAGS = new Set(['--fy', '--out']);
+/**
+ * Progress output. With --stdout the pack itself is the only thing on stdout, so
+ * progress goes to stderr and `--stdout > file` yields a parseable fixture.
+ */
+const log = s => (has('stdout') ? process.stderr : process.stdout).write(s);
 const positional = argv.filter((a, i) => !a.startsWith('--') && !(i > 0 && VALUE_FLAGS.has(argv[i - 1])));
 
 if (has('help') || positional.length === 0) {
@@ -174,15 +179,15 @@ const pct = (a, b) => (a !== null && b ? `${((a / b) * 100).toFixed(1)}%` : 'n/a
  * Non-GAAP filers and 404s exit 0 with an explanation; unknown tickers exit 1.
  */
 async function main() {
-  process.stdout.write(`Looking up ${ticker} on SEC EDGAR…\n`);
+  log(`Looking up ${ticker} on SEC EDGAR…\n`);
   const company = await edgar.lookupCik(ticker);
   if (!company) { process.stderr.write(`  ✗ ticker '${ticker}' not found in EDGAR's company list\n`); process.exit(1); }
-  process.stdout.write(`  CIK ${company.cik} — ${company.title}\n`);
+  log(`  CIK ${company.cik} — ${company.title}\n`);
 
   const facts = await edgar.fetchCompanyFacts(company.cik);
   const gaap = facts && facts.facts && facts.facts['us-gaap'];
   if (!gaap) {
-    process.stdout.write(`  No us-gaap facts for ${ticker} — an ETF, or an IFRS (foreign) filer. Nothing to build.\n`);
+    log(`  No us-gaap facts for ${ticker} — an ETF, or an IFRS (foreign) filer. Nothing to build.\n`);
     process.exit(0);
   }
   const dei = (facts.facts.dei) || {};
@@ -196,15 +201,22 @@ async function main() {
     if (idx < 0) { process.stderr.write(`  ✗ no fiscal year ending in ${wantFy}; available: ${fys.slice(0, 8).map(f => f.end).join(', ')}\n`); process.exit(1); }
   }
   const cur = fys[idx], prior = fys[idx + 1] || null;
-  process.stdout.write(`  Fiscal year: ${cur.end} (${cur.form}, filed ${cur.filed})${prior ? ` · prior ${prior.end}` : ''}\n`);
+  log(`  Fiscal year: ${cur.end} (${cur.form}, filed ${cur.filed})${prior ? ` · prior ${prior.end}` : ''}\n`);
 
   const row = end => {
-    const r = {};
-    for (const [m, chain] of Object.entries(DURATION)) { const p = pick(gaap, m, chain, end, { duration: true }); r[m] = p ? p.val : null; }
-    for (const [m, chain] of Object.entries(INSTANT)) { const p = pick(gaap, m, chain, end, { duration: false }); r[m] = p ? p.val : null; }
+    const r = {}, concept = {};
+    for (const [m, chain] of Object.entries(DURATION)) { const p = pick(gaap, m, chain, end, { duration: true }); r[m] = p ? p.val : null; concept[m] = p ? p.concept : null; }
+    for (const [m, chain] of Object.entries(INSTANT)) { const p = pick(gaap, m, chain, end, { duration: false }); r[m] = p ? p.val : null; concept[m] = p ? p.concept : null; }
     if (r.gross_profit === null && r.revenue !== null && r.cost_of_revenue !== null) r.gross_profit = r.revenue - r.cost_of_revenue;
     r.fcf = r.ocf !== null && r.capex !== null ? r.ocf - r.capex : null;
-    r.total_debt = r.long_term_debt !== null || r.short_term_debt !== null ? (r.long_term_debt || 0) + (r.short_term_debt || 0) : null;
+    // us-gaap:LongTermDebt already includes current maturities; only the
+    // *Noncurrent* tag needs the current portion added, or the current slice
+    // would be counted twice in total and net debt.
+    const ltdIncludesCurrent = concept.long_term_debt === 'LongTermDebt';
+    r.total_debt = r.long_term_debt !== null || r.short_term_debt !== null
+      ? (r.long_term_debt || 0) + (ltdIncludesCurrent ? 0 : (r.short_term_debt || 0))
+      : null;
+    r.total_debt_note = ltdIncludesCurrent ? 'tagged `LongTermDebt` (already includes current maturities), used as is' : 'current + non-current debt as tagged';
     r.net_debt = r.total_debt !== null && r.cash !== null ? r.total_debt - r.cash : null;
     return r;
   };
@@ -327,7 +339,7 @@ async function main() {
   b.push('## Notes');
   b.push('');
   b.push('- Figures are US-GAAP as tagged by the company; "n/a" means the company did not tag that concept for the period (it may still appear in the filing under a different line).');
-  b.push('- Gross profit is the tagged value where available, otherwise revenue − cost of revenue. Total debt = current + non-current debt as tagged; leases are excluded unless the company tags them as debt.');
+  b.push(`- Gross profit is the tagged value where available, otherwise revenue − cost of revenue. Total debt = ${c.total_debt_note}; leases are excluded unless the company tags them as debt.`);
   b.push('- Derived lines (FCF, net debt, margins) are arithmetic on reported figures, shown so the analysis can be reconciled.');
   if (missing.length) b.push(`- Not tagged for ${fyLabel}: ${missing.join(', ')}.`);
   b.push('');
@@ -344,14 +356,14 @@ async function main() {
   edgar.ensureDir(outDir);
   const file = path.join(outDir, `${ticker}.md`);
   fs.writeFileSync(file, pack);
-  process.stdout.write(`  ✓ ${path.relative(ROOT, file)} (${fyLabel}: revenue ${fmtM(c.revenue)} M · net income ${fmtM(c.net_income)} M · FCF ${fmtM(c.fcf)} M)\n`);
+  log(`  ✓ ${path.relative(ROOT, file)} (${fyLabel}: revenue ${fmtM(c.revenue)} M · net income ${fmtM(c.net_income)} M · FCF ${fmtM(c.fcf)} M)\n`);
   if (has('json')) {
     const jf = path.join(outDir, `${ticker}.json`);
     fs.writeFileSync(jf, JSON.stringify({ ticker, entity, cik: company.cik, fiscal_year_end: cur.end, current: c, prior: p, shares_outstanding: sharesOut, filing: cur }, null, 2) + '\n');
-    process.stdout.write(`  ✓ ${path.relative(ROOT, jf)}\n`);
+    log(`  ✓ ${path.relative(ROOT, jf)}\n`);
   }
-  if (missing.length) process.stdout.write(`  ⚠ not tagged: ${missing.join(', ')}\n`);
-  process.stdout.write(`Next: add the current price to \`price:\`, then paste the pack into a skill — or run \`node scripts/eval-skills.js --fixture ${ticker}\`.\n`);
+  if (missing.length) log(`  ⚠ not tagged: ${missing.join(', ')}\n`);
+  log(`Next: add the current price to \`price:\`, then paste the pack into a skill — or run \`node scripts/eval-skills.js --fixture ${ticker}\`.\n`);
 }
 
 main().catch(err => {

@@ -21,7 +21,7 @@
  *   --form F        SEC form (default 10-K). 10-K falls back to 20-F for foreign private issuers.
  *   --fy YYYY       for annual forms: the filing whose *filing year* is YYYY (AAPL FY2024 10-K is filed 2024-11)
  *   --period DATE   the filing covering period end DATE (YYYY-MM-DD), e.g. a specific 10-Q
- *   --limit N       how many most-recent filings (default 1)
+ *   --limit N       how many most-recent filings (default 1; also caps --fy / --period matches)
  *   --since DATE    only filings filed on/after DATE
  *   --out DIR       output root (default data/filings)
  *   --list          print matching filings and exit
@@ -30,8 +30,9 @@
  *
  * Output per filing: <TICKER>_<key>_<FORM>.htm, .txt (stripped text) and .json
  * (accession, dates, URLs — paste it into the Data & Sources header). `key` is
- * the filing year for annual forms, the period end for periodic forms, and the
- * filing date for event-driven forms (8-K, Form 4, DEF 14A).
+ * the filing year for annual forms, the period end for 10-Q, and the filing date
+ * plus the accession sequence for event-driven forms (8-K, Form 4, DEF 14A) and
+ * 6-K, several of which can share one date or period.
  *
  * data/filings/ is git-ignored: downloaded filings are your working data, not
  * repository content.
@@ -61,7 +62,15 @@ const ticker = positional[0].toUpperCase();
 const form = flag('form', '10-K').toUpperCase();
 const fy = flag('fy');
 const period = flag('period');
-const limit = fy || period ? undefined : parseInt(flag('limit', '1'), 10);
+// `--limit` must be a positive integer. Number() (not parseInt) so "1abc" and
+// "1.5" are rejected instead of silently becoming 1 — a NaN here would disable
+// the cap entirely and download every matching filing.
+const limitRaw = flag('limit', '1');
+const limit = Number(limitRaw);
+if (!(Number.isInteger(limit) && limit >= 1)) {
+  process.stderr.write(`  ✗ --limit must be a positive integer (got "${limitRaw}")\n`);
+  process.exit(1);
+}
 // A filing year implies a lower bound, which also makes listFilings reach into
 // the paginated archive blocks for high-volume filers when it has to.
 const since = flag('since', fy ? `${fy}-01-01` : undefined);
@@ -73,13 +82,16 @@ const PERIODIC_FORMS = new Set(['10-Q', '10-Q/A', '10-QT', '6-K']);
 
 /**
  * The stable part of a saved filing's filename: filing year for annual forms
- * (one per year), period end for periodic forms (three 10-Qs a year), filing date
- * for event-driven forms (8-K, Form 4, DEF 14A: several may share a period).
+ * (one per year); period end for 10-Q (three a year, one per period); for
+ * everything else the filing date plus the accession sequence number, because
+ * several 8-Ks or Form 4s can be filed on one day and a foreign issuer files
+ * several 6-Ks for one period — a date alone would make them overwrite (or,
+ * with the skip-if-exists check, silently drop) each other.
  */
 function fileKey(f) {
   if (ANNUAL_FORMS.has(f.form)) return f.filed.slice(0, 4);
-  if (PERIODIC_FORMS.has(f.form)) return f.period;
-  return f.filed;
+  if (PERIODIC_FORMS.has(f.form) && f.form !== '6-K') return f.period;
+  return `${f.filed}_${f.accession.replace(/-/g, '').slice(-6)}`;
 }
 /** Form name safe for a filename (`DEF 14A` -> `DEF14A`). */
 const safeForm = f => f.replace(/[^A-Za-z0-9-]+/g, '');
@@ -95,15 +107,18 @@ async function main() {
   if (!company) { process.stderr.write(`  ✗ ticker '${ticker}' not found in EDGAR's company list\n`); process.exit(1); }
   process.stdout.write(`  CIK ${company.cik} — ${company.title}\n`);
 
-  let { entity, fiscalYearEnd, filings } = await edgar.listFilings(company.cik, { form, since, limit: fy || period ? undefined : Math.max(limit, 1) });
+  // With --fy / --period the lookup is uncapped so the filter sees every candidate;
+  // the requested --limit is then applied to what survives the filter.
+  const lookupLimit = fy || period ? undefined : limit;
+  let { entity, fiscalYearEnd, filings } = await edgar.listFilings(company.cik, { form, since, limit: lookupLimit });
   let usedForm = form;
   if (!filings.length && form === '10-K') {
-    const alt = await edgar.listFilings(company.cik, { form: '20-F', since, limit });
+    const alt = await edgar.listFilings(company.cik, { form: '20-F', since, limit: lookupLimit });
     if (alt.filings.length) { process.stdout.write('  No 10-K found; foreign private issuer — using 20-F\n'); filings = alt.filings; usedForm = '20-F'; }
   }
   if (fy) filings = filings.filter(f => f.filed.slice(0, 4) === String(fy));
   if (period) filings = filings.filter(f => f.period === period);
-  if (limit) filings = filings.slice(0, limit);
+  filings = filings.slice(0, limit);
 
   if (!filings.length) {
     process.stdout.write(`  No ${usedForm} filings match${fy ? ` filing year ${fy}` : ''}${period ? ` period ${period}` : ''}${since ? ` since ${since}` : ''}.\n`);
