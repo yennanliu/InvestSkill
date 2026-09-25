@@ -32,10 +32,37 @@ Data & Sources
 
 Produce a clean, structured markdown document that distills a company's 10-K annual report into an abstract, per-section summaries, a digest of key metrics, and full source references. Designed for quick comprehension — not trading signals. Output language is selectable: English or Traditional Chinese (繁體中文).
 
+## 🔎 Retrieving the Filing — the Keyless EDGAR Path
+
+This skill fetches nothing by itself. When the user gives only a ticker, obtain the 10-K in one of three ways and record which one in the `Data & Sources` header:
+
+**A. The host can fetch URLs** → `Retrieval: web/tool retrieval`. Every step is free and needs no API key:
+
+1. **Ticker → CIK** — `https://www.sec.gov/files/company_tickers.json`: find the entry whose `ticker` matches (write `BRK-B` for `BRK.B`) and zero-pad its `cik_str` to 10 digits.
+2. **Filings index** — `https://data.sec.gov/submissions/CIK##########.json`: inside `filings.recent` the arrays `form`, `filingDate`, `reportDate`, `accessionNumber` and `primaryDocument` are aligned by index. Take the newest row whose `form` is `10-K` (foreign private issuers file `20-F` instead; a `10-K/A` is an amendment). The top-level `fiscalYearEnd` is `MMDD`.
+3. **The document** — `https://www.sec.gov/Archives/edgar/data/<CIK without leading zeros>/<accessionNumber without dashes>/<primaryDocument>`: the complete filing as HTML (inline XBRL). The filing's index page is the same folder plus `<accessionNumber>-index.htm`; cite that URL and the accession number in the References.
+4. **Structured statement data (optional)** — `https://data.sec.gov/api/xbrl/companyfacts/CIK##########.json`: every US-GAAP fact the company has tagged, by concept and period. Use it to confirm the figures read from Item 8.
+5. **Full-text search (optional)** — `https://www.sec.gov/edgar/search/#/q=%22<phrase>%22&forms=10-K` when a filing has to be located by phrase rather than ticker.
+
+Send a `User-Agent` header that identifies the requester (the SEC requires it, e.g. `Name email@example.com`) and stay under 10 requests per second. Never substitute a summary site for the filing itself.
+
+**B. The host cannot fetch** → `Retrieval: pasted by user`. Ask the user to paste the sections needed — or, if they have the InvestSkill repository, to run
+
+```
+node scripts/fetch-edgar.js <TICKER> --form 10-K        # → data/filings/<TICKER>/*.txt + .json (accession, dates, URL)
+node scripts/fetch-fundamentals.js <TICKER>             # → data/fixtures/<TICKER>.md — reconciled statements from the XBRL facts
+```
+
+and paste the result. Both helpers are optional, keyless, and live outside the plugin.
+
+**C. Neither** → show the ⚠️ *Source unavailable* warning, set `Retrieval: model memory` and `Confidence: LOW`, and digest only what the user provided.
+
+---
+
 ## How to Use
 
 ```
-# Analyze by ticker (fetches latest 10-K)
+# Analyze by ticker (retrieves the latest 10-K via the EDGAR path above, or asks you to paste it)
 10k-digest AAPL
 
 # Paste 10-K text directly

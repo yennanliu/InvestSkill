@@ -56,6 +56,51 @@ Data & Sources
 
 ---
 
+## 自備資料：無金鑰的 EDGAR 路徑
+
+「不需要 API 金鑰」是一項設計選擇，而非死路。申報文件類技能所需的一切，SEC 都免費公開、無須註冊。把資料放到模型面前有三種方式——挑第一個適合你環境的，並在 `Data & Sources` 標頭中註明你用了哪一種。
+
+### 1. 讓具工具能力的助理自行抓取文件（`Retrieval: web/tool retrieval`）
+
+`10k-digest`、`financial-report-analyst` 與 `fact-check` 現在都內建這份步驟，具網路能力的助理可以自行照做：
+
+| 步驟 | URL | 取得什麼 |
+|------|-----|---------|
+| 股票代號 → CIK | `https://www.sec.gov/files/company_tickers.json` | 找到 `ticker` 相符的項目（`BRK.B` 要寫成 `BRK-B`）；把 `cik_str` 補零到 10 位 |
+| 申報文件索引 | `https://data.sec.gov/submissions/CIK##########.json` | `filings.recent.form`、`filingDate`、`reportDate`、`accessionNumber`、`primaryDocument` 五個陣列以索引對齊——取最新一筆 `10-K`／`10-Q`／`8-K`／`DEF 14A`／`4`（Form 4 也會登錄在發行公司的 CIK 之下） |
+| 機構持股 | 用*基金經理人*的 CIK，而非公司的——或全文檢索 `https://www.sec.gov/edgar/search/#/q=%22<公司名或 CUSIP>%22&forms=13F-HR` | `13F-HR` 是由投資經理人申報的，因此絕不會出現在標的公司的 CIK 之下；請在經理人的持股明細表中以標的的 CUSIP 核對部位 |
+| 文件本體 | `https://www.sec.gov/Archives/edgar/data/<CIK>/<去掉連字號的 accession>/<primaryDocument>` | 完整申報文件（HTML）；同一資料夾下的 `<accession>-index.htm` 列出所有附件 |
+| 財報標籤數據 | `https://data.sec.gov/api/xbrl/companyfacts/CIK##########.json` | 公司標記過的每一個 US-GAAP 數字，依概念與期間排列——交叉核對 Item 8 最快的方法 |
+| 全文檢索 | `https://www.sec.gov/edgar/search/#/q=%22<片語>%22&forms=10-K` | 沒有股票代號時，以片語定位文件 |
+
+任何自動化客戶端都須遵守 SEC 的兩條規則：送出能識別你身分的 `User-Agent`（`姓名 電子郵件`），且每秒不超過 10 次請求。外國私人發行人申報的是 `20-F`（年報）與 `6-K`（期中），而非 `10-K`／`10-Q`。
+
+### 2. 自己下載，再貼上（`Retrieval: pasted by user`）
+
+若你的助理無法上網——本機模型、沒有工具的聊天介面——本倉庫附有兩支**可選、零相依的 Node 腳本**，替你走同一條路。它們不屬於外掛本體、不呼叫任何資料商，只需要 Node ≥ 18：
+
+```bash
+# 文件本體：HTML + 可直接貼上的純文字，外加一份含標頭欄位的 .json
+node scripts/fetch-edgar.js AAPL --form 10-K            # → data/filings/AAPL/AAPL_2025_10-K.txt
+node scripts/fetch-edgar.js AAPL --form 10-Q --limit 2  # 最近兩季
+node scripts/fetch-edgar.js TSLA --form "DEF 14A"       # 委託書
+node scripts/fetch-edgar.js PLTR --form 4 --limit 10 --list
+
+# 由 XBRL 標籤數據產生、已對帳的財報資料包（損益表、資產負債表、現金流量表、本年度與前一年度、
+# 推導出的 FCF／淨負債／利潤率）——與評測樣本相同格式
+node scripts/fetch-fundamentals.js AAPL                 # → data/fixtures/AAPL.md
+```
+
+請先設定 `EDGAR_USER_AGENT="你的姓名 你的電子郵件"`——SEC 要求每個客戶端表明身分。下載結果放在 `data/filings/`，產生的資料包放在 `data/fixtures/`，兩者皆已被 git 忽略：那是*你的*工作資料，而真實數字會過時。XBRL 資料包刻意**沒有價格欄**——SEC 不公布報價——所以在要求 P/E、市值或殖利率之前，請先從券商補上今天的價格。
+
+### 3. 貼上你手邊已有的東西
+
+公司 IR 網站上的 10-K PDF、券商對帳單、試算表匯出檔：貼上所需段落，或在助理支援的情況下上傳檔案。標示為 `Retrieval: pasted by user`；技能會把它視為第一級的*使用者提供*來源，驗證止於你的文件。
+
+> **這些都不改變的事：** InvestSkill 仍然沒有執行環境，也永遠看不到你的資料。這份說明與腳本只是縮短了第一手來源到提示詞之間的距離。
+
+---
+
 ## 辨識幻覺數字
 
 AI 可能*信心十足*地說出錯誤數字。留意這些徵兆：

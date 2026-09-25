@@ -93,6 +93,16 @@ When you touch `install.sh`:
 
 Documented curl commands in `README*.md` and `site/content/COOKBOOK*.md` are checked too: the URL must be the `raw.githubusercontent.com/yennanliu/InvestSkill/<ref>/install.sh` form and every `-a AGENT` must be a supported agent.
 
+## Bring-Your-Own-Data Helpers Rule
+
+InvestSkill has **no runtime**: the skills fetch nothing. Two optional, zero-dependency Node scripts exist so a user without a tool-enabled assistant can still paste a primary source — `scripts/fetch-edgar.js` (an EDGAR filing → `data/filings/<TICKER>/` as `.htm`, stripped `.txt`, and a `.json` of header fields) and `scripts/fetch-fundamentals.js` (SEC XBRL companyfacts → `data/fixtures/<TICKER>.md`, same shape as the ZEPH eval fixture). Shared plumbing is `scripts/lib/edgar.js`.
+
+- They stay **outside the plugin**, and `npm test` never runs them against the SEC (they need the network) — only their offline suite below; `npm run fetch:edgar` / `fetch:fundamentals` are the only user-facing wiring. Do not add data fetching to any SKILL.md — the skills carry the *recipe* (URLs a tool-enabled host can follow) in `10k-digest`, `financial-report-analyst`, and `fact-check`, and the Data & Accuracy page documents it.
+- **Never commit filings or generated real-ticker packs.** `data/filings/` and `data/fixtures/*` (except the fictional `ZEPH.md`) are ignored via `.gitignore`; real numbers go stale and PDFs bloat a markdown plugin.
+- Save text, not PDFs — the skills consume text. No Playwright / headless-browser dependency.
+- Honour SEC fair access: an identifying `User-Agent` (`EDGAR_USER_AGENT` env) and paced requests (`edgar.js` enforces the interval).
+- **Tests:** `scripts/test-edgar.js` (`npm run test:edgar`, part of `npm test` and the `test.yml` / `pr-check.yml` / `validate.yml` workflows) covers the library in-process and runs both CLIs as subprocesses against the fetch double `scripts/lib/edgar-mock-fetch.js` — no network. Add a route to the double when you add an endpoint; keep the synthetic AAPL facts equal to the real FY2025 figures so the pack stays sanity-checkable. When you change what the helpers fetch, also run them once against a real ticker.
+
 ## Version Consistency Rule
 
 All three version fields must match at all times:

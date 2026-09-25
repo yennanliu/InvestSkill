@@ -111,6 +111,8 @@ InvestSkill is **completely free to use** — there is nothing to buy, register,
 
 > Because there's no API, there's also no telemetry: InvestSkill never sees your tickers, your holdings, or your analysis. See [Data & Accuracy](site/content/DATA-AND-ACCURACY.md) for where the numbers actually come from.
 
+**Bring your own data.** The filing skills (`10k-digest`, `financial-report-analyst`, `fact-check`) carry a keyless SEC EDGAR recipe a tool-enabled assistant can follow by itself. If yours can't browse, two optional zero-dependency scripts fetch the primary source for you to paste — `node scripts/fetch-edgar.js AAPL --form 10-K` saves the filing as text, `node scripts/fetch-fundamentals.js AAPL` builds a reconciled statement pack from the SEC's XBRL facts. Neither is part of the plugin. Details on the [Data & Accuracy](site/content/DATA-AND-ACCURACY.md#bring-your-own-data-the-keyless-edgar-path) page.
+
 ---
 
 ## The 30 Frameworks

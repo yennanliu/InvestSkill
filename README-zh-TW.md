@@ -135,6 +135,8 @@ gemini
 
 > 因為沒有 API，也就沒有任何遙測：InvestSkill 不會看到你的股票代號、你的持股，或你的分析內容。數字實際從何而來，請見[資料與準確性](site/content/DATA-AND-ACCURACY-zh-TW.md)。
 
+**自備資料。** 申報文件類技能（`10k-digest`、`financial-report-analyst`、`fact-check`）內建一份無金鑰的 SEC EDGAR 取檔步驟，具工具能力的助理可自行照做。若你的助理無法上網，倉庫另附兩支可選、零相依的腳本替你抓取第一手來源供貼上——`node scripts/fetch-edgar.js AAPL --form 10-K` 把文件存成純文字，`node scripts/fetch-fundamentals.js AAPL` 從 SEC 的 XBRL 數據產生已對帳的財報資料包。兩者都不屬於外掛本體。詳見[資料與準確性](site/content/DATA-AND-ACCURACY-zh-TW.md#自備資料無金鑰的-edgar-路徑)頁。
+
 ---
 
 ## 🏆 核心功能
