@@ -101,6 +101,8 @@ Quantify downside risks and positioning pressure.
 - **options-analysis** *(standard+)* — Implied volatility, put/call ratios, options flow
 - **economics-analysis** *(comprehensive)* — Macro environment, rate sensitivity
 - **financial-report-analyst** *(comprehensive)* — 10-K/10-Q risk factors
+- **bear-case** *(comprehensive)* — Short-seller red-team: Thesis-Killers and a downside target. Its downside target sets the Bear scenario in the Valuation Summary and Exit Strategy, its Thesis-Killers become the Bear Case section of the thesis narrative, and the Thesis Invalidation checks whether they are refuted
+- **catalyst-calendar** *(comprehensive)* — Dated events in the next 90 days and their expected price impact. High-impact binary events lower the Risk Profile score, and the dated events populate "next catalyst dates" in the Monitoring Plan
 
 Output: **Risk Profile Score (0–10)** — Inverse of risk: Low risk = high score (8–10), High risk = low score (0–3).
 
@@ -134,7 +136,7 @@ Sub-score derivation:
 - Valuation: 10 = deep discount to intrinsic value; 5 = at fair value; 0 = extreme overvaluation
 - Market Signals: weighted average of insider, institutional, and earnings call scores
 - Technical Setup: Strong=8–10, Moderate=4–7, Weak=0–3
-- Risk Profile: inverse of risk — Low risk = 8–10, High risk = 0–3
+- Risk Profile: inverse of risk — Low risk = 8–10, High risk = 0–3; at comprehensive depth this includes the `bear-case` downside severity and the `catalyst-calendar` event risk
 
 When running quick or standard depth, scores for missing modules default to neutral (5.0) and are flagged as "not assessed" in the scorecard.
 
