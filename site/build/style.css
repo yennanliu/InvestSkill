@@ -407,6 +407,7 @@ button { font-family: inherit; }
 @keyframes termIn { to { opacity: 1; transform: none; } }
 
 @media (prefers-reduced-motion: reduce) {
+  .status-chip .dot { animation: none; }
   .hero-orbs::before, .hero-orbs::after { animation: none; }
   .term-line { animation: none; opacity: 1; transform: none; }
   .term { transform: none; }

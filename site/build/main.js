@@ -73,8 +73,11 @@ async function copyText(text) {
   const ta = document.createElement('textarea');
   ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
   document.body.appendChild(ta); ta.select();
-  document.execCommand('copy');
-  ta.remove();
+  try {
+    if (!document.execCommand('copy')) throw new Error('copy command rejected');
+  } finally {
+    ta.remove();
+  }
 }
 function flash(btn, okText, restore, cls = 'done') {
   const original = restore !== undefined ? restore : btn.innerHTML;
@@ -302,7 +305,7 @@ function setupSearch() {
         if (title.includes(query)) score += 25;
         if ((it.section || '').toLowerCase().includes(query)) score += 8;
         if (text.includes(query)) score += 3;
-        if (it.lang === pageLang) score += 2;
+        if (score > 0 && it.lang === pageLang) score += 2;
         return { it, score };
       })
       .filter(r => r.score > 0)
@@ -364,12 +367,16 @@ function setupSearch() {
     modal.addEventListener('click', e => { if (e.target === modal) close(); });
     setTimeout(() => input.focus(), 0);
   }
-  function close() { if (modal) { modal.remove(); modal = null; } }
+  function close(restoreFocus = false) {
+    if (!modal) return;
+    modal.remove(); modal = null;
+    if (restoreFocus) trigger.focus();
+  }
 
   trigger.addEventListener('click', open);
   document.addEventListener('keydown', e => {
-    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); modal ? close() : open(); }
-    if (e.key === 'Escape') close();
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); modal ? close(true) : open(); }
+    if (e.key === 'Escape' && modal) close(true);
   });
 }
 
