@@ -29,6 +29,14 @@ jobs:
     - name: Run InvestSkill test suite
       run: node scripts/test-skills.js
 
+    - name: Skill contract + prompt sync
+      run: |
+        node scripts/check-skill-contract.js --quiet
+        node scripts/sync-prompts.js --check
+
+    - name: EDGAR helper tests (offline, fetch double)
+      run: node scripts/test-edgar.js
+
   # ─────────────────────────────────────────────────────────────────────────
   # Job 2: Build Test — GitHub Pages site generation
   # Tests: that the deploy script builds all expected HTML pages correctly

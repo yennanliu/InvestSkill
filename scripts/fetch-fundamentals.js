@@ -217,8 +217,11 @@ async function main() {
   front.push(`source_form: ${cur.form}`);
   front.push(`source_accession: ${cur.accn}`);
   front.push(`currency: USD millions unless stated`);
-  front.push(`price:            # ← fill in the current quote (SEC data carries no price); enables the P/E and market-cap checks`);
-  if (sharesOut) front.push(`shares_out_m: ${Math.round(sharesOut.value / 1e6)}   # cover-page count as of ${sharesOut.asOf}`);
+  front.push('# price: fill in the current quote and its date — SEC data carries no price; it enables the P/E and market-cap checks');
+  front.push('price:');
+  // Comments go on their own line: the eval-skills.js front-block parser keeps a
+  // trailing "# …" numeric value as a string.
+  if (sharesOut) { front.push(`# shares_out_m is the cover-page count as of ${sharesOut.asOf}`); front.push(`shares_out_m: ${Math.round(sharesOut.value / 1e6)}`); }
   const num = (k, v, dp) => { if (v !== null && v !== undefined) front.push(`${k}: ${dp !== undefined ? Number(v).toFixed(dp) : M(v)}`); };
   num('revenue_m', c.revenue); num('revenue_prior_m', p.revenue);
   num('gross_profit_m', c.gross_profit); num('operating_income_m', c.operating_income); num('net_income_m', c.net_income);

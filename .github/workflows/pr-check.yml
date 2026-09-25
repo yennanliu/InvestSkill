@@ -181,6 +181,9 @@ jobs:
     - name: Run unit tests
       run: node scripts/test-skills.js
 
+    - name: Run EDGAR helper tests (offline)
+      run: node scripts/test-edgar.js
+
     - name: PR validation summary
       if: success()
       run: |

@@ -31,7 +31,10 @@ const USER_AGENT = process.env.EDGAR_USER_AGENT
   || `InvestSkill/${PKG.version} (+https://github.com/yennanliu/InvestSkill; set EDGAR_USER_AGENT to identify yourself)`;
 
 // SEC allows 10 req/s; 150 ms between requests keeps a comfortable margin.
-const REQUEST_INTERVAL_MS = 150;
+// The env overrides exist for the offline test suite (scripts/test-edgar.js),
+// which runs against a fetch double and has no reason to wait.
+const REQUEST_INTERVAL_MS = process.env.EDGAR_REQUEST_INTERVAL_MS !== undefined ? Number(process.env.EDGAR_REQUEST_INTERVAL_MS) : 150;
+const RETRY_BACKOFF_MS = process.env.EDGAR_RETRY_BACKOFF_MS !== undefined ? Number(process.env.EDGAR_RETRY_BACKOFF_MS) : 1000;
 let lastRequestAt = 0;
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -55,12 +58,12 @@ async function request(url, { retries = 2 } = {}) {
       res = await fetch(url, { headers: { 'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip, deflate' } });
     } catch (err) {
       if (attempt >= retries) throw err;
-      await sleep(1000 * (attempt + 1));
+      await sleep(RETRY_BACKOFF_MS * (attempt + 1));
       continue;
     }
     if (res.ok) return res;
     // 429 / 5xx are worth a retry; 4xx (esp. 403 = bad User-Agent, 404) are not.
-    if ((res.status === 429 || res.status >= 500) && attempt < retries) { await sleep(1500 * (attempt + 1)); continue; }
+    if ((res.status === 429 || res.status >= 500) && attempt < retries) { await sleep(RETRY_BACKOFF_MS * 1.5 * (attempt + 1)); continue; }
     throw new HttpError(res.status, url);
   }
 }
