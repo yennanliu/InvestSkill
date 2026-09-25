@@ -356,12 +356,7 @@ All analyses include:
 
 ## Model Support
 
-Works with all Claude Code supported models:
-- Claude Opus 4.6 (most capable)
-- Claude Sonnet 4.6 (balanced)
-- Claude Haiku 4.5 (fastest)
-
-**Recommendation**: Use Sonnet 4.6 for best balance of quality and speed.
+Works with whichever model your Claude Code session runs (`/model` shows and switches it). Multi-module runs such as `full-report --depth comprehensive` benefit most from the most capable model available to you.
 
 ---
 

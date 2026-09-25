@@ -646,14 +646,12 @@ All analysis concludes with this standardized block:
 After delivering the analysis signal, specify what would reverse it:
 
 **If signal is BULLISH — thesis breaks if:**
-- Price closes below the MA200 / key support level identified in this analysis on above-average volume
 - dividend cut announced OR debt/EBITDA exceeds 4x
-- Macro regime shift: Fed pivots hawkish unexpectedly, recession probability >60%
+- [One or two more triggers drawn from this analysis's own drivers, each with a threshold]
 
 **If signal is BEARISH — thesis breaks if:**
-- Price closes above key resistance / MA200 level with volume confirmation
 - dividend raised AND FCF payout ratio improves below 50%
-- Fundamental improvement: surprise earnings beat >20% with guidance raise
+- [One or two more triggers drawn from this analysis's own drivers, each with a threshold]
 
 **Re-run this analysis when:**
 - [ ] Next earnings release

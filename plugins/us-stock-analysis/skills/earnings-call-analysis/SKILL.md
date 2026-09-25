@@ -407,7 +407,7 @@ Claude compares with prior quarter (Q3 2024) to highlight changes and trends
 
 ## Integration Notes
 
-- Can be used standalone or in conjunction with /fundamental-analysis
+- Can be used standalone or in conjunction with /stock-eval
 - Output can be fed to /report-generator for HTML/PDF export
 - Particularly valuable around earnings season (Jan, Apr, Jul, Oct)
 - Best used within 1-2 days of earnings release while market is digesting information
@@ -422,14 +422,12 @@ All analysis concludes with this standardized block:
 After delivering the analysis signal, specify what would reverse it:
 
 **If signal is BULLISH — thesis breaks if:**
-- Price closes below the MA200 / key support level identified in this analysis on above-average volume
 - management lowers full-year guidance by >10% OR CEO/CFO departure announced within 30 days
-- Macro regime shift: Fed pivots hawkish unexpectedly, recession probability >60%
+- [One or two more triggers drawn from this analysis's own drivers, each with a threshold]
 
 **If signal is BEARISH — thesis breaks if:**
-- Price closes above key resistance / MA200 level with volume confirmation
 - major earnings beat >15% AND multi-year guidance raised significantly
-- Fundamental improvement: surprise earnings beat >20% with guidance raise
+- [One or two more triggers drawn from this analysis's own drivers, each with a threshold]
 
 **Re-run this analysis when:**
 - [ ] Next earnings release

@@ -6,16 +6,16 @@ description: Analyze US economic indicators and their impact on markets
 
 ## ⚠️ Data Verification — Do This Before Any Analysis
 
-Before running any analysis, always retrieve the latest market data for the ticker:
+Before running any analysis, retrieve the latest release of every indicator you use:
 
-1. **Fetch current price** — use web search or ask the user for the live price, 52-week range, and market cap. Never assume a price from training data.
-2. **Confirm key figures** — recent earnings, revenue, key ratios (P/E, P/S, etc.) as applicable to this skill.
+1. **Fetch current readings** — use web search or ask the user for the latest value and release date of each indicator (FRED, BLS, BEA, ISM, the Fed). Never assume a reading from training data; indicators are revised and re-released on a schedule.
+2. **Confirm key figures** — the policy rate, the 2s10s spread, the latest CPI/PCE, payrolls and unemployment, and PMI, each with its release date.
 3. **State your data source** — fill in the `Data & Sources` header (next section) so the origin, as-of date, retrieval path, and confidence of every figure are explicit at the top of the output.
 4. **Flag stale data explicitly** — if live data is unavailable, display this warning before proceeding:
 
 > ⚠️ **Live data unavailable.** The following analysis uses training-data estimates which may be significantly out of date. Verify all prices and metrics before making any decisions.
 
-Never silently substitute training-data estimates for current prices. When in doubt, ask the user to paste the latest quote.
+Never silently substitute training-data estimates for current prices. When in doubt, ask the user to paste the latest release.
 
 ---
 
@@ -315,14 +315,12 @@ All analysis concludes with this standardized block:
 After delivering the analysis signal, specify what would reverse it:
 
 **If signal is BULLISH — thesis breaks if:**
-- Price closes below the MA200 / key support level identified in this analysis on above-average volume
 - yield curve inverts >50bps AND leading indicators fall for 3 consecutive months
-- Macro regime shift: Fed pivots hawkish unexpectedly, recession probability >60%
+- [One or two more triggers drawn from this analysis's own drivers, each with a threshold]
 
 **If signal is BEARISH — thesis breaks if:**
-- Price closes above key resistance / MA200 level with volume confirmation
 - yield curve normalizes AND PMI recovers above 52 for 2+ months
-- Fundamental improvement: surprise earnings beat >20% with guidance raise
+- [One or two more triggers drawn from this analysis's own drivers, each with a threshold]
 
 **Re-run this analysis when:**
 - [ ] Next earnings release
