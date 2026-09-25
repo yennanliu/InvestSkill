@@ -93,6 +93,15 @@ When you touch `install.sh`:
 
 Documented curl commands in `README*.md` and `site/content/COOKBOOK*.md` are checked too: the URL must be the `raw.githubusercontent.com/yennanliu/InvestSkill/<ref>/install.sh` form and every `-a AGENT` must be a supported agent.
 
+## Bring-Your-Own-Data Helpers Rule
+
+InvestSkill has **no runtime**: the skills fetch nothing. Two optional, zero-dependency Node scripts exist so a user without a tool-enabled assistant can still paste a primary source — `scripts/fetch-edgar.js` (an EDGAR filing → `data/filings/<TICKER>/` as `.htm`, stripped `.txt`, and a `.json` of header fields) and `scripts/fetch-fundamentals.js` (SEC XBRL companyfacts → `data/fixtures/<TICKER>.md`, same shape as the ZEPH eval fixture). Shared plumbing is `scripts/lib/edgar.js`.
+
+- They stay **outside the plugin and outside `npm test`** (they need the network); `npm run fetch:edgar` / `fetch:fundamentals` are the only wiring. Do not add data fetching to any SKILL.md — the skills carry the *recipe* (URLs a tool-enabled host can follow) in `10k-digest`, `financial-report-analyst`, and `fact-check`, and the Data & Accuracy page documents it.
+- **Never commit filings or generated real-ticker packs.** `data/filings/` and `data/fixtures/*` (except the fictional `ZEPH.md`) are ignored via `.gitignore`; real numbers go stale and PDFs bloat a markdown plugin.
+- Save text, not PDFs — the skills consume text. No Playwright / headless-browser dependency.
+- Honour SEC fair access: an identifying `User-Agent` (`EDGAR_USER_AGENT` env) and paced requests (`edgar.js` enforces the interval). If you touch the helpers, run them once against a real ticker (e.g. `AAPL`) — there is no offline test.
+
 ## Version Consistency Rule
 
 All three version fields must match at all times:

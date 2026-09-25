@@ -45,3 +45,10 @@ logs/
 
 # Behavioural eval raw completions (scripts/eval-skills.js); the summary qa/eval_YYYYMMDD.md is kept
 qa/eval-output/
+
+# Bring-your-own-data helpers (scripts/fetch-edgar.js, scripts/fetch-fundamentals.js):
+# downloaded filings and generated real-ticker data packs are working data, not repo content.
+# Only the fictional ZEPH eval fixture is committed.
+data/filings/
+data/fixtures/*
+!data/fixtures/ZEPH.md

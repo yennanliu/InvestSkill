@@ -102,6 +102,8 @@ Only a source the reader could open verifies a claim. Rank what you use, and rec
 
 Prefer the most specific location: Item and Note number, statement line, table, page. "The 10-K" is a document, not a citation.
 
+**Retrieving a Tier-1 source without an API key.** When the user grants permission to retrieve and the host can fetch URLs, go straight to SEC EDGAR rather than a summary site: resolve the CIK from `https://www.sec.gov/files/company_tickers.json` (zero-pad `cik_str` to 10 digits); list filings from `https://data.sec.gov/submissions/CIK##########.json`, where `filings.recent.form` / `filingDate` / `reportDate` / `accessionNumber` / `primaryDocument` line up by index (`10-K`, `10-Q`, `8-K`, `DEF 14A`, `4` for insider transactions, `13F-HR` for institutional holdings, `20-F` / `6-K` for foreign issuers); open the document at `https://www.sec.gov/Archives/edgar/data/<CIK without leading zeros>/<accession without dashes>/<primaryDocument>`; and cross-check statement figures against the tagged facts at `https://data.sec.gov/api/xbrl/companyfacts/CIK##########.json`. Send an identifying `User-Agent` and stay under 10 requests per second. Record `Retrieval: web/tool retrieval`, the accession number and the filing date. If the host cannot fetch, ask the user to paste the document — or to run `node scripts/fetch-edgar.js <TICKER> --form 10-K` / `node scripts/fetch-fundamentals.js <TICKER>` from the InvestSkill repository and paste the output (`Retrieval: pasted by user`). A source that could not be retrieved leaves its claims `❓`; it is never filled from memory.
+
 ### Phase 3 — Verify each claim
 
 For each ledger row, locate the figure in the source, compare, and assign one verdict:

@@ -10,6 +10,8 @@
     "sync:prompts:check": "node scripts/sync-prompts.js --check",
     "new:skill": "node scripts/new-skill.js",
     "eval:skills": "node scripts/eval-skills.js",
+    "fetch:edgar": "node scripts/fetch-edgar.js",
+    "fetch:fundamentals": "node scripts/fetch-fundamentals.js",
     "test:skills": "node scripts/test-skills.js",
     "test:install": "node scripts/test-install.js",
     "validate": "node scripts/validate-prompts.js",

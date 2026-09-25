@@ -204,7 +204,7 @@ KPI         | 指標 | 門檻 | 最新值 | 日期 | ✓/✗
 ### 5.4 參考與信任頁面
 
 - **非美國投資人指南**（雙語）— 券商、W-8BEN、預扣稅、匯率、遺產稅、UCITS 替代方案。很可能是繁中受眾閱讀最多的頁面。
-- **自備資料（Bring Your Own Data）** — 七月審查中仍未完成的 C2 項目：把各技能指向 MCP 資料伺服器、EDGAR 全文搜尋、上傳的 10-K PDF（`data/` 已有兩份）或券商 CSV 的操作範例。把「無 API 金鑰」定位為有清楚路徑的設計選擇。
+- **自備資料（Bring Your Own Data）** — 七月審查中仍未完成的 C2 項目。**已部分出貨：** 資料與準確性頁新增「自備資料：無金鑰的 EDGAR 路徑」一節（助理依 `data.sec.gov` 步驟自行抓取 · 以 `fetch-edgar.js`／`fetch-fundamentals.js` 下載後貼上 · 貼上手邊已有的資料），且 `10k-digest`、`financial-report-analyst`、`fact-check` 內建取檔步驟。仍未完成：MCP 資料伺服器與券商 CSV 的操作範例。`data/` 中兩份零散的 10-K PDF 已移除——輔助工具可隨時重新產生純文字版。
 - **網站版 FAQ** — `FAQ.md` 有 50 多個問答，但網站兩種語言都沒有 FAQ 頁面；它也仍寫著「18 skills」。
 - **選擇技能頁面新增比較**：`bear-case` vs. `result-validator` · `catalyst-calendar` vs. `earnings-preview` · `position-ladder` vs. `portfolio-review` · `etf-analysis` vs. `stock-eval`。
 - 每課結尾的**自我測驗**與**可列印的一頁速查表**（六月審查中皆仍未完成）。
@@ -238,7 +238,7 @@ KPI         | 指標 | 門檻 | 最新值 | 日期 | ✓/✗
 | 6.5 | `scripts/check-glossary-coverage.js` | 從技能擷取指標術語（精選的正規表達式清單）；每個術語都必須在 `GLOSSARY.md` 與 `GLOSSARY-zh-TW.md` 中有條目 | S | ⬜ |
 | 6.6 | `scripts/check-zh-parity.js` | 每個 `site/content/X.md` 都有 `X-zh-TW.md`；標題數量在容許範圍內；英文在繁中之後被修改時警告（git log） | S | ⬜ |
 | 6.7 | `scripts/check-demo-freshness.js` | 解析示範與操作手冊實際執行中的資料日期；超過 90 天警告；供 §5.5 的橫幅使用 | S | ⬜ |
-| 6.8 | `scripts/fetch-edgar.js <TICKER> [10-K\|10-Q\|8-K\|DEF14A\|4]` | 無金鑰的輔助工具：解析 CIK、把最新申報文件下載到 `data/`，遵守 SEC 的 User-Agent 與頻率規則。可選、位於外掛之外 — 一條具體的「自備資料」路徑 | M |
+| 6.8 | `scripts/fetch-edgar.js <TICKER> [10-K\|10-Q\|8-K\|DEF14A\|4]` | 無金鑰的輔助工具：解析 CIK、把最新申報文件下載到 `data/`，遵守 SEC 的 User-Agent 與頻率規則。可選、位於外掛之外 — 一條具體的「自備資料」路徑 | M | ✅ 以 `fetch-edgar.js`（HTML + 純文字 + 含標頭欄位的 `.json`，而非 PDF）與 `fetch-fundamentals.js`（XBRL companyfacts → `data/fixtures/<TICKER>.md` 資料包）出貨，共用 `scripts/lib/edgar.js`；不在 `npm test` 內；輸出不納入版本控制 |
 | 6.9 | 擴充 `COUNT_DOCS` | 加入 `FAQ.md`、`PLATFORM-COMPATIBILITY.md`、`CONTRIBUTING.md` 與 README 的測試數量行 — 或歸檔過時文件（§7） | S | ✅ PR #26 |
 | 6.10 | `scripts/build-cheatsheet.js` | 由術語表與訊號分數區間產生可列印速查表，使其永不漂移 | S | ⬜ |
 | 6.11 | `scripts/lib/signal-block.js` | 供 6.3、6.4、`site-review.js` 與網站檢查器共用的訊號區塊 / JSON 頁尾解析器 | S | ✅ PR #26 |

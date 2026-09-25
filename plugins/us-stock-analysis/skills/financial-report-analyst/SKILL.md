@@ -66,6 +66,19 @@ Provide the report in one of these ways:
 /financial-report-analyst GOOGL --compare-prior
 ```
 
+### Retrieving the filing — the keyless EDGAR path
+
+When the user names a ticker instead of pasting text, this skill still fetches nothing by itself. If the host can fetch URLs, get the primary document from SEC EDGAR (free, no API key) and mark `Retrieval: web/tool retrieval`:
+
+1. **Ticker → CIK:** `https://www.sec.gov/files/company_tickers.json` — match `ticker` (`BRK-B` for `BRK.B`), zero-pad `cik_str` to 10 digits.
+2. **Filings index:** `https://data.sec.gov/submissions/CIK##########.json` — in `filings.recent`, the arrays `form` · `filingDate` · `reportDate` · `accessionNumber` · `primaryDocument` line up by index. Pick the newest row whose `form` is the one asked for: `10-K` (annual; `20-F` for foreign private issuers), `10-Q` (quarterly; `6-K` for foreign issuers), `8-K` (earnings release is usually Exhibit 99.1 in the filing folder), `DEF 14A` (proxy).
+3. **Document:** `https://www.sec.gov/Archives/edgar/data/<CIK without leading zeros>/<accessionNumber without dashes>/<primaryDocument>` — the full filing as HTML. The folder's `<accessionNumber>-index.htm` lists every exhibit.
+4. **Statement facts (to cross-check Item 8):** `https://data.sec.gov/api/xbrl/companyfacts/CIK##########.json`.
+
+Identify yourself with a `User-Agent` header (`Name email`) and stay under 10 requests per second. For `--compare-prior`, take the second-newest row of the same form. Cite accession number and filing date in the `Data & Sources` header.
+
+If the host cannot fetch, ask the user to paste the sections — or, from the InvestSkill repository, to run `node scripts/fetch-edgar.js <TICKER> --form 10-Q` (saves the filing as text plus a `.json` with the header fields) or `node scripts/fetch-fundamentals.js <TICKER>` (a reconciled statement pack from the XBRL facts) — and mark `Retrieval: pasted by user`. With neither, proceed only under the ⚠️ warning above with `Confidence: LOW`.
+
 ---
 
 ## Step-by-Step Analysis Framework

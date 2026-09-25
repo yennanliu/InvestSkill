@@ -2,7 +2,7 @@
 
 > The most important page on this site. InvestSkill makes an AI *reason like an analyst* — but it is only as good as the data you feed it and the scrutiny you apply. This page explains where the numbers come from, how to spot when they're wrong, and the limits you must respect.
 
-**On this page:** [How the skills get data](#how-the-skills-get-data) · [Recommended data sources](#recommended-data-sources) · [Spotting hallucinated numbers](#spotting-hallucinated-numbers) · [Validating AI output](#validating-ai-output) · [Limitations & responsible use](#limitations--responsible-use)
+**On this page:** [How the skills get data](#how-the-skills-get-data) · [Recommended data sources](#recommended-data-sources) · [Bring your own data: the keyless EDGAR path](#bring-your-own-data-the-keyless-edgar-path) · [Spotting hallucinated numbers](#spotting-hallucinated-numbers) · [Validating AI output](#validating-ai-output) · [Limitations & responsible use](#limitations--responsible-use)
 
 ---
 
@@ -55,6 +55,50 @@ Data & Sources
 | Macro indicators | Central bank / statistics-agency releases (e.g. FRED) |
 
 **Best practice:** copy the actual figures into the prompt (or point a tool-enabled assistant at the filing) rather than relying on the model's recall. For filings, `financial-report-analyst` is built to ingest pasted 10-K/10-Q sections directly.
+
+---
+
+## Bring Your Own Data: The Keyless EDGAR Path
+
+"No API key" is a design choice, not a dead end. Everything a filing-based skill needs is published by the SEC for free, without registration. There are three ways to get it in front of the model — pick the first one that fits your setup, and say which one you used in the `Data & Sources` header.
+
+### 1. Let a tool-enabled assistant fetch the filing (`Retrieval: web/tool retrieval`)
+
+`10k-digest`, `financial-report-analyst` and `fact-check` now carry this recipe, so an assistant with web access can follow it on its own:
+
+| Step | URL | What you get |
+|------|-----|--------------|
+| Ticker → CIK | `https://www.sec.gov/files/company_tickers.json` | the entry whose `ticker` matches (`BRK-B` for `BRK.B`); zero-pad `cik_str` to 10 digits |
+| Filings index | `https://data.sec.gov/submissions/CIK##########.json` | `filings.recent.form` · `filingDate` · `reportDate` · `accessionNumber` · `primaryDocument`, aligned by index — take the newest `10-K` / `10-Q` / `8-K` / `DEF 14A` / `4` / `13F-HR` |
+| The document | `https://www.sec.gov/Archives/edgar/data/<CIK>/<accession without dashes>/<primaryDocument>` | the full filing as HTML; the same folder's `<accession>-index.htm` lists every exhibit |
+| Statement facts | `https://data.sec.gov/api/xbrl/companyfacts/CIK##########.json` | every US-GAAP figure the company has tagged, by concept and period — the fastest way to cross-check Item 8 |
+| Full-text search | `https://www.sec.gov/edgar/search/#/q=%22<phrase>%22&forms=10-K` | locate a filing by phrase when you don't have the ticker |
+
+Two SEC rules apply to any automated client: send a `User-Agent` that identifies you (`Name email`), and stay under 10 requests per second. Foreign private issuers file `20-F` (annual) and `6-K` (interim) instead of `10-K` / `10-Q`.
+
+### 2. Download it yourself, then paste (`Retrieval: pasted by user`)
+
+If your assistant cannot browse — a local model, a chat UI without tools — the repository ships two **optional, zero-dependency Node scripts** that walk the same path for you. They are not part of the plugin, call no vendor, and need only Node ≥ 18:
+
+```bash
+# The filing itself, as HTML + plain text you can paste, plus a .json with the header fields
+node scripts/fetch-edgar.js AAPL --form 10-K            # → data/filings/AAPL/AAPL_2025_10-K.txt
+node scripts/fetch-edgar.js AAPL --form 10-Q --limit 2  # the last two quarters
+node scripts/fetch-edgar.js TSLA --form "DEF 14A"       # proxy statement
+node scripts/fetch-edgar.js PLTR --form 4 --limit 10 --list
+
+# A reconciled statement data pack from the XBRL facts (income statement, balance sheet, cash flow,
+# current + prior fiscal year, derived FCF / net debt / margins) — same shape as the eval fixture
+node scripts/fetch-fundamentals.js AAPL                 # → data/fixtures/AAPL.md
+```
+
+Set `EDGAR_USER_AGENT="Your Name your@email"` first — the SEC asks every client to identify itself. Downloads land in `data/filings/` and generated packs in `data/fixtures/`, both git-ignored: they are *your* working data, and real numbers go stale. The XBRL pack deliberately has **no price line** — the SEC publishes no quotes — so add today's price from your broker before asking for P/E, market cap or yield.
+
+### 3. Paste what you already have
+
+A 10-K PDF from the company's IR site, a broker statement, a spreadsheet export: paste the sections, or upload the file where your assistant supports it. Label it `Retrieval: pasted by user`; the skills treat it as a Tier-1 *user-supplied* source and stop verification at your document.
+
+> **What none of these change:** InvestSkill still has no runtime and never sees your data. The recipe and the scripts only shorten the distance between a primary source and the prompt.
 
 ---
 
