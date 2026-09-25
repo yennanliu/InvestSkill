@@ -34,7 +34,9 @@ const edgar = require('./lib/edgar');
 
 const ROOT = path.resolve(__dirname, '..');
 const argv = process.argv.slice(2);
+/** Value of `--<k>` from argv, or `d` when absent. */
 const flag = (k, d) => { const i = argv.indexOf(`--${k}`); return i >= 0 && argv[i + 1] !== undefined && !argv[i + 1].startsWith('--') ? argv[i + 1] : d; };
+/** True when the boolean flag `--<k>` is present. */
 const has = k => argv.includes(`--${k}`);
 const VALUE_FLAGS = new Set(['--fy', '--out']);
 const positional = argv.filter((a, i) => !a.startsWith('--') && !(i > 0 && VALUE_FLAGS.has(argv[i - 1])));
@@ -91,9 +93,12 @@ const SHARE_COUNTS = new Set(['shares_diluted']);
 const ANNUAL_FORMS = ['10-K', '10-K/A', '10-KT', '20-F', '40-F'];
 const PERIODIC_FORMS = ['10-K', '10-Q', '20-F', '40-F', '6-K', '8-K'];
 
+/** Whole days from ISO date `a` to ISO date `b`. */
 const daysBetween = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / 86400000);
+/** True when a duration fact covers one fiscal year (350 to 380 days). */
 const isAnnualSpan = p => p.start && p.end && daysBetween(p.start, p.end) >= 350 && daysBetween(p.start, p.end) <= 380;
 
+/** XBRL unit key a metric is reported in: USD, USD/shares (per-share), or shares (counts). */
 function unitFor(metric) { return PER_SHARE.has(metric) ? 'USD/shares' : SHARE_COUNTS.has(metric) ? 'shares' : 'USD'; }
 
 /** All points for a metric's concept chain, tagged with their concept. */
@@ -124,6 +129,12 @@ function original(points) {
   return best;
 }
 
+/**
+ * The reported value of `metric` for the period ending `end`: the first concept in the
+ * chain that has a point for that period wins, and within it the original filing.
+ * Duration metrics are restricted to one-year spans; instants match on `end` alone.
+ * @returns {object|null} the fact point, or null when the company never tagged it
+ */
 function pick(gaap, metric, chain, end, { duration }) {
   const pts = pointsFor(gaap, chain, unitFor(metric)).filter(p => p.end === end && (!duration || isAnnualSpan(p)));
   // Respect chain order: the first concept with a point for this period wins.
@@ -147,11 +158,21 @@ function fiscalYearEnds(gaap) {
   return [...ends.entries()].map(([end, m]) => ({ end, ...m })).sort((a, b) => (a.end < b.end ? 1 : -1));
 }
 
+/** Dollars -> whole millions (null passes through). */
 const M = v => (v === null || v === undefined ? null : Math.round(v / 1e6));
+/** Dollars -> "1,234" millions for a table cell, or "n/a". */
 const fmtM = v => (v === null || v === undefined ? 'n/a' : Math.round(v / 1e6).toLocaleString('en-US'));
+/** Dollars -> "(1,234)" millions for an outflow cell, or "n/a". */
 const fmtNeg = v => (v === null || v === undefined ? 'n/a' : `(${Math.abs(Math.round(v / 1e6)).toLocaleString('en-US')})`);
+/** `a / b` as a "12.3%" string, or "n/a" when either side is missing. */
 const pct = (a, b) => (a !== null && b ? `${((a / b) * 100).toFixed(1)}%` : 'n/a');
 
+/**
+ * CLI entry: resolve the ticker, fetch its XBRL company facts, pick the fiscal year
+ * (latest or `--fy`), extract current and prior-year statements, derive FCF / debt /
+ * margins, and write the ZEPH-shaped data pack (or print it with `--stdout`).
+ * Non-GAAP filers and 404s exit 0 with an explanation; unknown tickers exit 1.
+ */
 async function main() {
   process.stdout.write(`Looking up ${ticker} on SEC EDGAR…\n`);
   const company = await edgar.lookupCik(ticker);

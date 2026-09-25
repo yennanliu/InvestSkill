@@ -37,18 +37,29 @@ const REQUEST_INTERVAL_MS = process.env.EDGAR_REQUEST_INTERVAL_MS !== undefined 
 const RETRY_BACKOFF_MS = process.env.EDGAR_RETRY_BACKOFF_MS !== undefined ? Number(process.env.EDGAR_RETRY_BACKOFF_MS) : 1000;
 let lastRequestAt = 0;
 
+/** Promise that resolves after `ms` milliseconds. */
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+/** Wait until at least REQUEST_INTERVAL_MS has passed since the previous request (SEC fair-access pacing). */
 async function paced() {
   const wait = lastRequestAt + REQUEST_INTERVAL_MS - Date.now();
   if (wait > 0) await sleep(wait);
   lastRequestAt = Date.now();
 }
 
+/** A non-2xx HTTP response, carrying `status` and the requested `url`. */
 class HttpError extends Error {
   constructor(status, url) { super(`HTTP ${status} for ${url}`); this.status = status; this.url = url; }
 }
 
+/**
+ * GET `url` with the SEC User-Agent, pacing, and retries.
+ * Network errors, 429 and 5xx are retried `retries` times with linear backoff;
+ * other 4xx (403 = unidentified client, 404 = no such filing) throw HttpError at once.
+ * @param {string} url
+ * @param {{retries?: number}} [opts]
+ * @returns {Promise<Response>}
+ */
 async function request(url, { retries = 2 } = {}) {
   if (typeof fetch !== 'function') throw new Error('Node ≥ 18 is required (global fetch not available)');
   for (let attempt = 0; ; attempt++) {
@@ -68,7 +79,9 @@ async function request(url, { retries = 2 } = {}) {
   }
 }
 
+/** GET `url` and parse the body as JSON. */
 async function fetchJson(url) { return (await request(url)).json(); }
+/** GET `url` and return the body as text. */
 async function fetchText(url) { return (await request(url)).text(); }
 
 // ── Ticker → CIK ─────────────────────────────────────────────────────────────
@@ -158,6 +171,7 @@ async function fetchCompanyFacts(cik) {
 // ── HTML → text ──────────────────────────────────────────────────────────────
 const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', ndash: '–', mdash: '—', rsquo: '’', lsquo: '‘', rdquo: '”', ldquo: '“', bull: '•', hellip: '…', copy: '©', reg: '®', trade: '™', sect: '§', para: '¶', middot: '·', times: '×', deg: '°', cent: '¢', pound: '£', euro: '€', yen: '¥' };
 
+/** Decode numeric (`&#8217;`, `&#x2014;`) and common named (`&amp;`, `&nbsp;`, ...) HTML entities. */
 function decodeEntities(s) {
   return s
     .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
@@ -197,8 +211,10 @@ function htmlToText(html) {
 }
 
 // ── Filesystem helpers ───────────────────────────────────────────────────────
+/** `mkdir -p`; returns the directory path. */
 function ensureDir(dir) { fs.mkdirSync(dir, { recursive: true }); return dir; }
 
+/** Write `content` to `file` only if it differs from what is on disk; returns true when written. */
 function writeFileIfChanged(file, content) {
   if (fs.existsSync(file) && fs.readFileSync(file, 'utf8') === content) return false;
   fs.writeFileSync(file, content);

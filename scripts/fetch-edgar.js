@@ -45,7 +45,9 @@ const edgar = require('./lib/edgar');
 
 const ROOT = path.resolve(__dirname, '..');
 const argv = process.argv.slice(2);
+/** Value of `--<k>` from argv, or `d` when absent. */
 const flag = (k, d) => { const i = argv.indexOf(`--${k}`); return i >= 0 && argv[i + 1] !== undefined && !argv[i + 1].startsWith('--') ? argv[i + 1] : d; };
+/** True when the boolean flag `--<k>` is present. */
 const has = k => argv.includes(`--${k}`);
 const VALUE_FLAGS = new Set(['--form', '--fy', '--period', '--limit', '--since', '--out']);
 const positional = argv.filter((a, i) => !a.startsWith('--') && !(i > 0 && VALUE_FLAGS.has(argv[i - 1])));
@@ -69,13 +71,24 @@ const LIST = has('list'), TEXT_ONLY = has('text-only'), FORCE = has('force');
 const ANNUAL_FORMS = new Set(['10-K', '10-K/A', '20-F', '40-F', '10-KT']);
 const PERIODIC_FORMS = new Set(['10-Q', '10-Q/A', '10-QT', '6-K']);
 
+/**
+ * The stable part of a saved filing's filename: filing year for annual forms
+ * (one per year), period end for periodic forms (three 10-Qs a year), filing date
+ * for event-driven forms (8-K, Form 4, DEF 14A: several may share a period).
+ */
 function fileKey(f) {
   if (ANNUAL_FORMS.has(f.form)) return f.filed.slice(0, 4);
   if (PERIODIC_FORMS.has(f.form)) return f.period;
   return f.filed;
 }
+/** Form name safe for a filename (`DEF 14A` -> `DEF14A`). */
 const safeForm = f => f.replace(/[^A-Za-z0-9-]+/g, '');
 
+/**
+ * CLI entry: resolve the ticker, list matching filings (with the 10-K -> 20-F fallback),
+ * optionally just print them, otherwise download each primary document and write
+ * `.htm`, stripped `.txt` and `.json` metadata. Exits 1 on an unknown ticker or a partial download.
+ */
 async function main() {
   process.stdout.write(`Looking up ${ticker} on SEC EDGAR…\n`);
   const company = await edgar.lookupCik(ticker);

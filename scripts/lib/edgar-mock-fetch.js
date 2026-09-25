@@ -30,7 +30,9 @@ const SEC = 'https://www.sec.gov';
 const DATA = 'https://data.sec.gov';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
+/** Millions -> dollars, the unit XBRL reports monetary facts in. */
 const M = n => Math.round(n * 1e6);
+/** A minimal fetch Response double: `ok`, `status`, `json()`, `text()`. */
 function response(status, body, type = 'json') {
   const text = type === 'json' ? JSON.stringify(body) : String(body);
   return {
@@ -52,6 +54,7 @@ function block(rows) {
 const dur = (start, end, val, form, filed, accn, fy, fp = 'FY') => ({ start, end, val, form, filed, accn, fy, fp, frame: undefined });
 /** An instant fact. */
 const inst = (end, val, form, filed, accn, fy, fp = 'FY') => ({ end, val, form, filed, accn, fy, fp });
+/** Wrap points as a USD-unit concept entry. */
 const usd = pts => ({ units: { USD: pts } });
 
 // ── AAPL ─────────────────────────────────────────────────────────────────────
@@ -76,8 +79,11 @@ const K25 = ['10-K', '2025-10-31', '0000320193-25-000079', 2025];
 const K24 = ['10-K', '2024-11-01', '0000320193-24-000123', 2024];
 const K23 = ['10-K', '2023-11-03', '0000320193-23-000106', 2023];
 const FY25 = ['2024-09-29', '2025-09-27'], FY24 = ['2023-10-01', '2024-09-28'], FY23 = ['2022-09-25', '2023-09-30'];
+/** One fiscal-year duration point from a [start, end] span and a filing tuple. */
 const yr = (span, val, k) => dur(span[0], span[1], val, ...k);
+/** FY2025 and FY2024 values as reported, plus the FY2024 comparative repeated in the FY2025 10-K. */
 const two = (v25, v24) => [yr(FY25, M(v25), K25), yr(FY24, M(v24), K24), yr(FY24, M(v24), K25)]; // FY24 original + its comparative in the FY25 10-K
+/** Instant equivalent of `two`: both balance-sheet dates plus the repeated comparative. */
 const twoInst = (v25, v24) => [inst(FY25[1], M(v25), ...K25), inst(FY24[1], M(v24), ...K24), inst(FY24[1], M(v24), ...K25)];
 
 const AAPL_FACTS = {
@@ -153,6 +159,7 @@ const TICKERS = {
   4: { cik_str: 500, ticker: 'FLAKY', title: 'FLAKY HOLDINGS' },
 };
 
+/** A `data.sec.gov/submissions/CIK...json` payload for a synthetic company. */
 function submissions(c, extra = {}) {
   return {
     cik: String(parseInt(c.cik, 10)), name: c.name, fiscalYearEnd: extra.fiscalYearEnd || '1231',
@@ -184,6 +191,7 @@ function filingHtml(doc) {
 const state = { flakyCalls: 0 };
 const requests = [];
 
+/** Map a request URL to its canned response; unknown URLs get a 404. */
 function route(url) {
   if (url === `${SEC}/files/company_tickers.json`) return response(200, TICKERS);
   if (url === `${SEC}/files/forbidden.json`) return response(403, 'Forbidden', 'text');
@@ -210,6 +218,7 @@ function route(url) {
   return response(404, `no mock route for ${url}`, 'text');
 }
 
+/** Replace `global.fetch` with the double; every call is recorded (and appended to $EDGAR_MOCK_LOG). */
 function install() {
   global.fetch = async function mockFetch(url, opts = {}) {
     const entry = { url: String(url), headers: opts.headers || {} };
@@ -221,6 +230,7 @@ function install() {
   return global.fetch;
 }
 
+/** Clear recorded requests and per-process state (the FLAKY first-call 503). */
 function reset() { state.flakyCalls = 0; requests.length = 0; }
 
 if (process.env.EDGAR_MOCK === '1') install();

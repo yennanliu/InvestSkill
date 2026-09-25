@@ -29,12 +29,19 @@ const PKG = require(path.join(ROOT, 'package.json'));
 
 let passed = 0, failed = 0;
 const failures = [];
+/** Record a passing check. */
 const pass = m => { process.stdout.write(`  ✅ ${m}\n`); passed++; };
+/** Record a failing check. */
 const fail = m => { process.stdout.write(`  ❌ ${m}\n`); failed++; failures.push(m); };
+/** Print a section heading. */
 const section = t => process.stdout.write(`\n━━━ ${t} ${'─'.repeat(Math.max(0, 55 - t.length))}\n`);
+/** Assert `cond`, appending the offending value on failure. */
 const check = (cond, msg, detail) => (cond ? pass(msg) : fail(`${msg}${detail !== undefined ? ` — got ${JSON.stringify(detail)}` : ''}`));
+/** Assert strict equality. */
 const eq = (a, b, msg) => check(a === b, msg, a);
+/** Assert a string contains `needle`. */
 const includes = (s, needle, msg) => check(typeof s === 'string' && s.includes(needle), msg, typeof s === 'string' ? s.slice(0, 200) : s);
+/** Assert a string does not contain `needle`. */
 const excludes = (s, needle, msg) => check(typeof s === 'string' && !s.includes(needle), msg, needle);
 
 const WORK = fs.mkdtempSync(path.join(os.tmpdir(), 'investskill-edgar-test-'));
@@ -57,7 +64,9 @@ function run(script, args, extraEnv = {}) {
   const requests = fs.readFileSync(LOG, 'utf8').split('\n').filter(Boolean).map(l => JSON.parse(l));
   return { status: r.status, stdout: r.stdout || '', stderr: r.stderr || '', requests };
 }
+/** fetch-edgar.js args pointed at the temp output directory. */
 const edgarArgs = extra => ['--out', OUT, ...extra];
+/** fetch-fundamentals.js args pointed at the temp fixtures directory. */
 const fundArgs = extra => ['--out', FIX, ...extra];
 
 /** Same front-block parser as scripts/eval-skills.js loadFixture, so a generated pack is proven compatible. */
@@ -85,6 +94,7 @@ function parseFixture(raw) {
   return { meta, expect, body: m[2].trim() };
 }
 
+/** Run every section and exit 1 on any failure. */
 async function main() {
   process.stdout.write('\n🔬 InvestSkill — EDGAR helper tests (offline, fetch double)\n');
 
