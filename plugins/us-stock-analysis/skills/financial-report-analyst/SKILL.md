@@ -1,5 +1,5 @@
 ---
-description: Analyze company financial reports (10-K, 10-Q, annual reports) and extract actionable investment insights
+description: Analyze company financial reports (10-K, 10-Q, annual reports) and extract actionable investment insights — statement quality, red flags, and a signal. For a structured section-by-section summary document of a 10-K rather than an investment call, use 10k-digest
 ---
 
 # Financial Report Analyst
@@ -510,14 +510,12 @@ All analysis concludes with this standardized block:
 After delivering the analysis signal, specify what would reverse it:
 
 **If signal is BULLISH — thesis breaks if:**
-- Price closes below the MA200 / key support level identified in this analysis on above-average volume
 - auditor issues going concern warning OR material restatement announced
-- Macro regime shift: Fed pivots hawkish unexpectedly, recession probability >60%
+- [One or two more triggers drawn from this analysis's own drivers, each with a threshold]
 
 **If signal is BEARISH — thesis breaks if:**
-- Price closes above key resistance / MA200 level with volume confirmation
 - new auditor clears all concerns AND restatement resolved favorably
-- Fundamental improvement: surprise earnings beat >20% with guidance raise
+- [One or two more triggers drawn from this analysis's own drivers, each with a threshold]
 
 **Re-run this analysis when:**
 - [ ] Next earnings release

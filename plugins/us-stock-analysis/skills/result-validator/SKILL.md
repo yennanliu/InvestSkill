@@ -120,7 +120,7 @@ List specific issues found during validation:
 
 Based on the confidence score and flags, suggest:
 1. Which dimension(s) to strengthen first
-2. Which additional skills to run (e.g., "Run `/dcf-valuation` to cross-check the valuation multiple")
+2. Which additional skills to run (e.g., "Run `/stock-valuation` to cross-check the valuation multiple")
 3. Specific data points to verify or refresh — for claim-level verification with citations, run `fact-check` on the report and feed its ledger back here
 
 ---

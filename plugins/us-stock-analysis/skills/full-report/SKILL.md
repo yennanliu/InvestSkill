@@ -26,7 +26,7 @@ Select how many modules to run with `--depth`:
 |---|--------|-------|
 | 1 | `stock-eval` | Company overview, competitive position, relative valuation |
 | 2 | `technical-analysis` | MA, RSI, MACD, volume, support/resistance |
-| 3 | `dcf-valuation` | DCF intrinsic value, bear/base/bull scenarios |
+| 3 | `stock-valuation` | DCF intrinsic value (bear/base/bull), P/E, EV/EBITDA, peer multiples |
 | 4 | `insider-trading` | SEC Form 4 patterns, net insider sentiment |
 | 5 | `earnings-call-analysis` | Management tone, guidance quality, key themes |
 
@@ -44,8 +44,8 @@ Select how many modules to run with `--depth`:
 
 | # | Module | Focus |
 |---|--------|-------|
-| 11 | `fundamental-analysis` | Income statement, balance sheet, cash flow |
-| 12 | `stock-valuation` | P/E, P/S, EV/EBITDA, peer multiples |
+| 11 | `bear-case` | Short-seller red-team, Thesis-Killers, downside target |
+| 12 | `catalyst-calendar` | Dated events in the next 90 days and their expected impact |
 | 13 | `economics-analysis` | Macro environment, rate sensitivity |
 | 14 | `financial-report-analyst` | 10-K/10-Q deep dive, risk factors |
 | 15 | `dividend-analysis` | Yield, payout ratio, sustainability |
@@ -62,7 +62,6 @@ Establish qualitative and quantitative foundation before attempting valuation.
 
 - **stock-eval** — Company overview, competitive position, relative valuation vs. peers
 - **competitor-analysis** *(standard+)* — Moat depth, Porter's Five Forces, pricing power
-- **fundamental-analysis** *(comprehensive)* — Income statement, balance sheet, cash flow quality
 
 Output: **Business Quality Score (0–10)**
 Score reflects durability of competitive advantages, financial health, and consistency of returns.
@@ -71,8 +70,7 @@ Score reflects durability of competitive advantages, financial health, and consi
 
 Determine intrinsic and relative worth of the business.
 
-- **dcf-valuation** — Intrinsic value with Bull/Base/Bear scenarios
-- **stock-valuation** *(comprehensive)* — P/E, EV/EBITDA, P/S, P/FCF peer multiples
+- **stock-valuation** — DCF intrinsic value with Bull/Base/Bear scenarios, plus P/E, EV/EBITDA, P/S, P/FCF peer multiples
 
 Output: **Valuation Score (0–10)** — 10 = deep discount to intrinsic value; 5 = fair value; 0 = extreme overvaluation.
 
@@ -132,7 +130,7 @@ Composite Interpretation:
 ```
 
 Sub-score derivation:
-- Business Quality: average of moat score (competitor-analysis) + financial strength (fundamental-analysis / stock-eval)
+- Business Quality: average of moat score (competitor-analysis) + financial strength (stock-eval)
 - Valuation: 10 = deep discount to intrinsic value; 5 = at fair value; 0 = extreme overvaluation
 - Market Signals: weighted average of insider, institutional, and earnings call scores
 - Technical Setup: Strong=8–10, Moderate=4–7, Weak=0–3

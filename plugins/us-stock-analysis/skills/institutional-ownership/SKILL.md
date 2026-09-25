@@ -55,10 +55,10 @@ Provide current snapshot of institutional holdings:
 **Ownership Trend (4 Quarters)**
 ```
 Quarter        Institutional %    # of Holders    Change from Prior
-Q4 2024            73.2%              850              +1.5%
-Q3 2024            71.7%              832              +0.8%
-Q2 2024            70.9%              815              -0.3%
-Q1 2024            71.2%              809              +2.1%
+[Qn YYYY]          [%]                [N]              [±%]
+[Qn-1 YYYY]        [%]                [N]              [±%]
+[Qn-2 YYYY]        [%]                [N]              [±%]
+[Qn-3 YYYY]        [%]                [N]              [±%]
 ```
 
 **Trend Interpretation**
@@ -257,11 +257,11 @@ Analyze relationship between ownership changes and stock performance:
 
 **Performance During Institutional Activity**
 ```
-Period: Q4 2024
-Institutional Change: +2.5% ownership (net buying)
-Stock Price Change: +18.5%
-S&P 500 Change: +8.2%
-Outperformance: +10.3%
+Period: [Qn YYYY]
+Institutional Change: [±%] ownership (net buying / selling)
+Stock Price Change: [±%]
+S&P 500 Change: [±%]
+Outperformance: [±%]
 ```
 
 **Historical Pattern Analysis**
@@ -474,40 +474,31 @@ Stock performance during periods of institutional buying/selling
 ```
 User: /institutional-ownership NVDA
 
-Claude: Analyzes latest 13F filings (Q4 2024), identifies:
-- Institutional ownership increased to 65% (from 62%)
-- ARK Invest added $500M position (new holding)
-- Berkshire added to existing position (+15%)
-- 45 new institutional buyers
-- Signal: Bullish, Confidence: High
+Claude: Reads the latest quarter's 13F filings and reports the change in
+institutional ownership, new and exited holders, and the largest adds and
+trims by named manager, then closes with the signal block.
 ```
 
 ### Example 2: Smart Money Tracking
 ```
 User: /institutional-ownership META --smart-money
 
-Claude: Focuses on notable investors:
-- Soros Fund Management initiated $2B position
-- Baupost Group increased 40%
-- No major exits by top holders
-- Signal: Bullish based on smart money activity
+Claude: Restricts the holder analysis to the smart-money list above and
+reports each manager's position change for the quarter.
 ```
 
 ### Example 3: Comparative Analysis
 ```
 User: /institutional-ownership AAPL MSFT GOOGL --compare
 
-Claude: Compares institutional trends across three stocks:
-- AAPL: Stable ownership, slight decline
-- MSFT: Growing ownership, smart money accumulating
-- GOOGL: Decreasing ownership, some notable exits
-- Relative signal: MSFT > AAPL > GOOGL
+Claude: Runs the same ownership-trend and smart-money checks on each ticker
+and ranks them by net institutional accumulation.
 ```
 
 ## Integration Notes
 
 - Combine with /insider-trading for complete ownership analysis
-- Use with /fundamental-analysis for comprehensive due diligence
+- Use with /stock-eval for comprehensive due diligence
 - Feed to /report-generator for visual ownership trend charts
 - Best used quarterly after 13F filing deadlines (May, Aug, Nov, Feb)
 - Particularly valuable for small-mid cap stocks where institutional buying can be catalyst
@@ -523,14 +514,12 @@ All analysis concludes with this standardized block:
 After delivering the analysis signal, specify what would reverse it:
 
 **If signal is BULLISH — thesis breaks if:**
-- Price closes below the MA200 / key support level identified in this analysis on above-average volume
 - top 3 holders reduce positions by >20% in a single quarter
-- Macro regime shift: Fed pivots hawkish unexpectedly, recession probability >60%
+- [One or two more triggers drawn from this analysis's own drivers, each with a threshold]
 
 **If signal is BEARISH — thesis breaks if:**
-- Price closes above key resistance / MA200 level with volume confirmation
 - 2+ top-tier institutions (BlackRock, Vanguard, Fidelity) initiate new positions
-- Fundamental improvement: surprise earnings beat >20% with guidance raise
+- [One or two more triggers drawn from this analysis's own drivers, each with a threshold]
 
 **Re-run this analysis when:**
 - [ ] Next earnings release

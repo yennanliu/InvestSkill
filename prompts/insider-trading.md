@@ -168,10 +168,10 @@ Track changes in insider ownership percentage:
 **Ownership Trend (12 months)**
 ```
 Quarter        Total Insider %    Change from Prior
-Q4 2024            15.2%            +0.3%
-Q3 2024            14.9%            -0.1%
-Q2 2024            15.0%            +0.5%
-Q1 2024            14.5%            +0.2%
+[Qn YYYY]          [%]              [±%]
+[Qn-1 YYYY]        [%]              [±%]
+[Qn-2 YYYY]        [%]              [±%]
+[Qn-3 YYYY]        [%]              [±%]
 ```
 
 **Interpretation**
@@ -424,37 +424,31 @@ Brief comparison of insider sentiment vs. industry peers (if available)
 ```
 User: insider-trading NVDA
 
-Assistant: Analyzes last 6 months of NVDA insider activity, identifies:
-- Net bullish sentiment ($15M in buys vs. $2M in sells)
-- CEO purchased $5M at $450/share (now $600)
-- 4 VPs also bought in same 2-week window
-- Signal: Moderately Bullish, Confidence: High
+Assistant: Pulls the last 6 months of NVDA Form 4 filings and reports net
+open-market buys vs. sells, separates 10b5-1 plan sales from discretionary
+trades, flags clustered buying, and closes with the signal block.
 ```
 
 ### Example 2: Before Earnings
 ```
 User: insider-trading AAPL --period "before-earnings"
 
-Assistant: Analyzes trading in 30-60 days before recent earnings:
-- No unusual activity (good sign - no exits before announcement)
-- Regular 10b5-1 sales only
-- Signal: Neutral (no red flags)
+Assistant: Examines trading in the 30–60 days before the most recent earnings
+release and states whether anything beyond scheduled 10b5-1 sales occurred.
 ```
 
 ### Example 3: Red Flag Detection
 ```
 User: insider-trading ABC --focus red-flags
 
-Assistant: Specifically looks for warning signs:
-- CFO sold 60% of holdings last month
-- 3 board members resigned and sold within 1 week
-- Selling accelerated despite 30% stock decline
-- Signal: BEARISH, Confidence: HIGH - Recommend caution
+Assistant: Checks each red-flag pattern above (large % of holdings sold,
+clustered director exits, selling into a decline) and reports which fired,
+with the filing dates that support each.
 ```
 
 ## Integration Notes
 
-- Combine with fundamental-analysis for complete due diligence
+- Combine with stock-eval for complete due diligence
 - Use institutional-ownership for full insider + institutional picture
 - Feed analysis to report-generator for visual charts of insider activity
 - Best used monthly or after significant insider filing activity
@@ -470,14 +464,12 @@ All analysis concludes with this standardized block:
 After delivering the analysis signal, specify what would reverse it:
 
 **If signal is BULLISH — thesis breaks if:**
-- Price closes below the MA200 / key support level identified in this analysis on above-average volume
 - 3+ insiders file Form 4 sells within a 30-day window OR CEO sells >5% of holdings
-- Macro regime shift: Fed pivots hawkish unexpectedly, recession probability >60%
+- [One or two more triggers drawn from this analysis's own drivers, each with a threshold]
 
 **If signal is BEARISH — thesis breaks if:**
-- Price closes above key resistance / MA200 level with volume confirmation
 - CEO/CFO initiate new purchases >$1M within 30 days
-- Fundamental improvement: surprise earnings beat >20% with guidance raise
+- [One or two more triggers drawn from this analysis's own drivers, each with a threshold]
 
 **Re-run this analysis when:**
 - [ ] Next earnings release

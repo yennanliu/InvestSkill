@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **`full-report` ran alias stubs as analysis modules.** Quick depth took its DCF from the `dcf-valuation` redirect card, and comprehensive depth re-ran `stock-eval` / `stock-valuation` logic through `fundamental-analysis` / `dcf-valuation`, while its Thesis Invalidation relied on a `bear-case` module no depth ran. Module #3 is now `stock-valuation`; comprehensive #11–#12 are now `bear-case` and `catalyst-calendar` (still 15 modules).
+- Cross-references to the alias skills (`/fundamental-analysis`, `/dcf-valuation`, `/research-bundle`) in `earnings-call-analysis`, `insider-trading`, `institutional-ownership`, `result-validator`, and `report-generator` now point at `stock-eval`, `stock-valuation`, and `full-report`.
+- The FAQ's Claude API snippet used a retired model and omitted the required `max_tokens`; it now runs as written.
+
+### Changed
+- **Prompt audit cleanup** (dated patterns written for older models):
+  - `insider-trading` and `institutional-ownership` usage examples no longer contain invented facts about real companies (e.g. an NVDA CEO purchase, a Soros stake in META); they describe what the output covers instead. Their output templates use `[Qn YYYY] [%]` placeholders instead of pre-filled 2024 figures.
+  - Thesis Invalidation in 17 skills drops the generic "closes below the MA200", "Fed pivots hawkish", and "earnings beat >20%" bullets that were copied into every skill (including macro and charting skills where they don't apply); each skill keeps its own trigger and asks for one or two more drawn from its own drivers. `technical-analysis` is unchanged.
+  - `economics-analysis` and `sector-analysis` Data Verification gates now ask for indicator releases and sector-ETF levels instead of a single ticker's price, 52-week range, and market cap.
+  - `financial-report-analyst` and `competitor-analysis` descriptions say when to use `10k-digest` and `industry-map` instead.
+  - `README-claude-code.md`, `PLATFORM-COMPATIBILITY.md`, and `FAQ.md` no longer pin model names (Opus 4.6, Claude 3); they point at whichever model the session runs.
+
 ## [1.12.0] - 2026-09-25
 
 The largest release since 1.0. The catalog reaches **30 analysis frameworks** across 34 skills: six new ones — `thesis-tracker`, `etf-analysis`, `earnings-preview`, `tax-lens`, `risk-stress-test`, `learning-coach` — plus the `fact-check` meta framework, with `fundamental-analysis` / `dcf-valuation` / `research-bundle` now counted as aliases. Every analysis skill carries the enforced output contract (`Data & Sources` header · Data Verification gate · Thesis Invalidation). The Learning track gains Part II (Lessons 9–13 and a "when the answer is no" case study), the docs site is redesigned, `install.sh` installs the frameworks into any AI agent with one command, and a **keyless SEC EDGAR path** — a retrieval recipe in the filing skills plus two optional, offline-tested helper scripts — gives users without a browsing assistant a primary source to paste. No API key, no runtime, no telemetry, as before.

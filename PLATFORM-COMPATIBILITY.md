@@ -76,10 +76,7 @@ Complete platform support, feature comparison, and version requirements for Inve
 - Skill execution depends on Claude Code's current model
 
 #### Model Compatibility
-Works with all Claude Code supported models:
-- Claude Opus 4.6
-- Claude Sonnet 4.6
-- Claude Haiku 4.5
+Works with whichever model your Claude Code session runs (`/model` shows and switches it).
 
 ---
 

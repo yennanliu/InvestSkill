@@ -731,7 +731,7 @@ const { chromium } = require('playwright');
 
 **Example 1: Fundamental Analysis Report**
 ```
-User: fundamental-analysis AAPL
+User: stock-eval AAPL
 [Assistant generates analysis]
 
 User: report-generator --type comprehensive --format html
@@ -826,7 +826,7 @@ Design notes:
 - Score progress bar uses the `score-fill` width as a percentage (e.g. `style="width: 84%"` for 8.4/10)
 - Large ghost watermark text (`.signal-watermark`) reinforces the verdict at a glance
 
-For multi-skill bundle reports (like research-bundle), show a composite signal summary at the top of the report with individual skill scores in a row of `.signal-stat` items inside a single `.signal-box`.
+For multi-skill bundle reports (like full-report), show a composite signal summary at the top of the report with individual skill scores in a row of `.signal-stat` items inside a single `.signal-box`.
 
 ---
 

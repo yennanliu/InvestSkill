@@ -2,10 +2,10 @@
 
 ## ⚠️ Data Verification — Do This Before Any Analysis
 
-Before running any analysis, always retrieve the latest market data for the ticker:
+Before running any analysis, always retrieve the latest market data for the sectors you compare:
 
-1. **Fetch current price** — use web search or ask the user for the live price, 52-week range, and market cap. Never assume a price from training data.
-2. **Confirm key figures** — recent earnings, revenue, key ratios (P/E, P/S, etc.) as applicable to this skill.
+1. **Fetch current levels** — use web search or ask the user for the current price and 3-, 6- and 12-month performance of each sector ETF (XLK, XLF, …) and the S&P 500. Never assume a level from training data.
+2. **Confirm key figures** — each sector's forward P/E and earnings-revision trend, as applicable to this skill.
 3. **State your data source** — fill in the `Data & Sources` header (next section) so the origin, as-of date, retrieval path, and confidence of every figure are explicit at the top of the output.
 4. **Flag stale data explicitly** — if live data is unavailable, display this warning before proceeding:
 
@@ -388,14 +388,12 @@ All analysis concludes with this standardized block:
 After delivering the analysis signal, specify what would reverse it:
 
 **If signal is BULLISH — thesis breaks if:**
-- Price closes below the MA200 / key support level identified in this analysis on above-average volume
 - sector underperforms S&P 500 by >10% over 3 months AND rate regime turns unfavorable
-- Macro regime shift: Fed pivots hawkish unexpectedly, recession probability >60%
+- [One or two more triggers drawn from this analysis's own drivers, each with a threshold]
 
 **If signal is BEARISH — thesis breaks if:**
-- Price closes above key resistance / MA200 level with volume confirmation
 - sector rotates into leadership AND sector P/E discount to S&P closes
-- Fundamental improvement: surprise earnings beat >20% with guidance raise
+- [One or two more triggers drawn from this analysis's own drivers, each with a threshold]
 
 **Re-run this analysis when:**
 - [ ] Next earnings release

@@ -332,12 +332,9 @@ A:
 - **Recommended**: Latest version
 - **Check**: Run `claude --version`
 
-**Q: Does InvestSkill work with Claude 3 / Claude 4?**
+**Q: Which Claude models does InvestSkill work with?**
 
-A: Yes! InvestSkill is model-agnostic:
-- Works with Claude 3 Haiku, Sonnet, Opus
-- Works with Claude 4.6 (recommended for best results)
-- Works with any LLM via universal prompts
+A: Any. InvestSkill is plain markdown, so it runs on whichever model your Claude Code session uses, and on any other LLM via the universal prompts in `prompts/`. More capable models handle multi-module runs like `full-report` best.
 
 **Q: Which Cursor version do I need?**
 
@@ -449,7 +446,7 @@ A:
 Optimization:
 - Use simpler skills for quick decisions (stock-eval)
 - Use research-bundle when you need comprehensive analysis
-- Try Claude Sonnet for faster responses than Opus
+- Switch to a faster model with `/model` when speed matters more than depth
 
 **Q: Can I batch analyze multiple stocks?**
 
@@ -484,8 +481,11 @@ with open('prompts/stock-eval.md') as f:
     framework = f.read()
 
 # Use with Claude API
+import anthropic
+client = anthropic.Anthropic()
 response = client.messages.create(
-    model="claude-3-5-sonnet-20241022",
+    model="claude-opus-5",
+    max_tokens=16000,
     system=framework,
     messages=[{"role": "user", "content": "Evaluate AAPL"}]
 )
