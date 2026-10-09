@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `doc/MCP-FEASIBILITY-zh-TW.md` — survey (in Traditional Chinese) of exposing InvestSkill as an MCP server: whether it is worth it versus staying a pure skill, free / serverless hosting options, and a phased roadmap. Recommendation only; no code changes.
+
 ### Fixed
 - **`full-report` ran alias stubs as analysis modules.** Quick depth took its DCF from the `dcf-valuation` redirect card, and comprehensive depth re-ran `stock-eval` / `stock-valuation` logic through `fundamental-analysis` / `dcf-valuation`, while its Thesis Invalidation relied on a `bear-case` module no depth ran. Module #3 is now `stock-valuation`; comprehensive #11–#12 are now `bear-case` and `catalyst-calendar` (still 15 modules).
 - Cross-references to the alias skills (`/fundamental-analysis`, `/dcf-valuation`, `/research-bundle`) in `earnings-call-analysis`, `insider-trading`, `institutional-ownership`, `result-validator`, and `report-generator` now point at `stock-eval`, `stock-valuation`, and `full-report`.
