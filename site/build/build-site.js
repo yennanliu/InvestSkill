@@ -62,6 +62,7 @@ const NAV = {
     {
       title: 'Guides',
       links: [
+        { label: 'Live Walkthrough', href: 'walkthrough.html',  page: 'walkthrough' },
         { label: 'Cookbook',        href: 'cookbook.html',      page: 'cookbook' },
         { label: 'Skill Reference', href: 'skills.html',        page: 'skills' },
         { label: 'Contributing',    href: 'contributing.html',  page: 'contributing' },
@@ -130,6 +131,7 @@ const NAV = {
     {
       title: '指南',
       links: [
+        { label: '實機演練',         href: 'walkthrough-zh-tw.html',   page: 'walkthrough-zh-tw' },
         { label: '操作手冊',         href: 'cookbook-zh-tw.html',      page: 'cookbook-zh-tw' },
       ],
     },
@@ -177,6 +179,7 @@ const LANG_PAIRS = [
   ['use-cases.html', 'use-cases-zh-tw.html'],
   ['data-and-accuracy.html', 'data-and-accuracy-zh-tw.html'],
   ['cookbook.html', 'cookbook-zh-tw.html'],
+  ['walkthrough.html', 'walkthrough-zh-tw.html'],
   // The demo overview (English) pairs with the RKLB full demo (Traditional Chinese).
   ['full-demo.html', 'full-demo-rklb.html'],
   // The two 10-K deep dives pair across languages: NVDA (English) ⇄ AMD (Traditional Chinese).
@@ -216,6 +219,8 @@ const MD_TO_HTML = {
   'README-zh-TW.md':    'zh-tw.html',
   'COOKBOOK.md':        'cookbook.html',
   'COOKBOOK-zh-TW.md':  'cookbook-zh-tw.html',
+  'WALKTHROUGH.md':       'walkthrough.html',
+  'WALKTHROUGH-zh-TW.md': 'walkthrough-zh-tw.html',
   'CONTRIBUTING.md':    'contributing.html',
   'CHANGELOG.md':       'changelog.html',
   'CONCEPTS.md':        'concepts.html',
@@ -269,6 +274,7 @@ const MD_TO_HTML = {
 // Assets we actually serve — any other relative link is sent to GitHub.
 // Per-skill pages (skill-<name>.html) are added dynamically further below.
 const SERVED = new Set(['index.html','cookbook.html','cookbook-zh-tw.html',
+  'walkthrough.html','walkthrough-zh-tw.html',
   'contributing.html','changelog.html','zh-tw.html','style.css','main.js',
   'concepts.html','glossary.html','choose-a-skill.html','use-cases.html',
   'data-and-accuracy.html','skills.html','full-demo.html','full-demo-pltr.html','full-demo-rklb.html','full-demo-nvda.html','full-demo-amd.html','full-demo-meta.html',
@@ -308,6 +314,10 @@ function rewriteLinks(html) {
     // Everything else (LICENSE, unbuilt .md files, etc.) → GitHub blob
     return `href="${GITHUB_BLOB}/${basename}" target="_blank" rel="noopener noreferrer"`;
   });
+
+  // Images in site/content/*.md use ../assets/ so they also render on GitHub;
+  // on the site, assets are served from the root.
+  html = html.replace(/src="\.\.\/assets\//g, 'src="assets/');
 
   // Replace old GitHub Pages domain with new custom domain
   html = html.replace(new RegExp(OLD_SITE.replace(/\./g, '\\.'), 'g'), SITE_BASE);
@@ -722,6 +732,20 @@ const PAGES = [
     srcFile: 'site/content/FULL-DEMO-RKLB.md',
     title: 'RKLB 完整示範',
     subtitle: 'Rocket Lab USA — 全部 15 項技能分析（繁體中文）',
+  },
+  {
+    key: 'walkthrough',
+    outFile: 'walkthrough.html',
+    srcFile: 'site/content/WALKTHROUGH.md',
+    title: 'Live Walkthrough',
+    subtitle: 'Run four real skills on Microsoft, step by step — every screenshot is real output',
+  },
+  {
+    key: 'walkthrough-zh-tw',
+    outFile: 'walkthrough-zh-tw.html',
+    srcFile: 'site/content/WALKTHROUGH-zh-TW.md',
+    title: '實機演練',
+    subtitle: '一步一步對微軟跑四個真實技能——每張截圖都是真實輸出',
   },
   {
     key: 'cookbook',
@@ -1627,6 +1651,13 @@ if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 fs.copyFileSync(path.join(__dirname, 'style.css'), path.join(outDir, 'style.css'));
 fs.copyFileSync(path.join(__dirname, 'main.js'),   path.join(outDir, 'main.js'));
 console.log('✓ Copied style.css and main.js');
+
+// Copy images and other static files under site/assets/ → _site/assets/.
+const assetsDir = path.join(__dirname, '..', 'assets');
+if (fs.existsSync(assetsDir)) {
+  fs.cpSync(assetsDir, path.join(outDir, 'assets'), { recursive: true });
+  console.log('✓ Copied site/assets/');
+}
 
 // Client-side search index (built as pages render).
 const searchIndex = [];

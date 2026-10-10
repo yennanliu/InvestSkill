@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Live Walkthrough** (`walkthrough.html` / `walkthrough-zh-tw.html`, under Guides): a step-by-step post that runs four real skills on Microsoft — `stock-eval` → `bear-case` → `fact-check` → `learning-coach` — on an SEC EDGAR data pack built with `fetch:fundamentals`. Each step shows the command, screenshots of the real output, what to notice, and the result; the full unedited outputs are included. English and Traditional Chinese (the Chinese post shows the `--lang zh-TW` coach run).
+- The site build now copies `site/assets/` to `_site/assets/`, and content pages can reference images as `../assets/…` so they render both on GitHub and on the site.
+
 ### Fixed
 - **`full-report` ran alias stubs as analysis modules.** Quick depth took its DCF from the `dcf-valuation` redirect card, and comprehensive depth re-ran `stock-eval` / `stock-valuation` logic through `fundamental-analysis` / `dcf-valuation`, while its Thesis Invalidation relied on a `bear-case` module no depth ran. Module #3 is now `stock-valuation`; comprehensive #11–#12 are now `bear-case` and `catalyst-calendar` (still 15 modules).
 - Cross-references to the alias skills (`/fundamental-analysis`, `/dcf-valuation`, `/research-bundle`) in `earnings-call-analysis`, `insider-trading`, `institutional-ownership`, `result-validator`, and `report-generator` now point at `stock-eval`, `stock-valuation`, and `full-report`.
