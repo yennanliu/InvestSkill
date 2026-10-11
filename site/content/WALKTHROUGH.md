@@ -94,7 +94,7 @@ The repo ships a small helper that downloads a company's **reported** figures fr
 
 **What to notice**
 
-- **Base case: about $453 per share**, against a $535 price, so the margin of safety is **−18%**: you'd be paying more than the estimate.
+- **Base case: about $453 per share**, against a $535 price. Margin of safety = (value − price) ÷ value = (453 − 535) ÷ 453 ≈ **−18%**: you'd be paying more than the estimate.
 - **The sensitivity table is the honest part.** Move the discount rate by one point and the value swings from $379 to $558. A DCF is a range, not a number.
 - **The reverse DCF** asks the more useful question: what must be true for $535 to be fair? The answer is about **18% revenue growth a year for five years**, close to the 17.8% Microsoft just did.
 
@@ -200,6 +200,7 @@ By now there are three reports full of ROIC, EV/FCF and DCF. `learning-coach` ex
 - **"About 60 years of spare cash to pay you back"** — this is EV/FCF of 59.6× in one sentence, without jargon.
 - **It points out its own date problem.** The financial figures are 103 days old, past the 90-day freshness line, so it tells you to re-run after the next quarterly report.
 - **It adds understanding, not a new verdict.** The signal block is copied from `stock-eval` unchanged.
+- **Check its formulas too.** In the full output below, the coach writes margin of safety as (value − price) ÷ *price* and gets −15%. InvestSkill's valuation skills, and the [Valuation lesson](learning-valuation.html), divide by *value*, which gives the report's −18%. Both describe the same gap from different starting points, but only one is the standard definition. That's another reason for Step 4.
 - **Want it in Chinese?** Add `--lang zh-TW`. The [繁體中文 version of this walkthrough](WALKTHROUGH-zh-TW.md) shows that run.
 
 **Result of step 5:** you can explain *why* the answer is NEUTRAL, and you know which numbers to watch.
