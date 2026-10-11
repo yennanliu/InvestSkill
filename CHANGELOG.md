@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `doc/MCP-FEASIBILITY-zh-TW.md` — survey (in Traditional Chinese) of exposing InvestSkill as an MCP server: whether it is worth it versus staying a pure skill, free / serverless hosting options, and a phased roadmap. Recommendation only; no code changes.
+
 ### Fixed
 - **`fetch-fundamentals` missed debt tagged only in `LongTermDebt`.** It took `LongTermDebtNoncurrent` (+ current) whenever that tag existed, so Rocket Lab's FY2025 pack showed $2M of debt and missed $152M of convertible notes, overstating net cash by $150M (two RKLB demo skills caught it by hand). The pack now reads both the current + non-current split and the `LongTermDebt` total; when the total is more than 5% larger it uses the total and says why in the Notes. Commercial paper and short-term borrowings that are tagged but not in total debt are now named in the Notes (AAPL: $7,979M of commercial paper), not added, because some filers tag the same amount twice (AMD). AAPL, MSFT, NVDA, AMD, META and TSLA packs are unchanged. New offline test double `CNV` reproduces the RKLB tags; the synthetic AAPL facts gain the real `LongTermDebt` and `CommercialPaper` values.
 
