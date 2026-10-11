@@ -757,3 +757,10 @@ h2:hover .header-anchor, h3:hover .header-anchor { opacity: 1; }
 /* CJK headline: no italic serif (fallback fonts render it poorly), keep the phrase intact */
 html[lang="zh-Hant"] .landing-hero h1 { font-weight: 600; letter-spacing: 0; }
 html[lang="zh-Hant"] .landing-hero h1 em { font-style: normal; white-space: nowrap; }
+
+/* Collapsible blocks in content pages (e.g. full outputs on the walkthrough) */
+.markdown-body details { border: 1px solid var(--border); border-radius: 10px; background: var(--bg-alt); margin: .75rem 0; }
+.markdown-body details > summary { cursor: pointer; padding: .7rem 1rem; color: var(--text); }
+.markdown-body details[open] > summary { border-bottom: 1px solid var(--border); }
+.markdown-body details > pre { margin: 0; border-radius: 0 0 10px 10px; max-height: 32rem; overflow: auto; }
+.markdown-body p > img { display: block; margin: 1.25rem auto .5rem; box-shadow: var(--shadow-sm); }
