@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Site contrast:** light-mode links, dim text and filled buttons now meet WCAG AA (links 5.1:1, dim text 4.8:1, buttons 4.8:1); pages no longer carry two `<h1>`s.
 
 ### Changed
+- **`doc/PROJECT-SCAN-2026-10.md`** (EN + zh-TW) now records the status of every finding — ✅ fixed · ◐ partly · ⬜ pending — with a status banner, the roadmap table updated, and §8 split into what #43 / #44 shipped and what is still pending; the roadmap's progress table links #43 / #44.
 - **One CI workflow.** `ci.yml` runs `npm ci` → `npm test` → site build → link and anchor check on every push and PR. It replaces `test.yml`, `pr-check.yml`, `validate.yml` and `install-test.yml`, which overlapped, never ran the full `npm test`, and included checks that iterated a `plugin.json` field that no longer exists. `install-script.yml` and `llm-eval.yml` stay as specialised jobs.
 - **One release path.** `release.yml` (on a `v*` tag) is the only workflow that tags or publishes; it now runs `npm test` and checks the tag against every manifest and the CHANGELOG before publishing, on `action-gh-release@v2`. `auto-deploy.yml`, which could tag a release as soon as a version bump merged, is removed.
 - **Daily site review** runs the full `npm test` and commits a report only when the result changes (always in the job summary) instead of one commit every day.
