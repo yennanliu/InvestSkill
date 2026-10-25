@@ -31,7 +31,7 @@
 
 一併出貨：§6.9（擴充 `COUNT_DOCS`）、§6.11（`scripts/lib/signal-block.js`）、§4.4 的 `result-validator` 契約檢查（PR #26）；`risk-stress-test` — 第一層的第六個技能、不在十大之列 — 於 [PR #27](https://github.com/yennanliu/InvestSkill/pull/27)。**§3.1 第一層六個技能全部出貨。** 路線圖之外新增：`fact-check`——逐條陳述層級的查核與引用，補上 `result-validator` 旁缺少的另一半信任機制——於 [PR #28](https://github.com/yennanliu/InvestSkill/pull/28)；學習區第二部（第 9–13 課、「當答案是不」案例、+32 條術語）於 [PR #29](https://github.com/yennanliu/InvestSkill/pull/29)，依據[學習區缺口審查](LEARNING-GAP-REVIEW-zh-TW.md)。截至 2026-09-24，§8 P0/P1 中仍待辦：§4.3、全技能 `--lang zh-TW`、JSON 頁尾、繁中 Skill Reference 索引（§5.6）——下表皆已收尾。
 
-**§8 P0–P2 全數收尾（2026-10-24，`feat/roadmap-p0-p2`）。** 十大建議之外仍未完成的項目：
+**§8 P0–P2 全數收尾（2026-10-24，[#44](https://github.com/yennanliu/InvestSkill/pull/44)）。** 十大建議之外仍未完成的項目：
 
 | §8 列 | 項目 | 狀態 | 備註 |
 |-------|------|------|------|
