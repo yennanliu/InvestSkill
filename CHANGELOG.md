@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `doc/MCP-FEASIBILITY-zh-TW.md` — survey (in Traditional Chinese) of exposing InvestSkill as an MCP server: whether it is worth it versus staying a pure skill, free / serverless hosting options, and a phased roadmap. Recommendation only; no code changes.
+
 ### Fixed
 - **Site language switcher (文A) no longer drops you on the home page.** A page with no counterpart in the other language — every `skill-<name>.html` reference page and the English-only demos — used to link 文A to the other language's home page. It now goes to the parent index (the zh Skill Reference, the zh demo overview); only pages with neither a twin nor a parent (changelog, contributing) still land on home. The current language is marked `aria-current`. The routing rule moved to `site/build/lang-pairs.js` and is unit-tested by `scripts/test-site.js` (`npm run test:site`, part of `npm test`), which also builds the site and checks the rendered switcher on every page; CI's site job re-runs it on the deployed build.
 
