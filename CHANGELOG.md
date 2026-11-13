@@ -8,9 +8,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
-- `fetch-fundamentals` leaves shares outstanding unavailable when SEC companyfacts has no cover-page instant on or after the selected fiscal year end, rather than reusing a stale historical count. Dimensional share classes remain outside the API; a representative Berkshire snapshot and date-boundary regressions cover this limitation.
-- **SEC share counts:** select one filing for the latest share-count date so
-  repeated facts in annual and amended filings are not added together.
+- **SEC share counts:** `fetch-fundamentals` selects one filing for the latest
+  eligible share-count date so repeated facts in annual and amended filings are
+  not added together. Shares remain unavailable when SEC companyfacts has no
+  cover-page instant on or after the selected fiscal year end. Dimensional share
+  classes remain outside the API; a representative Berkshire snapshot and
+  date-boundary regressions cover this limitation.
+- **`fetch-fundamentals`: figures that came from the wrong filing, the wrong period or an overlapping tag.** Found by auditing the helper for the same kind of fault as the share-count fix:
+  - **Stock splits:** the prior-year diluted EPS and diluted share count now come from the current 10-K's comparative column, so both years share one share basis (a 10-for-1 split used to show EPS falling 90%); the first-reported figures stay in the Notes. Other prior-year lines remain as first reported, and any the current filing restates by more than 0.5% are named in the Notes. When revenue is one of them the revenue-growth `expect` entry is omitted rather than computed across two bases.
+  - **Latest fiscal year:** fiscal-year ends are read from revenue *and* net income facts, so a filer whose revenue moved to an unmapped tag is no longer stuck on the last year the old tag carried. A latest year more than 16 months old gets a "Possibly out of date" warning in the pack and on the console.
+  - **Provenance:** a figure the annual filing tags is always read from that filing, even when an earnings 8-K filed days earlier tags it too. A current-year line the 10-K does not tag is attributed in the Notes to the filing it came from, and only a later filing is described as possibly restated. For a first 10-K, the prior column is labelled with its own fiscal year and described as the same filing's comparative column, with no reference to a prior-year 10-K that does not exist.
+  - **Total debt:** when the current line is `ShortTermBorrowings` or `CommercialPaper` (no current maturities tagged), it is added to `LongTermDebt` instead of subtracted from it.
+  - **Small share counts:** counts under 100M keep three decimals (`shares_out_m: 2.912`, not `3`).
+  - **Industry (SIC):** read from the submissions index — companyfacts never carried it, so the row always said "see filing cover page".
+  - The pack's "Full filing text" hint now pins `fetch-edgar --fy` to the year the 10-K was filed, so it fetches the filing the pack was built from.
+
+## [1.14.1] - 2026-11-13
+
+### Added
+- **Homepage demo video.** A new "Watch" section under the hero on both landing pages (English and 繁體中文) plays a real `stock-eval AAPL` run recorded in Claude Code on 2026-11-13 — 2 min 48 s shown in 45 s, with the research and writing stretches sped up — next to a four-step chapter list (You → Research → Analysis → Signal) that seeks the video and follows playback. The video and poster live in `site/assets/video/`; chapter timings are `DEMO_VIDEO` in `site/build/build-site.js`. `check-links.js` now also checks `poster` attributes, and `test-site.js` checks the video, poster and chapter order on both pages.
+
+### Fixed
 - **Site language switcher (文A) no longer drops you on the home page.** A page with no counterpart in the other language — every `skill-<name>.html` reference page and the English-only demos — used to link 文A to the other language's home page. It now goes to the parent index (the zh Skill Reference, the zh demo overview); only pages with neither a twin nor a parent (changelog, contributing) still land on home. The current language is marked `aria-current`. The routing rule moved to `site/build/lang-pairs.js` and is unit-tested by `scripts/test-site.js` (`npm run test:site`, part of `npm test`), which also builds the site and checks the rendered switcher on every page; CI's site job re-runs it on the deployed build.
 
 ## [1.14.0] - 2026-10-24

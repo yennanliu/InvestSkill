@@ -112,6 +112,9 @@ const INSTANT = {
   total_liabilities: ['Liabilities'],
   total_equity: ['StockholdersEquity', 'StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest'],
 };
+// Short-term borrowings the `short_term_debt` chain can land on that are NOT
+// current maturities of long-term debt, so `LongTermDebt` does not contain them.
+const OUTSIDE_LONG_TERM_DEBT = new Set(['ShortTermBorrowings', 'CommercialPaper']);
 const PER_SHARE = new Set(['eps_diluted']);
 const SHARE_COUNTS = new Set(['shares_diluted']);
 const ANNUAL_FORMS = ['10-K', '10-K/A', '10-KT', '20-F', '40-F'];
@@ -154,13 +157,20 @@ function original(points) {
 }
 
 /**
- * The reported value of `metric` for the period ending `end`: the first concept in the
- * chain that has a point for that period wins, and within it the original filing.
+ * The reported value of `metric` for the period ending `end`. When the period's own
+ * annual filing (`accn`) tags any concept in the chain, its figure is used — the pack
+ * says its numbers are that filing's, and an earnings 8-K filed a few days earlier
+ * would otherwise win on proximity. Failing that, the first concept in the chain that
+ * has a point for the period wins, and within it the original filing.
  * Duration metrics are restricted to one-year spans; instants match on `end` alone.
  * @returns {object|null} the fact point, or null when the company never tagged it
  */
-function pick(gaap, metric, chain, end, { duration }) {
+function pick(gaap, metric, chain, end, { duration, accn }) {
   const pts = pointsFor(gaap, chain, unitFor(metric)).filter(p => p.end === end && (!duration || isAnnualSpan(p)));
+  for (const concept of chain) {
+    const own = pts.find(p => p.concept === concept && p.accn === accn);
+    if (own) return own;
+  }
   // Respect chain order: the first concept with a point for this period wins.
   for (const concept of chain) {
     const mine = pts.filter(p => p.concept === concept);
@@ -169,7 +179,25 @@ function pick(gaap, metric, chain, end, { duration }) {
   return null;
 }
 
-/** Fiscal-year ends, newest first, from annual revenue (or net income) facts filed on annual forms. */
+/**
+ * What the filing `accn` itself reports for the period ending `end` — i.e. its
+ * comparative column when `end` is an earlier year — or null. `concepts` is tried
+ * in order and the first one the filing tags for that period wins.
+ */
+function inFiling(gaap, metric, concepts, end, accn, duration) {
+  const pts = pointsFor(gaap, concepts, unitFor(metric)).filter(p => p.end === end && p.accn === accn && (!duration || isAnnualSpan(p)));
+  for (const concept of concepts) {
+    const hit = pts.find(p => p.concept === concept);
+    if (hit) return hit.val;
+  }
+  return null;
+}
+
+/**
+ * Fiscal-year ends, newest first, from annual revenue AND net income facts filed on
+ * annual forms. Both are read: a filer that moves its revenue to a tag outside the
+ * chain would otherwise be stuck on the last year the old tag carried.
+ */
 function fiscalYearEnds(gaap) {
   const ends = new Map(); // end → {form, fy, filed}
   for (const chain of [DURATION.revenue, DURATION.net_income]) {
@@ -177,7 +205,6 @@ function fiscalYearEnds(gaap) {
       if (!isAnnualSpan(p) || !ANNUAL_FORMS.some(f => (p.form || '').startsWith(f))) continue;
       if (!ends.has(p.end) || p.filed < ends.get(p.end).filed) ends.set(p.end, { form: p.form, fy: p.fy, filed: p.filed, accn: p.accn });
     }
-    if (ends.size) break;
   }
   return [...ends.entries()].map(([end, m]) => ({ end, ...m })).sort((a, b) => (a.end < b.end ? 1 : -1));
 }
@@ -190,22 +217,29 @@ function fiscalYearEnds(gaap) {
  * missed debt tagged only in the total (convertible notes, typically) and the
  * total wins; otherwise the split is kept. `long_term_debt` is restated so the
  * table's current + long-term lines still sum to the total.
+ * The "current" line can instead be short-term borrowings or commercial paper
+ * (the chain falls through to them when no current maturities are tagged). Those
+ * are never part of `LongTermDebt`, so they are added to it, not subtracted from it.
  * @returns {{total_debt: number|null, long_term_debt: number|null, total_debt_note: string, debt_notes: string[]}}
  */
 function totalDebt(r, concept) {
   const cur = r.short_term_debt, nonCur = r.long_term_debt, tagged = r.long_term_debt_total;
-  const split = nonCur !== null ? nonCur + (cur || 0) : null;
+  // Current maturities sit inside LongTermDebt; short-term borrowings do not.
+  const isBorrowing = OUTSIDE_LONG_TERM_DEBT.has(concept.short_term_debt);
+  const inside = isBorrowing ? 0 : (cur || 0), outside = isBorrowing ? (cur || 0) : 0;
+  const split = nonCur !== null ? nonCur + inside : null; // long-term debt incl. current maturities
+  const plus = outside ? ` plus \`${concept.short_term_debt}\` (${fmtM(outside)}M, not part of long-term debt)` : '';
   const notes = [];
   let total = null, longTerm = nonCur, how;
   if (split !== null && tagged !== null && tagged > split * 1.05) {
-    total = tagged; longTerm = tagged - (cur || 0);
-    how = `tagged \`${concept.long_term_debt_total}\` (already includes current maturities), used because it exceeds current + non-current as tagged`;
+    total = tagged + outside; longTerm = tagged - inside;
+    how = `tagged \`${concept.long_term_debt_total}\` (already includes current maturities)${plus}, used because it exceeds current + non-current as tagged`;
     notes.push(`Total debt uses \`${concept.long_term_debt_total}\` (${fmtM(tagged)}M) rather than \`${concept.long_term_debt}\` + current (${fmtM(split)}M): the gap is debt tagged only in the total, often convertible notes. Check the debt note in the filing.`);
   } else if (split !== null) {
-    total = split; how = 'current + non-current debt as tagged';
+    total = split + outside; how = 'current + non-current debt as tagged';
   } else if (tagged !== null) {
-    total = tagged; longTerm = tagged - (cur || 0);
-    how = `tagged \`${concept.long_term_debt_total}\` (already includes current maturities), used as is`;
+    total = tagged + outside; longTerm = tagged - inside;
+    how = `tagged \`${concept.long_term_debt_total}\` (already includes current maturities)${plus}${plus ? '' : ', used as is'}`;
   } else if (cur !== null) {
     total = cur; how = 'current debt only (no long-term debt tagged)';
   } else {
@@ -233,6 +267,13 @@ const M = v => (v === null || v === undefined ? null : Math.round(v / 1e6));
 const fmtM = v => (v === null || v === undefined ? 'n/a' : Math.round(v / 1e6).toLocaleString('en-US'));
 /** Dollars -> "(1,234)" millions for an outflow cell, or "n/a". */
 const fmtNeg = v => (v === null || v === undefined ? 'n/a' : `(${Math.abs(Math.round(v / 1e6)).toLocaleString('en-US')})`);
+/**
+ * Share count -> millions. Whole millions from 100M up; three decimals below, so a
+ * company with 2.9M shares is not rounded to 3 (or one with 0.4M to 0).
+ */
+const sharesM = v => (v >= 1e8 ? Math.round(v / 1e6) : Number((v / 1e6).toFixed(3)));
+/** Share count -> "1,234" / "2.912" millions for a table cell, or "n/a". */
+const fmtShares = v => (v === null || v === undefined ? 'n/a' : (v / 1e6).toLocaleString('en-US', { maximumFractionDigits: v >= 1e8 ? 0 : 3 }));
 /** `a / b` as a "12.3%" string, or "n/a" when either side is missing. */
 const pct = (a, b) => (a !== null && b ? `${((a / b) * 100).toFixed(1)}%` : 'n/a');
 
@@ -256,6 +297,8 @@ async function main() {
   }
   const dei = (facts.facts.dei) || {};
   const entity = facts.entityName || company.title;
+  // SIC lives in the submissions index, not in companyfacts.
+  const profile = await edgar.fetchCompanyProfile(company.cik);
 
   const fys = fiscalYearEnds(gaap);
   if (!fys.length) { process.stderr.write('  ✗ no annual periods found in the XBRL facts\n'); process.exit(1); }
@@ -266,11 +309,16 @@ async function main() {
   }
   const cur = fys[idx], prior = fys[idx + 1] || null;
   log(`  Fiscal year: ${cur.end} (${cur.form}, filed ${cur.filed})${prior ? ` · prior ${prior.end}` : ''}\n`);
+  const today = edgar.today();
+  // The next 10-K is due within ~15 months of a fiscal year end; past 16, the "latest" year is suspect.
+  const stale = !wantFy && daysBetween(cur.end, today) > 485;
+  if (stale) log(`  ⚠ latest annual period ended ${cur.end} — more than 16 months ago; check EDGAR for a newer filing\n`);
 
-  const row = end => {
-    const r = {}, concept = {};
-    for (const [m, chain] of Object.entries(DURATION)) { const p = pick(gaap, m, chain, end, { duration: true }); r[m] = p ? p.val : null; concept[m] = p ? p.concept : null; }
-    for (const [m, chain] of Object.entries(INSTANT)) { const p = pick(gaap, m, chain, end, { duration: false }); r[m] = p ? p.val : null; concept[m] = p ? p.concept : null; }
+  const sources = {}; // period end → metric → the fact point it was read from
+  const row = ({ end, accn }) => {
+    const r = {}, concept = {}, src = sources[end] = {};
+    for (const [m, chain] of Object.entries(DURATION)) { const p = pick(gaap, m, chain, end, { duration: true, accn }); r[m] = p ? p.val : null; concept[m] = p ? p.concept : null; src[m] = p; }
+    for (const [m, chain] of Object.entries(INSTANT)) { const p = pick(gaap, m, chain, end, { duration: false, accn }); r[m] = p ? p.val : null; concept[m] = p ? p.concept : null; src[m] = p; }
     if (r.gross_profit === null && r.revenue !== null && r.cost_of_revenue !== null) r.gross_profit = r.revenue - r.cost_of_revenue;
     r.fcf = r.ocf !== null && r.capex !== null ? r.ocf - r.capex : null;
     r.notes = [];
@@ -292,7 +340,7 @@ async function main() {
     r.net_debt_incl_sti = r.net_debt !== null && r.short_term_investments !== null ? r.net_debt - r.short_term_investments : null;
     return r;
   };
-  const c = row(cur.end), p = prior ? row(prior.end) : {};
+  const c = row(cur), p = prior ? row(prior) : {};
 
   // Shares outstanding: the cover-page dei fact, most recent instant.
   let sharesOut = null;
@@ -315,9 +363,38 @@ async function main() {
   const missing = Object.entries(c).filter(([k, v]) => v === null && !HELPERS.has(k)).map(([k]) => k);
   const filingUrl = edgar.filingIndexUrl(company.cik, cur.accn);
   const factsUrl = `${edgar.DATA_URL}/api/xbrl/companyfacts/CIK${company.cik}.json`;
-  const today = new Date().toISOString().slice(0, 10);
   const fyLabel = `FY${cur.fy || cur.end.slice(0, 4)}`;
-  const priorLabel = prior ? `FY${prior.fy || prior.end.slice(0, 4)}` : 'prior';
+  // A first 10-K carries both years, so the prior year's `fy` is the current one's: don't label both columns alike.
+  const priorSame = !!prior && prior.accn === cur.accn;
+  let priorLabel = prior ? `FY${prior.fy || prior.end.slice(0, 4)}` : 'prior';
+  if (prior && priorLabel === fyLabel) priorLabel = `FY${cur.fy ? Number(cur.fy) - 1 : prior.end.slice(0, 4)}`;
+
+  // Prior year vs. the current filing's comparative column. The prior year is read as
+  // first reported (a later comparative is occasionally mis-scaled), but per-share and
+  // share-count lines must share one share basis with the current year, so after a split
+  // they come from the comparative column. Other lines that differ are named, not replaced.
+  const restated = [], recast = [];
+  if (prior && !priorSame) {
+    for (const [m, chain] of [...Object.entries(DURATION), ...Object.entries(INSTANT)]) {
+      const first = sources[prior.end][m];
+      if (!first || HELPERS.has(m)) continue;
+      const perShareLine = PER_SHARE.has(m) || SHARE_COUNTS.has(m);
+      // Per-share lines: any concept in the chain, since a filer can switch tags between
+      // filings (EarningsPerShareDiluted → …BasicAndDiluted) and the chain's concepts are
+      // interchangeable there. Monetary lines: the same concept only — a different revenue
+      // or debt tag can be a different amount, which is not a restatement.
+      const concepts = perShareLine ? [first.concept, ...chain.filter(x => x !== first.concept)] : [first.concept];
+      const now = inFiling(gaap, m, concepts, prior.end, cur.accn, m in DURATION);
+      if (now === null || now === first.val) continue;
+      if (perShareLine) { restated.push({ m, first: first.val, now }); p[m] = now; }
+      else if (Math.abs(now - first.val) > Math.abs(first.val) * 0.005) recast.push({ m, first: first.val, now });
+    }
+  }
+  const revenueRecast = recast.some(x => x.m === 'revenue');
+  // Current-year lines the annual filing itself did not tag, split by filing date: a
+  // later filing may have restated the figure; an earlier one (an earnings 8-K) has not.
+  const elsewhere = Object.entries(sources[cur.end]).filter(([m, s]) => s && s.accn !== cur.accn && !HELPERS.has(m)).map(([m, s]) => ({ m, ...s }));
+  const late = elsewhere.filter(x => x.filed > cur.filed), early = elsewhere.filter(x => x.filed <= cur.filed);
 
   // ── front block ────────────────────────────────────────────────────────────
   const front = [];
@@ -335,7 +412,7 @@ async function main() {
   front.push('price:');
   // Comments go on their own line: the eval-skills.js front-block parser keeps a
   // trailing "# …" numeric value as a string.
-  if (sharesOut) { front.push(`# shares_out_m: ${sharesLabel(sharesOut, cur)}`); front.push(`shares_out_m: ${Math.round(sharesOut.value / 1e6)}`); }
+  if (sharesOut) { front.push(`# shares_out_m: ${sharesLabel(sharesOut, cur)}`); front.push(`shares_out_m: ${sharesM(sharesOut.value)}`); }
   const num = (k, v, dp) => { if (v !== null && v !== undefined) front.push(`${k}: ${dp !== undefined ? Number(v).toFixed(dp) : M(v)}`); };
   num('revenue_m', c.revenue); num('revenue_prior_m', p.revenue);
   num('gross_profit_m', c.gross_profit); num('operating_income_m', c.operating_income); num('net_income_m', c.net_income);
@@ -348,7 +425,7 @@ async function main() {
   front.push('  # label | regex the number must appear near | expected value | unit (m = $ millions, x = multiple, pct = percent) | tolerance');
   if (c.fcf !== null) front.push(`  - { label: "FCF = OCF − capex",          near: "free cash flow|\\\\bFCF\\\\b",              value: ${M(c.fcf)},   unit: m,   tol: 0.02 }`);
   if (c.net_debt !== null) front.push(`  - { label: "Net debt = debt − cash",     near: "net debt|net cash",                    value: ${Math.abs(M(c.net_debt))},   unit: m,   tol: 0.02 }`);
-  if (c.revenue !== null && p.revenue) front.push(`  - { label: "Revenue growth",             near: "revenue growth|revenue grew|YoY",     value: ${((c.revenue / p.revenue - 1) * 100).toFixed(1)},  unit: pct, tol: 0.05 }`);
+  if (c.revenue !== null && p.revenue && !revenueRecast) front.push(`  - { label: "Revenue growth",             near: "revenue growth|revenue grew|YoY",     value: ${((c.revenue / p.revenue - 1) * 100).toFixed(1)},  unit: pct, tol: 0.05 }`);
   if (c.dividends_paid !== null && c.fcf) front.push(`  - { label: "FCF payout (div ÷ FCF)",     near: "payout",                               value: ${((c.dividends_paid / c.fcf) * 100).toFixed(1)},  unit: pct, tol: 0.08 }`);
   if (c.gross_profit !== null && c.revenue) front.push(`  - { label: "Gross margin",               near: "gross margin",                         value: ${((c.gross_profit / c.revenue) * 100).toFixed(1)},  unit: pct, tol: 0.03 }`);
 
@@ -356,8 +433,12 @@ async function main() {
   const b = [];
   b.push(`# ${entity} (${ticker}) — data pack, fiscal year ended ${cur.end}`);
   b.push('');
-  b.push(`> **Source: SEC EDGAR, as reported.** Every figure below is the company's own XBRL-tagged value from its ${cur.form} for the fiscal year ended ${cur.end} (filed ${cur.filed}, accession ${cur.accn}); the ${priorLabel} column is the prior year's annual filing. Retrieved ${today} via the SEC companyfacts API — no vendor, no estimate, no adjustment. Treat this pack as data pasted by the user (\`Retrieval: pasted by user\`). It contains **no market price**: fill in the price and date before computing P/E, market cap, EV or yield, or say they are unavailable.`);
+  b.push(`> **Source: SEC EDGAR, as reported.** Every figure below is the company's own XBRL-tagged value from its ${cur.form} for the fiscal year ended ${cur.end} (filed ${cur.filed}, accession ${cur.accn})${elsewhere.length ? ', except the lines the Notes list as read from another filing' : ''}; the ${priorLabel} column is ${priorSame ? 'the comparative column of the same filing' : "the prior year's annual filing"}. Retrieved ${today} via the SEC companyfacts API — no vendor, no estimate, no adjustment. Treat this pack as data pasted by the user (\`Retrieval: pasted by user\`). It contains **no market price**: fill in the price and date before computing P/E, market cap, EV or yield, or say they are unavailable.`);
   b.push('');
+  if (stale) {
+    b.push(`> **Possibly out of date.** The latest annual period in SEC companyfacts ended ${cur.end}, more than 16 months before this pack was generated (${today}). The company may have stopped filing, be late, or tag its statements under concepts this helper does not read. Check EDGAR for a newer annual report before relying on these figures.`);
+    b.push('');
+  }
   b.push('## Data & Sources (copy into the analysis header)');
   b.push('');
   b.push('```');
@@ -373,12 +454,14 @@ async function main() {
   b.push('| Item | Value |');
   b.push('|------|-------|');
   b.push('| Price | *paste the current quote and its date* |');
-  b.push(`| Shares outstanding (${sharesOut ? sharesLabel(sharesOut, cur) : 'n/a'}) | ${sharesOut ? `${(sharesOut.value / 1e6).toLocaleString('en-US', { maximumFractionDigits: 0 })} M` : 'n/a'} |`);
-  b.push(`| Diluted weighted-average shares (${fyLabel}) | ${c.shares_diluted !== null ? `${(c.shares_diluted / 1e6).toLocaleString('en-US', { maximumFractionDigits: 0 })} M` : 'n/a'} |`);
-  b.push(`| Industry (SIC) | ${facts.sic ? `${facts.sic} — ${facts.sicDescription || ''}` : 'see filing cover page'} |`);
+  b.push(`| Shares outstanding (${sharesOut ? sharesLabel(sharesOut, cur) : 'n/a'}) | ${sharesOut ? `${fmtShares(sharesOut.value)} M` : 'n/a'} |`);
+  b.push(`| Diluted weighted-average shares (${fyLabel}) | ${c.shares_diluted !== null ? `${fmtShares(c.shares_diluted)} M` : 'n/a'} |`);
+  b.push(`| Industry (SIC) | ${profile && profile.sic ? `${profile.sic}${profile.sicDescription ? ` — ${profile.sicDescription}` : ''}` : 'see filing cover page'} |`);
   b.push('');
-  if (!sharesOut) b.push(`> Shares outstanding unavailable: no entity-wide cover-page count dated on or after ${cur.end} in SEC companyfacts. Check the filing's share classes and their economic rights before computing market cap; do not substitute weighted-average diluted shares.`);
-  if (!sharesOut) b.push('');
+  if (!sharesOut) {
+    b.push(`> Shares outstanding unavailable: no entity-wide cover-page count dated on or after ${cur.end} in SEC companyfacts. Check the filing's share classes and their economic rights before computing market cap; do not substitute weighted-average diluted shares.`);
+    b.push('');
+  }
   b.push(`## Income statement — fiscal years ended ${cur.end}${prior ? ` and ${prior.end}` : ''} ($ M)`);
   b.push('');
   b.push(`| Line | ${fyLabel} | ${priorLabel} |`);
@@ -393,7 +476,7 @@ async function main() {
   ];
   for (const [label, k] of is) b.push(`| ${label} | ${fmtM(c[k])} | ${fmtM(p[k])} |`);
   b.push(`| Diluted EPS | ${c.eps_diluted !== null ? `$${Number(c.eps_diluted).toFixed(2)}` : 'n/a'} | ${p.eps_diluted !== null && p.eps_diluted !== undefined ? `$${Number(p.eps_diluted).toFixed(2)}` : 'n/a'} |`);
-  b.push(`| Diluted shares (M) | ${c.shares_diluted !== null ? Math.round(c.shares_diluted / 1e6).toLocaleString('en-US') : 'n/a'} | ${p.shares_diluted !== null && p.shares_diluted !== undefined ? Math.round(p.shares_diluted / 1e6).toLocaleString('en-US') : 'n/a'} |`);
+  b.push(`| Diluted shares (M) | ${fmtShares(c.shares_diluted)} | ${fmtShares(p.shares_diluted)} |`);
   b.push(`| Gross margin | ${pct(c.gross_profit, c.revenue)} | ${pct(p.gross_profit, p.revenue)} |`);
   b.push(`| Operating margin | ${pct(c.operating_income, c.revenue)} | ${pct(p.operating_income, p.revenue)} |`);
   b.push(`| Net margin | ${pct(c.net_income, c.revenue)} | ${pct(p.net_income, p.revenue)} |`);
@@ -429,15 +512,24 @@ async function main() {
   b.push(`- Gross profit is the tagged value where available, otherwise revenue − cost of revenue. Total debt = ${c.total_debt_note}; leases are excluded unless the company tags them as debt.`);
   for (const n of c.debt_notes) b.push(`- ${n}`);
   for (const n of c.notes) b.push(`- ${n}`);
+  const perShare = (m, v) => (PER_SHARE.has(m) ? `$${Number(v).toFixed(2)}` : `${fmtShares(v)}M`);
+  if (restated.length) b.push(`- ${priorLabel} per-share lines are the ${fyLabel} ${cur.form}'s comparative column, not the figures first reported — restated, typically for a stock split, so both years share one share basis: ${restated.map(x => `${x.m} ${perShare(x.m, x.now)} (first reported ${perShare(x.m, x.first)})`).join(', ')}.`);
+  if (recast.length) b.push(`- ${priorLabel} figures are as first reported. The ${fyLabel} ${cur.form}'s comparative column differs for: ${recast.map(x => `${x.m} (${fmtM(x.first)}M first reported, ${fmtM(x.now)}M in the comparative)`).join(', ')} — a recast (discontinued operations, an accounting change) or a tagging error. Check the filing before computing year-over-year change${revenueRecast ? '; the revenue-growth check is omitted for that reason' : ''}.`);
+  const cite = x => `${x.m} (${x.form} filed ${x.filed}, accession ${x.accn})`;
+  if (late.length) b.push(`- Not tagged in the ${cur.form} itself, so read from a later filing and possibly restated: ${late.map(cite).join(', ')}.`);
+  if (early.length) b.push(`- Not tagged in the ${cur.form} itself, so read from a filing made on or before its filing date: ${early.map(cite).join(', ')}.`);
   b.push('- Derived lines (FCF, net debt, margins) are arithmetic on reported figures, shown so the analysis can be reconciled.');
   if (missing.length) b.push(`- Not tagged for ${fyLabel}: ${missing.join(', ')}.`);
   b.push('');
   b.push('## References');
   b.push('');
   b.push(`1. ${cur.form} for the fiscal year ended ${cur.end}, filed ${cur.filed} — ${filingUrl}`);
-  if (prior) b.push(`2. ${prior.form} for the fiscal year ended ${prior.end}, filed ${prior.filed} — ${edgar.filingIndexUrl(company.cik, prior.accn)}`);
-  b.push(`${prior ? 3 : 2}. SEC XBRL company facts — ${factsUrl}`);
-  b.push(`${prior ? 4 : 3}. Full filing text: \`node scripts/fetch-edgar.js ${ticker} --form ${cur.form.startsWith('20-F') ? '20-F' : '10-K'}\``);
+  const refs = [];
+  if (prior && !priorSame) refs.push(`${prior.form} for the fiscal year ended ${prior.end}, filed ${prior.filed} — ${edgar.filingIndexUrl(company.cik, prior.accn)}`);
+  refs.push(`SEC XBRL company facts — ${factsUrl}`);
+  // fetch-edgar's --fy is the FILING year, so pin the hint to the year this filing was filed.
+  refs.push(`Full filing text: \`node scripts/fetch-edgar.js ${ticker} --form ${cur.form.startsWith('20-F') ? '20-F' : '10-K'} --fy ${cur.filed.slice(0, 4)}\``);
+  refs.forEach((x, i) => b.push(`${i + 2}. ${x}`));
 
   const pack = `---\n${front.join('\n')}\n---\n\n${b.join('\n')}\n`;
 

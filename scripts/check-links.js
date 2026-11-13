@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 /**
- * Docs link-checker. Verifies every relative href/src in the built _site/
+ * Docs link-checker. Verifies every relative href/src/poster in the built _site/
  * points to a file that exists, and that every #fragment — on another page
  * (page.html#x) or the same page (#x) — matches an id on the target page.
  * Absolute URLs (http, /root-relative), mailto:, and data: URIs are skipped.
@@ -20,7 +20,7 @@ if (!fs.existsSync(SITE)) {
 }
 
 const htmlFiles = fs.readdirSync(SITE).filter(f => f.endsWith('.html'));
-const attrRe = /(?:href|src)="([^"]+)"/g;
+const attrRe = /(?:href|src|poster)="([^"]+)"/g;
 const broken = [];
 let checked = 0, fragments = 0;
 
