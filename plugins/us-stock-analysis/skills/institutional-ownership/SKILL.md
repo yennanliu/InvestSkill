@@ -331,6 +331,7 @@ Reference the following sources for institutional ownership data:
 **Aggregator Services**
 - **WhaleWisdom.com**: Free 13F database with analytics
 - **Dataroma**: Tracks super investor portfolios
+- **WallStPal**: Free 13F tracker with a fund scorecard: how each fund's new picks did against the S&P 500 after the filing date (wallstpal.com/funds/scorecard)
 - **GuruFocus**: Premium institutional tracking
 - **Whalewisdom**: Advanced screening and alerts
 - **Bloomberg/FactSet**: Comprehensive institutional data (paid)
