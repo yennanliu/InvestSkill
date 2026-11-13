@@ -434,7 +434,7 @@ async function main() {
   // A comparative that disagrees with the first-reported figure is named, never silently swapped in
   includes(body, 'net_income (93,736M first reported, 0M in the comparative)', 'pack AAPL: the mis-scaled FY2024 comparative is flagged in the notes');
   excludes(body, 'per-share lines are the FY2025', 'pack AAPL: no split note when the comparative EPS equals the first-reported one');
-  excludes(body, 'read from a later filing', 'pack AAPL: no late-filing note when the 10-K tagged every line');
+  excludes(body, 'Not tagged in the 10-K itself', 'pack AAPL: no other-filing note when the 10-K tagged every line');
   includes(body, "the FY2024 column is the prior year's annual filing", 'pack AAPL: prior column attributed to the prior 10-K');
 
   // The latest fiscal year is flagged once it is implausibly old; an explicit --fy is not
@@ -451,7 +451,7 @@ async function main() {
   eq(r.status, 0, 'fetch-fundamentals SPLT: exit 0');
   const splt = parseFixture(fs.readFileSync(path.join(FIX, 'SPLT.md'), 'utf8'));
   includes(splt.body, '| Diluted EPS | $2.94 | $1.19 |', 'pack SPLT: prior EPS is the split-adjusted comparative, not $11.93 as first reported');
-  includes(splt.body, '| Diluted shares (M) | 248 | 251 |', 'pack SPLT: prior diluted shares on the post-split basis');
+  includes(splt.body, '| Diluted shares (M) | 248 | 251 |', 'pack SPLT: prior diluted shares on the post-split basis, found under the concept the FY2025 10-K switched to');
   includes(splt.body, 'eps_diluted $1.19 (first reported $11.93)', 'pack SPLT: the note keeps the first-reported EPS visible');
   includes(splt.body, 'shares_diluted 251M (first reported 25.1M)', 'pack SPLT: the note keeps the first-reported share count visible');
   includes(splt.body, '| Revenue | 4,000 | 5,000 |', 'pack SPLT: prior revenue stays as first reported');
@@ -460,7 +460,9 @@ async function main() {
   includes(splt.body, 'the revenue-growth check is omitted', 'pack SPLT: and the note says why');
   excludes(splt.body, 'net_income (', 'pack SPLT: a comparative equal to the first-reported value is not listed');
   includes(splt.body, 'goodwill (10-K/A filed 2026-05-01, accession 0000000444-26-000009)', 'pack SPLT: a line tagged only in a later filing is attributed to it');
-  includes(splt.body, 'except the lines the Notes list as read from a later filing', 'pack SPLT: the source statement no longer claims every figure is from the 10-K');
+  includes(splt.body, 'read from a filing made on or before its filing date: operating_income (8-K filed 2026-02-05, accession 0000000444-26-000000)', 'pack SPLT: a line from an earlier 8-K is attributed to it without calling it later or restated');
+  check(!/possibly restated:[^\n]*operating_income/.test(splt.body), 'pack SPLT: the earlier 8-K is not in the "later filing" list');
+  includes(splt.body, 'except the lines the Notes list as read from another filing', 'pack SPLT: the source statement no longer claims every figure is from the 10-K');
   eq(JSON.parse(fs.readFileSync(path.join(FIX, 'SPLT.json'), 'utf8')).prior.eps_diluted, 1.19, 'fetch-fundamentals SPLT --json: prior EPS is split-adjusted too');
 
   // Revenue tag drift: the latest fiscal year follows net income, not the last year the old revenue tag carried
@@ -490,6 +492,8 @@ async function main() {
   includes(r.stdout, 'the FY2024 column is the comparative column of the same filing', 'pack IPO: prior column attributed to the same 10-K');
   excludes(r.stdout, 'for the fiscal year ended 2024-12-31', 'pack IPO: no reference to a prior-year 10-K that does not exist');
   includes(r.stdout, '2. SEC XBRL company facts', 'pack IPO: references stay consecutively numbered');
+  includes(r.stdout, '| Industry (SIC) | see filing cover page |', 'pack IPO: a submissions request that fails at the transport level does not stop the pack');
+  eq(r.requests.filter(x => x.url.endsWith('/submissions/CIK0000000333.json')).length, 3, 'pack IPO: the failed profile request was retried, then given up on');
   check((parseFixture(r.stdout).expect.find(e => /Revenue growth/.test(e.label)) || {}).value === 28.6, 'pack IPO: revenue growth from the two columns of the one filing');
 
   // Non-GAAP filers and 404s are clean no-ops

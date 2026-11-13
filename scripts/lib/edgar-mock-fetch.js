@@ -38,14 +38,17 @@
  *                          filed after the 10-K
  *   SPLT    (CIK 444)     — a stock split and a recast: the FY2025 10-K's
  *                          comparative column restates FY2024 EPS and diluted
- *                          shares (10-for-1) and revenue (a divestiture); goodwill
- *                          for FY2025 is tagged only in a later 10-K/A
+ *                          shares (10-for-1) and revenue (a divestiture), with the
+ *                          share count under a different concept than the FY2024
+ *                          10-K used; goodwill for FY2025 is tagged only in a
+ *                          later 10-K/A, operating income only in an earlier 8-K
  *   DRIFT   (CIK 555)     — revenue tagged under a mapped concept only up to
  *                          FY2023 while net income runs to FY2025; LongTermDebt
  *                          plus ShortTermBorrowings with no current-maturities
  *                          tag; 2.9M shares outstanding; no submissions route,
  *                          so the SIC lookup 404s
- *   IPO     (CIK 333)     — a first 10-K: both fiscal years come from one filing
+ *   IPO     (CIK 333)     — a first 10-K: both fiscal years come from one filing;
+ *                          its submissions request fails at the transport level
  * The numbers for AAPL are the FY2025 figures as reported, so a reader can
  * sanity-check the pack the generator produces against the real 10-K.
  */
@@ -244,10 +247,14 @@ const SPLT_FACTS = {
       EarningsPerShareDiluted: { units: { 'USD/shares': [
         dur('2025-01-01', '2025-12-31', 2.94, ...SPLT_K25), dur('2024-01-01', '2024-12-31', 11.93, ...SPLT_K24), dur('2024-01-01', '2024-12-31', 1.19, ...SPLT_K25),
       ] } },
-      WeightedAverageNumberOfDilutedSharesOutstanding: { units: { shares: [
-        dur('2025-01-01', '2025-12-31', 248_000_000, ...SPLT_K25), dur('2024-01-01', '2024-12-31', 25_100_000, ...SPLT_K24), dur('2024-01-01', '2024-12-31', 251_000_000, ...SPLT_K25),
+      // The FY2024 10-K tagged diluted shares; the FY2025 10-K switched to the
+      // basic-and-diluted concept for both of its columns.
+      WeightedAverageNumberOfDilutedSharesOutstanding: { units: { shares: [dur('2024-01-01', '2024-12-31', 25_100_000, ...SPLT_K24)] } },
+      WeightedAverageNumberOfSharesOutstandingBasicAndDiluted: { units: { shares: [
+        dur('2025-01-01', '2025-12-31', 248_000_000, ...SPLT_K25), dur('2024-01-01', '2024-12-31', 251_000_000, ...SPLT_K25),
       ] } },
       Goodwill: usd([inst('2025-12-31', M(700), ...SPLT_KA)]),
+      OperatingIncomeLoss: usd(cal([[2025, 900, ['8-K', '2026-02-05', '0000000444-26-000000', 2025]]])),
     },
   },
 };
@@ -346,6 +353,7 @@ function route(url) {
   if (url === `${DATA}/api/xbrl/companyfacts/CIK0000000444.json`) return response(200, SPLT_FACTS);
   if (url === `${DATA}/api/xbrl/companyfacts/CIK0000000555.json`) return response(200, DRIFT_FACTS); // no submissions route: 404
   if (url === `${DATA}/api/xbrl/companyfacts/CIK0000000333.json`) return response(200, IPO_FACTS);
+  if (url === `${DATA}/submissions/CIK0000000333.json`) throw new TypeError('fetch failed'); // transport error, every attempt
   if (url === `${DATA}/submissions/CIK0000000777.json`) return response(200, submissions(LTD));
   if (url === `${DATA}/submissions/CIK0000000888.json`) return response(200, submissions(CNV));
   if (url === `${DATA}/api/xbrl/companyfacts/CIK0000000888.json`) return response(200, CNV_FACTS);

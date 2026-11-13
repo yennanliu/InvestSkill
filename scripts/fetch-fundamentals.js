@@ -173,12 +173,17 @@ function pick(gaap, metric, chain, end, { duration }) {
 }
 
 /**
- * What the filing `accn` itself reports for `concept` in the period ending `end` —
- * i.e. its comparative column when `end` is an earlier year — or null.
+ * What the filing `accn` itself reports for the period ending `end` — i.e. its
+ * comparative column when `end` is an earlier year — or null. `concepts` is tried
+ * in order and the first one the filing tags for that period wins.
  */
-function inFiling(gaap, metric, concept, end, accn, duration) {
-  const pts = pointsFor(gaap, [concept], unitFor(metric)).filter(p => p.end === end && p.accn === accn && (!duration || isAnnualSpan(p)));
-  return pts.length ? pts[0].val : null;
+function inFiling(gaap, metric, concepts, end, accn, duration) {
+  const pts = pointsFor(gaap, concepts, unitFor(metric)).filter(p => p.end === end && p.accn === accn && (!duration || isAnnualSpan(p)));
+  for (const concept of concepts) {
+    const hit = pts.find(p => p.concept === concept);
+    if (hit) return hit.val;
+  }
+  return null;
 }
 
 /**
@@ -357,18 +362,26 @@ async function main() {
   // they come from the comparative column. Other lines that differ are named, not replaced.
   const restated = [], recast = [];
   if (prior && !priorSame) {
-    for (const m of [...Object.keys(DURATION), ...Object.keys(INSTANT)]) {
+    for (const [m, chain] of [...Object.entries(DURATION), ...Object.entries(INSTANT)]) {
       const first = sources[prior.end][m];
       if (!first || HELPERS.has(m)) continue;
-      const now = inFiling(gaap, m, first.concept, prior.end, cur.accn, m in DURATION);
+      const perShareLine = PER_SHARE.has(m) || SHARE_COUNTS.has(m);
+      // Per-share lines: any concept in the chain, since a filer can switch tags between
+      // filings (EarningsPerShareDiluted → …BasicAndDiluted) and the chain's concepts are
+      // interchangeable there. Monetary lines: the same concept only — a different revenue
+      // or debt tag can be a different amount, which is not a restatement.
+      const concepts = perShareLine ? [first.concept, ...chain.filter(x => x !== first.concept)] : [first.concept];
+      const now = inFiling(gaap, m, concepts, prior.end, cur.accn, m in DURATION);
       if (now === null || now === first.val) continue;
-      if (PER_SHARE.has(m) || SHARE_COUNTS.has(m)) { restated.push({ m, first: first.val, now }); p[m] = now; }
+      if (perShareLine) { restated.push({ m, first: first.val, now }); p[m] = now; }
       else if (Math.abs(now - first.val) > Math.abs(first.val) * 0.005) recast.push({ m, first: first.val, now });
     }
   }
   const revenueRecast = recast.some(x => x.m === 'revenue');
-  // Current-year lines the annual filing itself did not tag: read from a later filing, so possibly restated.
-  const late = Object.entries(sources[cur.end]).filter(([m, s]) => s && s.accn !== cur.accn && !HELPERS.has(m)).map(([m, s]) => ({ m, ...s }));
+  // Current-year lines the annual filing itself did not tag, split by filing date: a
+  // later filing may have restated the figure; an earlier one (an earnings 8-K) has not.
+  const elsewhere = Object.entries(sources[cur.end]).filter(([m, s]) => s && s.accn !== cur.accn && !HELPERS.has(m)).map(([m, s]) => ({ m, ...s }));
+  const late = elsewhere.filter(x => x.filed > cur.filed), early = elsewhere.filter(x => x.filed <= cur.filed);
 
   // ── front block ────────────────────────────────────────────────────────────
   const front = [];
@@ -407,7 +420,7 @@ async function main() {
   const b = [];
   b.push(`# ${entity} (${ticker}) — data pack, fiscal year ended ${cur.end}`);
   b.push('');
-  b.push(`> **Source: SEC EDGAR, as reported.** Every figure below is the company's own XBRL-tagged value from its ${cur.form} for the fiscal year ended ${cur.end} (filed ${cur.filed}, accession ${cur.accn})${late.length ? ', except the lines the Notes list as read from a later filing' : ''}; the ${priorLabel} column is ${priorSame ? 'the comparative column of the same filing' : "the prior year's annual filing"}. Retrieved ${today} via the SEC companyfacts API — no vendor, no estimate, no adjustment. Treat this pack as data pasted by the user (\`Retrieval: pasted by user\`). It contains **no market price**: fill in the price and date before computing P/E, market cap, EV or yield, or say they are unavailable.`);
+  b.push(`> **Source: SEC EDGAR, as reported.** Every figure below is the company's own XBRL-tagged value from its ${cur.form} for the fiscal year ended ${cur.end} (filed ${cur.filed}, accession ${cur.accn})${elsewhere.length ? ', except the lines the Notes list as read from another filing' : ''}; the ${priorLabel} column is ${priorSame ? 'the comparative column of the same filing' : "the prior year's annual filing"}. Retrieved ${today} via the SEC companyfacts API — no vendor, no estimate, no adjustment. Treat this pack as data pasted by the user (\`Retrieval: pasted by user\`). It contains **no market price**: fill in the price and date before computing P/E, market cap, EV or yield, or say they are unavailable.`);
   b.push('');
   if (stale) {
     b.push(`> **Possibly out of date.** The latest annual period in SEC companyfacts ended ${cur.end}, more than 16 months before this pack was generated (${today}). The company may have stopped filing, be late, or tag its statements under concepts this helper does not read. Check EDGAR for a newer annual report before relying on these figures.`);
@@ -485,7 +498,9 @@ async function main() {
   const perShare = (m, v) => (PER_SHARE.has(m) ? `$${Number(v).toFixed(2)}` : `${fmtShares(v)}M`);
   if (restated.length) b.push(`- ${priorLabel} per-share lines are the ${fyLabel} ${cur.form}'s comparative column, not the figures first reported — restated, typically for a stock split, so both years share one share basis: ${restated.map(x => `${x.m} ${perShare(x.m, x.now)} (first reported ${perShare(x.m, x.first)})`).join(', ')}.`);
   if (recast.length) b.push(`- ${priorLabel} figures are as first reported. The ${fyLabel} ${cur.form}'s comparative column differs for: ${recast.map(x => `${x.m} (${fmtM(x.first)}M first reported, ${fmtM(x.now)}M in the comparative)`).join(', ')} — a recast (discontinued operations, an accounting change) or a tagging error. Check the filing before computing year-over-year change${revenueRecast ? '; the revenue-growth check is omitted for that reason' : ''}.`);
-  if (late.length) b.push(`- Not tagged in the ${cur.form} itself, so read from a later filing and possibly restated: ${late.map(x => `${x.m} (${x.form} filed ${x.filed}, accession ${x.accn})`).join(', ')}.`);
+  const cite = x => `${x.m} (${x.form} filed ${x.filed}, accession ${x.accn})`;
+  if (late.length) b.push(`- Not tagged in the ${cur.form} itself, so read from a later filing and possibly restated: ${late.map(cite).join(', ')}.`);
+  if (early.length) b.push(`- Not tagged in the ${cur.form} itself, so read from a filing made on or before its filing date: ${early.map(cite).join(', ')}.`);
   b.push('- Derived lines (FCF, net debt, margins) are arithmetic on reported figures, shown so the analysis can be reconciled.');
   if (missing.length) b.push(`- Not tagged for ${fyLabel}: ${missing.join(', ')}.`);
   b.push('');

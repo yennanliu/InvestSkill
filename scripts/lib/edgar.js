@@ -171,16 +171,16 @@ async function fetchCompanyFacts(cik) {
 
 /**
  * Company-level fields the submissions index carries and companyfacts does not
- * (SIC code and description, fiscal year end). Returns null on any HTTP error:
- * callers treat the profile as optional.
+ * (SIC code and description, fiscal year end). The profile is optional, so every
+ * failure — an HTTP error, exhausted transport retries, an unparseable body —
+ * returns null instead of failing the caller's run.
  */
 async function fetchCompanyProfile(cik) {
   try {
     const sub = await fetchJson(`${DATA_URL}/submissions/CIK${cik}.json`);
     return { sic: sub.sic || null, sicDescription: sub.sicDescription || null, fiscalYearEnd: sub.fiscalYearEnd || null };
-  } catch (err) {
-    if (err instanceof HttpError) return null;
-    throw err;
+  } catch (_err) {
+    return null;
   }
 }
 
