@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Homepage demo video.** A new "Watch" section under the hero on both landing pages (English and 繁體中文) plays a real `stock-eval AAPL` run recorded in Claude Code on 2026-11-13 — 2 min 48 s shown in 45 s, with the research and writing stretches sped up — next to a four-step chapter list (You → Research → Analysis → Signal) that seeks the video and follows playback. The video and poster live in `site/assets/video/`; chapter timings are `DEMO_VIDEO` in `site/build/build-site.js`. `check-links.js` now also checks `poster` attributes, and `test-site.js` checks the video, poster and chapter order on both pages.
+
 ### Fixed
 - **Site language switcher (文A) no longer drops you on the home page.** A page with no counterpart in the other language — every `skill-<name>.html` reference page and the English-only demos — used to link 文A to the other language's home page. It now goes to the parent index (the zh Skill Reference, the zh demo overview); only pages with neither a twin nor a parent (changelog, contributing) still land on home. The current language is marked `aria-current`. The routing rule moved to `site/build/lang-pairs.js` and is unit-tested by `scripts/test-site.js` (`npm run test:site`, part of `npm test`), which also builds the site and checks the rendered switcher on every page; CI's site job re-runs it on the deployed build.
 

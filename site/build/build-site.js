@@ -1237,6 +1237,10 @@ const LANDING = {
     learnEyebrow: 'Learn', learnTitle: 'New to investing? Start here.',
     learnLead: 'An eight-lesson field guide to the ideas behind every skill — from reading a balance sheet to holding a portfolio. Plain English, no finance degree required.',
     learnCta: 'Open the Learning Hub', lesson: 'Lesson',
+    watchEyebrow: 'Watch', watchTitle: 'One real run, from prompt to signal', watchLink: 'See full outputs',
+    watchLead: 'A single <code>stock-eval</code> on Apple in Claude Code, recorded as it happened: the question, the research, the report, the signal.',
+    watchNote: 'Recorded 13 Nov 2026 (2 min 48 s, shown in 45 s). The research and writing stretches are sped up; nothing else is edited. Not investment advice.',
+    watchLabel: 'Screen recording of the stock-eval skill analysing AAPL in Claude Code',
     demoEyebrow: 'Demos', demoTitle: 'See real output before you install', demoLink: 'All demos',
     trustEyebrow: 'Trust', trustTitle: 'Built to be checked, not believed',
     trust: [
@@ -1263,6 +1267,10 @@ const LANDING = {
     learnEyebrow: '學習', learnTitle: '投資新手？從這裡開始。',
     learnLead: '八堂課的實戰指南，講解每個技能背後的觀念——從讀懂資產負債表到管理投資組合。白話解說，不需要金融背景。',
     learnCta: '前往學習中心', lesson: '第',
+    watchEyebrow: '影片', watchTitle: '看一次真實執行：從提問到訊號', watchLink: '查看完整輸出',
+    watchLead: '在 Claude Code 對 Apple 執行一次 <code>stock-eval</code>，照實錄下：提問、蒐集資料、寫報告、給出訊號。',
+    watchNote: '錄製於 2026 年 11 月 13 日（實際 2 分 48 秒，影片 45 秒）。蒐集資料與撰寫的片段已加速，其餘未經剪輯。非投資建議。',
+    watchLabel: 'stock-eval 技能在 Claude Code 分析 AAPL 的螢幕錄影',
     demoEyebrow: '示範', demoTitle: '安裝前先看真實輸出', demoLink: '全部示範',
     trustEyebrow: '信任', trustTitle: '設計來被驗證，而不是被相信',
     trust: [
@@ -1350,6 +1358,53 @@ function sectionHead(eyebrow, title, link) {
         <div><p class="section-eyebrow">${eyebrow}</p><h2>${title}</h2></div>
         ${link ? `<a class="section-link" href="${link.href}">${link.label} ${svg(ARROW_R, 14)}</a>` : ''}
       </div>`;
+}
+
+// The recorded run on the landing page (site/assets/video/). `t` is the
+// chapter's start in seconds; re-time the chapters whenever the video changes.
+const DEMO_VIDEO = {
+  src: 'assets/video/stock-eval-aapl.mp4',
+  poster: 'assets/video/stock-eval-aapl.jpg',
+  width: 1280, height: 828,
+  chapters: [
+    { t: 0,  en: ['You', 'Type one slash command: <code>/stock-eval AAPL</code>.'],                                   zh: ['你', '輸入一行斜線指令：<code>/stock-eval AAPL</code>。'] },
+    { t: 8,  en: ['Research', 'The assistant pulls the 8-K from SEC EDGAR, the quote, consensus and the 10-year yield.'], zh: ['蒐集資料', 'AI 助理從 SEC EDGAR 取得 8-K，並查詢股價、市場共識與十年期公債殖利率。'] },
+    { t: 22, en: ['Analysis', 'The framework fills in section by section: statements, F-Score, ROIC, DCF, scenarios.'],  zh: ['分析', '框架逐段完成：財務報表、F-Score、ROIC、DCF、情境分析。'] },
+    { t: 40, en: ['Signal', 'It closes with the INVESTMENT SIGNAL box and a JSON footer carrying the same values.'],     zh: ['訊號', '以 INVESTMENT SIGNAL 區塊收尾，並附上數值一致的 JSON 頁尾。'] },
+  ],
+};
+const mmss = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
+
+function buildWatch(lang) {
+  const T = LANDING[lang];
+  const zh = lang === 'zh';
+  const V = DEMO_VIDEO;
+  const chapters = V.chapters.map(c => {
+    const [who, what] = c[lang];
+    return `<li><button type="button" class="watch-chapter" data-t="${c.t}">
+            <span class="watch-time">${mmss(c.t)}</span>
+            <span><b>${who}</b>${what}</span>
+          </button></li>`;
+  }).join('\n          ');
+  return `
+    <section class="landing-section" id="watch">
+      ${sectionHead(T.watchEyebrow, T.watchTitle, { href: zh ? 'full-demo-zh-tw.html' : 'full-demo.html', label: T.watchLink })}
+      <div class="watch reveal">
+        <figure class="watch-player term">
+          <div class="term-bar"><span></span><span></span><span></span><span class="term-title">${T.termTitle}</span></div>
+          <video class="watch-video" controls muted playsinline preload="none" poster="${V.poster}" width="${V.width}" height="${V.height}" style="--ar: ${V.width} / ${V.height}" aria-label="${T.watchLabel}">
+            <source src="${V.src}" type="video/mp4">
+          </video>
+        </figure>
+        <div class="watch-side">
+          <p class="watch-lead">${T.watchLead}</p>
+          <ol class="watch-chapters">
+          ${chapters}
+          </ol>
+          <p class="watch-note">${T.watchNote}</p>
+        </div>
+      </div>
+    </section>`;
 }
 
 function buildLandingSections(lang) {
@@ -1451,7 +1506,7 @@ function buildLandingSections(lang) {
       </div>
     </section>`;
 
-  return how + buildInstaller(lang) + cats + learn + demos + trust;
+  return buildWatch(lang) + how + buildInstaller(lang) + cats + learn + demos + trust;
 }
 
 // ---------------------------------------------------------------------------

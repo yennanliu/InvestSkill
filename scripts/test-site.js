@@ -10,6 +10,8 @@
  *      current language links to the page itself and carries aria-current, the
  *      other target exists in the build and equals switchTargets
  *
+ *   3. the recorded demo on both landing pages: video + poster exist, chapters ascend
+ *
  * By default section 2 builds the site into a temp dir (SITE_OUT_DIR, ~0.3 s).
  * `--site <dir>` checks an existing build instead — CI's site job passes the
  * `_site/` it is about to link-check.
@@ -121,6 +123,18 @@ section('2. Rendered switcher on every built page');
       return html.includes('<a href="zh-tw.html" class="lang-opt"');
     });
     check(toHome.length === 0, 'no skill page sends 文A to the zh home', toHome);
+
+    // The recorded run on both landing pages: files exist, chapters are in order.
+    for (const home of ['index.html', 'zh-tw.html']) {
+      const html = fs.existsSync(path.join(site, home)) ? fs.readFileSync(path.join(site, home), 'utf8') : '';
+      const src = (html.match(/<source src="([^"]+\.mp4)"/) || [])[1];
+      const poster = (html.match(/<video[^>]*poster="([^"]+)"/) || [])[1];
+      check(!!src && !!poster && fs.existsSync(path.join(site, src)) && fs.existsSync(path.join(site, poster)),
+        `${home}: the demo video and its poster are in the build`, { src, poster });
+      const ts = [...html.matchAll(/class="watch-chapter" data-t="(\d+)"/g)].map(m => Number(m[1]));
+      check(ts.length >= 2 && ts[0] === 0 && ts.every((t, i) => i === 0 || t > ts[i - 1]),
+        `${home}: demo chapters start at 0 and ascend`, ts);
+    }
   } finally {
     if (tmp) fs.rmSync(tmp, { recursive: true, force: true });
   }
