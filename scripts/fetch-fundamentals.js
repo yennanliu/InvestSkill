@@ -157,13 +157,20 @@ function original(points) {
 }
 
 /**
- * The reported value of `metric` for the period ending `end`: the first concept in the
- * chain that has a point for that period wins, and within it the original filing.
+ * The reported value of `metric` for the period ending `end`. When the period's own
+ * annual filing (`accn`) tags any concept in the chain, its figure is used — the pack
+ * says its numbers are that filing's, and an earnings 8-K filed a few days earlier
+ * would otherwise win on proximity. Failing that, the first concept in the chain that
+ * has a point for the period wins, and within it the original filing.
  * Duration metrics are restricted to one-year spans; instants match on `end` alone.
  * @returns {object|null} the fact point, or null when the company never tagged it
  */
-function pick(gaap, metric, chain, end, { duration }) {
+function pick(gaap, metric, chain, end, { duration, accn }) {
   const pts = pointsFor(gaap, chain, unitFor(metric)).filter(p => p.end === end && (!duration || isAnnualSpan(p)));
+  for (const concept of chain) {
+    const own = pts.find(p => p.concept === concept && p.accn === accn);
+    if (own) return own;
+  }
   // Respect chain order: the first concept with a point for this period wins.
   for (const concept of chain) {
     const mine = pts.filter(p => p.concept === concept);
@@ -308,10 +315,10 @@ async function main() {
   if (stale) log(`  ⚠ latest annual period ended ${cur.end} — more than 16 months ago; check EDGAR for a newer filing\n`);
 
   const sources = {}; // period end → metric → the fact point it was read from
-  const row = end => {
+  const row = ({ end, accn }) => {
     const r = {}, concept = {}, src = sources[end] = {};
-    for (const [m, chain] of Object.entries(DURATION)) { const p = pick(gaap, m, chain, end, { duration: true }); r[m] = p ? p.val : null; concept[m] = p ? p.concept : null; src[m] = p; }
-    for (const [m, chain] of Object.entries(INSTANT)) { const p = pick(gaap, m, chain, end, { duration: false }); r[m] = p ? p.val : null; concept[m] = p ? p.concept : null; src[m] = p; }
+    for (const [m, chain] of Object.entries(DURATION)) { const p = pick(gaap, m, chain, end, { duration: true, accn }); r[m] = p ? p.val : null; concept[m] = p ? p.concept : null; src[m] = p; }
+    for (const [m, chain] of Object.entries(INSTANT)) { const p = pick(gaap, m, chain, end, { duration: false, accn }); r[m] = p ? p.val : null; concept[m] = p ? p.concept : null; src[m] = p; }
     if (r.gross_profit === null && r.revenue !== null && r.cost_of_revenue !== null) r.gross_profit = r.revenue - r.cost_of_revenue;
     r.fcf = r.ocf !== null && r.capex !== null ? r.ocf - r.capex : null;
     r.notes = [];
@@ -333,7 +340,7 @@ async function main() {
     r.net_debt_incl_sti = r.net_debt !== null && r.short_term_investments !== null ? r.net_debt - r.short_term_investments : null;
     return r;
   };
-  const c = row(cur.end), p = prior ? row(prior.end) : {};
+  const c = row(cur), p = prior ? row(prior) : {};
 
   // Shares outstanding: the cover-page dei fact, most recent instant.
   let sharesOut = null;

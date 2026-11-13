@@ -41,7 +41,8 @@
  *                          shares (10-for-1) and revenue (a divestiture), with the
  *                          share count under a different concept than the FY2024
  *                          10-K used; goodwill for FY2025 is tagged only in a
- *                          later 10-K/A, operating income only in an earlier 8-K
+ *                          later 10-K/A, operating income only in an earlier 8-K,
+ *                          and income tax in both that 8-K and the 10-K
  *   DRIFT   (CIK 555)     — revenue tagged under a mapped concept only up to
  *                          FY2023 while net income runs to FY2025; LongTermDebt
  *                          plus ShortTermBorrowings with no current-maturities
@@ -236,6 +237,7 @@ const cal = rows => rows.map(([y, v, k]) => dur(`${y}-01-01`, `${y}-12-31`, M(v)
 const SPLT = { cik: '0000000444', name: 'SPLIT TEST CORP', recent: [{ form: '10-K', filed: '2026-02-20', period: '2025-12-31', accn: '0000000444-26-000001', doc: 'splt-20251231.htm' }] };
 const SPLT_K25 = ['10-K', '2026-02-20', '0000000444-26-000001', 2025];
 const SPLT_K24 = ['10-K', '2025-02-20', '0000000444-25-000001', 2024];
+const SPLT_8K = ['8-K', '2026-02-05', '0000000444-26-000000', 2025];
 const SPLT_KA = ['10-K/A', '2026-05-01', '0000000444-26-000009', 2025];
 const SPLT_FACTS = {
   cik: 444, entityName: 'Split Test Corp',
@@ -254,7 +256,9 @@ const SPLT_FACTS = {
         dur('2025-01-01', '2025-12-31', 248_000_000, ...SPLT_K25), dur('2024-01-01', '2024-12-31', 251_000_000, ...SPLT_K25),
       ] } },
       Goodwill: usd([inst('2025-12-31', M(700), ...SPLT_KA)]),
-      OperatingIncomeLoss: usd(cal([[2025, 900, ['8-K', '2026-02-05', '0000000444-26-000000', 2025]]])),
+      OperatingIncomeLoss: usd(cal([[2025, 900, SPLT_8K]])),
+      // Tagged in the earnings 8-K (preliminary) and in the 10-K (final): the 10-K's figure is the pack's.
+      IncomeTaxExpenseBenefit: usd(cal([[2025, 150, SPLT_8K], [2025, 160, SPLT_K25]])),
     },
   },
 };

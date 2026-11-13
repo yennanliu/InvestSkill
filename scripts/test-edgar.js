@@ -462,6 +462,8 @@ async function main() {
   includes(splt.body, 'goodwill (10-K/A filed 2026-05-01, accession 0000000444-26-000009)', 'pack SPLT: a line tagged only in a later filing is attributed to it');
   includes(splt.body, 'read from a filing made on or before its filing date: operating_income (8-K filed 2026-02-05, accession 0000000444-26-000000)', 'pack SPLT: a line from an earlier 8-K is attributed to it without calling it later or restated');
   check(!/possibly restated:[^\n]*operating_income/.test(splt.body), 'pack SPLT: the earlier 8-K is not in the "later filing" list');
+  includes(splt.body, '| Income tax | 160 |', 'pack SPLT: a fact tagged in both an earlier 8-K and the 10-K is read from the 10-K');
+  excludes(splt.body, 'income_tax (', 'pack SPLT: and is therefore not listed as missing from the 10-K');
   includes(splt.body, 'except the lines the Notes list as read from another filing', 'pack SPLT: the source statement no longer claims every figure is from the 10-K');
   eq(JSON.parse(fs.readFileSync(path.join(FIX, 'SPLT.json'), 'utf8')).prior.eps_diluted, 1.19, 'fetch-fundamentals SPLT --json: prior EPS is split-adjusted too');
 
