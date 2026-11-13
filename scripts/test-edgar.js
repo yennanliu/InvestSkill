@@ -328,7 +328,7 @@ async function main() {
   eq(m2.fiscal_year, 'FY2025', 'pack: fiscal_year label');
   eq(m2.source_accession, '0000320193-25-000079', 'pack: source accession');
   eq(m2.price, '', 'pack: price line present but empty (SEC has no quotes) and parser-safe');
-  eq(m2.shares_out_m, 14800, 'pack: shares_out_m sums share classes tagged on the same date');
+  eq(m2.shares_out_m, 14776, 'pack: AAPL FY2025 cover-page common shares rounded to millions');
   eq(m2.revenue_m, 416161, 'pack: revenue_m');
   eq(m2.revenue_prior_m, 391035, 'pack: revenue_prior_m from the prior fiscal year');
   eq(m2.gross_profit_m, 195201, 'pack: gross_profit_m');
@@ -362,6 +362,42 @@ async function main() {
   includes(body, 'Not tagged for FY2025: interest_expense, goodwill', 'pack body: lists untagged concepts honestly');
   excludes(body, '| Revenue | n/a', 'pack body: no n/a where facts exist');
 
+  // Repeated cover-page facts from another filing are not additional shares.
+  r = run(FETCH_FUND, fundArgs(['AAPL', '--stdout']), { EDGAR_MOCK_REPEATED_SHARES: '1' });
+  eq(r.status, 0, 'fetch-fundamentals repeated shares: exit 0');
+  const repeatedShares = parseFixture(r.stdout);
+  eq(repeatedShares && repeatedShares.meta.shares_out_m, 14776, 'pack: repeated filings do not double the shares outstanding');
+  includes(repeatedShares && repeatedShares.body, 'cover page of the 10-K filed 2025-10-31', 'pack: share-count label follows the selected original filing');
+
+  // Synthetic compatibility coverage, NOT representative dimensional SEC facts.
+  for (const repeated of ['0', '1']) {
+    r = run(FETCH_FUND, fundArgs(['MULTI', '--stdout']), { EDGAR_MOCK_REPEATED_SHARES: repeated });
+    eq(r.status, 0, `fetch-fundamentals MULTI (repeated=${repeated}): exit 0`);
+    const multi = parseFixture(r.stdout);
+    eq(multi && multi.meta.shares_out_m, 14800, `pack MULTI (repeated=${repeated}): sums both latest-date classes from one filing only`);
+    includes(multi && multi.body, 'cover page of the 10-K filed 2026-02-20, as of 2026-02-10', `pack MULTI (repeated=${repeated}): share-count label follows the selected original filing and latest date`);
+  }
+
+  for (const [date, expected] of [['2025-12-30', undefined], ['2025-12-31', 14000], ['2026-01-01', 14000], ['absent', undefined]]) {
+    r = run(FETCH_FUND, fundArgs(['MULTI', '--stdout']), { EDGAR_MOCK_SHARE_DATE: date });
+    eq(r.status, 0, `share-date boundary ${date}: exit 0`);
+    const boundary = parseFixture(r.stdout);
+    eq(boundary.meta.shares_out_m, expected, `share-date boundary ${date}: selected fiscal-year floor is inclusive`);
+  }
+
+  // Real SEC multi-class response: Berkshire's latest entity-wide DEI instant
+  // is 2011-04-29, despite annual revenue from its FY2025 filing. Dimensional
+  // current class counts are absent; do not publish the historical count.
+  r = run(FETCH_FUND, fundArgs(['BRK-B', '--json']));
+  eq(r.status, 0, 'fetch-fundamentals BRK-B stale shares: exit 0');
+  const brkPack = parseFixture(fs.readFileSync(path.join(FIX, 'BRK-B.md'), 'utf8'));
+  eq(brkPack.meta.as_of, '2025-12-31', 'BRK-B: representative FY2025 reporting period');
+  eq(brkPack.meta.shares_out_m, undefined, 'BRK-B: stale shares omitted from machine-readable front block');
+  includes(brkPack.body, '| Shares outstanding (n/a) | n/a |', 'BRK-B: stale shares render unavailable');
+  includes(brkPack.body, 'no entity-wide cover-page count dated on or after 2025-12-31', 'BRK-B: missing count explanation is period-relative');
+  const brkRaw = JSON.parse(fs.readFileSync(path.join(FIX, 'BRK-B.json'), 'utf8'));
+  eq(brkRaw.shares_outstanding, null, 'BRK-B: raw JSON shares are null, not zero or stale');
+
   // --fy: older year via the older revenue tag, no prior year available
   r = run(FETCH_FUND, fundArgs(['AAPL', '--fy', '2023', '--stdout']));
   eq(r.status, 0, 'fetch-fundamentals --fy 2023 --stdout: exit 0');
@@ -369,6 +405,7 @@ async function main() {
   includes(r.stderr, 'Looking up', 'fetch-fundamentals --stdout: progress lines are on stderr');
   const fx23 = parseFixture(r.stdout);
   eq(fx23 && fx23.meta.as_of, '2023-09-30', 'pack --fy 2023: selects that fiscal year');
+  eq(fx23 && fx23.meta.shares_out_m, 14776, 'pack --fy 2023: preserves latest available shares, not historical valuation');
   eq(fx23 && fx23.meta.revenue_m, 383285, 'pack --fy 2023: revenue found under the older "Revenues" tag (concept chain)');
   check(fx23 && fx23.meta.revenue_prior_m === undefined, 'pack --fy 2023: no prior-year key when none is tagged');
   check(!fs.existsSync(path.join(FIX, 'AAPL.md.tmp')) && fs.readFileSync(packFile, 'utf8') === pack, 'pack --stdout: does not overwrite the written pack');
@@ -381,6 +418,8 @@ async function main() {
   const jf = path.join(FIX, 'AAPL.json');
   check(fs.existsSync(jf), 'fetch-fundamentals --json: raw figures written');
   const raw = fs.existsSync(jf) ? JSON.parse(fs.readFileSync(jf, 'utf8')) : {};
+  eq(raw.shares_outstanding && raw.shares_outstanding.value, 14776353000, 'fetch-fundamentals --json: AAPL cover-page count in raw shares');
+  eq(raw.shares_outstanding && raw.shares_outstanding.asOf, '2025-10-17', 'fetch-fundamentals --json: cover-page date, not fiscal year end');
   eq(raw.current && raw.current.revenue, 416161e6, 'fetch-fundamentals --json: current.revenue in dollars');
   eq(raw.prior && raw.prior.net_income, 93736e6, 'fetch-fundamentals --json: prior.net_income as first reported');
 
