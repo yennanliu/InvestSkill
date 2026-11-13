@@ -5,7 +5,8 @@
  * This is deliberately NOT part of the plugin: InvestSkill's skills are prompts
  * and fetch nothing themselves. These helpers exist so a user *without* a
  * tool-enabled assistant can still put a primary-source filing in front of the
- * model by pasting what they produce. Nothing here is wired into `npm test`.
+ * model by pasting what they produce. `npm test` never calls the SEC: it runs
+ * only the offline suite (scripts/test-edgar.js) against a fetch double.
  *
  * SEC fair-access rules (https://www.sec.gov/os/accessing-edgar-data):
  *   • declare a User-Agent that identifies you (set EDGAR_USER_AGENT to
@@ -168,6 +169,24 @@ async function fetchCompanyFacts(cik) {
   }
 }
 
+/**
+ * Company-level fields the submissions index carries and companyfacts does not
+ * (SIC code and description, fiscal year end). Returns null on any HTTP error:
+ * callers treat the profile as optional.
+ */
+async function fetchCompanyProfile(cik) {
+  try {
+    const sub = await fetchJson(`${DATA_URL}/submissions/CIK${cik}.json`);
+    return { sic: sub.sic || null, sicDescription: sub.sicDescription || null, fiscalYearEnd: sub.fiscalYearEnd || null };
+  } catch (err) {
+    if (err instanceof HttpError) return null;
+    throw err;
+  }
+}
+
+/** Today as YYYY-MM-DD. EDGAR_TODAY pins it for the offline test suite. */
+function today() { return process.env.EDGAR_TODAY || new Date().toISOString().slice(0, 10); }
+
 // ── HTML → text ──────────────────────────────────────────────────────────────
 const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', ndash: '–', mdash: '—', rsquo: '’', lsquo: '‘', rdquo: '”', ldquo: '“', bull: '•', hellip: '…', copy: '©', reg: '®', trade: '™', sect: '§', para: '¶', middot: '·', times: '×', deg: '°', cent: '¢', pound: '£', euro: '€', yen: '¥' };
 
@@ -224,5 +243,5 @@ function writeFileIfChanged(file, content) {
 module.exports = {
   SEC_URL, DATA_URL, USER_AGENT, HttpError,
   fetchJson, fetchText, lookupCik, listFilings, archiveUrl, filingIndexUrl,
-  fetchCompanyFacts, htmlToText, decodeEntities, ensureDir, writeFileIfChanged, sleep,
+  fetchCompanyFacts, fetchCompanyProfile, today, htmlToText, decodeEntities, ensureDir, writeFileIfChanged, sleep,
 };
