@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.14.1] - 2026-11-13
+
 ### Added
 - **Homepage demo video.** A new "Watch" section under the hero on both landing pages (English and 繁體中文) plays a real `stock-eval AAPL` run recorded in Claude Code on 2026-11-13 — 2 min 48 s shown in 45 s, with the research and writing stretches sped up — next to a four-step chapter list (You → Research → Analysis → Signal) that seeks the video and follows playback. The video and poster live in `site/assets/video/`; chapter timings are `DEMO_VIDEO` in `site/build/build-site.js`. `check-links.js` now also checks `poster` attributes, and `test-site.js` checks the video, poster and chapter order on both pages.
 
