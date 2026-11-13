@@ -216,6 +216,34 @@ function setupReveal() {
   items.forEach(el => io.observe(el));
 }
 
+// ── Recorded demo: chapter list seeks the video and tracks playback ──────────
+function setupWatch() {
+  const video = document.querySelector('.watch-video');
+  const chapters = Array.from(document.querySelectorAll('.watch-chapter'));
+  if (!video || !chapters.length) return;
+  const starts = chapters.map(c => Number(c.dataset.t));
+  chapters.forEach((c, i) => c.addEventListener('click', () => {
+    video.currentTime = starts[i];
+    video.play().catch(() => {});
+  }));
+  const sync = () => {
+    const t = video.currentTime;
+    const started = t > 0 || !video.paused;
+    let cur = -1;
+    if (started) starts.forEach((s, i) => { if (t >= s) cur = i; });
+    chapters.forEach((c, i) => {
+      const on = i === cur;
+      c.classList.toggle('active', on);
+      if (on) c.setAttribute('aria-current', 'true'); else c.removeAttribute('aria-current');
+      if (on) {
+        const end = i + 1 < starts.length ? starts[i + 1] : (video.duration || starts[i] + 1);
+        c.style.setProperty('--p', Math.min(1, Math.max(0, (t - starts[i]) / (end - starts[i]))).toFixed(3));
+      }
+    });
+  };
+  ['timeupdate', 'seeked', 'play', 'loadedmetadata'].forEach(ev => video.addEventListener(ev, sync));
+}
+
 // ── Skill Reference filter ────────────────────────────────────────────────────
 function setupSkillFilter() {
   const input = document.querySelector('.skill-search');
@@ -391,6 +419,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupSidebar();
   setupScrollUI();
   setupReveal();
+  setupWatch();
   setupSkillFilter();
   setupSearch();
 });
