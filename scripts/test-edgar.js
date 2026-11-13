@@ -57,7 +57,8 @@ function run(script, args, extraEnv = {}) {
     encoding: 'utf8',
     env: {
       ...process.env, EDGAR_MOCK: '1', EDGAR_MOCK_LOG: LOG, EDGAR_USER_AGENT: UA,
-      EDGAR_REQUEST_INTERVAL_MS: '0', EDGAR_RETRY_BACKOFF_MS: '0', ...extraEnv,
+      // A pinned clock: the "latest year is stale" warning depends on today's date.
+      EDGAR_REQUEST_INTERVAL_MS: '0', EDGAR_RETRY_BACKOFF_MS: '0', EDGAR_TODAY: '2026-11-13', ...extraEnv,
     },
     timeout: 60_000,
   });
@@ -424,6 +425,78 @@ async function main() {
   eq(m2.total_debt_m, 90678, 'pack AAPL: LongTermDebt within 5% of the split → split kept (commercial paper not added)');
   includes(body, 'Commercial paper of 7,979M is tagged but not included in total debt', 'pack AAPL: commercial paper flagged in the notes');
   check(!/long_term_debt_total|commercial_paper|short_borrowings/.test((body.match(/Not tagged for [^\n]*/) || [''])[0]), 'pack AAPL: helper debt facts never listed as "not tagged"');
+
+  // Industry comes from the submissions index (companyfacts has no SIC)
+  includes(body, '| Industry (SIC) | 3571 — Electronic Computers |', 'pack AAPL: SIC read from the submissions index');
+  // The fetch-edgar hint is pinned to this filing: its --fy is the filing year
+  includes(body, 'node scripts/fetch-edgar.js AAPL --form 10-K --fy 2025', 'pack AAPL: full-text hint names the filing year of the 10-K the pack was built from');
+  includes(fx23 && fx23.body, 'node scripts/fetch-edgar.js AAPL --form 10-K --fy 2023', 'pack --fy 2023: full-text hint follows the selected year, not the latest');
+  // A comparative that disagrees with the first-reported figure is named, never silently swapped in
+  includes(body, 'net_income (93,736M first reported, 0M in the comparative)', 'pack AAPL: the mis-scaled FY2024 comparative is flagged in the notes');
+  excludes(body, 'per-share lines are the FY2025', 'pack AAPL: no split note when the comparative EPS equals the first-reported one');
+  excludes(body, 'Not tagged in the 10-K itself', 'pack AAPL: no other-filing note when the 10-K tagged every line');
+  includes(body, "the FY2024 column is the prior year's annual filing", 'pack AAPL: prior column attributed to the prior 10-K');
+
+  // The latest fiscal year is flagged once it is implausibly old; an explicit --fy is not
+  excludes(body, 'Possibly out of date', 'pack AAPL: a 13-month-old fiscal year is not flagged stale');
+  r = run(FETCH_FUND, fundArgs(['AAPL', '--stdout']), { EDGAR_TODAY: '2027-06-01' });
+  includes(r.stdout, 'Possibly out of date', 'pack AAPL 20 months on: the stale latest year is flagged in the pack');
+  includes(r.stdout, 'ended 2025-09-27, more than 16 months before this pack was generated (2027-06-01)', 'pack AAPL 20 months on: the warning names both dates');
+  includes(r.stderr, 'check EDGAR for a newer filing', 'pack AAPL 20 months on: and on the console');
+  r = run(FETCH_FUND, fundArgs(['AAPL', '--fy', '2023', '--stdout']), { EDGAR_TODAY: '2027-06-01' });
+  excludes(r.stdout, 'Possibly out of date', 'pack --fy 2023: an explicitly requested old year is not flagged');
+
+  // Stock split + recast: the prior column must share the current year's share basis
+  r = run(FETCH_FUND, fundArgs(['SPLT', '--json']));
+  eq(r.status, 0, 'fetch-fundamentals SPLT: exit 0');
+  const splt = parseFixture(fs.readFileSync(path.join(FIX, 'SPLT.md'), 'utf8'));
+  includes(splt.body, '| Diluted EPS | $2.94 | $1.19 |', 'pack SPLT: prior EPS is the split-adjusted comparative, not $11.93 as first reported');
+  includes(splt.body, '| Diluted shares (M) | 248 | 251 |', 'pack SPLT: prior diluted shares on the post-split basis, found under the concept the FY2025 10-K switched to');
+  includes(splt.body, 'eps_diluted $1.19 (first reported $11.93)', 'pack SPLT: the note keeps the first-reported EPS visible');
+  includes(splt.body, 'shares_diluted 251M (first reported 25.1M)', 'pack SPLT: the note keeps the first-reported share count visible');
+  includes(splt.body, '| Revenue | 4,000 | 5,000 |', 'pack SPLT: prior revenue stays as first reported');
+  includes(splt.body, 'revenue (5,000M first reported, 3,600M in the comparative)', 'pack SPLT: the recast revenue comparative is named');
+  check(!splt.expect.some(e => /Revenue growth/.test(e.label)), 'pack SPLT: no revenue-growth expectation when the two filings disagree on the prior year');
+  includes(splt.body, 'the revenue-growth check is omitted', 'pack SPLT: and the note says why');
+  excludes(splt.body, 'net_income (', 'pack SPLT: a comparative equal to the first-reported value is not listed');
+  includes(splt.body, 'goodwill (10-K/A filed 2026-05-01, accession 0000000444-26-000009)', 'pack SPLT: a line tagged only in a later filing is attributed to it');
+  includes(splt.body, 'read from a filing made on or before its filing date: operating_income (8-K filed 2026-02-05, accession 0000000444-26-000000)', 'pack SPLT: a line from an earlier 8-K is attributed to it without calling it later or restated');
+  check(!/possibly restated:[^\n]*operating_income/.test(splt.body), 'pack SPLT: the earlier 8-K is not in the "later filing" list');
+  includes(splt.body, '| Income tax | 160 |', 'pack SPLT: a fact tagged in both an earlier 8-K and the 10-K is read from the 10-K');
+  excludes(splt.body, 'income_tax (', 'pack SPLT: and is therefore not listed as missing from the 10-K');
+  includes(splt.body, 'except the lines the Notes list as read from another filing', 'pack SPLT: the source statement no longer claims every figure is from the 10-K');
+  eq(JSON.parse(fs.readFileSync(path.join(FIX, 'SPLT.json'), 'utf8')).prior.eps_diluted, 1.19, 'fetch-fundamentals SPLT --json: prior EPS is split-adjusted too');
+
+  // Revenue tag drift: the latest fiscal year follows net income, not the last year the old revenue tag carried
+  r = run(FETCH_FUND, fundArgs(['DRIFT']));
+  eq(r.status, 0, 'fetch-fundamentals DRIFT: exit 0');
+  const drift = parseFixture(fs.readFileSync(path.join(FIX, 'DRIFT.md'), 'utf8'));
+  eq(drift.meta.as_of, '2025-12-31', 'pack DRIFT: latest year is FY2025 (net income), not FY2023 (the last mapped revenue tag)');
+  eq(drift.meta.revenue_m, undefined, 'pack DRIFT: revenue is absent, not carried over from FY2023');
+  includes(drift.body, 'Not tagged for FY2025: revenue,', 'pack DRIFT: the missing revenue is listed');
+  eq(drift.meta.net_income_m, 90, 'pack DRIFT: net income for the selected year');
+  // Short-term borrowings are not inside LongTermDebt: added to it, never subtracted from it
+  eq(drift.meta.total_debt_m, 620, 'pack DRIFT: total_debt_m = LongTermDebt (500) + ShortTermBorrowings (120)');
+  includes(drift.body, '| Long-term debt | 500 |', 'pack DRIFT: long-term line is the tagged total, not 500 − 120');
+  eq(drift.meta.net_debt_m, 570, 'pack DRIFT: net_debt_m = 620 − 50 cash');
+  includes(drift.body, 'plus `ShortTermBorrowings` (120M, not part of long-term debt)', 'pack DRIFT: the note says the borrowings were added');
+  check(!/Short-term borrowings of/.test(drift.body), 'pack DRIFT: borrowings already in the total are not also flagged as excluded');
+  // Small share counts keep their decimals
+  eq(drift.meta.shares_out_m, 2.912, 'pack DRIFT: 2,912,345 shares → 2.912M, not rounded to 3');
+  includes(drift.body, '| 2.912 M |', 'pack DRIFT: shares-outstanding cell keeps three decimals below 100M');
+  includes(drift.body, '| Diluted shares (M) | 2.95 | n/a |', 'pack DRIFT: diluted shares keep decimals too');
+  includes(drift.body, '| Industry (SIC) | see filing cover page |', 'pack DRIFT: a failed submissions lookup falls back instead of failing the run');
+
+  // First 10-K: both years from one filing
+  r = run(FETCH_FUND, fundArgs(['IPO', '--stdout']));
+  eq(r.status, 0, 'fetch-fundamentals IPO: exit 0');
+  includes(r.stdout, '| Line | FY2025 | FY2024 |', 'pack IPO: the two columns are not both labelled FY2025');
+  includes(r.stdout, 'the FY2024 column is the comparative column of the same filing', 'pack IPO: prior column attributed to the same 10-K');
+  excludes(r.stdout, 'for the fiscal year ended 2024-12-31', 'pack IPO: no reference to a prior-year 10-K that does not exist');
+  includes(r.stdout, '2. SEC XBRL company facts', 'pack IPO: references stay consecutively numbered');
+  includes(r.stdout, '| Industry (SIC) | see filing cover page |', 'pack IPO: a submissions request that fails at the transport level does not stop the pack');
+  eq(r.requests.filter(x => x.url.endsWith('/submissions/CIK0000000333.json')).length, 3, 'pack IPO: the failed profile request was retried, then given up on');
+  check((parseFixture(r.stdout).expect.find(e => /Revenue growth/.test(e.label)) || {}).value === 28.6, 'pack IPO: revenue growth from the two columns of the one filing');
 
   // Non-GAAP filers and 404s are clean no-ops
   r = run(FETCH_FUND, fundArgs(['TSM']));

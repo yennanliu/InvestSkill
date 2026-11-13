@@ -36,6 +36,20 @@
  *                          and in total (AMD), only all-AFS debt securities as
  *                          investments (NVDA), and a share count from a 10-Q
  *                          filed after the 10-K
+ *   SPLT    (CIK 444)     — a stock split and a recast: the FY2025 10-K's
+ *                          comparative column restates FY2024 EPS and diluted
+ *                          shares (10-for-1) and revenue (a divestiture), with the
+ *                          share count under a different concept than the FY2024
+ *                          10-K used; goodwill for FY2025 is tagged only in a
+ *                          later 10-K/A, operating income only in an earlier 8-K,
+ *                          and income tax in both that 8-K and the 10-K
+ *   DRIFT   (CIK 555)     — revenue tagged under a mapped concept only up to
+ *                          FY2023 while net income runs to FY2025; LongTermDebt
+ *                          plus ShortTermBorrowings with no current-maturities
+ *                          tag; 2.9M shares outstanding; no submissions route,
+ *                          so the SIC lookup 404s
+ *   IPO     (CIK 333)     — a first 10-K: both fiscal years come from one filing;
+ *                          its submissions request fails at the transport level
  * The numbers for AAPL are the FY2025 figures as reported, so a reader can
  * sanity-check the pack the generator produces against the real 10-K.
  */
@@ -214,6 +228,71 @@ const CNV_FACTS = {
   },
 };
 
+/** Calendar-year duration facts for a synthetic filer: [year, value in $M, filing tuple]. */
+const cal = rows => rows.map(([y, v, k]) => dur(`${y}-01-01`, `${y}-12-31`, M(v), ...k));
+
+// SPLT: 10-for-1 split during FY2025 and a business sold in FY2025. Its FY2025
+// 10-K restates the FY2024 comparative column for both (NVDA's FY2025 10-K did
+// the former: diluted EPS $11.93 as first reported, $1.19 split-adjusted).
+const SPLT = { cik: '0000000444', name: 'SPLIT TEST CORP', recent: [{ form: '10-K', filed: '2026-02-20', period: '2025-12-31', accn: '0000000444-26-000001', doc: 'splt-20251231.htm' }] };
+const SPLT_K25 = ['10-K', '2026-02-20', '0000000444-26-000001', 2025];
+const SPLT_K24 = ['10-K', '2025-02-20', '0000000444-25-000001', 2024];
+const SPLT_8K = ['8-K', '2026-02-05', '0000000444-26-000000', 2025];
+const SPLT_KA = ['10-K/A', '2026-05-01', '0000000444-26-000009', 2025];
+const SPLT_FACTS = {
+  cik: 444, entityName: 'Split Test Corp',
+  facts: {
+    dei: { EntityCommonStockSharesOutstanding: { units: { shares: [inst('2026-02-10', 250_000_000, ...SPLT_K25)] } } },
+    'us-gaap': {
+      Revenues: usd(cal([[2025, 4000, SPLT_K25], [2024, 5000, SPLT_K24], [2024, 3600, SPLT_K25]])),
+      NetIncomeLoss: usd(cal([[2025, 730, SPLT_K25], [2024, 300, SPLT_K24], [2024, 300, SPLT_K25]])),
+      EarningsPerShareDiluted: { units: { 'USD/shares': [
+        dur('2025-01-01', '2025-12-31', 2.94, ...SPLT_K25), dur('2024-01-01', '2024-12-31', 11.93, ...SPLT_K24), dur('2024-01-01', '2024-12-31', 1.19, ...SPLT_K25),
+      ] } },
+      // The FY2024 10-K tagged diluted shares; the FY2025 10-K switched to the
+      // basic-and-diluted concept for both of its columns.
+      WeightedAverageNumberOfDilutedSharesOutstanding: { units: { shares: [dur('2024-01-01', '2024-12-31', 25_100_000, ...SPLT_K24)] } },
+      WeightedAverageNumberOfSharesOutstandingBasicAndDiluted: { units: { shares: [
+        dur('2025-01-01', '2025-12-31', 248_000_000, ...SPLT_K25), dur('2024-01-01', '2024-12-31', 251_000_000, ...SPLT_K25),
+      ] } },
+      Goodwill: usd([inst('2025-12-31', M(700), ...SPLT_KA)]),
+      OperatingIncomeLoss: usd(cal([[2025, 900, SPLT_8K]])),
+      // Tagged in the earnings 8-K (preliminary) and in the 10-K (final): the 10-K's figure is the pack's.
+      IncomeTaxExpenseBenefit: usd(cal([[2025, 150, SPLT_8K], [2025, 160, SPLT_K25]])),
+    },
+  },
+};
+
+// DRIFT: the revenue tag this helper maps stops at FY2023; net income continues.
+const DRIFT_K = y => ['10-K', `${y + 1}-02-20`, `0000000555-${String(y + 1).slice(2)}-000001`, y];
+const DRIFT_FACTS = {
+  cik: 555, entityName: 'Drift Test Corp',
+  facts: {
+    dei: { EntityCommonStockSharesOutstanding: { units: { shares: [inst('2026-02-10', 2_912_345, ...DRIFT_K(2025))] } } },
+    'us-gaap': {
+      Revenues: usd(cal([[2023, 800, DRIFT_K(2023)]])),
+      NetIncomeLoss: usd(cal([[2025, 90, DRIFT_K(2025)], [2024, 80, DRIFT_K(2024)], [2023, 70, DRIFT_K(2023)]])),
+      WeightedAverageNumberOfDilutedSharesOutstanding: { units: { shares: [dur('2025-01-01', '2025-12-31', 2_950_000, ...DRIFT_K(2025))] } },
+      LongTermDebt: usd([inst('2025-12-31', M(500), ...DRIFT_K(2025))]),
+      ShortTermBorrowings: usd([inst('2025-12-31', M(120), ...DRIFT_K(2025))]),
+      CashAndCashEquivalentsAtCarryingValue: usd([inst('2025-12-31', M(50), ...DRIFT_K(2025))]),
+    },
+  },
+};
+
+// IPO: one 10-K carrying both years, so both facts share an accession and an `fy`.
+const IPO_K = ['10-K', '2026-03-01', '0000000333-26-000001', 2025];
+const IPO_FACTS = {
+  cik: 333, entityName: 'Ipo Test Corp',
+  facts: {
+    dei: {},
+    'us-gaap': {
+      Revenues: usd(cal([[2025, 900, IPO_K], [2024, 700, IPO_K]])),
+      NetIncomeLoss: usd(cal([[2025, 60, IPO_K], [2024, -20, IPO_K]])),
+    },
+  },
+};
+
 const TICKERS = {
   0: { cik_str: 320193, ticker: 'AAPL', title: 'Apple Inc.' },
   1: { cik_str: 1067983, ticker: 'BRK-B', title: 'BERKSHIRE HATHAWAY INC' },
@@ -222,6 +301,9 @@ const TICKERS = {
   4: { cik_str: 500, ticker: 'FLAKY', title: 'FLAKY HOLDINGS' },
   5: { cik_str: 777, ticker: 'LTD', title: 'LEVERAGED TEST CORP' },
   6: { cik_str: 888, ticker: 'CNV', title: 'CONVERTIBLE TEST CORP' },
+  7: { cik_str: 444, ticker: 'SPLT', title: 'SPLIT TEST CORP' },
+  8: { cik_str: 555, ticker: 'DRIFT', title: 'DRIFT TEST CORP' },
+  9: { cik_str: 333, ticker: 'IPO', title: 'IPO TEST CORP' },
 };
 
 /** A `data.sec.gov/submissions/CIK...json` payload for a synthetic company. */
@@ -271,6 +353,11 @@ function route(url) {
     return state.flakyCalls === 1 ? response(503, 'Service Unavailable', 'text') : response(200, submissions(FLAKY));
   }
 
+  if (url === `${DATA}/submissions/CIK0000000444.json`) return response(200, submissions(SPLT));
+  if (url === `${DATA}/api/xbrl/companyfacts/CIK0000000444.json`) return response(200, SPLT_FACTS);
+  if (url === `${DATA}/api/xbrl/companyfacts/CIK0000000555.json`) return response(200, DRIFT_FACTS); // no submissions route: 404
+  if (url === `${DATA}/api/xbrl/companyfacts/CIK0000000333.json`) return response(200, IPO_FACTS);
+  if (url === `${DATA}/submissions/CIK0000000333.json`) throw new TypeError('fetch failed'); // transport error, every attempt
   if (url === `${DATA}/submissions/CIK0000000777.json`) return response(200, submissions(LTD));
   if (url === `${DATA}/submissions/CIK0000000888.json`) return response(200, submissions(CNV));
   if (url === `${DATA}/api/xbrl/companyfacts/CIK0000000888.json`) return response(200, CNV_FACTS);
