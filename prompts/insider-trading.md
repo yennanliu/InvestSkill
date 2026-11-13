@@ -292,6 +292,10 @@ Reference the following sources for insider trading data:
   - Screeners for significant transactions
   - Historical data back 10+ years
 
+- **WallStPal**: Free Form 4 tracker (wallstpal.com/insiders)
+  - Tags each open-market trade as routine or opportunistic (Cohen, Malloy & Pomorski, 2012) and shows the 10b5-1 plan flag
+  - Cluster buys, late filings, and a 3-month vs. S&P 500 record by trade type (wallstpal.com/opportunistic-buys)
+
 - **SEC Form 4 Tracker**: Real-time Form 4 monitoring
 - **Finviz Insider**: Basic insider data with visualizations
 - **GuruFocus Insider**: Premium insider analysis
