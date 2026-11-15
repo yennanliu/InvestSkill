@@ -85,17 +85,17 @@ A: In Claude Code, `/plugin marketplace update invest-skill` pulls the latest ve
 
 A: Claude Code, Cursor, GitHub Copilot, Gemini CLI, Codex, OpenCode, and any chat LLM (ChatGPT, Claude.ai, Gemini web, local models through [Ollama](README-ollama.md)). The skills are plain markdown, so anything that can read a prompt can use them. See [Platform Compatibility](PLATFORM-COMPATIBILITY.md) for a side-by-side.
 
-**Q: Are all 38 skills available on every platform?**
+**Q: Are all 39 skills available on every platform?**
 
-A: Yes. Every platform gets the same 38 skills: 34 analysis frameworks, 3 aliases (`fundamental-analysis`, `dcf-valuation`, `research-bundle`, which redirect to the skill that absorbed them), and the `report-generator` output tool.
-- **Claude Code**: all 38 skills as slash commands
-- **Cursor, Gemini CLI, Codex, OpenCode**: all 38 skills as `@.investskill/prompts/<skill>.md` files (or `@prompts/<skill>.md` inside a clone of the repo)
-- **Copilot**: all 38 skills, referenced from `.github/copilot-instructions.md`
-- **Any LLM**: 38 prompts in `prompts/`, one per skill
+A: Yes. Every platform gets the same 39 skills: 34 analysis frameworks, 3 aliases (`fundamental-analysis`, `dcf-valuation`, `research-bundle`, which redirect to the skill that absorbed them), and 2 output tools (`report-generator` and `basket-report`).
+- **Claude Code**: all 39 skills as slash commands
+- **Cursor, Gemini CLI, Codex, OpenCode**: all 39 skills as `@.investskill/prompts/<skill>.md` files (or `@prompts/<skill>.md` inside a clone of the repo)
+- **Copilot**: all 39 skills, referenced from `.github/copilot-instructions.md`
+- **Any LLM**: 39 prompts in `prompts/`, one per skill
 
-**Q: Why is the advertised count 34 and not 38?**
+**Q: Why is the advertised count 34 and not 39?**
 
-A: `report-generator` is an output tool (it renders other skills' results as HTML/PDF), not an analysis framework, and the three aliases are kept only so old commands keep working. They ship with the plugin but aren't counted.
+A: `report-generator` and `basket-report` are output tools — the first renders other skills' results as HTML/PDF, the second packages `compare` and `full-report` runs on a 2–5 stock basket into one linked deliverable — not analysis frameworks, and the three aliases are kept only so old commands keep working. They ship with the plugin but aren't counted.
 
 **Q: How do I use a skill in Cursor, Gemini CLI, Codex or OpenCode?**
 

@@ -1,6 +1,6 @@
 # InvestSkill for Gemini CLI
 
-Professional investment analysis prompts for Gemini CLI: 34 analysis frameworks as universal prompts, plus 3 aliases and the `report-generator` output tool.
+Professional investment analysis prompts for Gemini CLI: 34 analysis frameworks as universal prompts, plus 3 aliases and 2 output tools (`report-generator`, `basket-report`).
 
 **For other platforms**, see [README.md](README.md).
 
@@ -89,7 +89,7 @@ Or just ask — `GEMINI.md` tells Gemini the frameworks exist:
 | Risk Stress Test | `@.investskill/prompts/risk-stress-test.md` + holdings |
 | Trade Post-Mortem | `@.investskill/prompts/trade-postmortem.md` + closed trade(s) |
 
-### Meta & Output (5 + 1 output tool)
+### Meta & Output (5 + 2 output tools)
 | Framework | Usage |
 |-----------|-------|
 | Full Report | `@.investskill/prompts/full-report.md AAPL --depth standard` |
@@ -98,6 +98,7 @@ Or just ask — `GEMINI.md` tells Gemini the frameworks exist:
 | Fact-Check | `@.investskill/prompts/fact-check.md` + a report |
 | Learning Coach | `@.investskill/prompts/learning-coach.md` + an analysis |
 | Report Generator (output tool) | `@.investskill/prompts/report-generator.md` + an analysis |
+| Basket Report (output tool) | `@.investskill/prompts/basket-report.md MU MRVL SNDL` |
 
 ### Aliases (3, not counted as frameworks)
 `fundamental-analysis` → `stock-eval` · `dcf-valuation` → `stock-valuation` · `research-bundle` → `full-report`. They still work, but use the target skill for new work.

@@ -24,6 +24,25 @@
 - **「這要怎麼用？」** → [實機演練](WALKTHROUGH-zh-TW.md)。
 - **「我手上有一份 10-K，想讀懂它。」** → [AMD](FULL-DEMO-AMD.md)（深度解讀再驗證），或英文的 [META](FULL-DEMO-META.md)（多個技能分析同一份年報）。
 - **「我想要一檔股票的完整分析。」** → [RKLB](FULL-DEMO-RKLB.md)，或英文的 [PLTR](FULL-DEMO-PLTR.md)。
+- **「我想看幾檔股票放在同一份互相連結的報告裡。」** → 下面的展示櫃。
+
+---
+
+## 展示櫃：一個籃子、八個互相連結的頁面
+
+[**InvestSkill 展示櫃**](https://yennj12.js.org/InvestSkill-test/showcase/index.html)放在姊妹專案 [`InvestSkill-test`](https://github.com/yennanliu/InvestSkill-test)。它用**同一份 2026-07-29 的資料快照**，把各個框架跑在一個四檔股票的籃子上——MU、SKHY、MRVL、SNDL，四檔在同一天下跌 7.8–9.6%——全部以繁體中文撰寫。
+
+| 頁面 | 內容 |
+|------|------|
+| [總覽](https://yennj12.js.org/InvestSkill-test/showcase/index.html) | 這個籃子要回答的問題，以及每個框架用在哪裡的地圖 |
+| [MU](https://yennj12.js.org/InvestSkill-test/showcase/mu.html) | 15 個模組的 `full-report`，加上 `bear-case`、`position-ladder` 與 `result-validator` |
+| [四檔對決](https://yennj12.js.org/InvestSkill-test/showcase/screener.html) | `stock-screener`：22 個子分數，每一個旁邊都附原始輸入 |
+| [工作流 A–G](https://yennj12.js.org/InvestSkill-test/showcase/workflows.html) | Cookbook 的七條工作流程；其中兩條在第一道閘門就停止，而這正是正確答案 |
+| [產業鏈地圖](https://yennj12.js.org/InvestSkill-test/showcase/supply-chain.html) | 以 `industry-map` 畫出 HBM 價值鏈 |
+
+值得注意的地方：每個頁面引用的價格都相同、每個分數旁邊都有它的輸入，而且刻意保留了三個資料瑕疵，讓 `result-validator` 有東西可抓（其中一份報告拒絕給出目標價）。
+
+> **請留意日期。** 展示櫃是以 InvestSkill **v1.11.0**（27 個框架）製作的，數字為 2026-07-29 的資料——它示範的是方法，不是目前的數字，也不是目前的完整框架目錄。想在自己的籃子上做出同樣的形式，請用 [`basket-report`](skill-basket-report.html)（操作手冊的工作流程 J）。
 
 ---
 

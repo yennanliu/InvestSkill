@@ -45,6 +45,7 @@
 | 知道我的*投組在惡劣環境下可能虧多少* | `risk-stress-test` | — |
 | *看懂*我剛拿到的分析（並學會背後的概念） | `learning-coach` | — |
 | *從已平倉的交易中學習*（流程 vs. 結果） | `trade-postmortem` | `thesis-tracker` |
+| 我想要一份涵蓋幾檔股票、互相連結的報告，而不是各自獨立的幾份 | `basket-report` | — |
 
 ---
 

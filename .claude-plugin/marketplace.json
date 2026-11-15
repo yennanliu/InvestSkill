@@ -5,7 +5,7 @@
     "email": "yennanliu@users.noreply.github.com"
   },
   "metadata": {
-    "description": "Professional investment analysis and stock evaluation skills for US markets — 34 analysis frameworks (+ 3 aliases, 1 output tool) covering fundamental, technical, valuation and financial-report analysis, forensic accounting, credit check, head-to-head compare, ETF analysis, earnings preview, thesis tracking, risk stress test, tax lens, fact-check, industry supply-chain mapping, bear-case red-teaming, staged position laddering, trade post-mortem, result validation, charting, and full comprehensive reports",
+    "description": "Professional investment analysis and stock evaluation skills for US markets — 34 analysis frameworks (+ 3 aliases, 2 output tools) covering fundamental, technical, valuation and financial-report analysis, forensic accounting, credit check, head-to-head compare, ETF analysis, earnings preview, thesis tracking, risk stress test, tax lens, fact-check, industry supply-chain mapping, bear-case red-teaming, staged position laddering, trade post-mortem, result validation, charting, and full comprehensive reports",
     "version": "1.14.1"
   },
   "plugins": [

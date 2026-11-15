@@ -2,6 +2,7 @@
   "_about": "Traditional Chinese title and one-line summary for every skill, used by the zh Skill Reference index (skills-zh-tw.html). The skill pages themselves stay in English. scripts/test-skills.js fails when a skill has no entry here.",
   "skills": {
     "10k-digest": { "title": "10-K 年報摘要", "summary": "深度閱讀 10-K 年報，輸出結構化摘要——重點、各章節摘要、關鍵指標與附來源的引用；可輸出英文或繁體中文。" },
+    "basket-report": { "title": "籃子報告", "summary": "把 2–5 檔股票當成一個籃子，以單一資料日期的快照產出一份互相連結的交付物：總覽頁提出問題並論證選擇，每檔股票各一份報告。" },
     "bear-case": { "title": "空方論點", "summary": "刻意扮演放空者，為一檔股票建立最強的看空論點，找出任何看多論點忽略的反證。" },
     "catalyst-calendar": { "title": "催化劑行事曆", "summary": "未來 90 天的催化劑行事曆：即將發生的事件、日期與預期的股價影響。" },
     "chart-master": { "title": "圖表大師", "summary": "以 Mermaid、ASCII 或 HTML/Chart.js 產生專業財經圖表——均線、K 線、成交量、RSI/MACD 等。" },

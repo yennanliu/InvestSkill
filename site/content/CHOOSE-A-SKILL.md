@@ -45,6 +45,7 @@
 | Know how much my *portfolio could lose* in a bad regime | `risk-stress-test` | — |
 | *Understand* an analysis I just got (and learn the concepts behind it) | `learning-coach` | — |
 | *Learn from a closed trade* (process vs. outcome) | `trade-postmortem` | `thesis-tracker` |
+| I want one linked report on a small basket of stocks, not four separate ones | `basket-report` | — |
 
 ---
 

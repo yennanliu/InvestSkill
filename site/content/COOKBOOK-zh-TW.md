@@ -70,7 +70,7 @@ claude
 /plugin list
 ```
 
-確認在清單中看到 `us-stock-analysis`，並顯示 38 個可用技能（34 個分析框架、3 個別名，以及 `report-generator` 輸出工具），即表示安裝成功。
+確認在清單中看到 `us-stock-analysis`，並顯示 39 個可用技能（34 個分析框架、3 個別名，以及 `report-generator` 與 `basket-report` 兩個輸出工具），即表示安裝成功。
 
 ### 快速測試
 
@@ -154,7 +154,7 @@ plugins/us-stock-analysis/skills/
 ├── financial-report-analyst/SKILL.md
 ├── chart-master/SKILL.md
 ├── full-report/SKILL.md
-└── ...（共 38 個技能）
+└── ...（共 39 個技能）
 ```
 
 ### 標準訊號區塊
@@ -194,7 +194,7 @@ prompts/
 ├── financial-report-analyst.md
 ├── chart-master.md
 ├── full-report.md
-└── ...（共 38 個檔案，每個技能一個）
+└── ...（共 39 個檔案，每個技能一個）
 ```
 
 只需將檔案內容複製貼上到任何 AI 對話作為系統提示即可使用。
@@ -1830,6 +1830,8 @@ Samsung / Apple 設計案報導，取自 stockanalysis.com 新聞頁，2026/07/2
 
 以下為真實投資情境，展示如何組合多個技能。
 
+> **工作流程停下來，也算完成。** 下面有幾個步驟是閘門——篩選、安全性檢查、論點檢查。第一道閘門沒過時（「這幾檔都沒有安全的股息」、「沒有標的通過空單門檻」、「論點已經失效」），正確的輸出就是這句話和背後的數字，而不是放寬條件去找一個比較差的設定。不要為了有東西可以交差而把剩下的步驟跑完。另外，整條流程要用同一個資料日期：串接的每個技能讀到的應該是同一組價格。
+
 ---
 
 ### 工作流程 A — 財報前深度準備
@@ -2086,9 +2088,37 @@ Samsung / Apple 設計案報導，取自 stockanalysis.com 新聞頁，2026/07/2
 
 ---
 
+### 工作流程 J — 把一個小籃子做成一份互相連結的報告
+
+**情境：** 你正在看三、四檔相關的股票——它們一起漲跌，或是同一個位置的候選標的——你想要一份可以回頭重讀的交付物，而不是四段各用不同價格的對話。
+
+```bash
+# 步驟 0（只有在一開始超過五檔時才需要）：先篩出短名單
+/us-stock-analysis:stock-screener MU SKHY MRVL WDC STX AVGO NVDA AMD
+# 輸出：排行榜；把前五名（或更少）帶到下一步
+
+# 步驟 1：一個指令處理整個籃子
+/us-stock-analysis:basket-report MU MRVL SNDL --lang zh-TW — 它們同一天都跌了 8%，是循環反轉還是流動性事件？
+# 它會先告訴你成本：3 檔 × 10 個模組 = 30 次模組執行（--depth quick 為 15 次）。
+# 接著為三檔存下「同一份」資料快照，依這份快照為每檔寫一份 full-report，
+# 用 compare 選出標的，最後組成：
+#   output/basket_mu-mrvl-sndl_<日期>/index.html    總覽頁：問題、選擇、逐項對照、資料瑕疵
+#   output/basket_mu-mrvl-sndl_<日期>/<ticker>.html 每檔一份報告
+#   output/basket_mu-mrvl-sndl_<日期>/chain.html    industry-map（若它們在同一條價值鏈上）
+#   output/basket_mu-mrvl-sndl_<日期>/snapshot.md   所有頁面共用的資料
+
+# 步驟 2：只對選出的那一檔深入
+/us-stock-analysis:full-report MU --depth comprehensive --lang zh-TW
+/us-stock-analysis:thesis-tracker MU
+```
+
+**誠實解讀輸出：** 看選擇之前，先看總覽頁的資料瑕疵清單與「未評估」清單——報告無法為它估值的標的（剛掛牌、財報以其他貨幣編製），並不是輸了這場比較，而是根本沒有參賽。「這幾檔都不選」也是有效的答案。想看這種形式的成品——四檔股票的籃子、八個頁面、繁體中文——請見 [InvestSkill 展示櫃](https://yennj12.js.org/InvestSkill-test/showcase/index.html)。
+
+---
+
 ## 5. 跨 AI 工具使用
 
-InvestSkill 適用於任何 AI 助手。`prompts/` 目錄包含所有 34 個分析框架（另含 3 個別名與 report-generator 輸出工具）的獨立檔案。
+InvestSkill 適用於任何 AI 助手。`prompts/` 目錄包含所有 34 個分析框架（另含 3 個別名，以及 report-generator 與 basket-report 兩個輸出工具）的獨立檔案。
 
 ### Gemini CLI
 

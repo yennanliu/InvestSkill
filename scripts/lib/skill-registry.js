@@ -6,8 +6,13 @@
  *
  *   analysis frameworks  = skill dirs − OUTPUT_TOOLS − ALIAS_SKILLS
  *
- * - OUTPUT_TOOLS  render other skills' results (HTML/PDF); they produce no
- *                 signal of their own and are not advertised as frameworks.
+ * - OUTPUT_TOOLS  package other skills' results; they add no analysis of their
+ *                 own and are not advertised as frameworks. `report-generator`
+ *                 renders HTML/PDF; `basket-report` orchestrates compare and
+ *                 full-report over a basket and relays the pick's signal.
+ * - RENDER_ONLY   the output tools with no analysis output at all, so the
+ *                 output contract does not apply. `basket-report` is an
+ *                 output tool but still held to the full contract.
  * - ALIAS_SKILLS  are thin redirect stubs kept for backwards compatibility
  *                 (their SKILL.md points at the skill that absorbed them).
  *                 They are installed and still work, but are advertised as
@@ -23,20 +28,21 @@ const ROOT = path.resolve(__dirname, '..', '..');
 const SKILLS_DIR = path.join(ROOT, 'plugins', 'us-stock-analysis', 'skills');
 const PROMPTS_DIR = path.join(ROOT, 'prompts');
 
-const OUTPUT_TOOLS = ['report-generator'];
+const OUTPUT_TOOLS = ['report-generator', 'basket-report'];
+const RENDER_ONLY = ['report-generator'];
 const ALIAS_SKILLS = ['fundamental-analysis', 'dcf-valuation', 'research-bundle'];
 const META_SKILLS = ['result-validator'];
 
 // Which skills are exempt from each contract section.
 const CONTRACT_EXEMPT = {
-  signalBlock:        [...OUTPUT_TOOLS],
-  dataVerification:   [...OUTPUT_TOOLS, ...ALIAS_SKILLS, ...META_SKILLS],
-  dataSources:        [...OUTPUT_TOOLS, ...ALIAS_SKILLS, ...META_SKILLS],
-  thesisInvalidation: [...OUTPUT_TOOLS, ...ALIAS_SKILLS, ...META_SKILLS],
-  disclaimer:         [...OUTPUT_TOOLS],
-  signalFence:        [...OUTPUT_TOOLS],
-  jsonFooter:         [...OUTPUT_TOOLS],
-  langZhTw:           [...OUTPUT_TOOLS, ...ALIAS_SKILLS],
+  signalBlock:        [...RENDER_ONLY],
+  dataVerification:   [...RENDER_ONLY, ...ALIAS_SKILLS, ...META_SKILLS],
+  dataSources:        [...RENDER_ONLY, ...ALIAS_SKILLS, ...META_SKILLS],
+  thesisInvalidation: [...RENDER_ONLY, ...ALIAS_SKILLS, ...META_SKILLS],
+  disclaimer:         [...RENDER_ONLY],
+  signalFence:        [...RENDER_ONLY],
+  jsonFooter:         [...RENDER_ONLY],
+  langZhTw:           [...RENDER_ONLY, ...ALIAS_SKILLS],
 };
 
 function listSkillDirs() {
@@ -65,6 +71,6 @@ function frameworkCount(names = listSkillDirs()) {
 
 module.exports = {
   ROOT, SKILLS_DIR, PROMPTS_DIR,
-  OUTPUT_TOOLS, ALIAS_SKILLS, META_SKILLS, CONTRACT_EXEMPT,
+  OUTPUT_TOOLS, RENDER_ONLY, ALIAS_SKILLS, META_SKILLS, CONTRACT_EXEMPT,
   listSkillDirs, listPromptNames, isFramework, frameworkCount,
 };

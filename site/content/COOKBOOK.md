@@ -70,7 +70,7 @@ claude
 /plugin list
 ```
 
-You should see `us-stock-analysis` in the list with 38 available skills (34 analysis frameworks, 3 aliases, and the `report-generator` output tool).
+You should see `us-stock-analysis` in the list with 39 available skills (34 analysis frameworks, 3 aliases, and the `report-generator` and `basket-report` output tools).
 
 ### Quick Test
 
@@ -154,7 +154,7 @@ plugins/us-stock-analysis/skills/
 ├── financial-report-analyst/SKILL.md
 ├── chart-master/SKILL.md
 ├── full-report/SKILL.md
-└── ... (38 skills total)
+└── ... (39 skills total)
 ```
 
 ### The Signal Block
@@ -194,7 +194,7 @@ prompts/
 ├── financial-report-analyst.md
 ├── chart-master.md
 ├── full-report.md
-└── ... (38 files, one per skill)
+└── ... (39 files, one per skill)
 ```
 
 Use them by copying the file content into any AI chat as a system prompt.
@@ -1870,6 +1870,8 @@ framework is that it disagrees with you sometimes.
 
 Real-world investor scenarios showing how to combine multiple skills.
 
+> **A workflow that stops is a finished workflow.** Several steps below are gates — a screen, a safety check, a thesis check. When the first gate fails ("none of these pays a safe dividend", "no name passes the short-interest filter", "the thesis is broken"), the correct output is that sentence and the numbers behind it, not a weaker setup found by loosening the filter. Do not run the remaining steps to have something to show. Keep one as-of date across every step too: each skill in a chain should read the same prices.
+
 ---
 
 ### Workflow A — Pre-Earnings Deep Dive
@@ -2129,9 +2131,37 @@ demand compounds for two more years and the market is pricing a one-off cycle
 
 ---
 
+### Workflow J — A Small Basket as One Linked Report
+
+**Scenario:** You are looking at three or four related names — they moved together, or they are the candidates for one slot — and you want one deliverable you can reread, not four separate chats with four different prices.
+
+```bash
+# Step 0 (only if you start with more than five names): shortlist
+/us-stock-analysis:stock-screener MU SKHY MRVL WDC STX AVGO NVDA AMD
+# Returns: the leaderboard; carry the top five (or fewer) forward
+
+# Step 1: One command for the basket
+/us-stock-analysis:basket-report MU MRVL SNDL — they all fell 8% on the same day; is it the cycle or liquidity?
+# First it tells you the cost: 3 tickers × 10 modules = 30 module runs (--depth quick: 15).
+# Then it saves ONE data snapshot for all three, writes a full-report per ticker from that
+# snapshot, runs compare for the pick, and assembles:
+#   output/basket_mu-mrvl-sndl_<date>/index.html   the hub: question, pick, head-to-head, defects
+#   output/basket_mu-mrvl-sndl_<date>/<ticker>.html one report each
+#   output/basket_mu-mrvl-sndl_<date>/chain.html    industry-map, if they share a value chain
+#   output/basket_mu-mrvl-sndl_<date>/snapshot.md   the data every page was built from
+
+# Step 2: Go deep on the pick only
+/us-stock-analysis:full-report MU --depth comprehensive
+/us-stock-analysis:thesis-tracker MU
+```
+
+**Read the output honestly:** check the hub's defect ledger and "not assessed" list before the pick — a ticker whose report could not value it (a new listing, statements in another currency) has not lost the comparison, it has not been in it. And "none of these" is a valid answer. For a finished example of the form — eight pages on a four-stock basket, in Traditional Chinese — see the [InvestSkill showcase](https://yennj12.js.org/InvestSkill-test/showcase/index.html).
+
+---
+
 ## 5. Cross-AI Usage
 
-InvestSkill works with any AI assistant. The `prompts/` directory contains all 34 analysis frameworks (plus 3 aliases and the report-generator output tool) as standalone files.
+InvestSkill works with any AI assistant. The `prompts/` directory contains all 34 analysis frameworks (plus 3 aliases and the report-generator and basket-report output tools) as standalone files.
 
 ### Gemini CLI
 

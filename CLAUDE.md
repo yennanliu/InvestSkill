@@ -153,7 +153,7 @@ Choosing the version number and *when* to cut the release both matter — don't 
 
 ## Framework Count Rule
 
-The **advertised framework count** = number of skills in `plugins/us-stock-analysis/skills/` **minus output-only tools** (`report-generator`) **minus alias/redirect stubs** (`fundamental-analysis`, `dcf-valuation`, `research-bundle`). It is currently **34 analysis frameworks** (38 skill directories − 1 output tool − 3 aliases). The classification lives in one place — `scripts/lib/skill-registry.js` (`OUTPUT_TOOLS`, `ALIAS_SKILLS`, `META_SKILLS`) — and is imported by `test-skills.js`, `test-install.js`, `check-skill-contract.js`, and `site/build/build-site.js`. The alias list is mirrored in `install.sh`'s `case` block (the install tests check parity).
+The **advertised framework count** = number of skills in `plugins/us-stock-analysis/skills/` **minus output tools** (`report-generator`, `basket-report`) **minus alias/redirect stubs** (`fundamental-analysis`, `dcf-valuation`, `research-bundle`). It is currently **34 analysis frameworks** (39 skill directories − 2 output tools − 3 aliases). The classification lives in one place — `scripts/lib/skill-registry.js` (`OUTPUT_TOOLS`, `RENDER_ONLY`, `ALIAS_SKILLS`, `META_SKILLS`; `basket-report` is an output tool that still honours the full output contract, `report-generator` is render-only and exempt) — and is imported by `test-skills.js`, `test-install.js`, `check-skill-contract.js`, and `site/build/build-site.js`. The alias and output-tool lists are mirrored in `install.sh`'s `case` block (the install tests check parity).
 
 - Keep this number consistent across `README.md`, `README-zh-TW.md`, `site/content/CHOOSE-A-SKILL(-zh-TW).md`, `site/content/COOKBOOK(-zh-TW).md`, and `plugin.json`'s description.
 - `site/build/build-site.js` derives it automatically (`FRAMEWORK_COUNT`) — never hardcode a count there.
@@ -164,7 +164,7 @@ The **advertised framework count** = number of skills in `plugins/us-stock-analy
 ## Current State
 
 - **Version**: 1.14.0 (plugin.json = marketplace.json = package.json)
-- **Skills**: 38 directories in `plugins/us-stock-analysis/skills/` (auto-discovered)
-- **Advertised frameworks**: 34 analysis frameworks (38 − `report-generator` − 3 aliases)
-- **Prompts**: 38 universal files in `prompts/` — **generated** from SKILL.md by `scripts/sync-prompts.js` (never hand-edit them; `--check` runs in `npm test`)
+- **Skills**: 39 directories in `plugins/us-stock-analysis/skills/` (auto-discovered)
+- **Advertised frameworks**: 34 analysis frameworks (39 − 2 output tools − 3 aliases)
+- **Prompts**: 39 universal files in `prompts/` — **generated** from SKILL.md by `scripts/sync-prompts.js` (never hand-edit them; `--check` runs in `npm test`)
 - **Node**: ≥18.0.0 required

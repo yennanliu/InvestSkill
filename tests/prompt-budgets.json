@@ -2,6 +2,7 @@
   "_about": "Estimated token size of every prompt a model receives (scripts/lib/prompt-metrics.js). test-llm-io.js fails when a file grows more than 25% past its entry. If the growth is intended, run `node scripts/test-llm-io.js --update-budgets` and commit the result so the reviewer sees it.",
   "budgets": {
     "plugins/us-stock-analysis/skills/10k-digest/SKILL.md": 5667,
+    "plugins/us-stock-analysis/skills/basket-report/SKILL.md": 7067,
     "plugins/us-stock-analysis/skills/bear-case/SKILL.md": 5249,
     "plugins/us-stock-analysis/skills/catalyst-calendar/SKILL.md": 6433,
     "plugins/us-stock-analysis/skills/chart-master/SKILL.md": 6933,
@@ -40,6 +41,7 @@
     "plugins/us-stock-analysis/skills/thesis-tracker/SKILL.md": 7664,
     "plugins/us-stock-analysis/skills/trade-postmortem/SKILL.md": 10940,
     "prompts/10k-digest.md": 5566,
+    "prompts/basket-report.md": 6968,
     "prompts/bear-case.md": 5192,
     "prompts/catalyst-calendar.md": 6389,
     "prompts/chart-master.md": 6875,

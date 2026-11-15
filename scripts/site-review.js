@@ -109,7 +109,7 @@ md += `\n## Snapshot\n\n| Metric | Value |\n|---|---|\n`;
 md += `| Version | ${plugin.version} |\n`;
 md += `| Skill directories | ${skillCount} |\n`;
 md += `| Universal prompts | ${promptCount} |\n`;
-md += `| Advertised frameworks | ${advertised} (${skillCount} − ${reg.OUTPUT_TOOLS.length} output tool − ${reg.ALIAS_SKILLS.length} aliases) |\n`;
+md += `| Advertised frameworks | ${advertised} (${skillCount} − ${reg.OUTPUT_TOOLS.length} output tools − ${reg.ALIAS_SKILLS.length} aliases) |\n`;
 md += `| Built HTML pages | ${pageCount} |\n`;
 
 if (!allOk) {

@@ -40,7 +40,7 @@ If the framework loads, setup is complete!
 
 ---
 
-## Available Analysis Frameworks (34 frameworks + 3 aliases + 1 output tool)
+## Available Analysis Frameworks (34 frameworks + 3 aliases + 2 output tools)
 
 ### Core Stock Analysis (5 frameworks)
 
@@ -97,15 +97,16 @@ If the framework loads, setup is complete!
 |-----------|------|----------|
 | Full Report (HTML) | `@prompts/full-report.md` | Runs all modules and saves a standalone HTML report |
 
-### Meta-Analysis & Visualization (5 frameworks)
+### Meta-Analysis & Visualization (4 frameworks + 2 output tools)
 
 | Framework | File | Best For |
 |-----------|------|----------|
 | Result Validator | `@prompts/result-validator.md` | Validate any analysis + confidence score |
 | Chart Master | `@prompts/chart-master.md` | Generate Mermaid/ASCII/HTML charts |
-| Report Generator | `@prompts/report-generator.md` | Export analysis as a professional HTML/PDF report |
+| Report Generator (output tool) | `@prompts/report-generator.md` | Export analysis as a professional HTML/PDF report |
 | Learning Coach | `@prompts/learning-coach.md` | Explains any InvestSkill output like a mentor — every metric in plain words, why it matters, its good / bad range, and the lesson that teaches it — then asks 3–5 Socratic questions and "what would change your mind?". --level beginner / intermediate, --lang zh-TW, and a --quiz mode that drills a Learning lesson |
 | Fact Check | `@prompts/fact-check.md` | Claim-level verification of any report or data set — extract every figure and factual claim, check each against a primary source (SEC filing, company IR, FRED, exchange data, or the user's own document), recompute derived numbers, mark ✅ verified / ⚠️ mismatch / ❓ unverifiable, and re-issue the report with inline citations and a References section; Verification Score 0–10 |
+| Basket Report (output tool) | `@prompts/basket-report.md` | Run a 2–5 stock basket as one linked deliverable — a hub page that states the question and argues the pick, one report per ticker, all from a single shared as-of snapshot; orchestrates compare, full-report and industry-map, with stock-screener first to shortlist a longer list |
 
 ### Aliases (3 redirects — installed, not counted as frameworks)
 
@@ -415,7 +416,7 @@ InvestSkill/
 │       └── invest-skill.mdc      # This file (auto-loaded)
 ├── .github/
 │   └── copilot-instructions.md   # GitHub Copilot integration
-├── prompts/                       # 34 frameworks (+ 3 aliases, 1 output tool)
+├── prompts/                       # 34 frameworks (+ 3 aliases, 2 output tools)
 │   ├── stock-eval.md
 │   ├── stock-valuation.md
 │   ├── fundamental-analysis.md
@@ -449,6 +450,7 @@ InvestSkill/
 │   ├── forensic-accounting.md
 │   ├── credit-check.md
 │   ├── compare.md
+│   ├── basket-report.md
 │   └── report-generator.md     # HTML/PDF report design system
 ├── plugins/
 │   └── us-stock-analysis/
@@ -582,7 +584,7 @@ Analyze AAPL with:
 - **README.md** — Full setup for Claude Code, Gemini, Copilot, Cursor
 - **GEMINI.md** — Detailed Gemini CLI guide
 - **.github/copilot-instructions.md** — GitHub Copilot integration guide
-- **prompts/** — All 34 framework files (+ 3 aliases, 1 output tool)
+- **prompts/** — All 34 framework files (+ 3 aliases, 2 output tools)
 - **GitHub Issues** — Report problems or request features
 
 ---

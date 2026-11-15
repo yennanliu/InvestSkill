@@ -24,6 +24,25 @@ These demos show InvestSkill working on real stocks. Every one was run for real 
 - **"How do I use this?"** → the [Live Walkthrough](WALKTHROUGH.md).
 - **"I have a 10-K and want to understand it."** → [META](FULL-DEMO-META.md) (many skills on one filing) or [NVDA](FULL-DEMO-NVDA.md) / [AMD](FULL-DEMO-AMD.md) (one deep read, then verify).
 - **"I want everything on one stock."** → [PLTR](FULL-DEMO-PLTR.md) or [RKLB](FULL-DEMO-RKLB.md).
+- **"I want to see several stocks in one linked report."** → the showcase below.
+
+---
+
+## The showcase — one basket, eight linked pages (繁體中文)
+
+The [**InvestSkill showcase**](https://yennj12.js.org/InvestSkill-test/showcase/index.html) lives in the sibling repo [`InvestSkill-test`](https://github.com/yennanliu/InvestSkill-test). It runs the frameworks on a four-stock basket — MU, SKHY, MRVL and SNDL, which all fell 7.8–9.6% on the same day — from **one data snapshot dated 2026-07-29**, and is written in Traditional Chinese.
+
+| Page | What it shows |
+|------|---------------|
+| [Hub](https://yennj12.js.org/InvestSkill-test/showcase/index.html) | The question the basket poses, and a map of which framework is used where |
+| [MU](https://yennj12.js.org/InvestSkill-test/showcase/mu.html) | A 15-module `full-report`, with `bear-case`, `position-ladder` and `result-validator` |
+| [Screener](https://yennj12.js.org/InvestSkill-test/showcase/screener.html) | `stock-screener` with the raw input beside every one of 22 sub-scores |
+| [Workflows A–G](https://yennj12.js.org/InvestSkill-test/showcase/workflows.html) | The seven cookbook workflows; two stop at their first gate, which is the right answer |
+| [Supply chain](https://yennj12.js.org/InvestSkill-test/showcase/supply-chain.html) | `industry-map` on the HBM value chain |
+
+What to look for: every page quotes the same prices, every score sits beside its input, and three data defects are left in on purpose so `result-validator` has something to catch (one report declines to give a price target).
+
+> **Read the dates.** The showcase was built on InvestSkill **v1.11.0** (27 frameworks) and its figures are as of 2026-07-29 — it shows the method, not current numbers or the current catalogue. To produce the same shape on your own basket, use [`basket-report`](skill-basket-report.html) (Cookbook, Workflow J).
 
 ---
 

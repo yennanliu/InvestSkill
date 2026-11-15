@@ -28,7 +28,7 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 
 ---
 
-## Available Analysis Prompts (34 frameworks + 3 aliases + 1 output tool)
+## Available Analysis Prompts (34 frameworks + 3 aliases + 2 output tools)
 
 ### Core Stock Analysis (5 skills)
 
@@ -85,15 +85,16 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 |-----------------------------|----------------------------------------|--------------------------------------------|
 | Full Report (HTML)          | `@prompts/full-report.md`              | `Generate full interactive report for NVDA`|
 
-### Meta-Analysis & Visualization (5 skills)
+### Meta-Analysis & Visualization (4 skills + 2 output tools)
 
 | Analysis Type               | Prompt File                            | Usage Example                              |
 |-----------------------------|----------------------------------------|--------------------------------------------|
 | Result Validator            | `@prompts/result-validator.md`         | `[paste analysis] Score confidence`        |
 | Chart Master                | `@prompts/chart-master.md`             | `[paste data] Generate revenue chart`      |
-| Report Generator            | `@prompts/report-generator.md`         | `[paste analysis] Export as HTML report`   |
+| Report Generator (output tool) | `@prompts/report-generator.md`         | `[paste analysis] Export as HTML report`   |
 | Learning Coach | `@prompts/learning-coach.md` | `[paste a stock-eval output] Explain this to me` |
 | Fact Check | `@prompts/fact-check.md` | `[paste a report] Verify every number and add sources` |
+| Basket Report (output tool) | `@prompts/basket-report.md` | `Basket report on MU MRVL SNDL — why did they fall together?` |
 
 ### Aliases (3 redirects — installed, not counted as frameworks)
 
@@ -335,7 +336,7 @@ All analyses end with this format:
 
 ```
 InvestSkill/
-├── prompts/                    # 34 analysis frameworks (+ 3 aliases, 1 output tool)
+├── prompts/                    # 34 analysis frameworks (+ 3 aliases, 2 output tools)
 │   ├── stock-eval.md
 │   ├── stock-valuation.md
 │   ├── fundamental-analysis.md
@@ -369,6 +370,7 @@ InvestSkill/
 │   ├── forensic-accounting.md
 │   ├── credit-check.md
 │   ├── compare.md
+│   ├── basket-report.md
 │   └── report-generator.md     # HTML/PDF report design system
 ├── plugins/                    # Claude Code plugin (optional)
 │   └── us-stock-analysis/

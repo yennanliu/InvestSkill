@@ -1,6 +1,6 @@
 # InvestSkill Platform Compatibility Matrix
 
-Platform support and feature comparison for InvestSkill. Every platform gets the same content: 38 skills — 34 analysis frameworks, 3 aliases (`fundamental-analysis`, `dcf-valuation`, `research-bundle`) and the `report-generator` output tool. Only the way they load differs.
+Platform support and feature comparison for InvestSkill. Every platform gets the same content: 39 skills — 34 analysis frameworks, 3 aliases (`fundamental-analysis`, `dcf-valuation`, `research-bundle`) and 2 output tools (`report-generator`, `basket-report`). Only the way they load differs.
 
 ## Install
 
@@ -33,7 +33,7 @@ Claude Code can also install it as a plugin:
 
 | Feature | Claude Code | Cursor | Gemini CLI | Copilot | Codex / OpenCode | Any LLM (paste) | Ollama |
 |---------|:-----------:|:------:|:----------:|:-------:|:----------------:|:---------------:|:------:|
-| **34 analysis frameworks** (+ 3 aliases, 1 output tool) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **34 analysis frameworks** (+ 3 aliases, 2 output tools) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **Slash commands** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | **Auto-loaded config** | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
 | **`@` file references** | ➖ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
@@ -53,7 +53,7 @@ InvestSkill itself never fetches data — it has no runtime. "Fetches live data"
 
 **Type**: native plugin (marketplace) or project skills (`install.sh -a claude`)
 
-- All 38 skills as slash commands — `/us-stock-analysis:<skill>` from the marketplace, `/<skill>` from `install.sh`. Use one method per project, or every skill appears twice.
+- All 39 skills as slash commands — `/us-stock-analysis:<skill>` from the marketplace, `/<skill>` from `install.sh`. Use one method per project, or every skill appears twice.
 - Skill arguments (`--depth`, `--lang zh-TW`, `--update`, …) work as written in each skill.
 - Works with whichever model the session runs (`/model`).
 - Update with `/plugin marketplace update invest-skill`, or re-run `install.sh`.
