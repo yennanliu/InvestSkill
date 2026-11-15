@@ -34,7 +34,7 @@ If Copilot references the frameworks, setup is complete!
 
 ---
 
-## Available Analysis Frameworks (34 frameworks + 3 aliases + 1 output tool)
+## Available Analysis Frameworks (34 frameworks + 3 aliases + 2 output tools)
 
 ### Core Stock Analysis (5 frameworks)
 
@@ -91,16 +91,16 @@ If Copilot references the frameworks, setup is complete!
 |-----------|------|----------|
 | Full Report (HTML) | `prompts/full-report.md` | Runs all modules and saves a standalone HTML report |
 
-### Meta-Analysis & Visualization (5 frameworks)
+### Meta-Analysis & Visualization (4 frameworks + 2 output tools)
 
 | Framework | File | Best For |
 |-----------|------|----------|
 | Result Validator | `prompts/result-validator.md` | Validate any analysis + confidence score (0–100) |
 | Chart Master | `prompts/chart-master.md` | Generate Mermaid/ASCII/HTML charts from financial data |
-| Report Generator | `prompts/report-generator.md` | Export analysis as a professional HTML/PDF report |
+| Report Generator (output tool) | `prompts/report-generator.md` | Export analysis as a professional HTML/PDF report |
 | Learning Coach | `prompts/learning-coach.md` | Explains any InvestSkill output like a mentor — every metric in plain words, why it matters, its good / bad range, and the lesson that teaches it — then asks 3–5 Socratic questions and "what would change your mind?". --level beginner / intermediate, --lang zh-TW, and a --quiz mode that drills a Learning lesson |
 | Fact Check | `prompts/fact-check.md` | Claim-level verification of any report or data set — extract every figure and factual claim, check each against a primary source (SEC filing, company IR, FRED, exchange data, or the user's own document), recompute derived numbers, mark ✅ verified / ⚠️ mismatch / ❓ unverifiable, and re-issue the report with inline citations and a References section; Verification Score 0–10 |
-| Basket Report | `prompts/basket-report.md` | Run a 2–5 stock basket as one linked deliverable — a hub page that states the question and argues the pick, one report per ticker, all from a single shared as-of snapshot; orchestrates compare, full-report and industry-map, with stock-screener first to shortlist a longer list |
+| Basket Report (output tool) | `prompts/basket-report.md` | Run a 2–5 stock basket as one linked deliverable — a hub page that states the question and argues the pick, one report per ticker, all from a single shared as-of snapshot; orchestrates compare, full-report and industry-map, with stock-screener first to shortlist a longer list |
 
 ### Aliases (3 redirects — installed, not counted as frameworks)
 
@@ -373,7 +373,7 @@ What's the valuation in the:
 
 ```
 InvestSkill/
-├── prompts/                    # 34 analysis frameworks (+ 3 aliases, 1 output tool)
+├── prompts/                    # 34 analysis frameworks (+ 3 aliases, 2 output tools)
 │   ├── stock-eval.md
 │   ├── stock-valuation.md
 │   ├── fundamental-analysis.md
@@ -455,7 +455,7 @@ Use the stock-eval framework for MSFT, but format as:
 
 ## Project Overview
 
-- **34 Institutional-Quality Frameworks** — all tested and validated (plus 3 aliases and 1 output tool)
+- **34 Institutional-Quality Frameworks** — all tested and validated (plus 3 aliases and 2 output tools)
 - **Works with Copilot Chat** — integrated into VS Code and JetBrains IDEs
 - **Universal Prompts** — also work with Gemini CLI, Cursor, and any AI tool
 - **Educational Focus** — for learning institutional analysis methods
@@ -466,7 +466,7 @@ Use the stock-eval framework for MSFT, but format as:
 ## Additional Resources
 
 - **README.md** — Complete setup guide for all platforms (Claude Code, Gemini, Cursor)
-- **prompts/** — All 34 analysis framework files (+ 3 aliases, 1 output tool)
+- **prompts/** — All 34 analysis framework files (+ 3 aliases, 2 output tools)
 - **plugins/** — Claude Code plugin integration (optional)
 - **GitHub Issues** — Report problems or request features
 

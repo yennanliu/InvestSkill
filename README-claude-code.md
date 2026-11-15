@@ -86,7 +86,7 @@ The examples below use the marketplace prefix; with `install.sh` drop `us-stock-
 /us-stock-analysis:trade-postmortem              # Review closed trades: process vs. outcome
 ```
 
-### Meta & Output (5 + 1 output tool)
+### Meta & Output (5 + 2 output tools)
 ```bash
 /us-stock-analysis:full-report AAPL --depth standard  # Configurable multi-module HTML report
 /us-stock-analysis:chart-master                  # Mermaid / ASCII / Chart.js charts
@@ -94,6 +94,7 @@ The examples below use the marketplace prefix; with `install.sh` drop `us-stock-
 /us-stock-analysis:fact-check                    # Verify every claim against a primary source
 /us-stock-analysis:learning-coach                # Explain any output like a mentor
 /us-stock-analysis:report-generator              # Output tool: analysis → HTML/PDF
+/us-stock-analysis:basket-report MU MRVL SNDL    # Output tool: 2–5 stocks → one linked report on one snapshot
 ```
 
 ### Aliases (3, not counted as frameworks)

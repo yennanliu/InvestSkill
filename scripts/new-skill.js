@@ -296,7 +296,7 @@ edit('README-zh-TW.md', t => {
 });
 
 // ── 6. cross-AI configs ───────────────────────────────────────────────────────
-const crossHeading = new RegExp(`^### ${escapeRegExp(cat.crossai)} \\(\\d+ (?:skills|frameworks)\\)`, 'm');
+const crossHeading = new RegExp(`^### ${escapeRegExp(cat.crossai)} \\(\\d+ (?:skills|frameworks)[^)]*\\)`, 'm');
 edit('GEMINI.md', t => insertTreeLine(bumpHeadingCount(
   appendTableRow(t, crossHeading, `| ${title} | \`@prompts/${name}.md\` | \`${example}\` |`, 'GEMINI.md'), crossHeading), 'GEMINI.md'));
 edit('.cursor/rules/invest-skill.mdc', t => insertTreeLine(bumpHeadingCount(
