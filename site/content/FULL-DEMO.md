@@ -42,6 +42,8 @@ The [**InvestSkill showcase**](https://yennj12.js.org/InvestSkill-test/showcase/
 
 What to look for: every page quotes the same prices, every score sits beside its input, and three data defects are left in on purpose so `result-validator` has something to catch (one report declines to give a price target).
 
+**For the current frameworks,** the same sandbox publishes [live showcases](https://yennj12.js.org/InvestSkill-test/showcase/live/index.html): every weekday it clones the latest InvestSkill, picks one ticker at random and keeps each run as its own dated page. Those pages are model-written and unreviewed, and say so. For longer write-ups, see the author's [blog posts on US stocks (美股)](https://yennj12.js.org/yennj12_blog_V4/search/?q=%E7%BE%8E%E8%82%A1).
+
 > **Read the dates.** The showcase was built on InvestSkill **v1.11.0** (27 frameworks) and its figures are as of 2026-07-29 — it shows the method, not current numbers or the current catalogue. To produce the same shape on your own basket, use [`basket-report`](skill-basket-report.html) (Cookbook, Workflow J).
 
 ---

@@ -134,6 +134,16 @@ section('2. Rendered switcher on every built page');
       const ts = [...html.matchAll(/class="watch-chapter" data-t="(\d+)"/g)].map(m => Number(m[1]));
       check(ts.length >= 2 && ts[0] === 0 && ts.every((t, i) => i === 0 || t > ts[i - 1]),
         `${home}: demo chapters start at 0 and ascend`, ts);
+
+      // The sandbox and the blog are named on both landing pages, as external links.
+      const beyond = (html.match(/<section class="landing-section" id="beyond">[\s\S]*?<\/section>/) || [''])[0];
+      const cards = (beyond.match(/class="beyond-card /g) || []).length;
+      const ext = [...beyond.matchAll(/<a class="btn[^"]*" href="([^"]+)"([^>]*)>/g)];
+      check(cards === 2
+        && ext.some(m => m[1].startsWith('https://yennj12.js.org/InvestSkill-test/showcase/live/'))
+        && ext.some(m => m[1].startsWith('https://yennj12.js.org/yennj12_blog_V4/search/'))
+        && ext.every(m => m[2].includes('rel="noopener noreferrer"')),
+        `${home}: the sandbox and blog cards link out with rel=noopener`, { cards, links: ext.map(m => m[1]) });
     }
   } finally {
     if (tmp) fs.rmSync(tmp, { recursive: true, force: true });

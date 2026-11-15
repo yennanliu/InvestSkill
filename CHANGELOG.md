@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **The sandbox and the blog, on the site.** Both landing pages (English and 繁體中文) get a "Go further" section with two cards: the **InvestSkill-test sandbox** — where the frameworks are actually run, with links to its live showcases, curated showcase and repository — and the author's **blog posts on US stocks (美股)** as further reading. The footer, the README pair and the Demos page link to both; the Demos page now also points at the live showcases for output from the current frameworks. `test-site.js` checks the two cards on both pages.
+
 ## [1.15.0] - 2026-11-15
 
 ### Added
