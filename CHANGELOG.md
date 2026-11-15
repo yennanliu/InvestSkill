@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **`doc/SHOWCASE-REVIEW.md`** — a review of the Traditional Chinese showcase in the sibling `InvestSkill-test` repo: what it is, how it was generated, the mindset and the process behind it, its limits, and a recommendation on whether InvestSkill should add a skill that produces this kind of output (not now; link it and adopt its rules instead).
+- **`doc/SHOWCASE-REVIEW.md`** (and `doc/SHOWCASE-REVIEW-zh-TW.md`) — a review of the Traditional Chinese showcase in the sibling `InvestSkill-test` repo: what it is, how it was generated, the mindset and the process behind it, its limits, and a recommendation on whether InvestSkill should add a skill that produces this kind of output (not now; link it and adopt its rules instead).
 
 ### Fixed
 - **`fetch-fundamentals`: figures that came from the wrong filing, the wrong period or an overlapping tag.** Found by auditing the helper for the same kind of fault as the share-count fix:

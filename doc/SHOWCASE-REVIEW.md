@@ -1,5 +1,7 @@
 # InvestSkill Showcase — How It Was Made, and Whether It Should Become a Skill
 
+> **English** · [繁體中文](SHOWCASE-REVIEW-zh-TW.md)
+>
 > **Scope:** A review of the Traditional Chinese showcase in the sibling repo [`yennanliu/InvestSkill-test`](https://github.com/yennanliu/InvestSkill-test) ([live](https://yennj12.js.org/InvestSkill-test/showcase/index.html)) — what it is, how it was generated, the mindset behind it, the process as a reusable recipe — and an evaluation of whether InvestSkill should gain a skill that produces this kind of output.
 > **Date:** 2026-11-15 · reviewed against InvestSkill-test `0984b6e` and InvestSkill v1.14.1
 > **Nature:** Review and recommendation only. No skill, prompt or site file is changed by this document.
