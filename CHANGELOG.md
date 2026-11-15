@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.0] - 2026-11-15
+
 ### Added
 - **`basket-report`** — Run a 2–5 stock basket as one linked deliverable — a hub page that states the question and argues the pick, one report per ticker, all from a single shared as-of snapshot; orchestrates compare, full-report and industry-map, with stock-screener first to shortlist a longer list. It adds no scoring of its own: the hub's numbers come from `compare` and the per-ticker `full-report` runs, and the closing signal is the pick's. Capped at five tickers and `standard` depth. Classified as an **output tool** (`OUTPUT_TOOLS` in `scripts/lib/skill-registry.js`), so the advertised count stays at 34 frameworks; unlike `report-generator` it is still held to the full output contract (new `RENDER_ONLY` list). `install.sh` now reports the number of output tools instead of naming one.
 
