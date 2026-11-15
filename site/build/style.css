@@ -503,6 +503,40 @@ button { font-family: inherit; }
 .demo-title { font-weight: 650; font-size: .9rem; }
 .demo-sub { color: var(--text-muted); font-size: .78rem; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
+/* Beyond the plugin: sandbox + further reading */
+.beyond-grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 1rem; align-items: stretch; }
+.beyond-grid > * { min-width: 0; }
+.beyond-card {
+  position: relative; overflow: hidden; display: flex; flex-direction: column; gap: .8rem;
+  padding: 1.6rem 1.6rem 1.35rem; border: 1px solid var(--border); border-radius: 20px;
+  background: linear-gradient(165deg, var(--bg-alt), var(--surface)); box-shadow: var(--shadow-sm);
+  transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+.beyond-card::before {
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--cat-5));
+}
+.beyond-card::after {
+  content: ""; position: absolute; width: 260px; height: 260px; top: -150px; right: -110px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, var(--accent), transparent 68%); opacity: .13; pointer-events: none;
+}
+.beyond-card--blog::before { background: linear-gradient(90deg, var(--cat-5), var(--accent)); }
+.beyond-card--blog::after { background: radial-gradient(circle at 35% 35%, var(--cat-5), transparent 68%); }
+.beyond-card:hover { transform: translateY(-3px); border-color: var(--border-strong); box-shadow: var(--shadow-popover); }
+.beyond-top { display: flex; align-items: center; gap: .7rem; position: relative; z-index: 1; }
+.beyond-icon { display: inline-flex; width: 42px; height: 42px; flex: 0 0 auto; align-items: center; justify-content: center; border-radius: 12px; background: var(--accent-light); color: var(--accent-ink); }
+.beyond-tag { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); }
+.beyond-card h3 { font-family: var(--font-serif); font-weight: 600; font-size: 1.4rem; letter-spacing: -.015em; line-height: 1.2; color: var(--text); text-wrap: balance; position: relative; z-index: 1; }
+.beyond-desc { color: var(--text-muted); font-size: .93rem; line-height: 1.6; }
+.beyond-desc a { color: var(--link); font-weight: 600; }
+.beyond-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .55rem; }
+.beyond-list li { display: grid; grid-template-columns: 9.2rem 1fr; gap: .8rem; align-items: baseline; padding: .6rem .8rem; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); font-size: .86rem; }
+.beyond-list strong { font-weight: 700; color: var(--text); }
+.beyond-list span { color: var(--text-muted); line-height: 1.5; }
+.beyond-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: auto; padding-top: .4rem; }
+.beyond-actions .btn { display: inline-flex; align-items: center; gap: .35rem; }
+.beyond-note { color: var(--text-muted); font-size: .76rem; line-height: 1.5; opacity: .9; }
+
 /* Trust */
 .trust-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .9rem; }
 .trust-card { padding: 1.3rem; border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--bg-alt); box-shadow: var(--shadow-sm); }
@@ -725,7 +759,8 @@ button { font-family: inherit; }
   .landing-hero-visual { order: 2; }
   .term { transform: none; }
   .hero-stats { grid-template-columns: repeat(2, 1fr); }
-  .steps, .trust-grid, .watch { grid-template-columns: 1fr; }
+  .steps, .trust-grid, .watch, .beyond-grid { grid-template-columns: 1fr; }
+  .beyond-list li { grid-template-columns: 1fr; gap: .15rem; }
   .watch { gap: 1.25rem; }
   .step:nth-child(n+2)::before { display: none; }
   .lesson-track { grid-template-columns: repeat(2, 1fr); }

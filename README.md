@@ -296,6 +296,15 @@ New to investing, or unsure which skill to reach for? Start here:
 | [FAQ](FAQ.md) | 45+ answers on install, platforms, usage and versions |
 | [Changelog](CHANGELOG.md) | Version history |
 
+### Sandbox and further reading
+
+InvestSkill itself has no runtime. Two things live outside this repository:
+
+| Where | What it is |
+|-------|------------|
+| [**InvestSkill-test**](https://github.com/yennanliu/InvestSkill-test) — the sandbox | The sibling repo where the frameworks are actually run. GitHub Actions clones the latest InvestSkill and publishes the results: [live showcases](https://yennj12.js.org/InvestSkill-test/showcase/live/index.html) (every weekday, one randomly picked ticker, every run kept), a [curated showcase](https://yennj12.js.org/InvestSkill-test/showcase/index.html) on a four-stock basket, and a workflow for trying any skill at any branch or open PR. Output there is model-written and unreviewed. |
+| [**Blog posts on US stocks (美股)**](https://yennj12.js.org/yennj12_blog_V4/search/?q=%E7%BE%8E%E8%82%A1) | Further reading by the author on the YennJ12 Engineering Blog. Separate from this repo: not part of the frameworks and not covered by its tests. |
+
 ---
 
 ## Contributing

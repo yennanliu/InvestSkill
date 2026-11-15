@@ -42,6 +42,8 @@
 
 值得注意的地方：每個頁面引用的價格都相同、每個分數旁邊都有它的輸入，而且刻意保留了三個資料瑕疵，讓 `result-validator` 有東西可抓（其中一份報告拒絕給出目標價）。
 
+**想看目前版本的框架，** 同一個沙盒也發佈[即時展示](https://yennj12.js.org/InvestSkill-test/showcase/live/index.html)：每個交易日 clone 最新版 InvestSkill、隨機挑一檔標的，每一次都各自保留成一個有日期的頁面。這些頁面由模型生成、未經人工審閱，頁面上也會標明。想讀篇幅較長的分析，請見作者的[部落格美股文章](https://yennj12.js.org/yennj12_blog_V4/search/?q=%E7%BE%8E%E8%82%A1)。
+
 > **請留意日期。** 展示櫃是以 InvestSkill **v1.11.0**（27 個框架）製作的，數字為 2026-07-29 的資料——它示範的是方法，不是目前的數字，也不是目前的完整框架目錄。想在自己的籃子上做出同樣的形式，請用 [`basket-report`](skill-basket-report.html)（操作手冊的工作流程 J）。
 
 ---

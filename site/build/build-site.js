@@ -1175,7 +1175,7 @@ const UI = {
     footerCols: [
       { title: 'Learn',   links: [['Learning Hub','learning.html'],['Concepts','concepts.html'],['Glossary','glossary.html'],['Choose a Skill','choose-a-skill.html'],['Use Cases','use-cases.html']] },
       { title: 'Guides',  links: [['Quick Start','index.html'],['Cookbook','cookbook.html'],['Skill Reference','skills.html'],['Demos','full-demo.html'],['Data & Accuracy','data-and-accuracy.html']] },
-      { title: 'Project', links: [['GitHub','https://github.com/yennanliu/InvestSkill'],['Changelog','changelog.html'],['Contributing','contributing.html'],['Issues','https://github.com/yennanliu/InvestSkill/issues'],['MIT License','https://github.com/yennanliu/InvestSkill/blob/main/LICENSE']] },
+      { title: 'Project', links: [['GitHub','https://github.com/yennanliu/InvestSkill'],['Changelog','changelog.html'],['Contributing','contributing.html'],['Sandbox','https://github.com/yennanliu/InvestSkill-test'],['Blog','https://yennj12.js.org/yennj12_blog_V4/search/?q=%E7%BE%8E%E8%82%A1'],['Issues','https://github.com/yennanliu/InvestSkill/issues'],['MIT License','https://github.com/yennanliu/InvestSkill/blob/main/LICENSE']] },
     ],
     disclaimer: 'Educational frameworks only — not financial advice.',
     readme: 'From the README',
@@ -1190,7 +1190,7 @@ const UI = {
     footerCols: [
       { title: '學習',   links: [['學習中心','learning-zh-tw.html'],['概念','concepts-zh-tw.html'],['術語表','glossary-zh-tw.html'],['選擇技能','choose-a-skill-zh-tw.html'],['使用情境','use-cases-zh-tw.html']] },
       { title: '指南',   links: [['快速開始','zh-tw.html'],['操作手冊','cookbook-zh-tw.html'],['技能參考','skills-zh-tw.html'],['示範','full-demo-zh-tw.html'],['資料與準確性','data-and-accuracy-zh-tw.html']] },
-      { title: '專案',   links: [['GitHub','https://github.com/yennanliu/InvestSkill'],['更新紀錄（英文）','changelog.html'],['參與貢獻（英文）','contributing.html'],['回報問題','https://github.com/yennanliu/InvestSkill/issues'],['MIT 授權','https://github.com/yennanliu/InvestSkill/blob/main/LICENSE']] },
+      { title: '專案',   links: [['GitHub','https://github.com/yennanliu/InvestSkill'],['更新紀錄（英文）','changelog.html'],['參與貢獻（英文）','contributing.html'],['沙盒（InvestSkill-test）','https://github.com/yennanliu/InvestSkill-test'],['美股文章（部落格）','https://yennj12.js.org/yennj12_blog_V4/search/?q=%E7%BE%8E%E8%82%A1'],['回報問題','https://github.com/yennanliu/InvestSkill/issues'],['MIT 授權','https://github.com/yennanliu/InvestSkill/blob/main/LICENSE']] },
     ],
     disclaimer: '僅供教育用途的框架——不構成投資建議。',
     readme: '完整說明（README）',
@@ -1242,6 +1242,36 @@ const LANDING = {
     watchNote: 'Recorded 13 Nov 2026 (2 min 48 s, shown in 45 s). The research and writing stretches are sped up; nothing else is edited. Not investment advice.',
     watchLabel: 'Screen recording of the stock-eval skill analysing AAPL in Claude Code',
     demoEyebrow: 'Demos', demoTitle: 'See real output before you install', demoLink: 'All demos',
+    beyondEyebrow: 'Go further', beyondTitle: 'A sandbox that runs the frameworks, and the reading behind them',
+    beyond: [
+      { kind: 'sandbox', tag: 'Sandbox · InvestSkill-test',
+        t: 'The plugin has no runtime. The sandbox does.',
+        d: '<a href="https://github.com/yennanliu/InvestSkill-test" target="_blank" rel="noopener noreferrer">InvestSkill-test</a> is the sibling repository where these frameworks are actually run. GitHub Actions clones the latest InvestSkill, gives every framework the same data snapshot, and publishes what comes back.',
+        points: [
+          ['Live showcases', 'every weekday, the latest InvestSkill on one randomly picked ticker — and every run is kept as its own page'],
+          ['Curated showcase', 'eight linked pages on one four-stock basket, every figure recomputed from a fixed snapshot (繁體中文)'],
+          ['Skill sandbox', 'try any skill at any branch, tag or open pull request before it merges here'],
+        ],
+        actions: [
+          ['Open the live showcases', 'https://yennj12.js.org/InvestSkill-test/showcase/live/index.html', true],
+          ['Curated showcase', 'https://yennj12.js.org/InvestSkill-test/showcase/index.html'],
+          ['Repository', 'https://github.com/yennanliu/InvestSkill-test'],
+        ],
+        note: 'Live showcase pages are model-written and unreviewed; the curated showcase is pinned to v1.11.0. Not investment advice.' },
+      { kind: 'blog', tag: 'Further reading · Blog',
+        t: 'Notes on US stocks, by the author of InvestSkill',
+        d: 'Posts about US equities (美股) on the YennJ12 Engineering Blog. Background reading that sits outside the plugin: the frameworks tell an assistant how to analyse a company, and these posts are where that analysis is written up at length.',
+        points: [
+          ['InvestSkill', 'the frameworks — this site'],
+          ['InvestSkill-test', 'the frameworks, run on real tickers'],
+          ['The blog', 'the analysis, written up'],
+        ],
+        actions: [
+          ['Read the 美股 posts', 'https://yennj12.js.org/yennj12_blog_V4/search/?q=%E7%BE%8E%E8%82%A1', true],
+          ['Blog home', 'https://yennj12.js.org/yennj12_blog_V4/'],
+        ],
+        note: 'The blog is separate from this repository: its posts are not part of the frameworks and are not covered by these tests. Not investment advice.' },
+    ],
     trustEyebrow: 'Trust', trustTitle: 'Built to be checked, not believed',
     trust: [
       { t: 'No API keys, no telemetry', d: 'Nothing runs on your machine and nothing phones home. InvestSkill never sees your tickers or holdings.' },
@@ -1272,6 +1302,36 @@ const LANDING = {
     watchNote: '錄製於 2026 年 11 月 13 日（實際 2 分 48 秒，影片 45 秒）。蒐集資料與撰寫的片段已加速，其餘未經剪輯。非投資建議。',
     watchLabel: 'stock-eval 技能在 Claude Code 分析 AAPL 的螢幕錄影',
     demoEyebrow: '示範', demoTitle: '安裝前先看真實輸出', demoLink: '全部示範',
+    beyondEyebrow: '延伸', beyondTitle: '實際執行框架的沙盒，以及背後的延伸閱讀',
+    beyond: [
+      { kind: 'sandbox', tag: '沙盒 · InvestSkill-test',
+        t: '外掛沒有執行環境，沙盒有。',
+        d: '<a href="https://github.com/yennanliu/InvestSkill-test" target="_blank" rel="noopener noreferrer">InvestSkill-test</a> 是實際執行這些框架的姊妹專案。GitHub Actions 會 clone 最新版的 InvestSkill，讓每個框架共用同一份資料快照，並把結果發佈出來。',
+        points: [
+          ['即時展示', '每個交易日以最新版 InvestSkill 隨機跑一檔標的——每一次都各自保留一頁'],
+          ['策展展示櫃', '同一個四檔股票的籃子、八個互相連結的頁面，每個數字都由固定快照重算'],
+          ['技能沙盒', '在合併進來之前，先用任何分支、標籤或開啟中的 PR 試跑任何技能'],
+        ],
+        actions: [
+          ['開啟即時展示', 'https://yennj12.js.org/InvestSkill-test/showcase/live/index.html', true],
+          ['策展展示櫃', 'https://yennj12.js.org/InvestSkill-test/showcase/index.html'],
+          ['原始碼', 'https://github.com/yennanliu/InvestSkill-test'],
+        ],
+        note: '即時展示的頁面由模型生成、未經人工審閱；策展展示櫃固定在 v1.11.0。非投資建議。' },
+      { kind: 'blog', tag: '延伸閱讀 · 部落格',
+        t: 'InvestSkill 作者的美股筆記',
+        d: 'YennJ12 Engineering Blog 上關於美股的文章。這是外掛以外的背景閱讀：框架告訴 AI 助理如何分析一家公司，而這些文章則是把分析完整寫出來的地方。',
+        points: [
+          ['InvestSkill', '框架本身——也就是這個網站'],
+          ['InvestSkill-test', '把框架實際跑在真實標的上'],
+          ['部落格', '把分析完整寫出來'],
+        ],
+        actions: [
+          ['閱讀美股文章', 'https://yennj12.js.org/yennj12_blog_V4/search/?q=%E7%BE%8E%E8%82%A1', true],
+          ['部落格首頁', 'https://yennj12.js.org/yennj12_blog_V4/'],
+        ],
+        note: '部落格與本專案各自獨立：文章不屬於框架的一部分，也不在本專案的測試範圍內。非投資建議。' },
+    ],
     trustEyebrow: '信任', trustTitle: '設計來被驗證，而不是被相信',
     trust: [
       { t: '沒有 API 金鑰、沒有遙測', d: '你的機器上不執行任何程式，也不會回傳任何資料。InvestSkill 永遠看不到你的股票或持倉。' },
@@ -1489,6 +1549,32 @@ function buildLandingSections(lang) {
       </div>
     </section>`;
 
+  // Sandbox + further reading: two things that live outside this repository.
+  const beyondIcons = {
+    sandbox: '<path d="M9 3h6"/><path d="M10 3v6.5L4.6 18a2 2 0 0 0 1.7 3h11.4a2 2 0 0 0 1.7-3L14 9.5V3"/><path d="M7.5 15h9"/>',
+    blog: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8.5 7h7M8.5 11h5"/>',
+  };
+  const EXT = '<path d="M7 17L17 7"/><path d="M8 7h9v9"/>';
+  const beyondCards = T.beyond.map(c => `<article class="beyond-card beyond-card--${c.kind} reveal">
+          <div class="beyond-top"><span class="beyond-icon">${svg(beyondIcons[c.kind], 20)}</span><span class="beyond-tag">${c.tag}</span></div>
+          <h3>${c.t}</h3>
+          <p class="beyond-desc">${c.d}</p>
+          ${c.points.length ? `<ul class="beyond-list">
+            ${c.points.map(([k, v]) => `<li><strong>${k}</strong><span>${v}</span></li>`).join('\n            ')}
+          </ul>` : ''}
+          <div class="beyond-actions">
+            ${c.actions.map(([label, href, primary]) => `<a class="btn${primary ? ' btn-primary' : ''}" href="${href}" target="_blank" rel="noopener noreferrer">${label} ${svg(EXT, 13)}</a>`).join('\n            ')}
+          </div>
+          <p class="beyond-note">${c.note}</p>
+        </article>`).join('\n        ');
+  const beyond = `
+    <section class="landing-section" id="beyond">
+      ${sectionHead(T.beyondEyebrow, T.beyondTitle)}
+      <div class="beyond-grid">
+        ${beyondCards}
+      </div>
+    </section>`;
+
   const trustIcons = [
     '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
     '<path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/>',
@@ -1506,7 +1592,7 @@ function buildLandingSections(lang) {
       </div>
     </section>`;
 
-  return buildWatch(lang) + how + buildInstaller(lang) + cats + learn + demos + trust;
+  return buildWatch(lang) + how + buildInstaller(lang) + cats + learn + demos + beyond + trust;
 }
 
 // ---------------------------------------------------------------------------

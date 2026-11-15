@@ -362,6 +362,15 @@ node scripts/setup-verify.js
 **支援平台：** 7 個
 **測試：** 全數通過 ✅（結構、提示詞同步、技能契約、數量一致性、安裝腳本）
 
+### 沙盒與延伸閱讀
+
+InvestSkill 本身沒有執行環境。以下兩項在這個專案之外：
+
+| 位置 | 內容 |
+|------|------|
+| [**InvestSkill-test**](https://github.com/yennanliu/InvestSkill-test)——沙盒 | 實際執行這些框架的姊妹專案。GitHub Actions 會 clone 最新版 InvestSkill 並發佈結果：[即時展示](https://yennj12.js.org/InvestSkill-test/showcase/live/index.html)（每個交易日隨機一檔標的，每一次都保留）、四檔股票籃子的[策展展示櫃](https://yennj12.js.org/InvestSkill-test/showcase/index.html)，以及可用任何分支或開啟中的 PR 試跑任何技能的工作流。那裡的輸出由模型生成、未經人工審閱。 |
+| [**部落格的美股文章**](https://yennj12.js.org/yennj12_blog_V4/search/?q=%E7%BE%8E%E8%82%A1) | 作者在 YennJ12 Engineering Blog 的延伸閱讀。與本專案各自獨立：不屬於框架的一部分，也不在本專案的測試範圍內。 |
+
 ---
 
 ## 🤝 貢獻
