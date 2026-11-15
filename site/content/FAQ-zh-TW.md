@@ -85,15 +85,15 @@ A：在 Claude Code 中，`/plugin marketplace update invest-skill` 會拉取最
 
 A：Claude Code、Cursor、GitHub Copilot、Gemini CLI、Codex、OpenCode，以及任何聊天型大型語言模型（ChatGPT、Claude.ai、Gemini 網頁版、透過 [Ollama](https://github.com/yennanliu/InvestSkill/blob/main/README-ollama.md) 執行的本機模型）。技能都是純 markdown，所以任何能讀提示詞的工具都能使用。各平台的並排比較見[平台相容性](https://github.com/yennanliu/InvestSkill/blob/main/PLATFORM-COMPATIBILITY.md)（英文）。
 
-**Q：每個平台都能用全部 38 個技能嗎？**
+**Q：每個平台都能用全部 39 個技能嗎？**
 
-A：可以。每個平台拿到的都是同樣的 38 個技能：34 個分析框架、3 個別名（`fundamental-analysis`、`dcf-valuation`、`research-bundle`，會轉址到吸收它們的技能），以及 `report-generator` 輸出工具。
-- **Claude Code**：全部 38 個技能皆為斜線指令
-- **Cursor、Gemini CLI、Codex、OpenCode**：全部 38 個技能皆為 `@.investskill/prompts/<skill>.md` 檔案（在儲存庫的複本中則是 `@prompts/<skill>.md`）
-- **Copilot**：全部 38 個技能，由 `.github/copilot-instructions.md` 引用
-- **任何大型語言模型**：`prompts/` 中 38 個提示詞檔案，一個技能一個
+A：可以。每個平台拿到的都是同樣的 39 個技能：34 個分析框架、3 個別名（`fundamental-analysis`、`dcf-valuation`、`research-bundle`，會轉址到吸收它們的技能），以及 2 個輸出工具（`report-generator` 與 `basket-report`）。
+- **Claude Code**：全部 39 個技能皆為斜線指令
+- **Cursor、Gemini CLI、Codex、OpenCode**：全部 39 個技能皆為 `@.investskill/prompts/<skill>.md` 檔案（在儲存庫的複本中則是 `@prompts/<skill>.md`）
+- **Copilot**：全部 39 個技能，由 `.github/copilot-instructions.md` 引用
+- **任何大型語言模型**：`prompts/` 中 39 個提示詞檔案，一個技能一個
 
-**Q：為什麼宣稱的是 34 個，而不是 38 個？**
+**Q：為什麼宣稱的是 34 個，而不是 39 個？**
 
 A：`report-generator` 是輸出工具（把其他技能的結果轉成 HTML／PDF），不是分析框架；三個別名則只是為了讓舊指令繼續可用而保留。它們都會隨外掛安裝，但不計入框架數。
 

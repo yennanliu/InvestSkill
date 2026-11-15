@@ -66,8 +66,8 @@ const MARKETPLACE_JSON = path.join(ROOT, '.claude-plugin/marketplace.json');
 const registry = require('./lib/skill-registry');
 
 // Skills excluded from specific checks
-const PROMPTS_EXCLUDED = [...registry.OUTPUT_TOOLS];  // HTML output tool, not an analysis prompt
-const SIGNAL_EXCLUDED  = [...registry.OUTPUT_TOOLS];  // Renders signal blocks in HTML, doesn't produce them
+const PROMPTS_EXCLUDED = [...registry.RENDER_ONLY];  // HTML output tool, not an analysis prompt
+const SIGNAL_EXCLUDED  = [...registry.RENDER_ONLY];  // Renders signal blocks in HTML, doesn't produce them
 const ALIAS_SKILLS     = [...registry.ALIAS_SKILLS];  // Redirect stubs — installed, but not advertised as frameworks
 
 const SIGNAL_BLOCK = '╔══════════════════════════════════════════════╗';
@@ -481,7 +481,7 @@ if (skillCount === promptCount) {
 
 // Advertised framework count = skills − output-only tools − alias/redirect stubs
 const ADVERTISED = registry.frameworkCount(actualSkillDirs);
-pass(`Advertised framework count = ${ADVERTISED} (${skillCount} skills − ${PROMPTS_EXCLUDED.length} output tool − ${ALIAS_SKILLS.length} aliases)`);
+pass(`Advertised framework count = ${ADVERTISED} (${skillCount} skills − ${registry.OUTPUT_TOOLS.length} output tools − ${ALIAS_SKILLS.length} aliases)`);
 
 // Version parity across package.json, plugin.json, marketplace (metadata + entry)
 const pkg = readJSON(path.join(ROOT, 'package.json'));

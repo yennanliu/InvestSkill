@@ -46,7 +46,7 @@ InvestSkill 是企業級投資分析工具包，為各 AI 平台帶來機構級�
 - 5 個財務報告分析
 - 4 個市場監控工具
 - 15 個進階研究工具
-- 5 個自動化元技能，加上 report-generator 輸出工具
+- 5 個自動化元技能，加上 report-generator 與 basket-report 兩個輸出工具
 - 另有 3 個別名（轉址至吸收它們的技能，不計入框架數）
 
     </td>
@@ -194,7 +194,7 @@ gemini     # Gemini CLI：> @prompts/stock-eval.md 評估蘋果公司
 | **財務報告** (5) | financial-report-analyst · 10k-digest · earnings-call-analysis · **forensic-accounting** · **credit-check** | 深度文件分析 |
 | **市場監控** (4) | insider-trading · institutional-ownership · dividend-analysis · short-interest | 活動與情緒追蹤 |
 | **進階分析** (15) | competitor-analysis · **industry-map** · options-analysis · portfolio-review · sector-analysis · **stock-screener** · **catalyst-calendar** · **bear-case** · **position-ladder** · **thesis-tracker** · **etf-analysis** · **earnings-preview** · **tax-lens** · **risk-stress-test** · **trade-postmortem** | 專項研究角度 |
-| **元技能與輸出** (5 + 1 輸出工具) | full-report · chart-master · result-validator · **fact-check** · **learning-coach** · report-generator（輸出工具，不計入框架） | 自動化與綜合輸出 |
+| **元技能與輸出** (5 + 2 輸出工具) | full-report · chart-master · result-validator · **fact-check** · **learning-coach** · report-generator、**basket-report**（輸出工具，不計入框架） | 自動化與綜合輸出 |
 | **別名** (3，不計入框架) | fundamental-analysis → stock-eval · dcf-valuation → stock-valuation · research-bundle → full-report | 舊名稱仍可用，會轉址到吸收它的技能 |
 
 > 各版本新增了哪些技能與功能，請見 [CHANGELOG](CHANGELOG.md)（英文）。
@@ -357,8 +357,8 @@ node scripts/setup-verify.js
 ## 📊 專案狀態
 
 **版本：** 最新版——見 [CHANGELOG](CHANGELOG.md)
-**技能框架：** 34 個（另有 3 個別名、1 個輸出工具）
-**通用提示詞：** 38 個
+**技能框架：** 34 個（另有 3 個別名、2 個輸出工具）
+**通用提示詞：** 39 個
 **支援平台：** 7 個
 **測試：** 全數通過 ✅（結構、提示詞同步、技能契約、數量一致性、安裝腳本）
 

@@ -507,7 +507,7 @@ section('7. Behaviour — Framework Payload');
       `install.sh — missing prompt(s): ${missing.join(', ')}`);
 
     check(new RegExp(`^\\s*✓?\\s*${ADVERTISED} analysis frameworks`, 'm').test(r.stdout),
-      `install.sh — reports ${ADVERTISED} analysis frameworks (excludes ${ALIAS_COUNT} aliases + report-generator)`,
+      `install.sh — reports ${ADVERTISED} analysis frameworks (excludes ${ALIAS_COUNT} aliases + ${OUTPUT_ONLY.length} output tools)`,
       `install.sh — did not report ${ADVERTISED} frameworks. stdout: ${r.stdout.slice(0, 300)}`);
 
     const sample = readFile(path.join(promptsPath, 'stock-eval.md')) || '';

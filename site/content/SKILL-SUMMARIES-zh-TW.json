@@ -1,43 +1,161 @@
 {
   "_about": "Traditional Chinese title and one-line summary for every skill, used by the zh Skill Reference index (skills-zh-tw.html). The skill pages themselves stay in English. scripts/test-skills.js fails when a skill has no entry here.",
   "skills": {
-    "10k-digest": { "title": "10-K 年報摘要", "summary": "深度閱讀 10-K 年報，輸出結構化摘要——重點、各章節摘要、關鍵指標與附來源的引用；可輸出英文或繁體中文。" },
-    "bear-case": { "title": "空方論點", "summary": "刻意扮演放空者，為一檔股票建立最強的看空論點，找出任何看多論點忽略的反證。" },
-    "catalyst-calendar": { "title": "催化劑行事曆", "summary": "未來 90 天的催化劑行事曆：即將發生的事件、日期與預期的股價影響。" },
-    "chart-master": { "title": "圖表大師", "summary": "以 Mermaid、ASCII 或 HTML/Chart.js 產生專業財經圖表——均線、K 線、成交量、RSI/MACD 等。" },
-    "compare": { "title": "個股對決", "summary": "把 2–5 檔股票放在同一張表比較品質、成長、估值、資產負債表、動能、風險與催化劑，並論證該選哪一檔、為什麼、什麼會改變結論。" },
-    "competitor-analysis": { "title": "競爭分析", "summary": "一家公司與直接競爭者的護城河、市場地位與產業動態深度分析。" },
-    "credit-check": { "title": "償債能力檢查", "summary": "資產負債表的償債與再融資風險——債務到期牆、利息保障倍數趨勢、契約條款、流動性跑道、信評，以及以現行利率再融資的成本。" },
-    "dcf-valuation": { "title": "DCF 估值（別名）", "summary": "stock-valuation 的別名，為向後相容而保留——會轉向 stock-valuation 的 DCF、WACC 與敏感度分析。" },
-    "dividend-analysis": { "title": "股息與資本配置", "summary": "完整的資本配置分析：股息、庫藏股、併購、債務管理與自由現金流的運用。" },
-    "earnings-call-analysis": { "title": "法說會分析", "summary": "財報後的技能——分析法說會逐字稿的情緒、主題、財測品質與管理層語氣；財報前請用 earnings-preview。" },
-    "earnings-preview": { "title": "財報前瞻", "summary": "財報前的技能——市場共識與耳語數字、8 季超預期率與財報後漲跌分布、選擇權隱含波動、價格已反映什麼，以及三情境對策。" },
-    "economics-analysis": { "title": "總體經濟分析", "summary": "分析美國經濟指標（利率、殖利率曲線、通膨、就業、PMI）及其對市場的影響。" },
-    "etf-analysis": { "title": "ETF 分析", "summary": "ETF／指數基金盡職調查——費用率、追蹤差異、流動性、持股集中度與重疊、配息與結構警示，給出 ETF 適配分數。" },
-    "fact-check": { "title": "事實查核", "summary": "逐條查核報告中的每個數字與陳述，對照第一手來源（SEC 申報、公司 IR、FRED），重算衍生數字，並附上引用重新發布報告。" },
-    "financial-report-analyst": { "title": "財報分析師", "summary": "分析 10-K、10-Q 與年報，判斷報表品質與警訊，給出投資訊號；只要章節摘要請用 10k-digest。" },
-    "forensic-accounting": { "title": "鑑識會計", "summary": "盈餘品質鑑識——Beneish M-Score、Altman Z、Sloan 應計比率、現金與盈餘的背離、扣除股票薪酬的自由現金流，給出操縱風險分數。" },
-    "full-report": { "title": "完整報告", "summary": "依 --depth 執行 5／10／所有適用的框架（可用 --skip 排除），彙整成一份專業 HTML 報告存到 output/。" },
-    "fundamental-analysis": { "title": "基本面分析（別名）", "summary": "stock-eval 的別名，為向後相容而保留——會轉向 stock-eval 的基本面、品質與估值分析。" },
-    "industry-map": { "title": "產業鏈地圖", "summary": "把產業的供應鏈／價值鏈畫成由上游到下游的有向圖，找出公司的位置、瓶頸與利潤池。" },
-    "insider-trading": { "title": "內部人交易", "summary": "從 SEC Form 4 追蹤並分析內部人的買賣行為。" },
-    "institutional-ownership": { "title": "機構持股", "summary": "從 13F 申報追蹤機構持股變化，找出聰明錢的動向。" },
-    "learning-coach": { "title": "學習教練", "summary": "像導師一樣解說任何 InvestSkill 的輸出——每個指標的白話意義、好壞區間與對應課程，再提出蘇格拉底式問題；支援 --quiz 測驗。" },
-    "options-analysis": { "title": "選擇權分析", "summary": "分析選擇權希臘字母、隱含波動與策略選擇。" },
-    "portfolio-review": { "title": "投資組合檢視", "summary": "檢視投資組合的績效、配置、集中度與再平衡。" },
-    "position-ladder": { "title": "分批建倉計畫", "summary": "規劃分批部位——進場階梯、持股上下限、降低平均成本的減碼／回補循環，並附批次帳、洗售檢查與論點破局的出場關卡。" },
-    "report-generator": { "title": "報告產生器", "summary": "把其他技能的結果輸出成含互動圖表的專業 HTML／PDF 報告（輸出工具，不計入框架）。" },
-    "research-bundle": { "title": "研究組合（別名）", "summary": "已棄用——請改用 full-report；它的可調深度與 HTML 輸出已取代這個技能。" },
-    "result-validator": { "title": "結果驗證器", "summary": "驗證一份投資分析，從資料品質、方法論與訊號一致性給出信心分數；要逐條查核數字請先跑 fact-check。" },
-    "risk-stress-test": { "title": "風險壓力測試", "summary": "投資組合與部位的風險報告——貝他曝險、歷史情境重演（2008、2020 年 3 月、2022、2025 關稅衝擊）、VaR／CVaR、流動性，給出風險預算分數。" },
-    "sector-analysis": { "title": "類股分析", "summary": "分析美股各類股，找出輪動機會。" },
-    "short-interest": { "title": "空單分析", "summary": "分析空單餘額、軋空潛力與看空部位訊號。" },
-    "stock-eval": { "title": "個股評估", "summary": "以基本面與估值全面評估一檔美股；可用 --sector 套用銀行、保險、REIT、生技、SaaS 的產業指標包。" },
-    "stock-screener": { "title": "選股篩選器", "summary": "依估值、品質、動能、情緒與成長篩選並排序多檔美股。" },
-    "stock-valuation": { "title": "股票估值", "summary": "多方法估值——DCF、可比公司、EV 倍數與剩餘收益模型。" },
-    "tax-lens": { "title": "稅務透鏡", "summary": "部位或投資組合的美國稅務機制——長短期、洗售、合格股息、批次選擇、稅損收割與帳戶配置，並有 --non-us 非美國投資人模組；僅供教育，非稅務建議。" },
-    "technical-analysis": { "title": "技術分析", "summary": "以圖表與指標進行美股技術分析。" },
-    "thesis-tracker": { "title": "論點追蹤", "summary": "撰寫、儲存並重新檢查投資論點——帶門檻的 KPI、失效觸發條件、催化劑、事前驗屍與決策日誌；--update 回報 INTACT／WEAKENED／BROKEN。" },
-    "trade-postmortem": { "title": "交易檢討", "summary": "檢討一筆已平倉交易或一整年的交易——過程與結果矩陣、計畫遵循度、出現的偏誤，以及寫進日誌的一課。" }
+    "10k-digest": {
+      "title": "10-K 年報摘要",
+      "summary": "深度閱讀 10-K 年報，輸出結構化摘要——重點、各章節摘要、關鍵指標與附來源的引用；可輸出英文或繁體中文。"
+    },
+    "basket-report": {
+      "title": "籃子報告",
+      "summary": "把 2–5 檔股票當成一個籃子，以單一資料日期的快照產出一份互相連結的交付物：總覽頁提出問題並論證選擇，每檔股票各一份報告。"
+    },
+    "bear-case": {
+      "title": "空方論點",
+      "summary": "刻意扮演放空者，為一檔股票建立最強的看空論點，找出任何看多論點忽略的反證。"
+    },
+    "catalyst-calendar": {
+      "title": "催化劑行事曆",
+      "summary": "未來 90 天的催化劑行事曆：即將發生的事件、日期與預期的股價影響。"
+    },
+    "chart-master": {
+      "title": "圖表大師",
+      "summary": "以 Mermaid、ASCII 或 HTML/Chart.js 產生專業財經圖表——均線、K 線、成交量、RSI/MACD 等。"
+    },
+    "compare": {
+      "title": "個股對決",
+      "summary": "把 2–5 檔股票放在同一張表比較品質、成長、估值、資產負債表、動能、風險與催化劑，並論證該選哪一檔、為什麼、什麼會改變結論。"
+    },
+    "competitor-analysis": {
+      "title": "競爭分析",
+      "summary": "一家公司與直接競爭者的護城河、市場地位與產業動態深度分析。"
+    },
+    "credit-check": {
+      "title": "償債能力檢查",
+      "summary": "資產負債表的償債與再融資風險——債務到期牆、利息保障倍數趨勢、契約條款、流動性跑道、信評，以及以現行利率再融資的成本。"
+    },
+    "dcf-valuation": {
+      "title": "DCF 估值（別名）",
+      "summary": "stock-valuation 的別名，為向後相容而保留——會轉向 stock-valuation 的 DCF、WACC 與敏感度分析。"
+    },
+    "dividend-analysis": {
+      "title": "股息與資本配置",
+      "summary": "完整的資本配置分析：股息、庫藏股、併購、債務管理與自由現金流的運用。"
+    },
+    "earnings-call-analysis": {
+      "title": "法說會分析",
+      "summary": "財報後的技能——分析法說會逐字稿的情緒、主題、財測品質與管理層語氣；財報前請用 earnings-preview。"
+    },
+    "earnings-preview": {
+      "title": "財報前瞻",
+      "summary": "財報前的技能——市場共識與耳語數字、8 季超預期率與財報後漲跌分布、選擇權隱含波動、價格已反映什麼，以及三情境對策。"
+    },
+    "economics-analysis": {
+      "title": "總體經濟分析",
+      "summary": "分析美國經濟指標（利率、殖利率曲線、通膨、就業、PMI）及其對市場的影響。"
+    },
+    "etf-analysis": {
+      "title": "ETF 分析",
+      "summary": "ETF／指數基金盡職調查——費用率、追蹤差異、流動性、持股集中度與重疊、配息與結構警示，給出 ETF 適配分數。"
+    },
+    "fact-check": {
+      "title": "事實查核",
+      "summary": "逐條查核報告中的每個數字與陳述，對照第一手來源（SEC 申報、公司 IR、FRED），重算衍生數字，並附上引用重新發布報告。"
+    },
+    "financial-report-analyst": {
+      "title": "財報分析師",
+      "summary": "分析 10-K、10-Q 與年報，判斷報表品質與警訊，給出投資訊號；只要章節摘要請用 10k-digest。"
+    },
+    "forensic-accounting": {
+      "title": "鑑識會計",
+      "summary": "盈餘品質鑑識——Beneish M-Score、Altman Z、Sloan 應計比率、現金與盈餘的背離、扣除股票薪酬的自由現金流，給出操縱風險分數。"
+    },
+    "full-report": {
+      "title": "完整報告",
+      "summary": "依 --depth 執行 5／10／所有適用的框架（可用 --skip 排除），彙整成一份專業 HTML 報告存到 output/。"
+    },
+    "fundamental-analysis": {
+      "title": "基本面分析（別名）",
+      "summary": "stock-eval 的別名，為向後相容而保留——會轉向 stock-eval 的基本面、品質與估值分析。"
+    },
+    "industry-map": {
+      "title": "產業鏈地圖",
+      "summary": "把產業的供應鏈／價值鏈畫成由上游到下游的有向圖，找出公司的位置、瓶頸與利潤池。"
+    },
+    "insider-trading": {
+      "title": "內部人交易",
+      "summary": "從 SEC Form 4 追蹤並分析內部人的買賣行為。"
+    },
+    "institutional-ownership": {
+      "title": "機構持股",
+      "summary": "從 13F 申報追蹤機構持股變化，找出聰明錢的動向。"
+    },
+    "learning-coach": {
+      "title": "學習教練",
+      "summary": "像導師一樣解說任何 InvestSkill 的輸出——每個指標的白話意義、好壞區間與對應課程，再提出蘇格拉底式問題；支援 --quiz 測驗。"
+    },
+    "options-analysis": {
+      "title": "選擇權分析",
+      "summary": "分析選擇權希臘字母、隱含波動與策略選擇。"
+    },
+    "portfolio-review": {
+      "title": "投資組合檢視",
+      "summary": "檢視投資組合的績效、配置、集中度與再平衡。"
+    },
+    "position-ladder": {
+      "title": "分批建倉計畫",
+      "summary": "規劃分批部位——進場階梯、持股上下限、降低平均成本的減碼／回補循環，並附批次帳、洗售檢查與論點破局的出場關卡。"
+    },
+    "report-generator": {
+      "title": "報告產生器",
+      "summary": "把其他技能的結果輸出成含互動圖表的專業 HTML／PDF 報告（輸出工具，不計入框架）。"
+    },
+    "research-bundle": {
+      "title": "研究組合（別名）",
+      "summary": "已棄用——請改用 full-report；它的可調深度與 HTML 輸出已取代這個技能。"
+    },
+    "result-validator": {
+      "title": "結果驗證器",
+      "summary": "驗證一份投資分析，從資料品質、方法論與訊號一致性給出信心分數；要逐條查核數字請先跑 fact-check。"
+    },
+    "risk-stress-test": {
+      "title": "風險壓力測試",
+      "summary": "投資組合與部位的風險報告——貝他曝險、歷史情境重演（2008、2020 年 3 月、2022、2025 關稅衝擊）、VaR／CVaR、流動性，給出風險預算分數。"
+    },
+    "sector-analysis": {
+      "title": "類股分析",
+      "summary": "分析美股各類股，找出輪動機會。"
+    },
+    "short-interest": {
+      "title": "空單分析",
+      "summary": "分析空單餘額、軋空潛力與看空部位訊號。"
+    },
+    "stock-eval": {
+      "title": "個股評估",
+      "summary": "以基本面與估值全面評估一檔美股；可用 --sector 套用銀行、保險、REIT、生技、SaaS 的產業指標包。"
+    },
+    "stock-screener": {
+      "title": "選股篩選器",
+      "summary": "依估值、品質、動能、情緒與成長篩選並排序多檔美股。"
+    },
+    "stock-valuation": {
+      "title": "股票估值",
+      "summary": "多方法估值——DCF、可比公司、EV 倍數與剩餘收益模型。"
+    },
+    "tax-lens": {
+      "title": "稅務透鏡",
+      "summary": "部位或投資組合的美國稅務機制——長短期、洗售、合格股息、批次選擇、稅損收割與帳戶配置，並有 --non-us 非美國投資人模組；僅供教育，非稅務建議。"
+    },
+    "technical-analysis": {
+      "title": "技術分析",
+      "summary": "以圖表與指標進行美股技術分析。"
+    },
+    "thesis-tracker": {
+      "title": "論點追蹤",
+      "summary": "撰寫、儲存並重新檢查投資論點——帶門檻的 KPI、失效觸發條件、催化劑、事前驗屍與決策日誌；--update 回報 INTACT／WEAKENED／BROKEN。"
+    },
+    "trade-postmortem": {
+      "title": "交易檢討",
+      "summary": "檢討一筆已平倉交易或一整年的交易——過程與結果矩陣、計畫遵循度、出現的偏誤，以及寫進日誌的一課。"
+    }
   }
 }

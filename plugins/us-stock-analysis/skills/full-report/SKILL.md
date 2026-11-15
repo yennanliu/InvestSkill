@@ -20,6 +20,7 @@ Data & Sources
 
 Before rendering the final report, verify:
 - The `Data & Sources` header is present and the Retrieval/Confidence are honest (flag "model memory" as LOW)
+- **One snapshot:** every module ran from the same data, gathered once in Workflow step 2 — one price, one share count and one as-of date for the whole report. A module that quotes a different price for the ticker than the cover page is a defect; fix it at the source, do not average
 - All executed modules returned scores (not blank)
 - Scores are within 0–10 range
 - Weighted composite arithmetic is correct (weights sum to 100%)
@@ -262,7 +263,7 @@ Example: `output/AAPL_report_2026-10-24.html`
 ## Workflow
 
 1. Parse `--depth` and `--skip`; determine which modules run, and mark the not-applicable ones (ETF ticker → stop and suggest `etf-analysis`; bank/insurer → no `credit-check`; next report > 45 days away → no `earnings-preview`)
-2. Gather all available data for `<TICKER>` (financials, price, filings, macro)
+2. Gather all available data for `<TICKER>` (financials, price, filings, macro) **once, as one snapshot with one as-of date**; every module in the next step reads that snapshot instead of fetching its own, and a figure that is missing from it is reported as missing, not looked up again mid-run
 3. Execute modules in phase order; each phase's output informs the next
 4. Compute composite weighted score (0–10) using framework above, re-weighting for any component with no module
 5. Build investment thesis narrative with bull/bear case

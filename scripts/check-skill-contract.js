@@ -53,7 +53,7 @@ for (const skill of reg.listSkillDirs()) {
   ];
   for (const { form, file } of forms) {
     if (!fs.existsSync(file)) {
-      if (form === 'prompt' && reg.OUTPUT_TOOLS.includes(skill)) continue;
+      if (form === 'prompt' && reg.RENDER_ONLY.includes(skill)) continue;
       results.push({ skill, form, check: 'file', ok: false, msg: 'missing' });
       failed++;
       continue;
@@ -85,7 +85,7 @@ if (JSON_OUT) {
       for (const r of bad) process.stdout.write(`  ❌ ${skill} (${r.form}) — missing ${r.msg}\n`);
     }
   }
-  const kinds = `${reg.OUTPUT_TOOLS.length} output tool · ${reg.ALIAS_SKILLS.length} aliases · ${reg.META_SKILLS.length} meta`;
+  const kinds = `${reg.OUTPUT_TOOLS.length} output tools · ${reg.ALIAS_SKILLS.length} aliases · ${reg.META_SKILLS.length} meta`;
   process.stdout.write(`\n  ${passed} checks passed, ${failed} failed, ${exempt} exempt (${kinds})\n`);
   process.stdout.write(`  Frameworks advertised: ${reg.frameworkCount()} of ${reg.listSkillDirs().length} skills\n\n`);
 }

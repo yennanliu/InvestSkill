@@ -171,6 +171,8 @@ Produce a ranked table sorted by TOTAL score descending:
 | ...  |  ...   | ...  |   ...   |   ...    |    ...    |  ...   |  ...  |    ...     |
 ```
 
+**Show the working under the leaderboard:** one table per dimension, a row per ticker, and for every sub-factor the raw input beside its sub-score (`P/E 14.2 → 7.1`). A dimension score nobody can trace back to its inputs cannot be checked. A sub-factor that cannot be computed for a ticker is written `excluded — <reason>` and the dimension is averaged over the sub-factors that remain; missing data is never scored as a neutral 5, and a dimension with no usable sub-factor is `not assessed` with the TOTAL re-weighted over the others (state the weights used).
+
 Signal legend:
 - TOTAL ≥ 7.5 → 🟢 STRONG BUY
 - TOTAL 6.0–7.4 → 🟢 BUY

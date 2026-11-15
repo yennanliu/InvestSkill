@@ -178,6 +178,7 @@ InvestSkill is **completely free to use** — there is nothing to buy, register,
 | `result-validator` | Scores any analysis on data quality, methodology, and signal consistency |
 | `learning-coach` | Explains any InvestSkill output like a mentor — every metric in plain words, why it matters, its good / bad range, and the lesson that teaches it — then asks 3–5 Socratic questions and "what would change your mind?". --level beginner / intermediate, --lang zh-TW, and a --quiz mode that drills a Learning lesson |
 | `fact-check` | Claim-level verification of any report or data set — extract every figure and factual claim, check each against a primary source (SEC filing, company IR, FRED, exchange data, or the user's own document), recompute derived numbers, mark ✅ verified / ⚠️ mismatch / ❓ unverifiable, and re-issue the report with inline citations and a References section; Verification Score 0–10 |
+| `basket-report` | Output tool, not counted as a framework — run a 2–5 stock basket as one linked deliverable — a hub page that states the question and argues the pick, one report per ticker, all from a single shared as-of snapshot; orchestrates compare, full-report and industry-map, with stock-screener first to shortlist a longer list |
 
 ### Aliases (redirects)
 
@@ -256,7 +257,7 @@ Every platform installs with the same one-command [installer](install.sh) — on
 
 | Platform | Setup | How it works |
 |----------|-------|-------------|
-| **Claude Code** | `install.sh -a claude`, or the plugin marketplace | 38 native slash commands (34 frameworks + 3 aliases + 1 output tool) |
+| **Claude Code** | `install.sh -a claude`, or the plugin marketplace | 39 native slash commands (34 frameworks + 3 aliases + 2 output tools) |
 | **Cursor IDE** | `install.sh -a cursor` | Auto-loads `.cursor/rules/investskill.mdc` |
 | **Gemini CLI** | `install.sh -a gemini` | Auto-loads `GEMINI.md` |
 | **GitHub Copilot** | `install.sh -a copilot` | Auto-loads `.github/copilot-instructions.md` |
@@ -309,7 +310,7 @@ See [ADDING-NEW-SKILLS.md](ADDING-NEW-SKILLS.md) for the full process. The short
 
 ---
 
-**Version:** latest — see [CHANGELOG](CHANGELOG.md) · **Frameworks:** 34 analysis frameworks (+ 3 aliases, 1 output tool) · **Skills:** 38 · **Platforms:** 7 · **License:** MIT · **Tests:** all passing
+**Version:** latest — see [CHANGELOG](CHANGELOG.md) · **Frameworks:** 34 analysis frameworks (+ 3 aliases, 2 output tools) · **Skills:** 39 · **Platforms:** 7 · **License:** MIT · **Tests:** all passing
 
 ---
 

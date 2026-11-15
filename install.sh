@@ -104,22 +104,23 @@ curl -fsSL "https://codeload.github.com/$REPO/tar.gz/$REF" \
 PROMPTS_REL=".investskill/prompts"
 mkdir -p "$DIR/$PROMPTS_REL"
 cp "$TMP/prompts/"*.md "$DIR/$PROMPTS_REL/"
-# report-generator is an output tool and fundamental-analysis / dcf-valuation /
+# report-generator and basket-report are output tools and fundamental-analysis / dcf-valuation /
 # research-bundle are alias stubs that redirect to the skill that absorbed them
 # — all are installed, none is counted as an analysis framework. Keep this list
-# in sync with ALIAS_SKILLS in scripts/lib/skill-registry.js (tests check it).
+# in sync with OUTPUT_TOOLS and ALIAS_SKILLS in scripts/lib/skill-registry.js (tests check it).
 COUNT=0
 ALIASES=0
+OUTPUTS=0
 for f in "$DIR/$PROMPTS_REL"/*.md; do
   # Bash leaves an unmatched glob literal — skip it rather than counting it.
   [ -e "$f" ] || continue
   case "$(basename "$f" .md)" in
-    report-generator) ;;
+    report-generator|basket-report) OUTPUTS=$((OUTPUTS + 1)) ;;
     fundamental-analysis|dcf-valuation|research-bundle) ALIASES=$((ALIASES + 1)) ;;
     *) COUNT=$((COUNT + 1)) ;;
   esac
 done
-ok "$COUNT analysis frameworks (+ $ALIASES aliases + report-generator) → $PROMPTS_REL/"
+ok "$COUNT analysis frameworks (+ $ALIASES aliases + $OUTPUTS output tools) → $PROMPTS_REL/"
 
 skill_names() { ls -1 "$TMP/prompts" | sed 's/\.md$//' | sort; }
 

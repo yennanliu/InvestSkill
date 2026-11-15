@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **`basket-report`** — Run a 2–5 stock basket as one linked deliverable — a hub page that states the question and argues the pick, one report per ticker, all from a single shared as-of snapshot; orchestrates compare, full-report and industry-map, with stock-screener first to shortlist a longer list. It adds no scoring of its own: the hub's numbers come from `compare` and the per-ticker `full-report` runs, and the closing signal is the pick's. Capped at five tickers and `standard` depth. Classified as an **output tool** (`OUTPUT_TOOLS` in `scripts/lib/skill-registry.js`), so the advertised count stays at 34 frameworks; unlike `report-generator` it is still held to the full output contract (new `RENDER_ONLY` list). `install.sh` now reports the number of output tools instead of naming one.
+
 ### Fixed
 - **`fetch-fundamentals`: figures that came from the wrong filing, the wrong period or an overlapping tag.** Found by auditing the helper for the same kind of fault as the share-count fix:
   - **Stock splits:** the prior-year diluted EPS and diluted share count now come from the current 10-K's comparative column, so both years share one share basis (a 10-for-1 split used to show EPS falling 90%); the first-reported figures stay in the Notes. Other prior-year lines remain as first reported, and any the current filing restates by more than 0.5% are named in the Notes. When revenue is one of them the revenue-growth `expect` entry is omitted rather than computed across two bases.

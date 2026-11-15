@@ -106,6 +106,7 @@ If the framework loads, setup is complete!
 | Report Generator | `@prompts/report-generator.md` | Export analysis as a professional HTML/PDF report |
 | Learning Coach | `@prompts/learning-coach.md` | Explains any InvestSkill output like a mentor — every metric in plain words, why it matters, its good / bad range, and the lesson that teaches it — then asks 3–5 Socratic questions and "what would change your mind?". --level beginner / intermediate, --lang zh-TW, and a --quiz mode that drills a Learning lesson |
 | Fact Check | `@prompts/fact-check.md` | Claim-level verification of any report or data set — extract every figure and factual claim, check each against a primary source (SEC filing, company IR, FRED, exchange data, or the user's own document), recompute derived numbers, mark ✅ verified / ⚠️ mismatch / ❓ unverifiable, and re-issue the report with inline citations and a References section; Verification Score 0–10 |
+| Basket Report | `@prompts/basket-report.md` | Run a 2–5 stock basket as one linked deliverable — a hub page that states the question and argues the pick, one report per ticker, all from a single shared as-of snapshot; orchestrates compare, full-report and industry-map, with stock-screener first to shortlist a longer list |
 
 ### Aliases (3 redirects — installed, not counted as frameworks)
 
@@ -449,6 +450,7 @@ InvestSkill/
 │   ├── forensic-accounting.md
 │   ├── credit-check.md
 │   ├── compare.md
+│   ├── basket-report.md
 │   └── report-generator.md     # HTML/PDF report design system
 ├── plugins/
 │   └── us-stock-analysis/

@@ -94,6 +94,7 @@ When you first run `gemini`, you should see context about InvestSkill loaded. Th
 | Report Generator            | `@prompts/report-generator.md`         | `[paste analysis] Export as HTML report`   |
 | Learning Coach | `@prompts/learning-coach.md` | `[paste a stock-eval output] Explain this to me` |
 | Fact Check | `@prompts/fact-check.md` | `[paste a report] Verify every number and add sources` |
+| Basket Report | `@prompts/basket-report.md` | `Basket report on MU MRVL SNDL — why did they fall together?` |
 
 ### Aliases (3 redirects — installed, not counted as frameworks)
 
@@ -369,6 +370,7 @@ InvestSkill/
 │   ├── forensic-accounting.md
 │   ├── credit-check.md
 │   ├── compare.md
+│   ├── basket-report.md
 │   └── report-generator.md     # HTML/PDF report design system
 ├── plugins/                    # Claude Code plugin (optional)
 │   └── us-stock-analysis/
