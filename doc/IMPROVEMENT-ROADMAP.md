@@ -31,7 +31,7 @@ Status of the ten headline recommendations in §2. Update this table in the PR t
 
 Also shipped alongside: §6.9 (extend `COUNT_DOCS`), §6.11 (`scripts/lib/signal-block.js`), the `result-validator` contract check from §4.4 (PR #26); `risk-stress-test` — the sixth Tier 1 skill, not in the top 10 — in [PR #27](https://github.com/yennanliu/InvestSkill/pull/27). **All six Tier 1 skills (§3.1) are shipped.** Added outside the roadmap: `fact-check` — claim-level verification with citations, the missing half of the trust story next to `result-validator` — in [PR #28](https://github.com/yennanliu/InvestSkill/pull/28); the Learning track's Part II (Lessons 9–13, the "No" case study, +32 glossary terms) in [PR #29](https://github.com/yennanliu/InvestSkill/pull/29) after the [Learning gap review](LEARNING-GAP-REVIEW.md). Still open from the P0/P1 rows of §8 as of 2026-09-24: §4.3, `--lang zh-TW` everywhere, the JSON footer, the zh Skill Reference index (§5.6) — all closed below.
 
-**§8 P0–P2, closed out (2026-10-24, `feat/roadmap-p0-p2`).** The items still open after the ten headline recommendations:
+**§8 P0–P2, closed out (2026-10-24, [#44](https://github.com/yennanliu/InvestSkill/pull/44)).** The items still open after the ten headline recommendations:
 
 | §8 row | Item | Status | Notes |
 |--------|------|--------|-------|
