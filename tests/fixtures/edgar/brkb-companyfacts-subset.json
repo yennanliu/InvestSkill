@@ -1,0 +1,103 @@
+{
+  "cik": 1067983,
+  "entityName": "BERKSHIRE HATHAWAY INC",
+  "facts": {
+    "dei": {
+      "EntityCommonStockSharesOutstanding": {
+        "label": "Entity Common Stock, Shares Outstanding",
+        "description": "Indicate number of shares or other units outstanding of each of registrant's classes of capital or common stock or other ownership interests, if and as stated on cover of related periodic report. Where multiple classes or units exist define each class/interest by adding class of stock items such as Common Class A [Member], Common Class B [Member] or Partnership Interest [Member] onto the Instrument [Domain] of the Entity Listings, Instrument.",
+        "units": {
+          "shares": [
+            {
+              "end": "2009-10-29",
+              "val": 1056884,
+              "accn": "0001157523-09-007839",
+              "fy": 2009,
+              "fp": "Q3",
+              "form": "10-Q",
+              "filed": "2009-11-06",
+              "frame": "CY2009Q3I"
+            },
+            {
+              "end": "2010-02-18",
+              "val": 1103764,
+              "accn": "0001193125-10-043450",
+              "fy": 2009,
+              "fp": "FY",
+              "form": "10-K",
+              "filed": "2010-03-01"
+            },
+            {
+              "end": "2010-04-30",
+              "val": 0,
+              "accn": "0001157523-10-002982",
+              "fy": 2010,
+              "fp": "Q1",
+              "form": "10-Q",
+              "filed": "2010-05-07",
+              "frame": "CY2010Q1I"
+            },
+            {
+              "end": "2010-07-30",
+              "val": 976414,
+              "accn": "0001157523-10-004882",
+              "fy": 2010,
+              "fp": "Q2",
+              "form": "10-Q",
+              "filed": "2010-08-06",
+              "frame": "CY2010Q2I"
+            },
+            {
+              "end": "2010-10-29",
+              "val": 956153,
+              "accn": "0001157523-10-006675",
+              "fy": 2010,
+              "fp": "Q3",
+              "form": "10-Q",
+              "filed": "2010-11-05",
+              "frame": "CY2010Q3I"
+            },
+            {
+              "end": "2011-02-17",
+              "val": 943242,
+              "accn": "0001193125-11-048914",
+              "fy": 2010,
+              "fp": "FY",
+              "form": "10-K",
+              "filed": "2011-02-28"
+            },
+            {
+              "end": "2011-04-29",
+              "val": 941481,
+              "accn": "0001157523-11-002891",
+              "fy": 2011,
+              "fp": "Q1",
+              "form": "10-Q",
+              "filed": "2011-05-06",
+              "frame": "CY2011Q1I"
+            }
+          ]
+        }
+      }
+    },
+    "us-gaap": {
+      "Revenues": {
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 371444000000,
+              "accn": "0001193125-26-083899",
+              "fy": 2025,
+              "fp": "FY",
+              "form": "10-K",
+              "filed": "2026-03-02",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
